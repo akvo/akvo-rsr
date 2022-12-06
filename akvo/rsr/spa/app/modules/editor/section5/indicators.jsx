@@ -30,6 +30,7 @@ import Targets from './periods/targets'
 import References from './references/references'
 import SectionContext from '../section-context'
 import { useDefaultPeriodsState } from './periods/defaults-context'
+import { CumulativeToggle } from './cumulative'
 
 const { Item } = Form
 const { Panel } = Collapse
@@ -216,23 +217,10 @@ const Indicators = connect(null, { addSetItem, removeSetItem, moveSetItem })(
                           </Item>
                         </Col>
                         <Col lg={6} md={10} sm={24} xs={24}>
-                          <Item
-                            label={
-                              <InputLabel tooltip={t('Select if indicators report a running total so that each reported actual includes the previously reported actual and adds any progress made since the last reporting period.')}>
-                                {t('Cumulative')}
-                              </InputLabel>
-                            }
-                          >
-                            <FinalField
-                              name={`${name}.cumulative`}
-                              render={({ input }) => (
-                                <Radio.Group {...input} disabled={isImported(index)}>
-                                  <Radio.Button value={true}>{t('Yes')}</Radio.Button>
-                                  <Radio.Button value={false}>{t('No')}</Radio.Button>
-                                </Radio.Group>
-                              )}
-                            />
-                          </Item>
+                          <Field
+                            name={`${name}.id`}
+                            render={({ input }) => <CumulativeToggle id={input.value} name={name} />}
+                          />
                         </Col>
                         <Col lg={9} md={24} sm={24} xs={24}>
                           <Item
