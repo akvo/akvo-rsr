@@ -5,6 +5,8 @@ import storage from 'redux-persist/lib/storage'
 import editorRdr from '../modules/editor/reducer'
 import userRdr from './user-reducer'
 import resultRdr from '../modules/results/reducer'
+import programRdr from '../modules/program-overview/store/reducer'
+import filterRdr from './filter/reducer'
 
 const userPersistConfig = {
   key: 'userRdr',
@@ -29,7 +31,9 @@ const editorPersistConfig = {
 const rootReducer = combineReducers({
   editorRdr: persistReducer(editorPersistConfig, editorRdr),
   userRdr: persistReducer(userPersistConfig, userRdr),
-  resultRdr
+  resultRdr,
+  programRdr,
+  filterRdr,
 })
 
 export default rootReducer

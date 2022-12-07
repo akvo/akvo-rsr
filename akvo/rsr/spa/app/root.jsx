@@ -17,6 +17,7 @@ import Users from './modules/users/users'
 import Reports from './modules/reports/reports'
 import IATI from './modules/iati/iati'
 import Profile from './modules/profile/profile'
+import ProgramOverview from './modules/program-overview/ProgramOverview'
 
 if (!(env && env.LOCALDEV)) {
   Sentry.init({
@@ -63,12 +64,12 @@ const Root = ({ dispatch }) => {
           </Route>
           <Route path="/hierarchy/:projectId?" component={Hierarchy} />
           <Route path="/projects/:id" render={({ match }) => <ProjectView {...{ jwtView, match }} />} />
-          <Route path="/programs/:projectId" component={Program} />
           <Route path="/users" component={Users} />
           <Route path="/reports" component={Reports} />
           <Route path="/iati" component={IATI} />
           <Route path="/my-details" component={Profile} />
         </div>
+        <Route path="/programs/:projectId" component={ProgramOverview} />
       </div>
       </LastLocationProvider>
     </Router>
