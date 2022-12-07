@@ -1,0 +1,97 @@
+@import "../../../styles/vars.scss";
+
+#rsr-form-container {
+  background-color: $gray-50;
+  padding: 2rem 0;
+  .add-update {
+    background-color: $gray-25;
+    border-radius: 4px;
+  }
+  /*
+  * ======= Ant Design Form ==========
+  */
+  .ant-input-number {
+    border-radius: 0;
+    background: $white;
+    border: 1px solid #e7eeed;
+    &::placeholder {
+      font-size: 1rem;
+      font-weight: $font-weight-normal;
+    }
+  }
+  .ant-form-item .ant-form-item-label {
+    line-height: 1rem;
+    .input-label {
+      display: block;
+      width: 100%;
+      text-align: left;
+    }
+  }
+  .ant-form-item .ant-form-item-label label,
+  .add-update .inputs .h-holder h5,
+  .ant-input-number,
+  .ant-input-number::placeholder {
+    font-family: $font-family;
+    font-style: normal;
+  }
+  .ant-form-item .ant-form-item-label label {
+    font-size: 14px;
+    font-weight: $font-weight-normal;
+  }
+  .add-update .ant-input-number {
+    width: 50%;
+  }
+  .add-update .inputs .dsg-group {
+    padding: 1rem 1rem 0;
+    max-width: 100%;
+    border: none;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    &.mneView {
+      grid-template-columns: repeat(1, 1fr);
+    }
+    .ant-form-item {
+      margin-left: 0;
+      margin-right: 1rem;
+      .ant-input-number {
+        width: 100%;
+      }
+    }
+  }
+  .add-update .inputs .dsg-group-container {
+    border: 1px solid $gray-300;
+    padding: 0 1rem;
+    margin-bottom: 2rem;
+    position: relative;
+    .h-holder {
+      position: absolute;
+      top: -10px;
+      display: flex;
+      background-color: $gray-25;
+      h5 {
+        font-weight: $font-weight-bold;
+        padding: 0 .5rem;
+      }
+    }
+    .dsg-overview {
+      width: 50%;
+    }
+  }
+  .collapse-history.ant-collapse-borderless {
+    background-color: $gray-25;
+    .ant-collapse-item .ant-collapse-header .expander {
+      text-align: right;
+    }
+    .ant-collapse-content-box {
+      padding: 0;
+    }
+  }
+  .table-history .ant-table {
+    .ant-table-thead > tr > th {
+      background-color: $gray-100;
+    }
+    .ant-table-tbody tr:nth-child(even) {
+      background-color: $gray-100;
+    }
+  }
+}
