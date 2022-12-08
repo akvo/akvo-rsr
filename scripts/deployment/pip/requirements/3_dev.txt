@@ -68,9 +68,9 @@ cairosvg==2.5.2 \
     --hash=sha256:98c276b7e4f0caf01e5c7176765c104ffa1aa1461d63b2053b04ab663cf7052b \
     --hash=sha256:b0b9929cf5dba005178d746a8036fcf0025550f498ca54db61873322384783bc
     # via weasyprint
-certifi==2020.6.20 \
-    --hash=sha256:5930595817496dd21bb8dc35dad090f1c2cd0adfaf21204bf6732ca5d8ee34d3 \
-    --hash=sha256:8fc0819f1f30ba15bdb34cceffb9ef04d99f420f68eb75d901e9560b8749fc41
+certifi==2022.12.7 \
+    --hash=sha256:35824b4c3a97115964b408844d64aa14db1cc518f6562e8d7261699d1350a9e3 \
+    --hash=sha256:4ad3232f5e926d6718ec31cfc1fcadfde020920e278684144551c91769c7bc18
     # via
     #   requests
     #   sentry-sdk
