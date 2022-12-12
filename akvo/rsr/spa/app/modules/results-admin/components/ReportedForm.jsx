@@ -124,7 +124,9 @@ const ReportedForm = ({
 
                         if (categories.length > 0 && indicator.measure === measureType.UNIT) {
                           const value = getMaxDisaggregation(_dsgValues, 'value')
-                          form.change('value', value)
+                          if (!Number.isNaN(value)) {
+                            form.change('value', value)
+                          }
                         }
                         if (categories.length > 0 && indicator.measure === measureType.PERCENTAGE) {
                           const numerator = getMaxDisaggregation(_dsgValues, 'numerator')
