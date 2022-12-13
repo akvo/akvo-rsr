@@ -1470,6 +1470,7 @@ class Project(TimestampsMixin, AkvoTreeModel):
             description=source_indicator.description,
             measure=source_indicator.measure,
             ascending=source_indicator.ascending,
+            cumulative=source_indicator.cumulative,
             type=source_indicator.type,
             export_to_iati=source_indicator.export_to_iati,
             scores=source_indicator.scores,
@@ -1520,7 +1521,7 @@ class Project(TimestampsMixin, AkvoTreeModel):
             return
 
         update_fields = ['title', 'measure', 'ascending', 'type', 'export_to_iati', 'description',
-                         'order', 'scores', 'baseline_comment']
+                         'order', 'scores', 'baseline_comment', 'cumulative']
         for field in update_fields:
             setattr(child_indicator, field, getattr(parent_indicator, field))
         child_indicator.save(update_fields=update_fields)
