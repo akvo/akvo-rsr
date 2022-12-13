@@ -2,6 +2,7 @@
 import React, { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
+import { Spin } from 'antd'
 
 const topMargin = 6
 
@@ -13,6 +14,7 @@ const Column = ({ children, index, isLast, selected, loading, countryFilter, ext
   const nextColCardsRef = useRef(null)
   const gotoRef = useRef(null)
   const { t } = useTranslation()
+  const spinning = (index > 0 && index === selected?.length - 1 && loading)
   const drawConnector = () => {
     if (isLast === false) {
       if (connectorRef.current && nextColCardsRef.current.length > 0 && selectedCardRef.current) {
@@ -81,14 +83,15 @@ const Column = ({ children, index, isLast, selected, loading, countryFilter, ext
     <div className="col" style={{ zIndex: 999 - index }}>
       <div className="go-to" ref={gotoRef} onClick={gotoSelected} role="button" tabIndex={-1}>{t('Go to selected')}</div>
       <div className="shade" />
-      {selected[0]?.isMasterProgram && index === 0 && <h3>{t('Programmes')}</h3>}
-      {selected[0]?.isMasterProgram && index > 0 && <h3>{t('Level {{level}} projects', { level: index })}</h3>}
-      {!selected[0]?.isMasterProgram && index > -1 && <h3>{t('Level {{level}} projects', { level: index + 1 })}</h3>}
-      {index === -1 && <h3>{t(children > 1 ? 'Programs' : selected[0]?.isMasterProgram ? 'Master Programme' : 'Program')}</h3>}
+      {selected[0]?.isProgram && index === 0 && <h3>{t('Programmes')}</h3>}
+      {selected[0]?.isProgram && index > 0 && <h3>{t('Level {{level}} projects', { level: index })}</h3>}
+      {!selected[0]?.isProgram && index > -1 && <h3>{t('Level {{level}} projects', { level: index + 1 })}</h3>}
+      {index === -1 && <h3>{t(children > 1 ? 'Programs' : selected[0]?.isProgram ? 'Master Programme' : 'Program')}</h3>}
       {extra}
       <div className="inner">
         <div className={classNames('scrollview', { isEmpty })} onScroll={handleScroll}>
-          <ul ref={ulRef} style={{ width: '100%' }}>
+          <ul ref={ulRef} className={classNames('card-container', { loading })}>
+            <li><Spin spinning={spinning} /></li>
             {children}
           </ul>
         </div>
