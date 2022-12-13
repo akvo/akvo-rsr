@@ -104,7 +104,13 @@ class ProjectViewSet(PublicProjectViewSet):
     def children(self, request, **kwargs):
         project = self.get_object()
 
-        queryset = self._filter_queryset(project.children())
+        queryset = self._filter_queryset(project.children().select_related(
+            "primary_organisation",
+        ).prefetch_related(
+            "locations",
+            "recipient_countries",
+            "sectors",
+        ))
         page = self.paginate_queryset(queryset)
 
         serializer_context = self.get_serializer_context()
