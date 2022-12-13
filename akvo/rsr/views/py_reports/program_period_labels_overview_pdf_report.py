@@ -8,12 +8,16 @@ see < http://www.gnu.org/licenses/agpl.html >.
 """
 
 import copy
-from collections import namedtuple, OrderedDict
+from collections import OrderedDict
 from datetime import datetime
+from decimal import Decimal
+from dataclasses import dataclass, field, replace
+from functools import cached_property
+from typing import Optional, Dict, Any
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
-from akvo.rsr.models import Project, IndicatorPeriod
+from akvo.rsr.models import Project, IndicatorPeriod, IndicatorPeriodLabel
 from akvo.rsr.models.result.utils import calculate_percentage
 from akvo.rsr.project_overview import get_periods_hierarchy_flatlist, make_object_tree_from_flatlist, IndicatorType, UpdateCollection
 from akvo.utils import ensure_decimal, ObjectReaderProxy
@@ -56,8 +60,7 @@ def build_view_object(program):
     results = OrderedDict()
     for indicator in indicators:
         result = indicator.result
-        if result.id not in results:
-            results[result.id] = {'item': result, 'indicators': []}
+        results.setdefault(result.id, {'item': result, 'indicators': []})
         results[result.id]['indicators'].append(indicator)
     return ProjectProxy(program, results)
 
@@ -78,8 +81,7 @@ def group_periods_under_indicator(period_lists):
     indicators = {}
     for period in period_lists:
         indicator = period.indicator
-        if indicator.id not in indicators:
-            indicators[indicator.id] = LabelPeriodMapIndicator(indicator)
+        indicators.setdefault(indicator.id, LabelPeriodMapIndicator(indicator))
         indicators[indicator.id].add_period(period)
     return indicators
 
@@ -116,38 +118,54 @@ class LabeledPeriodsIndicatorHierarchyProxy(ObjectReaderProxy):
         self.type = IndicatorType.get_type(indicator)
         self._children = children
         self._labeled_periods = None
-        self._disaggregations = None
 
     @property
     def labeled_periods(self):
         self._build()
         return self._labeled_periods.values()
 
-    @property
+    @cached_property
+    def is_cumulative(self):
+        return self._real.is_cumulative()
+
+    @cached_property
     def disaggregations(self):
-        if self._disaggregations is None:
-            self._disaggregations = {}
-            for period in self.labeled_periods:
-                for d in period.disaggregations.values():
-                    category = d['category']
-                    type = d['type']
-                    if category not in self.disaggregations:
-                        self._disaggregations[category] = {}
-                    if type not in self._disaggregations[category]:
-                        self._disaggregations[category][type] = {'value': 0, 'numerator': 0, 'denominator': 0}
-                    self._disaggregations[category][type]['value'] += (d['value'] or 0)
-                    self._disaggregations[category][type]['numerator'] += (d['numerator'] or 0)
-                    self._disaggregations[category][type]['denominator'] += (d['denominator'] or 0)
+        disaggregations = self._get_cumulative_disaggregations() if self.is_cumulative else self._get_non_cumulative_disaggregations()
+        if self.type == IndicatorType.PERCENTAGE:
+            for category, types in disaggregations.items():
+                for type in types.keys():
+                    disaggregations[category][type]['value'] = calculate_percentage(
+                        disaggregations[category][type]['numerator'],
+                        disaggregations[category][type]['denominator']
+                    )
+        return disaggregations
 
-            if self.type == IndicatorType.PERCENTAGE:
-                for category, types in self._disaggregations.items():
-                    for type in types.keys():
-                        self._disaggregations[category][type]['value'] = calculate_percentage(
-                            self._disaggregations[category][type]['numerator'],
-                            self._disaggregations[category][type]['denominator']
-                        )
+    def _get_cumulative_disaggregations(self):
+        disaggregations = {}
+        latest_period = sorted(self.labeled_periods, key=lambda p: p.period.period_start)[-1] if self.labeled_periods else None
+        if not latest_period:
+            return disaggregations
+        for d in latest_period.period_disaggregations.values():
+            category = d['category']
+            type = d['type']
+            disaggregations.setdefault(category, {})[type] = {
+                'value': d['value'],
+                'numerator': d['numerator'],
+                'denominator': d['denominator'],
+            }
+        return disaggregations
 
-        return self._disaggregations
+    def _get_non_cumulative_disaggregations(self):
+        disaggregations = {}
+        for period in self.labeled_periods:
+            for d in period.disaggregations.values():
+                category = d['category']
+                type = d['type']
+                disaggregations.setdefault(category, {}).setdefault(type, {'value': 0, 'numerator': 0, 'denominator': 0})
+                disaggregations[category][type]['value'] += (d['value'] or 0)
+                disaggregations[category][type]['numerator'] += (d['numerator'] or 0)
+                disaggregations[category][type]['denominator'] += (d['denominator'] or 0)
+        return disaggregations
 
     def get_labeled_period(self, label):
         self._build()
@@ -159,11 +177,9 @@ class LabeledPeriodsIndicatorHierarchyProxy(ObjectReaderProxy):
 
     def _build_labeled_periods(self):
         self._labeled_periods = OrderedDict()
-
         for label_obj, period in self.selected_periods.items():
             label = str(label_obj)
-            if label not in self._labeled_periods:
-                self._labeled_periods[label] = LabeledPeriod(period, label_obj, self.type)
+            self._labeled_periods.setdefault(label, LabeledPeriod(period=period, label=label_obj, type=self.type, cumulative=self.is_cumulative))
             updates = UpdateCollection(period, self.type)
             if self.type == IndicatorType.UNIT:
                 self._labeled_periods[label] = self._labeled_periods[label].add_value(updates.total_value, updates.disaggregations)
@@ -176,9 +192,12 @@ class LabeledPeriodsIndicatorHierarchyProxy(ObjectReaderProxy):
             for child_labeled_period in child.labeled_periods:
                 label_obj = child_labeled_period.label
                 label = str(label_obj)
-                if label not in self._labeled_periods:
-                    self._labeled_periods[label] = LabeledPeriod(child_labeled_period.period.parent_period, label_obj, self.type)
-                labeled_period = self._labeled_periods[label]
+                labeled_period = self._labeled_periods.setdefault(label, LabeledPeriod(
+                    period=child_labeled_period.period.parent_period,
+                    label=label_obj,
+                    type=self.type,
+                    cumulative=self.is_cumulative
+                ))
                 if self.type == IndicatorType.UNIT:
                     labeled_period = labeled_period.add_value(
                         child_labeled_period.actual_value,
@@ -193,12 +212,16 @@ class LabeledPeriodsIndicatorHierarchyProxy(ObjectReaderProxy):
                 self._labeled_periods[label] = labeled_period
 
 
-class LabeledPeriod(namedtuple(
-    'LabeledPeriod',
-    ('period', 'label', 'type', 'value', 'numerator', 'denominator', 'disaggregations'),
-    defaults=(None, None, None, {})
-)):
-    __slots__ = ()
+@dataclass(frozen=True)
+class LabeledPeriod:
+    period: IndicatorPeriod
+    label: IndicatorPeriodLabel
+    type: IndicatorType
+    cumulative: bool = False
+    value: Optional[Decimal] = None
+    numerator: Optional[Decimal] = None
+    denominator: Optional[Decimal] = None
+    disaggregations: Dict[Any, Any] = field(default_factory=dict)
 
     @property
     def target_value(self):
@@ -206,6 +229,8 @@ class LabeledPeriod(namedtuple(
 
     @property
     def actual_value(self):
+        if self.cumulative:
+            return ensure_decimal(self.period.actual_value)
         if self.type == IndicatorType.UNIT:
             return ensure_decimal(self.value)
         else:
@@ -216,13 +241,15 @@ class LabeledPeriod(namedtuple(
         return calculate_percentage(self.actual_value, self.target_value)
 
     def add_value(self, value, disaggregations={}):
-        return self._replace(
+        return replace(
+            self,
             value=ensure_decimal(self.value) + ensure_decimal(value),
             disaggregations=self._add_disaggregation(disaggregations)
         )
 
     def add_percentage_value(self, numerator, denominator, disaggregations={}):
-        return self._replace(
+        return replace(
+            self,
             numerator=ensure_decimal(self.numerator) + ensure_decimal(numerator),
             denominator=ensure_decimal(self.denominator) + ensure_decimal(denominator),
             disaggregations=self._add_disaggregation(disaggregations)
@@ -230,21 +257,38 @@ class LabeledPeriod(namedtuple(
 
     def get_disaggregation_of(self, category, type):
         key = (category, type)
-        if key not in self.disaggregations:
+        if key not in self.disaggregations and key not in self.period_disaggregations:
             return None
+        if self.cumulative:
+            return self.period_disaggregations.get(key, {'value': None})['value']
         if self.type == IndicatorType.UNIT:
             return self.disaggregations[key]['value']
         d = self.disaggregations[key]
         return calculate_percentage(d['numerator'], d['denominator'])
 
-    def _add_disaggregation(self, new):
+    def _add_disaggregation(self, disaggregations):
         result = copy.deepcopy(self.disaggregations)
-        for key in new:
+        for key, disaggregation in disaggregations.items():
             if key not in result:
-                result[key] = new[key].copy()
+                result[key] = disaggregation.copy()
             elif self.type == IndicatorType.UNIT:
-                result[key]['value'] += new[key]['value']
+                result[key]['value'] += disaggregation['value']
             else:
-                result[key]['numerator'] += new[key]['numerator']
-                result[key]['denominator'] += new[key]['denominator']
+                result[key]['numerator'] += disaggregation['numerator']
+                result[key]['denominator'] += disaggregation['denominator']
         return result
+
+    @cached_property
+    def period_disaggregations(self):
+        disaggregations = {}
+        for d in self.period.disaggregations.all():
+            category = d.dimension_value.name.name
+            type = d.dimension_value.value
+            disaggregations[(category, type)] = {
+                'category': category,
+                'type': type,
+                'value': d.value,
+                'numerator': d.numerator,
+                'denominator': d.denominator,
+            }
+        return disaggregations
