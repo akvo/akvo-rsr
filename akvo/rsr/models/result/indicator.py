@@ -182,12 +182,12 @@ class Indicator(models.Model):
 
     def descendants(self, depth=None):
         family = {self.pk}
+        children = {self.pk}
         search_depth = 0
         while depth is None or search_depth < depth:
-            children = Indicator.objects.filter(parent_indicator__in=family).values_list('pk', flat=True)
+            children = Indicator.objects.filter(parent_indicator__in=children).values_list('pk', flat=True)
             if family.union(children) == family:
                 break
-
             family = family.union(children)
             search_depth += 1
         return Indicator.objects.filter(pk__in=family)

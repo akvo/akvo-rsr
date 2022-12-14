@@ -109,7 +109,7 @@ class IndicatorFrameworkSerializer(BaseRSRSerializer):
             return data
         if get_indicator_contribution_count(self.instance) > 0:
             raise serializers.ValidationError(
-                "Switching cumulative reporting is not allowed when indicator already have updates"
+                "Switching cumulative reporting is not allowed when the indicator already has updates"
             )
         return data
 
