@@ -11,10 +11,10 @@ from datetime import datetime
 
 from akvo.rsr.dataclasses import (
     ResultData, IndicatorData, PeriodData, PeriodUpdateData, DisaggregationData,
-    ContributorData, DisaggregationTargetData, group_results_by_types
+    ContributorData, DisaggregationTargetData, group_results_by_types, has_cumulative_indicator
 )
 from akvo.rsr.project_overview import is_aggregating_targets, get_disaggregations
-from akvo.rsr.models import Project, IndicatorPeriod, DisaggregationTarget, Sector
+from akvo.rsr.models import Project, IndicatorPeriod, DisaggregationTarget, Sector, IndicatorPeriodDisaggregation
 from akvo.rsr.models.result.utils import calculate_percentage
 from akvo.utils import ensure_decimal, maybe_decimal
 from django.contrib.auth.decorators import login_required
@@ -37,10 +37,18 @@ def fetch_periods(project, start_date=None, end_date=None):
     return queryset\
         .order_by('indicator__result__order', 'indicator__order', '-period_start')\
         .values(
-            'id', 'period_start', 'period_end', 'target_value',
-            'indicator__id', 'indicator__title', 'indicator__description', 'indicator__type', 'indicator__measure', 'indicator__target_value',
-            'indicator__baseline_value', 'indicator__result__id', 'indicator__result__type', 'indicator__result__title', 'indicator__result__description',
+            'id', 'period_start', 'period_end', 'target_value', 'actual_value',
+            'indicator__id', 'indicator__title', 'indicator__description', 'indicator__type', 'indicator__measure', 'indicator__cumulative',
+            'indicator__target_value', 'indicator__baseline_value',
+            'indicator__result__id', 'indicator__result__type', 'indicator__result__title', 'indicator__result__description',
         )
+
+
+def fetch_period_disaggregations(period_ids):
+    queryset = IndicatorPeriodDisaggregation.objects\
+        .select_related('period', 'dimension_value', 'dimension_value__name')\
+        .filter(period__in=period_ids)
+    return queryset.values('id', 'value', 'numerator', 'denominator', 'period__id', 'dimension_value__value', 'dimension_value__name__name')
 
 
 def fetch_contributors(root_period_ids):
@@ -61,8 +69,8 @@ def fetch_contributors(root_period_ids):
         )\
         .filter(id__in=contributor_ids)\
         .values(
-            'id', 'parent_period', 'target_value', 'indicator__id',
-            'indicator__type', 'indicator__measure', 'indicator__target_value',
+            'id', 'parent_period', 'target_value', 'actual_value', 'indicator__id',
+            'indicator__type', 'indicator__measure', 'indicator__cumulative', 'indicator__target_value',
             'indicator__baseline_value', 'indicator__result__project__id',
             'indicator__result__project__title', 'indicator__result__project__subtitle',
             'indicator__result__project__aggregate_children', 'indicator__result__project__aggregate_to_parent',
@@ -107,7 +115,7 @@ def hierarchize_contributors(contributors):
     return tops
 
 
-def get_contributors(root_period_ids):
+def get_contributors(root_period_ids, has_cumulative_indicator=False):
     lookup = {
         'contributors': {},
         'updates': {},
@@ -144,6 +152,15 @@ def get_contributors(root_period_ids):
         disaggregation_target = DisaggregationTargetData.make(d)
         contributor = lookup['contributors'][contributor_id]
         contributor.disaggregation_targets.append(disaggregation_target)
+    if has_cumulative_indicator:
+        raw_period_disaggregations = fetch_period_disaggregations(contributor_ids)
+        for r in raw_period_disaggregations:
+            period_id = r['period__id']
+            if period_id not in lookup['contributors']:
+                continue
+            period_disaggregation = DisaggregationData.make(r)
+            contributor = lookup['contributors'][period_id]
+            contributor.period_disaggregations.append(period_disaggregation)
     project_ids = {c['indicator__result__project__id'] for c in raw_contributors}
     project_sectors = get_project_sectors(project_ids)
     for contributor in lookup['contributors'].values():
@@ -178,7 +195,17 @@ def get_results_framework(project, start_date=None, end_date=None):
             indicator.periods.append(period)
             lookup['periods'][period_id] = period
     period_ids = {it['id'] for it in raw_periods}
-    contributors = get_contributors(period_ids)
+    is_cumulative = has_cumulative_indicator(lookup['results'].values())
+    if is_cumulative:
+        raw_period_disaggregations = fetch_period_disaggregations(period_ids)
+        for r in raw_period_disaggregations:
+            period_id = r['period__id']
+            if period_id not in lookup['periods']:
+                continue
+            period_disaggregation = DisaggregationData.make(r)
+            period = lookup['periods'][period_id]
+            period.period_disaggregations.append(period_disaggregation)
+    contributors = get_contributors(period_ids, is_cumulative)
     for contributor in contributors:
         period_id = contributor.parent
         if period_id in lookup['periods']:
