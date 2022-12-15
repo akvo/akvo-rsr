@@ -5,24 +5,32 @@ import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import SimpleMarkdown from 'simple-markdown'
 import moment from 'moment'
-import orderBy from 'lodash/orderBy'
-import { connect } from 'react-redux'
+import {
+  groupBy,
+  orderBy,
+} from 'lodash'
 
 import DsgOverview from '../../results/dsg-overview'
 import {
   DeclinedStatus,
   StatusUpdate,
-  PrevUpdate,
-  AllSubmissionsModal,
 } from '../../../components'
+import api from '../../../utils/api'
 import FinalField from '../../../utils/final-field'
-import { nicenum } from '../../../utils/misc'
 import RTE from '../../../utils/rte'
 import ScoringField from '../../../components/ScoringField'
 import LineChart from '../../../components/LineChart'
+import UpdatesHint from '../../../components/UpdatesHint'
+import {
+  getMaxDisaggregation,
+  getSumValues,
+  getPercentage,
+  setNumberFormat,
+} from '../../../utils/misc'
 import { isNSOProject } from '../../../utils/feat-flags'
-import api from '../../../utils/api'
-import { measureType } from '../../../utils/constants'
+import { indicatorType, measureType } from '../../../utils/constants'
+import DisaggregationsInput from './DisaggregationsInput'
+import UpdatesHistory from '../../../components/UpdatesHistory'
 
 const { Text } = Typography
 
@@ -40,10 +48,8 @@ const ReportedForm = ({
   mneView,
   fileSet,
   deleteFile,
-  userRdr,
 }) => {
   const [cumulativeUpdate, setCumulativeUpdate] = useState(null)
-  const [showSubmissionsModal, setShowSubmissionsModal] = useState(false)
   const { t } = useTranslation()
   useEffect(() => {
     api
@@ -55,204 +61,169 @@ const ReportedForm = ({
     ?.filter(it => it.status === 'A' || it.status === 'R')
     ?.slice(0, 1)
     ?.pop()
+  const updatesHintProps = {
+    cumulativeUpdate,
+    lastUpdate,
+    indicator,
+    period,
+  }
+  const disaggregationsProps = {
+    ...indicator,
+    disaggregations,
+    disableInputs,
+    period,
+    mneView,
+  }
   return (
     <div className="add-update">
+      {(lastUpdate?.id && indicator?.type === indicatorType.QUANTITATIVE) && <UpdatesHint {...updatesHintProps} />}
       <StatusUpdate {...init} />
       {(init?.status === 'R') && <DeclinedStatus update={init} />}
       <Form aria-orientation="vertical">
         <div className={classNames('inputs-container', { qualitative: indicator.type === 2, 'no-prev': period?.updates?.filter(it => it.status === 'A').length === 0 })}>
-          <div className="inputs">
+          <div className={classNames('inputs', { mneView })}>
             {mneView && indicator.type === 1 && <h4>Add a value update</h4>}
             {(typeof errors === 'object' && errors?.length > 0) && <>{errors?.map((err, ex) => <Text type="danger" key={ex}>{err}</Text>)}</>}
             {((typeof errors === 'string') && errors?.match(new RegExp('multiple|updates|percentages', 'g'))?.length > 0) && (
               <Text type="danger">{t('Value already reported')}</Text>
             )}
-            {indicator.dimensionNames.map(group =>
-              <div className="dsg-group" key={group.name}>
-                <div className="h-holder">
-                  <h5>{group.name}</h5>
-                </div>
-                {group.dimensionValues.map(dsg => {
-                  return indicator.measure === measureType.UNIT ? (
-                    <FinalField
-                      name={`disaggregations[${disaggregations.findIndex(it => it.typeId === dsg.id && group.id === it.groupId)}].value`}
-                      control="input-number"
-                      withLabel
-                      dict={{ label: dsg.value }}
-                      min={-Infinity}
-                      step={1}
-                      disabled={disableInputs}
-                    />
-                  ) : (
-                    <div>
-                      <div style={{ paddingLeft: '1em' }}>{dsg.value}</div>
-                      <FinalField
-                        name={`disaggregations[${disaggregations.findIndex(it => it.typeId === dsg.id && group.id === it.groupId)}].numerator`}
-                        control="input-number"
-                        withLabel
-                        dict={{ label: 'Enumerator' }}
-                        min={-Infinity}
-                        step={1}
-                        disabled={disableInputs}
-                      />
-                      <FinalField
-                        name={`disaggregations[${disaggregations.findIndex(it => it.typeId === dsg.id && group.id === it.groupId)}].denominator`}
-                        control="input-number"
-                        withLabel
-                        dict={{ label: 'Denominator' }}
-                        min={-Infinity}
-                        step={1}
-                        disabled={disableInputs}
-                      />
-                    </div>
-                  )
-                }
-                )}
-              </div>
-            )}
-            {indicator.type === 1 ? [
-              <>
-                {init?.disaggregations?.length > 0 && (
-                  <Field
-                    name="disaggregations"
-                    render={({ input }) => {
-                      if (isNSOProject(project)) {
-                        return null
-                      }
-                      const dsgGroups = {}
-                      if (input?.value?.length) {
-                        input.value.forEach(item => {
-                          if (!dsgGroups[item.category]) dsgGroups[item.category] = { value: 0, numerator: 0, denominator: 0 }
-                          if (item.value) dsgGroups[item.category].value += item.value
-                          if (item.numerator) dsgGroups[item.category].numerator += item.numerator
-                          if (item.denominator) dsgGroups[item.category].denominator += item.denominator
-                        })
-                      }
-                      const categories = Object.keys(dsgGroups)
-                      if (categories.length > 0 && indicator.measure === measureType.UNIT) {
-                        const value = categories.reduce((acc, key) => dsgGroups[key].value > acc ? dsgGroups[key].value : acc, 0)
-                        if (value > 0) form.change('value', value)
-                      }
-                      if (categories.length > 0 && indicator.measure === measureType.PERCENTAGE) {
-                        const [numerator, denominator] = categories.reduce(([numerator, denominator], key) => [
-                          dsgGroups[key].numerator > numerator ? dsgGroups[key].numerator : numerator,
-                          dsgGroups[key].denominator > denominator ? dsgGroups[key].denominator : denominator
-                        ], [0, 0])
-                        if (numerator > 0) form.change('numerator', numerator)
-                        if (denominator > 0) form.change('denominator', denominator)
-                      }
-                      return null
-                    }}
-                  />
-                )}
-              </>,
-              indicator.measure === measureType.UNIT ?
-                <FinalField
-                  withLabel
-                  dict={{ label: period?.disaggregationTargets.length > 0 ? t('Total value') : t('Value') }}
-                  name="value"
-                  control="input-number"
-                  min={-Infinity}
-                  step={1}
-                  disabled={disableInputs}
-                /> :
-                <FinalField
-                  withLabel
-                  dict={{ label: 'Numerator' }}
-                  name="numerator"
-                  control="input-number"
-                  min={-Infinity}
-                  step={1}
-                  disabled={disableInputs}
-                />,
-              (indicator.measure === measureType.UNIT && period.updates.length > 0) && [
-                <div className="updated-actual">
-                  <div className="cap">{t('Updated actual value')}</div>
-                  <Field
-                    name="value"
-                    render={({ input }) => {
-                      const updatedTotal = disableInputs ? 0 : (input.value > 0 ? input.value : 0)
-                      return (
-                        <div className="value">
-                          <b>{nicenum(updatedTotal)}</b>
-                          {period.targetValue > 0 && <small>{(Math.round((updatedTotal / period.targetValue) * 100 * 10) / 10)}% of target</small>}
-                        </div>
-                      )
-                    }}
-                  />
-                </div>
-              ],
-              indicator.measure === measureType.PERCENTAGE && [
-                <FinalField
-                  withLabel
-                  dict={{ label: 'Denominator' }}
-                  name="denominator"
-                  control="input-number"
-                  step={1}
-                  min={-Infinity}
-                  disabled={disableInputs}
-                />,
-                <div className="perc">
-                  <FormSpy subscription={{ values: true }}>
-                    {({ values }) => {
-                      if (values.numerator !== '' && values.numerator != null && values.denominator) {
-                        const value = Math.round((values.numerator / values.denominator) * 100 * 10) / 10
-                        if (value !== values.value) {
-                          form.change('value', value)
+            <DisaggregationsInput {...disaggregationsProps} />
+            {indicator.type === 1 ?
+              (
+                <>
+                  {init?.disaggregations?.length > 0 && (
+                    <Field
+                      name="disaggregations"
+                      render={({ input }) => {
+                        if (isNSOProject(project)) {
+                          return null
                         }
-                        return `${value}%`
-                      }
-                      return null
-                    }}
-                  </FormSpy>
-                </div>
-              ]
-            ] : [ // qualitative indicator
-              indicator.scores?.length > 0 && (
+                        const _dsgGrouped = groupBy(input?.value, 'category')
+                        const _dsgValues = Object
+                          .values(_dsgGrouped)
+                          ?.map((values) => values?.map((v) => ({ ...v, numerator: v?.numerator || null, denominator: v?.denominator || null })))
+                          ?.map((values) => ({
+                            value: getSumValues(values, 'value'),
+                            numerator: getSumValues(values, 'numerator'),
+                            denominator: getSumValues(values, 'denominator'),
+                          }))
+                        const dsgGroups = Object
+                          .keys(_dsgGrouped)
+                          ?.reduce((obj, key, index) => ({
+                            ...obj,
+                            [key]: _dsgValues[index]
+                          }), {})
+                        const categories = Object.keys(dsgGroups)
+
+                        if (categories.length > 0 && indicator.measure === measureType.UNIT) {
+                          const value = getMaxDisaggregation(_dsgValues, 'value')
+                          if (!Number.isNaN(value)) {
+                            form.change('value', value)
+                          }
+                        }
+                        if (categories.length > 0 && indicator.measure === measureType.PERCENTAGE) {
+                          const numerator = getMaxDisaggregation(_dsgValues, 'numerator')
+                          const denominator = getMaxDisaggregation(_dsgValues, 'denominator')
+                          form.change('numerator', numerator)
+                          form.change('denominator', denominator)
+                        }
+                        return null
+                      }}
+                    />
+                  )}
+                  {(indicator.measure === measureType.UNIT) && (
+                    <>
+                      <FinalField
+                        withLabel
+                        dict={{ label: period?.disaggregationTargets.length > 0 ? t('Total value') : t('Value') }}
+                        name="value"
+                        control="input-number"
+                        step={1}
+                        disabled={disableInputs}
+                      />
+                      <UpdatesHistory {...period} mneView={mneView} />
+                      {(period.updates.length > 0) && (
+                        <div className="updated-actual">
+                          <div className="cap">{t('Updated actual value')}</div>
+                          <Field
+                            name="value"
+                            render={({ input }) => {
+                              const updatedTotal = disableInputs ? 0 : input.value
+                              return (
+                                <div className="value">
+                                  <b>{setNumberFormat(updatedTotal)}</b>
+                                  {period.targetValue > 0 && <small>{getPercentage(updatedTotal, period.targetValue)}% of target</small>}
+                                </div>
+                              )
+                            }}
+                          />
+                        </div>
+                      )}
+                    </>
+                  )}
+                  {(indicator.measure === measureType.PERCENTAGE) && (
+                    <div className="percentage-indicator">
+                      <div>
+                        <FinalField
+                          withLabel
+                          dict={{ label: 'Numerator' }}
+                          name="numerator"
+                          control="input-number"
+                          min={-Infinity}
+                          step={1}
+                          disabled={disableInputs}
+                        />
+                        <FinalField
+                          withLabel
+                          dict={{ label: 'Denominator' }}
+                          name="denominator"
+                          control="input-number"
+                          step={1}
+                          min={-Infinity}
+                          disabled={disableInputs}
+                        />
+                      </div>
+                      <div className="perc">
+                        <FormSpy subscription={{ values: true }}>
+                          {({ values }) => {
+                            if (values.numerator !== '' && values.numerator != null && values.denominator) {
+                              const value = getPercentage(values.numerator, values.denominator)
+                              if (value !== values.value) {
+                                form.change('value', value)
+                              }
+                              return `${value}%`
+                            }
+                            return null
+                          }}
+                        </FormSpy>
+                      </div>
+                    </div>
+                  )}
+                </>
+              )
+              : [ // qualitative indicator
+                indicator.scores?.length > 0 && (
+                  <Field
+                    name="scoreIndices"
+                    render={({ input }) => <ScoringField scores={indicator.scores} disabled={disableInputs} id={init?.id} {...input} />}
+                  />
+                ),
+                <h5>{t('New update')}</h5>,
                 <Field
-                  name="scoreIndices"
-                  render={({ input }) => <ScoringField scores={indicator.scores} disabled={disableInputs} id={init?.id} {...input} />}
+                  name="narrative"
+                  render={({ input }) => {
+                    if (disableInputs) {
+                      const parse = SimpleMarkdown.defaultBlockParse
+                      const mdOutput = SimpleMarkdown.defaultReactOutput
+                      return <div className="md-output">{mdOutput(parse(input.value))}</div>
+                    }
+                    return [
+                      <RTE {...input} />
+                    ]
+                  }}
                 />
-              ),
-              <h5>{t('New update')}</h5>,
-              <Field
-                name="narrative"
-                render={({ input }) => {
-                  if (disableInputs) {
-                    const parse = SimpleMarkdown.defaultBlockParse
-                    const mdOutput = SimpleMarkdown.defaultOutput
-                    return <div className="md-output">{mdOutput(parse(input.value))}</div>
-                  }
-                  return [
-                    <RTE {...input} />
-                  ]
-                }}
-              />
-            ]}
+              ]}
           </div>
-          {(cumulativeUpdate?.value && lastUpdate?.id) && (
-            <PrevUpdate
-              status="A"
-              title="cumulative update hint"
-              createdAt={lastUpdate.createdAt}
-              userDetails={userRdr}
-              {...cumulativeUpdate}
-              {...{ indicator, period }}
-            />
-          )}
-          {(!mneView && lastUpdate?.id) &&
-            <div className="prev-value-holder">
-              <PrevUpdate {...lastUpdate} {...{ period, indicator }} />
-              {period.updates.length > 1 &&
-                <div className="all-submissions-btn-container">
-                  <Button type="link" onClick={() => setShowSubmissionsModal(true)}>
-                    {t('See all submissions')}
-                  </Button>
-                  <AllSubmissionsModal period={period} visible={showSubmissionsModal} onCancel={() => setShowSubmissionsModal(false)} />
-                </div>
-              }
-            </div>
-          }
           {(mneView && indicator.type === 1) && (
             disaggregations.length > 0 ?
               (
@@ -342,6 +313,4 @@ const ReportedForm = ({
   )
 }
 
-export default connect(
-  ({ userRdr }) => ({ userRdr })
-)(ReportedForm)
+export default ReportedForm
