@@ -9,28 +9,24 @@ import * as actions from '../../actions'
 const BlockToggleApi = ({
   addContributionCount,
   match: { params },
-  id: indicatorID,
   name,
   indicator,
 }) => {
   const [preload, setPreload] = useState(true)
 
   useEffect(() => {
-    if (preload && indicator?.contributionCount === undefined) {
+    if (preload && indicator?.contributionCount === undefined && indicator?.id) {
       setPreload(false)
       api
-        .get(`/project/${params.id}/indicator/${indicatorID}/contribution_count?format=json`)
+        .get(`/project/${params.id}/indicator/${indicator.id}/contribution_count?format=json`)
         .then(({ data }) => {
-          addContributionCount(indicatorID, data?.count)
+          addContributionCount(indicator.id, data?.count)
         })
         .catch(() => {
-          addContributionCount(indicatorID, null)
+          addContributionCount(indicator.id, null)
         })
     }
-    if (
-      preload &&
-      (indicator?.contributionCount || indicator?.contributionCount === 0)
-    ) {
+    if (preload && indicator?.contributionCount !== undefined) {
       setPreload(false)
     }
   }, [preload, indicator])

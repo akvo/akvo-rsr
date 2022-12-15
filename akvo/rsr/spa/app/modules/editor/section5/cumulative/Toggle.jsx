@@ -18,10 +18,10 @@ const Toggle = ({
 
   const allIndicators = results?.flatMap((r) => r?.indicators)
   const _indicator = allIndicators?.find((i) => i?.id === indicatorID)
-  const disabled = (_indicator?.contributionCount === undefined || (_indicator.contributionCount))
+  const disabled = (_indicator?.contributionCount === undefined || _indicator?.contributionCount > 0)
   return (
     <>
-      <BlockToggleApi id={indicatorID} name={name} indicator={_indicator} />
+      {_indicator && <BlockToggleApi name={name} indicator={_indicator} />}
       <Item
         label={
           <InputLabel tooltip={t('Select if indicators report a running total so that each reported actual includes the previously reported actual and adds any progress made since the last reporting period.')}>
