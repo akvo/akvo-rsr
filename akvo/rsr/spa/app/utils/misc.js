@@ -1,5 +1,6 @@
 /* globals FileReader, window */
 import { diff } from 'deep-object-diff'
+import sumBy from 'lodash/sumBy'
 
 export const datePickerConfig = {
   format: 'DD/MM/YYYY',
@@ -182,12 +183,30 @@ export const setNumberFormat = (amount, separator = ',') => {
  */
 export const wordWrap = (s, w) => {
   return s
-  ? s.replace(
-    new RegExp(`(?![^\\n]{1,${w}}$)([^\\n]{1,${w}})\\s`, 'g'), '$1<br/>'
+    ? s.replace(
+      new RegExp(`(?![^\\n]{1,${w}}$)([^\\n]{1,${w}})\\s`, 'g'), '$1<br/>'
     )
-  : ''
+    : ''
 }
 
 export const splitPeriod = value => value?.split('-')?.map((v) => v.trim())
 
+export const getSumValues = (values, field) => {
+  const isNull = values?.filter((v) => v[field] === null)?.length === values?.length
+  return isNull ? null : sumBy(values, field)
+}
+
+export const getMaxDisaggregation = (values, field) => {
+  const allValues = values
+    ?.filter((d) => d[field] !== null)
+    ?.map((d) => d[field])
+  return allValues?.length ? Math.max(...allValues) : null
+}
+
 export const getProjectUuids = (path) => path?.split('.')?.map((value) => value?.replace(/_/g, '-'))
+
+export const getPercentage = (numerator, denominator) => Math.round((numerator / denominator) * 100 * 10) / 10
+
+export const getUserFullName = user => (user?.firstName?.length || user?.lastName?.length)
+  ? `${user.firstName} ${user.lastName}`
+  : user.email
