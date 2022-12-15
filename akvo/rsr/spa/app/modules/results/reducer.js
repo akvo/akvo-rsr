@@ -1,4 +1,5 @@
 import moment from 'moment'
+import { statusUpdate } from '../../utils/constants'
 import { getUserFullName, setNumberFormat } from '../../utils/misc'
 import actionTypes from './action-types'
 
@@ -40,6 +41,8 @@ export default (state = initialState, action) => {
                   value: setNumberFormat(value),
                   date: moment(createdAt).format('DD MMM YYYY HH:mm'),
                   user: getUserFullName(userDetails),
+                  status: statusUpdate[u?.status] || u?.status,
+                  rowKey: u?.id,
                 }
               })
               return ({

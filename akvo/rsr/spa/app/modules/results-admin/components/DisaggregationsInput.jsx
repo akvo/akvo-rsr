@@ -13,11 +13,7 @@ const DisaggregationsInput = ({
   disaggregations = [],
   disableInputs = false,
 }) => dimensionNames?.map((group, gx) => {
-  const activeKeys = [
-    ...group?.dimensionValues?.map((d) => d?.value),
-    'date',
-    'user'
-  ]
+  const activeKeys = group?.dimensionValues?.map((d) => d?.value)
   return (
     <div className="dsg-group-container" key={gx}>
       <div className="h-holder">
@@ -57,7 +53,7 @@ const DisaggregationsInput = ({
           )
         )}
       </div>
-      <UpdatesHistory {...period} activeKeys={activeKeys} />
+      <UpdatesHistory {...period} activeKeys={activeKeys} mneView={mneView} />
     </div>
   )
 })

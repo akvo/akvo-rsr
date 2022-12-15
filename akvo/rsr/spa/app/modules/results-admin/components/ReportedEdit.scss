@@ -86,12 +86,23 @@
       padding: 0;
     }
   }
-  .table-history .ant-table {
+  .table-history {
     .ant-table-thead > tr > th {
       background-color: $gray-100;
     }
     .ant-table-tbody tr:nth-child(even) {
       background-color: $gray-100;
+    }
+    td {
+      max-width: 250px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    &.mneView {
+      td {
+        max-width: 200px;
+      }
     }
   }
 }

@@ -42,3 +42,10 @@ export const indicatorType = {
   QUANTITATIVE: 1,
   QUALITATIVE: 2,
 }
+
+export const statusUpdate = {
+  D: 'Draft',
+  P: 'Pending Approval',
+  R: 'Declined',
+  A: 'Approved'
+}

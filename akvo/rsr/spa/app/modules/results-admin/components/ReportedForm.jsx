@@ -81,7 +81,7 @@ const ReportedForm = ({
       {(init?.status === 'R') && <DeclinedStatus update={init} />}
       <Form aria-orientation="vertical">
         <div className={classNames('inputs-container', { qualitative: indicator.type === 2, 'no-prev': period?.updates?.filter(it => it.status === 'A').length === 0 })}>
-          <div className="inputs">
+          <div className={classNames('inputs', { mneView })}>
             {mneView && indicator.type === 1 && <h4>Add a value update</h4>}
             {(typeof errors === 'object' && errors?.length > 0) && <>{errors?.map((err, ex) => <Text type="danger" key={ex}>{err}</Text>)}</>}
             {((typeof errors === 'string') && errors?.match(new RegExp('multiple|updates|percentages', 'g'))?.length > 0) && (
@@ -141,7 +141,7 @@ const ReportedForm = ({
                         step={1}
                         disabled={disableInputs}
                       />
-                      <UpdatesHistory {...period} />
+                      <UpdatesHistory {...period} mneView={mneView} />
                       {(period.updates.length > 0) && (
                         <div className="updated-actual">
                           <div className="cap">{t('Updated actual value')}</div>

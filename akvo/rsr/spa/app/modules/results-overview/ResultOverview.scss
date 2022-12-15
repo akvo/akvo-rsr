@@ -208,6 +208,9 @@
     border: 1px solid #d0d5dd;
     flex: 2;
     border-radius: 5px;
+    &.mneView {
+      max-width: 600px;
+    }
     .dsg-group {
       padding: 3em 10px 0 0;
       border: 1px solid rgb(182, 182, 182);
@@ -460,6 +463,12 @@
     .ant-card-grid {
       padding: 8px !important;
     }
+  }
+  .collapse-history .ant-collapse-content {
+    padding: 0;
+  }
+  .collapse-history .ant-collapse-header, .collapse-history .ant-collapse-item {
+    border-bottom: 0 !important;
   }
 }
 .lineCircle {
