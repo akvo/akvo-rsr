@@ -4,14 +4,15 @@ import {
   Col,
   Collapse,
   Table,
+  Tooltip,
 } from 'antd'
 import classNames from 'classnames'
 
 import ExpandIcon from './ExpandIcon'
 import { toCapitalize } from '../utils/string'
-import { setNumberFormat } from '../utils/misc'
 
 const { Panel } = Collapse
+const { Column } = Table
 
 const DEFAULT_ACTIVE_KEYS = [
   'value',
@@ -41,24 +42,25 @@ const UpdatesHistory = ({
     ? Object.keys(columns)?.filter(getActiveKeys)
     : activeKeys
   const hColumns = _columns?.map(setColumns)
-  const vWidth = mneView ? 150 : 200
   const vColumns = ['key', ...tables?.map((_, tx) => `user${tx + 1}`)]
     ?.map(setColumns)
-    ?.map((c, cx) => cx === 0 ? ({ ...c, fixed: 'left', width: vWidth }) : ({ ...c, width: 100 }))
+    ?.map((c, cx) => cx === 0 ? ({ ...c, fixed: 'left', width: 200 }) : ({ ...c, width: 200 }))
   const vDataSource = _columns
     ?.map((field, fx) => {
       const users = tables
         ?.filter((values) => (Object.keys(values)?.length))
         ?.map((values, key) => ({
-          [`user${key + 1}`]: Number.isNaN(values[field])
-            ? values[field]
-            : setNumberFormat(values[field])
+          [`user${key + 1}`]: values[field]
         }))
       const _user = {}
       for (let x = 0; x < users.length; x += 1) {
         Object.assign(_user, users[x])
       }
-      return ({ ..._user, key: toCapitalize(field), rowKey: fx })
+      return ({
+        ..._user,
+        key: toCapitalize(field),
+        rowKey: fx
+      })
     })
     ?.sort((a, b) => b.rowKey - a.rowKey)
   const dataSource = (_columns?.length > MAX_COLUMN) ? vDataSource : tables
@@ -77,9 +79,22 @@ const UpdatesHistory = ({
             <Table
               className={classNames('table-history', { mneView })}
               dataSource={dataSource}
-              columns={dataColumn}
               {...tableProps}
-            />
+            >
+              {dataColumn?.map(col => {
+                if (col?.dataIndex === 'key') {
+                  return (
+                    <Column
+                      {...col}
+                      render={value => {
+                        return <Tooltip title={value} placement="top">{value}</Tooltip>
+                      }}
+                    />
+                  )
+                }
+                return <Column {...col} />
+              })}
+            </Table>
           </Panel>
         </Collapse>
       </Col>

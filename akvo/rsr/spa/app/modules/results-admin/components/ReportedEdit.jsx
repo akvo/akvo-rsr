@@ -37,6 +37,7 @@ const ReportedEdit = ({
   setErrors,
   setActiveKey,
   handleOnUpdate,
+  jwtView = false,
   disableInputs = false,
   mneView = false,
   canDelete = true
@@ -190,6 +191,7 @@ const ReportedEdit = ({
               return (
                 <ReportedForm
                   {...{
+                    jwtView,
                     form,
                     errors,
                     mneView,

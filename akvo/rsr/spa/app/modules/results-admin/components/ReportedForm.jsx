@@ -48,13 +48,16 @@ const ReportedForm = ({
   mneView,
   fileSet,
   deleteFile,
+  jwtView = false,
 }) => {
   const [cumulativeUpdate, setCumulativeUpdate] = useState(null)
   const { t } = useTranslation()
   useEffect(() => {
-    api
-      .get(`/project/${project?.id}/indicator/${indicator?.id}/previous_cumulative_update?format=json`)
-      .then(({ data }) => setCumulativeUpdate(data))
+    if (!jwtView) {
+      api
+        .get(`/project/${project?.id}/indicator/${indicator?.id}/previous_cumulative_update?format=json`)
+        .then(({ data }) => setCumulativeUpdate(data))
+    }
   }, [])
   const lastUpdate = period
     ?.updates

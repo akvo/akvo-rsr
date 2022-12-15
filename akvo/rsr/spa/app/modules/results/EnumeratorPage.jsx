@@ -418,6 +418,7 @@ const EnumeratorPage = ({
                         canDelete,
                         disableInputs,
                         errors,
+                        jwtView,
                         setErrors,
                         setActiveKey,
                         handleOnUpdate,

@@ -93,16 +93,11 @@
     .ant-table-tbody tr:nth-child(even) {
       background-color: $gray-100;
     }
-    td {
-      max-width: 250px;
+    td:first-child {
+      max-width: 200px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-    }
-    &.mneView {
-      td {
-        max-width: 200px;
-      }
     }
   }
 }
