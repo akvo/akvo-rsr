@@ -131,10 +131,7 @@ const Control = (props) => {
               optional={requiredValidationError ? false : typeof optional === 'function' ? optional(name) : optional}
               tooltip={(withoutTooltip || (dict && !dict.tooltip)) ? null : dict ? dict.tooltip : t(`${section}::${name}::tooltip`)}
             >
-              {dict
-                ? <div style={{ float: 'left' }} dangerouslySetInnerHTML={{ __html: `${wordWrap(dict.label, 40)} :` }} />
-                : `${t(`${section}::${name}::label`)} :`
-              }
+              {dict ? dict.label : `${t(`${section}::${name}::label`)} :`}
             </InputLabel>}
       >
         {CONTROLS[control]({..._props, disabled})}

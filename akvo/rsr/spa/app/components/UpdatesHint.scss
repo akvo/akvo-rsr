@@ -1,0 +1,58 @@
+@import "../styles/vars.scss";
+
+#rsr-updates-hint {
+  font-family: "Assistant";
+  width: 100%;
+  .ant-typography {
+    color: $black;
+  }
+  .ant-divider {
+    background: $gray-300;
+  }
+  .ant-collapse-borderless .ant-collapse-item .header-container {
+    display: flex;
+    & > div,
+    span {
+      margin-right: 8px;
+    }
+    .ant-typography.title {
+      font-weight: 400;
+    }
+    .title-value {
+      display: block;
+      font-weight: 700;
+    }
+  }
+  .ant-collapse-borderless .ant-collapse-item .ant-collapse-content {
+    border: none;
+    .update-value {
+      font-weight: 400;
+      font-size: 32px;
+      padding: 8px;
+      border: 1px solid $gray-300;
+      border-radius: 4px;
+    }
+  }
+  .ant-collapse-borderless .ant-collapse-item .ant-collapse-item-active .header-container .title-value {
+    display: none;
+  }
+  .ant-collapse-borderless .ant-collapse-item .ant-collapse-header {
+    position: relative;
+    .expander {
+      position: absolute;
+      top: 0;
+      right: 0;
+      margin: 8px;
+      padding: 4px 8px;
+      border-radius: 100%;
+      &:hover {
+        background-color: $gray-25;
+      }
+    }
+  }
+}
+
+#rsr-updates-hint,
+#rsr-updates-hint .ant-collapse-borderless {
+  background-color: $gray-100;
+}
