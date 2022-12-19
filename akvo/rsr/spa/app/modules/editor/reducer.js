@@ -300,6 +300,27 @@ export default (state = initialState, action) => {
         }
       }
       return state
-    default: return state
+    case actionTypes.ADD_CONTRIB_COUNT:
+      const { id: indicatorID, count } = action.payload
+      return {
+        ...state,
+        section5: {
+          ...state?.section5,
+          fields: {
+            ...state?.section5?.fields,
+            results: state?.section5?.fields?.results?.map((r) => ({
+              ...r,
+              indicators: r?.indicators?.map((i) => {
+                if (i?.id === indicatorID) {
+                  return ({ ...i, contributionCount: count })
+                }
+                return i
+              })
+            }))
+          }
+        }
+      }
+    default:
+      return state
   }
 }
