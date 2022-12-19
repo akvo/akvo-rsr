@@ -19,7 +19,7 @@ from rest_framework.decorators import action, api_view, authentication_classes, 
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.status import HTTP_201_CREATED, HTTP_403_FORBIDDEN
+from rest_framework.status import HTTP_201_CREATED
 from timeout_decorator import timeout
 
 from akvo.codelists.store.default_codelists import SECTOR, SECTOR_CATEGORY, SECTOR_VOCABULARY
@@ -31,8 +31,6 @@ from akvo.rest.serializers import (
     ProjectDirectoryDynamicFieldsSerializer,
     ProjectExtraDeepSerializer,
     ProjectExtraSerializer,
-    ProjectHierarchyRootSerializer,
-    ProjectHierarchyTreeSerializer,
     ProjectIatiExportSerializer,
     ProjectMetadataSerializer,
     ProjectSerializer,
@@ -43,7 +41,7 @@ from akvo.rsr.models import ExternalProject, IndicatorPeriodData, OrganisationCu
 from akvo.rsr.usecases.iati_validation import schedule_iati_activity_validation
 from akvo.rsr.views.my_rsr import user_viewable_projects
 from akvo.utils import codelist_choices, get_thumbnail, single_period_dates
-from ..viewsets import PublicProjectViewSet, ReadOnlyPublicProjectViewSet
+from ..viewsets import PublicProjectViewSet
 
 
 class ProjectViewSet(PublicProjectViewSet):
@@ -102,6 +100,28 @@ class ProjectViewSet(PublicProjectViewSet):
                 )
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @action(methods=("GET",), detail=True)
+    def children(self, request, **kwargs):
+        project = self.get_object()
+
+        queryset = self._filter_queryset(project.children().select_related(
+            "primary_organisation",
+        ).prefetch_related(
+            "locations",
+            "recipient_countries",
+            "sectors",
+        ))
+        page = self.paginate_queryset(queryset)
+
+        serializer_context = self.get_serializer_context()
+
+        if page is not None:
+            serializer = ProjectMetadataSerializer(page, many=True, context=serializer_context)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = ProjectMetadataSerializer(queryset, many=True, context=serializer_context).data
+        return Response(serializer.data)
+
     @action(
         methods=("DELETE",),
         detail=True,
@@ -153,30 +173,6 @@ class MyProjectsViewSet(PublicProjectViewSet):
                 | Q(recipient_countries__country__iexact=country)
             )
         return queryset
-
-
-class ProjectHierarchyViewSet(ReadOnlyPublicProjectViewSet):
-    queryset = Project.objects.none()
-    serializer_class = ProjectHierarchyRootSerializer
-    project_relation = ''
-
-    def get_queryset(self):
-        if self.request.user.is_anonymous:
-            return Project.objects.none()
-        queryset = self.request.user.my_projects()\
-                                    .published()\
-                                    .filter(projecthierarchy__isnull=False)
-        return queryset
-
-    def retrieve(self, request, *args, **kwargs):
-        project = get_object_or_404(Project, pk=self.kwargs['pk'])
-        if not self.request.user.has_perm('rsr.view_project', project):
-            return Response('Request not allowed', status=HTTP_403_FORBIDDEN)
-
-        root = project.get_root()
-        serializer = ProjectHierarchyTreeSerializer(root, context=self.get_serializer_context())
-
-        return Response(serializer.data)
 
 
 class ProjectIatiExportViewSet(PublicProjectViewSet):
