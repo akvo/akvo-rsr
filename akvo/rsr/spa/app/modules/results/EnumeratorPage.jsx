@@ -358,7 +358,7 @@ const EnumeratorPage = ({
                     {(item?.indicator?.description?.trim()?.length > 0) && (
                       <details>
                         <summary>{t('Description')}</summary>
-                        <p>{mdOutput(mdParse(item.indicator.description))}</p>
+                        {mdOutput(mdParse(item.indicator.description))}
                       </details>
                     )}
                   </Col>
@@ -418,6 +418,7 @@ const EnumeratorPage = ({
                         canDelete,
                         disableInputs,
                         errors,
+                        jwtView,
                         setErrors,
                         setActiveKey,
                         handleOnUpdate,
