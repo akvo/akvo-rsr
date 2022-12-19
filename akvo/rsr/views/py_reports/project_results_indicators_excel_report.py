@@ -8,10 +8,10 @@ see < http://www.gnu.org/licenses/agpl.html >.
 """
 
 from akvo.rsr.dataclasses import (
-    ResultData, IndicatorData, PeriodData, PeriodUpdateData, DisaggregationData, DisaggregationTargetData, group_results_by_types
+    ResultData, IndicatorData, PeriodData, PeriodUpdateData, DisaggregationData, DisaggregationTargetData, group_results_by_types, has_cumulative_indicator
 )
 from akvo.rsr.decorators import with_download_indicator
-from akvo.rsr.models import Project, IndicatorPeriod, DisaggregationTarget
+from akvo.rsr.models import Project, IndicatorPeriod, DisaggregationTarget, IndicatorPeriodDisaggregation
 from akvo.rsr.project_overview import get_disaggregations
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
@@ -45,7 +45,7 @@ def fetch_periods(project, start_date=None, end_date=None):
         .values(
             'id', 'period_start', 'period_end', 'target_value', 'target_comment', 'actual_value', 'actual_comment',
             'indicator__id', 'indicator__title', 'indicator__description', 'indicator__type', 'indicator__measure',
-            'indicator__baseline_year', 'indicator__baseline_value', 'indicator__baseline_comment',
+            'indicator__cumulative', 'indicator__baseline_year', 'indicator__baseline_value', 'indicator__baseline_comment',
             'indicator__target_value', 'indicator__target_comment', 'indicator__order',
             'indicator__result__id', 'indicator__result__type', 'indicator__result__title',
             'indicator__result__description', 'indicator__result__aggregation_status', 'indicator__result__order',
@@ -65,6 +65,18 @@ def fetch_disaggregation_targets(project, start_date=None, end_date=None):
             Q(period__period_end__isnull=True) | Q(period__period_end__lte=end_date)
         )
     return queryset.values('id', 'value', 'period__id', 'dimension_value__value', 'dimension_value__name__name')
+
+
+def fetch_period_disaggregations(project, start_date=None, end_date=None):
+    queryset = IndicatorPeriodDisaggregation.objects\
+        .select_related('period', 'dimension_value', 'dimension_value__name')\
+        .filter(period__indicator__result__project=project)
+    if start_date and end_date:
+        queryset = queryset.filter(
+            Q(period__period_start__isnull=True) | Q(period__period_start__gte=start_date),
+            Q(period__period_end__isnull=True) | Q(period__period_end__lte=end_date)
+        )
+    return queryset.values('id', 'value', 'numerator', 'denominator', 'period__id', 'dimension_value__value', 'dimension_value__name__name')
 
 
 def get_results_framework(project, start_date=None, end_date=None):
@@ -119,7 +131,17 @@ def get_results_framework(project, start_date=None, end_date=None):
         disaggregation_target = DisaggregationTargetData.make(r)
         period = lookup['periods'][period_id]
         period.disaggregation_targets.append(disaggregation_target)
-    return [r for r in lookup['results'].values()]
+    results = [r for r in lookup['results'].values()]
+    if has_cumulative_indicator(results):
+        raw_period_disaggregations = fetch_period_disaggregations(project, start_date, end_date)
+        for r in raw_period_disaggregations:
+            period_id = r['period__id']
+            if period_id not in lookup['periods']:
+                continue
+            period_disaggregation = DisaggregationData.make(r)
+            period = lookup['periods'][period_id]
+            period.period_disaggregations.append(period_disaggregation)
+    return results
 
 
 def generate_workbook(project, start_date=None, end_date=None):

@@ -21,7 +21,7 @@ from pyexcelerate.Border import Border
 from . import utils
 
 
-def build_view_object(organisation, result_id):
+def build_view_object(organisation, result_id=None):
     project_ids = organisation.all_projects()\
         .annotate(results_count=Count('results'))\
         .filter(results_count__gt=0)\

@@ -1,15 +1,17 @@
 /* globals FileReader, window */
 import { diff } from 'deep-object-diff'
+import sumBy from 'lodash/sumBy'
 
 export const datePickerConfig = {
   format: 'DD/MM/YYYY',
   placeholder: 'DD/MM/YYYY'
 }
-export const nicenum = num => String(num).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-export const camelToKebab = string => string.replace(/[\w]([A-Z])/g, m => `${m[0]}-${m[1]}`).toLowerCase()
+export const camelReplace = (string, replaceWith) => string.replace(/[\w]([A-Z])/g, m => `${m[0]}${replaceWith}${m[1]}`).toLowerCase()
+export const nicenum = num => num ? String(num).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : 0
+export const camelToKebab = string => camelReplace(string, '-')
 export const kebabToCamel = (s) => s.replace(/(-\w)/g, m => m[1].toUpperCase())
 export const snakeToCamel = (s) => s.replace(/(_\w)/g, m => m[1].toUpperCase())
-export const camelToSnake = string => string.replace(/[\w]([A-Z])/g, m => `${m[0]}_${m[1]}`).toLowerCase()
+export const camelToSnake = string => camelReplace(string, '_')
 
 export const havePropsChanged = (props, nextProps, prevProps) => {
   let hasChanged = false
@@ -181,12 +183,30 @@ export const setNumberFormat = (amount, separator = ',') => {
  */
 export const wordWrap = (s, w) => {
   return s
-  ? s.replace(
-    new RegExp(`(?![^\\n]{1,${w}}$)([^\\n]{1,${w}})\\s`, 'g'), '$1<br/>'
+    ? s.replace(
+      new RegExp(`(?![^\\n]{1,${w}}$)([^\\n]{1,${w}})\\s`, 'g'), '$1<br/>'
     )
-  : ''
+    : ''
 }
 
 export const splitPeriod = value => value?.split('-')?.map((v) => v.trim())
 
+export const getSumValues = (values, field) => {
+  const isNull = values?.filter((v) => v[field] === null)?.length === values?.length
+  return isNull ? null : sumBy(values, field)
+}
+
+export const getMaxDisaggregation = (values, field) => {
+  const allValues = values
+    ?.filter((d) => d[field] !== null)
+    ?.map((d) => d[field])
+  return allValues?.length ? Math.max(...allValues) : null
+}
+
 export const getProjectUuids = (path) => path?.split('.')?.map((value) => value?.replace(/_/g, '-'))
+
+export const getPercentage = (numerator, denominator) => Math.round((numerator / denominator) * 100 * 10) / 10
+
+export const getUserFullName = user => (user?.firstName?.length || user?.lastName?.length)
+  ? `${user.firstName} ${user.lastName}`
+  : user.email

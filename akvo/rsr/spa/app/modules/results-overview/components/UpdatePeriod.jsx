@@ -265,31 +265,35 @@ const UpdatePeriod = ({
               </Button>
             </Col>
           </Row>
-          <FinalForm
-            ref={(ref) => { formRef.current = ref }}
-            onSubmit={handleSubmit}
-            subscription={{ values: true }}
-            initialValues={editing}
-            render={({ form }) => (
-              <ReportedForm
-                {...{
-                  form,
-                  errors,
-                  project,
-                  period,
-                  indicator,
-                  editPeriod,
-                  setFileSet,
-                  disaggregations,
-                  mneView: true,
-                  disableInputs: (submitting),
-                  fileSet: files,
-                  init: editing,
-                  deleteFile
-                }}
+          <Row id="rsr-form-container">
+            <Col>
+              <FinalForm
+                ref={(ref) => { formRef.current = ref }}
+                onSubmit={handleSubmit}
+                subscription={{ values: true }}
+                initialValues={editing}
+                render={({ form }) => (
+                  <ReportedForm
+                    {...{
+                      form,
+                      errors,
+                      project,
+                      period,
+                      indicator,
+                      editPeriod,
+                      setFileSet,
+                      disaggregations,
+                      mneView: true,
+                      disableInputs: (submitting),
+                      fileSet: files,
+                      init: editing,
+                      deleteFile
+                    }}
+                  />
+                )}
               />
-            )}
-          />
+            </Col>
+          </Row>
           <div style={{ padding: 15 }}>
             <Button onClick={() => handleOnDelete(editing)} disabled={(submitting)}>
               <Text type="danger" strong>{t('Delete')}</Text>
