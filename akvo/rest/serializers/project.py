@@ -355,6 +355,10 @@ class ProjectMetadataSerializer(BaseRSRSerializer):
     roles = ProjectRoleSerializer(source='projectrole_set', many=True)
     is_program = serializers.ReadOnlyField(source='is_hierarchy_root')
     primary_organisation = OrganisationBasicSerializer()
+    children_count = serializers.SerializerMethodField()
+
+    def get_children_count(self, obj):
+        return obj.children().count()
 
     def get_locations(self, obj):
         countries = {location.country for location in obj.locations.all() if location.country}
@@ -394,126 +398,8 @@ class ProjectMetadataSerializer(BaseRSRSerializer):
         fields = ('id', 'title', 'subtitle', 'date_end_actual', 'date_end_planned',
                   'date_start_actual', 'date_start_planned', 'locations', 'status',
                   'is_public', 'sectors', 'parent', 'editable', 'recipient_countries',
-                  'restricted', 'roles', 'use_project_roles', 'is_program', 'primary_organisation')
-
-
-BASE_HIERARCHY_SERIALIZER_FIELDS = (
-    'id', 'title', 'subtitle', 'date_end_actual', 'date_end_planned',
-    'date_start_actual', 'date_start_planned', 'locations', 'status',
-    'is_public', 'sectors', 'parent', 'editable',
-)
-
-
-class ProjectHierarchyNodeSerializer(ProjectMetadataSerializer):
-    is_program = serializers.SerializerMethodField()
-
-    def get_is_program(self, obj):
-        return obj.is_hierarchy_root()
-
-    def get_parent(self, obj: Project):
-        p = obj.parent()
-        return {'id': p.id, 'title': p.title} if p is not None else None
-
-    class Meta:
-        model = Project
-        fields = BASE_HIERARCHY_SERIALIZER_FIELDS + ('recipient_countries', 'is_program')
-
-
-class ProjectHierarchyRootSerializer(ProjectHierarchyNodeSerializer):
-
-    children_count = serializers.SerializerMethodField()
-
-    def get_children_count(self, obj):
-        return obj.children().count()
-
-    class Meta:
-        model = Project
-        fields = BASE_HIERARCHY_SERIALIZER_FIELDS + ('children_count', )
-
-
-class ProjectHierarchySimpleNodeSerializer(BaseRSRSerializer):
-    """
-    A copy of ProjectMetadataSerializer without the sectors and parent fields
-
-    Very dirty, I know, but the entire project_hierarchy endpoint and frontend needs a rework as it's too wasteful
-    """
-
-    class Meta:
-        model = Project
-        fields = (
-            "id",
-            "title",
-            "subtitle",
-            "date_end_actual",
-            "date_end_planned",
-            "date_start_actual",
-            "date_start_planned",
-            "status",
-            "is_public",
-            "editable",
-            "restricted",
-            "locations",
-            "recipient_countries",
-            "roles",
-            "use_project_roles",
-            "is_program",
-            "uuid",
-            "parent_uuid"
-        )
-
-    locations = serializers.SerializerMethodField()
-    recipient_countries = RecipientCountryRawSerializer(many=True, required=False)
-    status = serializers.ReadOnlyField(source='publishingstatus.status')
-    editable = serializers.SerializerMethodField()
-    restricted = serializers.SerializerMethodField()
-    roles = ProjectRoleSerializer(source="projectrole_set", many=True)
-    is_program = serializers.ReadOnlyField(source="is_hierarchy_root")
-    uuid = serializers.ReadOnlyField()
-    parent_uuid = serializers.ReadOnlyField(source="get_parent_uuid")
-
-    def get_locations(self, obj: Project):
-        countries = {location.country for location in obj.locations.filter(country__isnull=False)}
-        return [
-            {'country': c.name, 'iso_code': c.iso_code}
-            for c
-            in countries
-        ]
-
-    def get_editable(self, obj):
-        """Method used by the editable SerializerMethodField"""
-        user = self.context['request'].user
-        if not user.is_authenticated:
-            return False
-        return user.can_edit_project(obj, use_cached_attr=True)
-
-    def get_restricted(self, project):
-        """True if the project is restricted for the user"""
-        user = self.context['request'].user
-        if not project.use_project_roles:
-            return False
-        return not user.can_view_project(project)
-
-
-class ProjectHierarchyTreeSerializer(ProjectHierarchyNodeSerializer):
-    children = serializers.SerializerMethodField()
-    is_master_program = serializers.SerializerMethodField()
-
-    def get_is_master_program(self, obj: Project):
-        return obj.is_master_program()
-
-    def get_children(self, obj: Project):
-        descendants = obj.descendants().prefetch_related(
-            'locations', 'locations__country', 'recipient_countries',
-        ).select_related(
-            "publishingstatus", "projecthierarchy",
-        )
-        serializer = ProjectHierarchySimpleNodeSerializer(descendants, many=True, context=self.context)
-        descendants = serializer.data
-        return make_descendants_tree(descendants, obj)
-
-    class Meta:
-        model = Project
-        fields = BASE_HIERARCHY_SERIALIZER_FIELDS + ('children', 'is_master_program')
+                  'restricted', 'roles', 'use_project_roles', 'is_program', 'primary_organisation',
+                  'children_count')
 
 
 def make_descendants_tree(descendants: List[dict], root: Project):
