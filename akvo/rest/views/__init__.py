@@ -26,7 +26,7 @@ from .goal import GoalViewSet
 from .humanitarian_scope import HumanitarianScopeViewSet
 from .iati_check import IatiCheckViewSet
 from .iati_export import IatiActivityExportViewSet, IatiExportViewSet
-from .indicator import IndicatorViewSet, IndicatorFrameworkViewSet
+from .indicator import IndicatorViewSet, IndicatorFrameworkViewSet, indicator_contribution_count
 from .indicator_custom_field import IndicatorCustomFieldViewSet, IndicatorCustomValueViewSet
 from .indicator_dimension_name import IndicatorDimensionNameViewSet
 from .indicator_dimension_value import IndicatorDimensionValueViewSet
@@ -36,7 +36,8 @@ from .indicator_period import (IndicatorPeriodViewSet, IndicatorPeriodFrameworkV
                                set_periods_locked, bulk_add_periods, bulk_remove_periods)
 from .indicator_period_data import (IndicatorPeriodDataViewSet, IndicatorPeriodDataFrameworkViewSet,
                                     IndicatorPeriodDataCommentViewSet, indicator_upload_file,
-                                    period_update_files, period_update_photos, set_updates_status)
+                                    period_update_files, period_update_photos, set_updates_status,
+                                    indicator_previous_cumulative_update)
 from .indicator_period_disaggregation import IndicatorPeriodDisaggregationViewSet
 from .disaggregation import DisaggregationViewSet
 from .disaggregation_target import DisaggregationTargetViewSet

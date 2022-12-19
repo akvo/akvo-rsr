@@ -1,16 +1,17 @@
 /* eslint-disable no-shadow */
 /* globals window, FormData, File */
 import React, { useState, useEffect } from 'react'
-import { Row, Col, Button, Typography, Icon } from 'antd'
+import { Row, Col, Button, Typography } from 'antd'
 import { Form as FinalForm } from 'react-final-form'
 import { useTranslation } from 'react-i18next'
-import SimpleMarkdown from 'simple-markdown'
 import axios from 'axios'
 import humps from 'humps'
 
 import api, { config } from '../../../utils/api'
 import { dateTransform } from '../../../utils/misc'
+import { indicatorType, indicatorTypes } from '../../../utils/constants'
 
+import './ReportedEdit.scss'
 import ReportedForm from './ReportedForm'
 
 const { Text } = Typography
@@ -36,6 +37,7 @@ const ReportedEdit = ({
   setErrors,
   setActiveKey,
   handleOnUpdate,
+  jwtView = false,
   disableInputs = false,
   mneView = false,
   canDelete = true
@@ -43,8 +45,6 @@ const ReportedEdit = ({
   const { t } = useTranslation()
   const [submitting, setSubmitting] = useState(false)
   const [fileSet, setFileSet] = useState([])
-  const mdParse = SimpleMarkdown.defaultBlockParse
-  const mdOutput = SimpleMarkdown.defaultOutput
   const submitStatus = editing?.status === 'P' ? 'P' : mneView ? 'A' : 'P'
 
   const disaggregations = []
@@ -149,6 +149,7 @@ const ReportedEdit = ({
       setErrors([])
     }
   }, [editing, activeKey, fileSet])
+  const type = indicatorTypes.find(it => it.value === editing?.indicator?.type)
   return (
     <>
       {!disableInputs && (
@@ -169,15 +170,18 @@ const ReportedEdit = ({
       )}
       <Row className="indicator-type">
         <Col span={24}>
-          {
-            editing?.indicator?.type === 2
-              ? <b>{t('Qualitative')}</b>
-              : editing?.indicator?.ascending ? <><Icon type="rise" /> <b>{t('Ascending')}</b></> : <><Icon type="fall" /> <b>{t('Descending')}</b></>
-          }
+          <Text className="capitalized" strong>
+            {`${type?.label} : `}
+            {(editing?.indicator?.type === indicatorType.QUANTITATIVE) && (
+              <>
+                {editing.indicator.ascending ? t('Ascending') : t('Descending')}
+              </>
+            )}
+          </Text>
         </Col>
       </Row>
-      <Row>
-        <Col>
+      <Row id="rsr-form-container">
+        <Col xl={20} lg={20} md={24} sm={24} xs={24} offset={2}>
           <FinalForm
             ref={(ref) => { formRef.current = ref }}
             onSubmit={handleSubmit}
@@ -187,6 +191,7 @@ const ReportedEdit = ({
               return (
                 <ReportedForm
                   {...{
+                    jwtView,
                     form,
                     errors,
                     mneView,

@@ -32,3 +32,20 @@ export const indicatorTypes = [
   { label: 'quantitative', value: 1},
   { label: 'qualitative', value: 2}
 ]
+
+export const measureType = {
+  UNIT: '1',
+  PERCENTAGE: '2'
+}
+
+export const indicatorType = {
+  QUANTITATIVE: 1,
+  QUALITATIVE: 2,
+}
+
+export const statusUpdate = {
+  D: 'Draft',
+  P: 'Pending Approval',
+  R: 'Declined',
+  A: 'Approved'
+}

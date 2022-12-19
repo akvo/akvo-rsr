@@ -1,16 +1,11 @@
 import React from 'react'
 import moment from 'moment'
 import { Col, Row, Table, Typography } from 'antd'
+import { statusUpdate } from '../utils/constants'
 
 const { Text } = Typography
 
 const DetailsValue = ({ data, textReport, disaggregations, scores }) => {
-  const status = {
-    D: 'Draft',
-    P: 'Pending Approval',
-    R: 'Declined',
-    A: 'Approved'
-  }
   const span = textReport ? [3, 21] : [8, 16]
   return (
     <Row gutter={[8, 8]}>
@@ -46,7 +41,7 @@ const DetailsValue = ({ data, textReport, disaggregations, scores }) => {
         <>
           <Col span={span[0]}><Text type="secondary">Status</Text></Col>
           <Col span={span[1]}>
-            <Text strong>{status[data.status] || data.status}</Text>
+            <Text strong>{statusUpdate[data.status] || data.status}</Text>
           </Col>
         </>
       ) : null}
