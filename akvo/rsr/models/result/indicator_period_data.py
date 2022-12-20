@@ -21,7 +21,6 @@ from .utils import (calculate_percentage, file_path, image_path,
 from akvo.rsr.fields import ValidXMLCharField, ValidXMLTextField
 from akvo.rsr.mixins import TimestampsMixin, IndicatorUpdateMixin
 from akvo.utils import rsr_image_path
-from akvo.rsr.usecases.jobs.aggregation import schedule_aggregation_job
 
 
 class IndicatorPeriodData(TimestampsMixin, IndicatorUpdateMixin, models.Model):
@@ -101,6 +100,7 @@ class IndicatorPeriodData(TimestampsMixin, IndicatorUpdateMixin, models.Model):
         # In case the status is approved, recalculate the period
         if recalculate and self.status == self.STATUS_APPROVED_CODE:
             # FIXME: Should we call this even when status is not approved?
+            from akvo.rsr.usecases.jobs.aggregation import schedule_aggregation_job
             schedule_aggregation_job(self.period)
             self.period.update_actual_comment()
         # Update score even when the update is not approved, yet. It handles the
@@ -115,6 +115,7 @@ class IndicatorPeriodData(TimestampsMixin, IndicatorUpdateMixin, models.Model):
 
         # In case the status was approved, recalculate the period
         if old_status == self.STATUS_APPROVED_CODE:
+            from akvo.rsr.usecases.jobs.aggregation import schedule_aggregation_job
             schedule_aggregation_job(period)
             self.period.update_actual_comment()
             self.period.update_score()
