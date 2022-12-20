@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('rsr', '0223_remove_indicatorperioddata_period_actual_value'),
+        ('rsr', '0225_remove_indicatorperioddata_period_actual_value'),
     ]
 
     operations = [
