@@ -8,6 +8,7 @@ import { groupBy } from 'lodash'
 import { camelReplace, nicenum } from '../utils/misc'
 import statusPending from '../images/status-pending.svg'
 import statusApproved from '../images/status-approved.svg'
+import { AllSubmissionsModal } from './AllSubmissionsModal'
 import { measureType } from '../utils/constants'
 
 export const PrevUpdate = ({

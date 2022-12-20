@@ -11,6 +11,7 @@ import Map, { projectsToFeatureData } from './map'
 import Search from './search'
 import FilterBar from './filter-bar'
 import api from '../../utils/api'
+import { isPartnerSites } from '../../utils/misc'
 
 const isLocal = window.location.href.indexOf('localhost') !== -1 || window.location.href.indexOf('localakvoapp') !== -1
 const urlPrefix = isLocal ? 'http://rsr.akvo.org' : ''
@@ -83,7 +84,10 @@ const View = () => {
         setFilters(defaults)
       }
     }
-  }, [apiData])
+    if ((apiError && apiError.response && apiError.response.status === 403) && isPartnerSites()) {
+      window.location.href = '/en/lockpass/?next='
+    }
+  }, [apiData, apiError])
   useEffect(() => {
     document.getElementById('root').classList.add(window.location.host.split('.')[0])
   }, [])

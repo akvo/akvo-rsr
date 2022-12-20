@@ -78,6 +78,7 @@ export const setProjectStatus = (publishingStatus, hasHierarchy, needsReportingT
   dispatch({ type: actionTypes.SAVE_FIELDS, fields: { publishingStatus, hasHierarchy, needsReportingTimeoutDays, pendingUpdateCount, canEditProject }, sectionIndex: 1, noSync: true })
 }
 export const setUser = (user) => ({ type: 'SET_USER', user })
+export const setFirstSectionID = projectId => ({ type: actionTypes.SET_FIRST_SECTION_ID, projectId })
 export const setExternalProjects = (payload) => (dispatch) => {
   dispatch({ type: actionTypes.SET_EXTERNAL_PROJECT, payload })
 }

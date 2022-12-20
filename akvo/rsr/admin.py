@@ -854,6 +854,41 @@ class IndicatorPeriodDataAdmin(admin.ModelAdmin):
 admin.site.register(apps.get_model('rsr', 'IndicatorPeriodData'), IndicatorPeriodDataAdmin)
 
 
+class IndicatorPeriodAggregationJobAdmin(admin.ModelAdmin):
+    model = apps.get_model('rsr', 'IndicatorPeriodAggregationJob')
+    list_display = ('indicator_title', 'status', 'project_title', 'root_project_title', 'period', 'updated_at')
+    list_filter = ('status', )
+    search_fields = ('period__indicator__result__period__title', 'period__indicator__title')
+    readonly_fields = ('updated_at', 'period', 'root_period', 'project_title', 'root_project_title', 'indicator_title')
+
+    @admin.display(description='Project Title')
+    def project_title(self, obj):
+        return self.get_project(obj.period).title
+
+    @admin.display(description='Root project Title')
+    def root_project_title(self, obj):
+        return self.get_project(obj.root_period).title
+
+    def get_project(self, period):
+        return period.indicator.result.project
+
+    @admin.display(description='Indicator Title')
+    def indicator_title(self, obj):
+        return obj.period.indicator.title
+
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request).select_related("period__indicator")
+        if request.user.is_admin or request.user.is_superuser:
+            return queryset
+
+        employments = request.user.approved_employments(['Admins', 'M&E Managers'])
+        projects = employments.organisations().all_projects()
+        return self.model.objects.filter(period__indicator__result__project__in=projects)
+
+
+admin.site.register(apps.get_model('rsr', 'IndicatorPeriodAggregationJob'), IndicatorPeriodAggregationJobAdmin)
+
+
 class ReportAdminForm(forms.ModelForm):
     class Meta:
         model = apps.get_model('rsr', 'Report')
