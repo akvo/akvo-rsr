@@ -1,4 +1,5 @@
 /* eslint-disable no-useless-escape */
+/* global window */
 import moment from 'moment'
 import chunk from 'lodash/chunk'
 import orderBy from 'lodash/orderBy'
@@ -99,3 +100,5 @@ export const getLogo = logo => logo
 export const getFirstPhoto = photos => (photos && photos.length)
   ? photos.slice(0, 1).pop()
   : null
+
+export const isPartnerSites = () => (window.location.hostname.endsWith('localakvoapp.org') || window.location.hostname.endsWith('akvoapp.org'))

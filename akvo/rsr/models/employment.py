@@ -40,6 +40,11 @@ class Employment(models.Model):
     is_approved = models.BooleanField(_('approved'), default=False,
                                       help_text=_('Designates whether this employment is approved '
                                                   'by an administrator.'))
+    receives_indicator_aggregation_emails = models.BooleanField(
+        _('Receive indicator emails'),
+        default=False,
+        help_text=_('Some events of indicator aggregations in projects of this org will trigger emails'),
+    )
     country = ValidXMLCharField(
         _('country'), blank=True, max_length=2, choices=codelist_choices(COUNTRY, show_code=False)
     )

@@ -17,6 +17,7 @@ import {
 } from '../../../components'
 import api from '../../../utils/api'
 import FinalField from '../../../utils/final-field'
+import { getMaxDisaggregation, getSumValues, nicenum } from '../../../utils/misc'
 import RTE from '../../../utils/rte'
 import ScoringField from '../../../components/ScoringField'
 import LineChart from '../../../components/LineChart'

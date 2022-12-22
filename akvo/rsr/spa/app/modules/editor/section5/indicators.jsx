@@ -270,9 +270,11 @@ const Indicators = connect(null, { addSetItem, removeSetItem, moveSetItem })(
                         />
                       </Item>
                     </Condition>
-                    <Condition when={`${name}.type`} isNot={1}>
-                      {allowIndicatorLabels && <ThematicLabels fieldName={name} indicatorLabelOptions={indicatorLabelOptions} />}
-                    </Condition>
+                    {allowIndicatorLabels && (
+                      <Condition when={`${name}.type`} isNot={1}>
+                        <ThematicLabels fieldName={name} indicatorLabelOptions={indicatorLabelOptions} />
+                      </Condition>
+                    )}
                     <Divider />
                     <div id={`${fieldNameToId(name)}-disaggregations`} />
                     {!isImported(index) &&
