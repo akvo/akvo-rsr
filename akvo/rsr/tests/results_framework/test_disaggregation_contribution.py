@@ -11,6 +11,7 @@ import datetime
 from akvo.rsr.models import (
     Result, Indicator, IndicatorPeriod, IndicatorDimensionName,
     IndicatorDimensionValue)
+from akvo.rsr.usecases.period_update_aggregation import aggregate
 from akvo.rsr.tests.base import BaseTestCase
 from . import util
 
@@ -41,9 +42,11 @@ class DisaggregationContributionTestCase(BaseTestCase):
         util.create_period_update(
             period=self.period, user=self.user, value=1,
             disaggregations=[{'type': type, 'value': 20}])
+        aggregate(self.period)
         util.create_period_update(
             period=self.period, user=self.user, value=1,
             disaggregations=[{'type': type, 'value': 15}])
+        aggregate(self.period)
 
         # Then
         self.assertEqual(
@@ -64,9 +67,11 @@ class DisaggregationContributionTestCase(BaseTestCase):
         util.create_period_update(
             period=child1_period, user=self.user, value=1,
             disaggregations=[{'type': child1_type, 'value': 20}])
+        aggregate(child1_period)
         util.create_period_update(
             period=child2_period, user=self.user, value=1,
             disaggregations=[{'type': child2_type, 'value': 15}])
+        aggregate(child2_period)
 
         # Then
         self.assertEqual(
@@ -99,9 +104,11 @@ class DisaggregationContributionTestCase(BaseTestCase):
         util.create_period_update(
             period=grandchild1_period, user=self.user, value=1,
             disaggregations=[{'type': grandchild1_type, 'value': 20}])
+        aggregate(grandchild1_period)
         util.create_period_update(
             period=grandchild2_period, user=self.user, value=1,
             disaggregations=[{'type': grandchild2_type, 'value': 15}])
+        aggregate(grandchild2_period)
 
         # Then
         self.assertEqual(
@@ -133,12 +140,15 @@ class DisaggregationContributionTestCase(BaseTestCase):
         util.create_period_update(
             period=grandchild1_period, user=self.user, value=1,
             disaggregations=[{'type': grandchild1_type, 'value': 20}])
+        aggregate(grandchild1_period)
         target_amend_update = util.create_period_update(
             period=grandchild2_period, user=self.user, value=1,
             disaggregations=[{'type': grandchild2_type, 'value': 15}])
+        aggregate(grandchild2_period)
 
         # When
         util.amend_disaggregation_update(target_amend_update, self.type, 30)
+        aggregate(grandchild2_period)
 
         # Then
         self.assertEqual(
@@ -171,12 +181,15 @@ class DisaggregationContributionTestCase(BaseTestCase):
         util.create_period_update(
             period=grandchild1_period, user=self.user, value=1,
             disaggregations=[{'type': grandchild1_type, 'value': 20}])
+        aggregate(grandchild1_period)
         target_update = util.create_period_update(
             period=grandchild2_period, user=self.user, value=1,
             disaggregations=[{'type': grandchild2_type, 'value': 15}])
+        aggregate(grandchild2_period)
 
         # When
         target_update.delete()
+        aggregate(grandchild2_period)
 
         # Then
         self.assertEqual(

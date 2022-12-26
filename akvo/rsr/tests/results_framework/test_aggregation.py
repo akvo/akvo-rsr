@@ -12,15 +12,17 @@ from decimal import Decimal
 import unittest
 
 from akvo.rsr.models import (Project, Result, Indicator, IndicatorPeriod,
-                             IndicatorPeriodData, User)
+                             IndicatorPeriodData, User,
+                             Disaggregation, IndicatorDimensionName, IndicatorDimensionValue)
 from akvo.rsr.models.result.utils import (calculate_percentage,
                                           MultipleUpdateError)
+from akvo.rsr.usecases.period_update_aggregation import aggregate
+from akvo.rsr.usecases.jobs import aggregation as jobs
 
 from django.test import TestCase
 
 
-class UnitAggregationTestCase(TestCase):
-
+class AggregationTestCase(TestCase):
     indicator_measure = '1'
     APPROVED = IndicatorPeriodData.STATUS_APPROVED_CODE
 
@@ -49,9 +51,8 @@ class UnitAggregationTestCase(TestCase):
             period_end=datetime.date.today() + datetime.timedelta(days=1),
             target_value="100"
         )
-
-        # Import status
-        self.import_status = 0
+        self.dimension_name = IndicatorDimensionName.objects.create(project=self.parent_project)
+        self.dimension_value = IndicatorDimensionValue.objects.create(name=self.dimension_name)
 
     @staticmethod
     def create_published_project(title) -> Project:
@@ -68,12 +69,12 @@ class UnitAggregationTestCase(TestCase):
         child_project.set_parent(self.parent_project).save()
         return child_project
 
-    def create_indicator_period_update(self, value, indicator_period=None):
+    def create_indicator_period_update(self, value, indicator_period=None, status=IndicatorPeriodData.STATUS_APPROVED_CODE):
         indicator_period_data = IndicatorPeriodData.objects.create(
             period=indicator_period if indicator_period is not None else self.period,
             user=self.user,
             value=value,
-            status=self.APPROVED
+            status=status
         )
         return indicator_period_data
 
@@ -81,6 +82,9 @@ class UnitAggregationTestCase(TestCase):
         if child_project is None:
             child_project = self.child_project
         return indicator_period.child_periods.get(indicator__result__project=child_project)
+
+
+class UnitAggregationTestCase(AggregationTestCase):
 
     def test_should_set_period_actual_value(self):
         # Given
@@ -146,9 +150,11 @@ class UnitAggregationTestCase(TestCase):
         # Given
         increment = 2
         self.create_indicator_period_update(value=increment)
+        aggregate(self.period)
 
         # When
         self.create_indicator_period_update(value=increment)
+        aggregate(self.period)
 
         # Then
         period = IndicatorPeriod.objects.get(id=self.period.id)
@@ -159,9 +165,11 @@ class UnitAggregationTestCase(TestCase):
         original = 5
         increment = -2
         self.create_indicator_period_update(value=str(original))
+        aggregate(self.period)
 
         # When
         self.create_indicator_period_update(value=str(increment))
+        aggregate(self.period)
 
         # Then
         period = IndicatorPeriod.objects.get(id=self.period.id)
@@ -197,6 +205,7 @@ class UnitAggregationTestCase(TestCase):
             value=child_value,
             indicator_period=child_indicator_period
         )
+        aggregate(child_indicator_period)
 
         # Then
         period = IndicatorPeriod.objects.get(id=self.period.id)
@@ -218,6 +227,7 @@ class UnitAggregationTestCase(TestCase):
             value=child_value,
             indicator_period=child_indicator_period
         )
+        aggregate(child_indicator_period)
 
         # Then
         period = IndicatorPeriod.objects.get(id=self.period.id)
@@ -236,7 +246,9 @@ class UnitAggregationTestCase(TestCase):
 
         # When
         self.create_indicator_period_update(value=value, indicator_period=child_indicator_period)
+        aggregate(child_indicator_period)
         self.create_indicator_period_update(value=value, indicator_period=child_indicator_period_2)
+        aggregate(child_indicator_period_2)
 
         # Then
         period = IndicatorPeriod.objects.get(id=self.period.id)
@@ -255,14 +267,60 @@ class UnitAggregationTestCase(TestCase):
 
         # When
         self.create_indicator_period_update(value=value, indicator_period=child_indicator_period)
+        aggregate(child_indicator_period)
         self.create_indicator_period_update(value=value, indicator_period=child_indicator_period_2)
+        aggregate(child_indicator_period_2)
 
         # Then
         period = IndicatorPeriod.objects.get(id=self.period.id)
         self.assertEqual(Decimal(value), Decimal(period.actual_value))
 
+    def test_schedule_aggregation_job_on_indicator_update_object(self):
+        self.assertEqual(0, jobs.get_scheduled_jobs().count(), 'No scheduled jobs initially')
 
-class PercentageAggregationTestCase(UnitAggregationTestCase):
+        update = self.create_indicator_period_update(value=0, status=IndicatorPeriodData.STATUS_PENDING_CODE)
+
+        self.assertEqual(0, jobs.get_scheduled_jobs().count(), 'No scheduled jobs before update approved')
+
+        update.status = IndicatorPeriodData.STATUS_APPROVED_CODE
+        update.save()
+
+        self.assertEqual(1, jobs.get_scheduled_jobs().count(), 'A job scheduled after update gets approved')
+
+        jobs.get_scheduled_jobs().first().mark_running()
+
+        self.assertEqual(0, jobs.get_scheduled_jobs().count(), 'No scheduled jobs when the job is running')
+
+        update.delete()
+
+        self.assertEqual(1, jobs.get_scheduled_jobs().count(), 'A job scheduled after update gets deleted')
+
+    def test_schedule_aggregation_job_on_disaggregation_object(self):
+        self.assertEqual(0, jobs.get_scheduled_jobs().count(), 'No scheduled jobs initially')
+
+        update = self.create_indicator_period_update(value=0)
+
+        self.assertEqual(1, jobs.get_scheduled_jobs().count(), 'A job scheduled on approved update')
+
+        disaggregation = Disaggregation.objects.create(update=update, dimension_value=self.dimension_value)
+
+        self.assertEqual(1, jobs.get_scheduled_jobs().count(), 'No additional job scheduled if already exists for the same period')
+
+        jobs.get_scheduled_jobs().first().mark_running()
+
+        disaggregation.value = 1
+        disaggregation.save()
+
+        self.assertEqual(1, jobs.get_scheduled_jobs().count(), 'A job scheduled on disaggregation modification')
+
+        jobs.get_scheduled_jobs().first().mark_running()
+
+        disaggregation.delete()
+
+        self.assertEqual(1, jobs.get_scheduled_jobs().count(), 'A job scheduled after disaggregation gets deleted')
+
+
+class PercentageAggregationTestCase(AggregationTestCase):
     """Tests the aggregation of percentage measure indicators."""
 
     indicator_measure = '2'
@@ -345,6 +403,7 @@ class PercentageAggregationTestCase(UnitAggregationTestCase):
             denominator=child_denominator,
             indicator_period=child_indicator_period
         )
+        aggregate(child_indicator_period)
 
         # Then
         period = IndicatorPeriod.objects.get(id=self.period.id)
@@ -403,11 +462,13 @@ class PercentageAggregationTestCase(UnitAggregationTestCase):
             denominator=child_denominator,
             indicator_period=child_period
         )
+        aggregate(child_period)
         self.create_indicator_period_update(
             numerator=child_numerator,
             denominator=child_denominator,
             indicator_period=child_period_2
         )
+        aggregate(child_period_2)
 
         # Then
         period = IndicatorPeriod.objects.get(id=self.period.id)
@@ -434,11 +495,13 @@ class PercentageAggregationTestCase(UnitAggregationTestCase):
             denominator=child_denominator,
             indicator_period=child_period
         )
+        aggregate(child_period)
         self.create_indicator_period_update(
             numerator=child_numerator,
             denominator=child_denominator,
             indicator_period=child_period_2
         )
+        aggregate(child_period_2)
 
         # Then
         period = IndicatorPeriod.objects.get(id=self.period.id)

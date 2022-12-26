@@ -46,6 +46,10 @@ urlpatterns = i18n_patterns(
     url(r'^$',
         views.index, name='index'),
 
+    # Hack to prompt password on password-protected partner sites
+    url(r'^lockpass/$',
+        views.lockpass, name='lockpass'),
+
     # Projects
     url(r'^projects/$',
         project.directory, name='project-directory'),

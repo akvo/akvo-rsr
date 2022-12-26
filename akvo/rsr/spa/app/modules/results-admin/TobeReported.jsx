@@ -16,7 +16,7 @@ import SimpleMarkdown from 'simple-markdown'
 import SVGInline from 'react-svg-inline'
 import classNames from 'classnames'
 import moment from 'moment'
-import { isEmpty } from 'lodash'
+import { isEmpty, orderBy } from 'lodash'
 import { connect } from 'react-redux'
 
 import './TobeReported.scss'
@@ -154,7 +154,7 @@ const TobeReported = ({
       grid={{ column: 1 }}
       itemLayout="vertical"
       className="tobe-reported"
-      dataSource={dataSource}
+      dataSource={orderBy(updates, ['indicator.title'], ['asc'])}
       renderItem={(item, ix) => {
         const iKey = item?.id || `${item?.indicator?.id}0${ix}`
         const updateClass = item?.statusDisplay?.toLowerCase()?.replace(/\s+/g, '-')
