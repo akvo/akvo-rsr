@@ -9,7 +9,6 @@ from django.db.models import Sum
 
 from akvo.utils import ensure_decimal
 
-from .indicator_period_data import IndicatorPeriodData
 from .utils import get_per_user_latest_indicator_update_ids
 
 
@@ -53,6 +52,7 @@ class DisaggregationAggregation(object):
         )
 
     def _get_local_non_cumulative_values(self, period, dimension_value):
+        IndicatorPeriodData = apps.get_model('rsr', 'IndicatorPeriodData')
         return self.disaggregations.filter(
             update__period=period,
             update__status=IndicatorPeriodData.STATUS_APPROVED_CODE,

@@ -6,9 +6,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 import dataclasses
 import logging
-from decimal import Decimal, InvalidOperation
+from decimal import Decimal
 from typing import Dict, Generic, Hashable, Optional, TypeVar
-import itertools
 import urllib.parse
 
 from django.conf import settings

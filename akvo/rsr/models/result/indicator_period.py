@@ -12,7 +12,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from .indicator_period_data import IndicatorPeriodData
-from .utils import calculate_percentage, PERCENTAGE_MEASURE, QUALITATIVE, get_per_user_latest_indicator_update_ids
+from .utils import calculate_percentage, PERCENTAGE_MEASURE, QUALITATIVE
 from akvo.rsr.fields import ValidXMLCharField, ValidXMLTextField
 
 
