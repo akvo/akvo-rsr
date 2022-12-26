@@ -3,6 +3,7 @@ from decimal import Decimal
 from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.tests.utils import ProjectFixtureBuilder
 from akvo.rsr.models.result.utils import PERCENTAGE_MEASURE
+from akvo.rsr.usecases.period_update_aggregation import aggregate
 
 
 class CumulativeTestMixin:
@@ -54,6 +55,7 @@ class SingleUserCumulativeUnitUpdatesTestCase(CumulativeTestMixin, BaseTestCase)
                 self.DISAGGREGATION_TYPE_2: {'value': 1},
             }
         })
+        aggregate(self.period1.object)
 
         self.period2 = self.project.get_period(period_start=self.PERIOD_2_START)
         self.period2.add_update(user=user, value=3, disaggregations={
@@ -68,6 +70,7 @@ class SingleUserCumulativeUnitUpdatesTestCase(CumulativeTestMixin, BaseTestCase)
                 self.DISAGGREGATION_TYPE_2: {'value': 2},
             }
         })
+        aggregate(self.period2.object)
 
     def test_period1(self):
         period1 = self.project.periods.get(id=self.period1.id)
@@ -107,6 +110,7 @@ class MultiUserCumulativeUnitUpdatesTestCase(CumulativeTestMixin, BaseTestCase):
                 self.DISAGGREGATION_TYPE_2: {'value': 2},
             }
         })
+        aggregate(self.period1.object)
 
         self.period2 = self.project.get_period(period_start=self.PERIOD_2_START)
         self.period2.add_update(user=user2, value=3, disaggregations={
@@ -121,6 +125,7 @@ class MultiUserCumulativeUnitUpdatesTestCase(CumulativeTestMixin, BaseTestCase):
                 self.DISAGGREGATION_TYPE_2: {'value': 2},
             }
         })
+        aggregate(self.period2.object)
 
     def test_period1(self):
         period1 = self.project.periods.get(id=self.period1.id)
@@ -154,6 +159,7 @@ class CumulativePercentageUpdatesTestCase(CumulativeTestMixin, BaseTestCase):
                 self.DISAGGREGATION_TYPE_1: {'numerator': 1, 'denominator': 4},
             }
         })
+        aggregate(self.period1.object)
 
         self.period2 = self.project.get_period(period_start=self.PERIOD_2_START)
         self.period2.add_update(user=user2, numerator=2, denominator=4, disaggregations={
@@ -162,6 +168,7 @@ class CumulativePercentageUpdatesTestCase(CumulativeTestMixin, BaseTestCase):
                 self.DISAGGREGATION_TYPE_2: {'numerator': 1, 'denominator': 4},
             }
         })
+        aggregate(self.period2.object)
 
     def test_period1(self):
         period1 = self.project.periods.get(id=self.period1.id)
@@ -206,12 +213,14 @@ class CumulativeAggregationTestCase(CumulativeTestMixin, BaseTestCase):
                 self.DISAGGREGATION_TYPE_2: {'value': 0},
             }
         })
+        aggregate(contrib1_period1.object)
         contrib1_period2.add_update(user=user2, value=1, disaggregations={
             self.DISAGGREGATION_CATEGORY: {
                 self.DISAGGREGATION_TYPE_1: {'value': 0},
                 self.DISAGGREGATION_TYPE_2: {'value': 1},
             }
         })
+        aggregate(contrib1_period2.object)
 
         contrib2_period1.add_update(user=user1, value=1, disaggregations={
             self.DISAGGREGATION_CATEGORY: {
@@ -219,12 +228,14 @@ class CumulativeAggregationTestCase(CumulativeTestMixin, BaseTestCase):
                 self.DISAGGREGATION_TYPE_2: {'value': 1},
             }
         })
+        aggregate(contrib2_period1.object)
         contrib2_period2.add_update(user=user1, value=2, disaggregations={
             self.DISAGGREGATION_CATEGORY: {
                 self.DISAGGREGATION_TYPE_1: {'value': 1},
                 self.DISAGGREGATION_TYPE_2: {'value': 1},
             }
         })
+        aggregate(contrib2_period2.object)
 
     def test_lead_period1(self):
         lead_period1 = self.lead_project.periods.get(period_start=self.PERIOD_1_START)

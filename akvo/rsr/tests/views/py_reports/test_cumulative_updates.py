@@ -4,6 +4,7 @@ from akvo.codelists.store.default_codelists import RESULT_TYPE_OUTPUT
 from akvo.rsr.models import Partnership, Project
 from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.tests.utils import ProjectFixtureBuilder
+from akvo.rsr.usecases.period_update_aggregation import aggregate
 from akvo.rsr.views.py_reports import (
     results_indicators_with_map_pdf_reports,
     results_indicators_excel_report,
@@ -76,6 +77,7 @@ class CumulativeTestMixin:
                 self.DISAGGREGATION_TYPE_2: {'value': 2},
             }
         })
+        aggregate(period1.object)
 
         period2 = project.get_period(period_start=self.PERIOD_2_START)
         period2.add_update(user=user2, value=3, disaggregations={
@@ -90,6 +92,7 @@ class CumulativeTestMixin:
                 self.DISAGGREGATION_TYPE_2: {'value': 2},
             }
         })
+        aggregate(period2.object)
 
         period3 = project.get_period(period_start=self.PERIOD_3_START)
         period3.add_update(user=user1, value=3, disaggregations={
@@ -104,6 +107,7 @@ class CumulativeTestMixin:
                 self.DISAGGREGATION_TYPE_2: {'value': 2},
             }
         })
+        aggregate(period3.object)
 
 
 class ObjectReaderCumulativeUpdateBaseTestCase(CumulativeTestMixin, ABC):
@@ -227,12 +231,14 @@ class ProgramOverviewExcelReportTestCase(ResultsFrameworkDataclassesTestMixin, B
                 self.DISAGGREGATION_TYPE_2: {'value': 0},
             }
         })
+        aggregate(contrib1_period1.object)
         contrib1_period2.add_update(user=user2, value=1, disaggregations={
             self.DISAGGREGATION_CATEGORY: {
                 self.DISAGGREGATION_TYPE_1: {'value': 0},
                 self.DISAGGREGATION_TYPE_2: {'value': 1},
             }
         })
+        aggregate(contrib1_period2.object)
 
         contrib2_period1.add_update(user=user1, value=1, disaggregations={
             self.DISAGGREGATION_CATEGORY: {
@@ -240,12 +246,14 @@ class ProgramOverviewExcelReportTestCase(ResultsFrameworkDataclassesTestMixin, B
                 self.DISAGGREGATION_TYPE_2: {'value': 1},
             }
         })
+        aggregate(contrib2_period1.object)
         contrib2_period2.add_update(user=user1, value=2, disaggregations={
             self.DISAGGREGATION_CATEGORY: {
                 self.DISAGGREGATION_TYPE_1: {'value': 1},
                 self.DISAGGREGATION_TYPE_2: {'value': 1},
             }
         })
+        aggregate(contrib2_period2.object)
         self.result = program_overview_excel_report.get_results_framework(self.lead_project.object)[0]
 
     def get_period_contributor(self, period, project_title):

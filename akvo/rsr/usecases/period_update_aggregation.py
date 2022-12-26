@@ -9,7 +9,7 @@ from akvo.utils import ensure_decimal
 if TYPE_CHECKING:
     from akvo.rsr.models import IndicatorPeriod
 
-from akvo.rsr.models.result.utils import PERCENTAGE_MEASURE, calculate_percentage
+from akvo.rsr.models.result.utils import PERCENTAGE_MEASURE, calculate_percentage, get_per_user_latest_indicator_update_ids
 from akvo.rsr.models.result.disaggregation_aggregation import DisaggregationAggregation
 
 
@@ -60,6 +60,21 @@ def _aggregate_disaggregation(period: IndicatorPeriod):
 
 
 def sum_updates(period: IndicatorPeriod) -> Tuple[Optional[Decimal], Optional[Decimal], Optional[Decimal]]:
+    return sum_cumulative_updates(period) if period.indicator.is_cumulative() else sum_non_cumulative_updates(period)
+
+
+def sum_cumulative_updates(period: IndicatorPeriod) -> Tuple[Optional[Decimal], Optional[Decimal], Optional[Decimal]]:
+    '''
+    This method assumes the user will submit cumulative updates in chronological order as it should.
+    '''
+    IndicatorPeriodData = apps.get_model('rsr', 'IndicatorPeriodData')
+    latest_per_users = get_per_user_latest_indicator_update_ids(period)
+    value = IndicatorPeriodData.objects.filter(id__in=latest_per_users)\
+        .aggregate(value=Sum('value'))['value']
+    return value, None, None
+
+
+def sum_non_cumulative_updates(period: IndicatorPeriod) -> Tuple[Optional[Decimal], Optional[Decimal], Optional[Decimal]]:
     result = period.approved_updates.aggregate(value=Sum('value'), numerator=Sum('numerator'), denominator=Sum('denominator'))
     return (result[k] for k in ('value', 'numerator', 'denominator'))
 
