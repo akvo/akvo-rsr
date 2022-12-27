@@ -249,7 +249,7 @@ const LineChart = ({
             </>
           )}
           {points.map((p, px) => {
-            const [x, y] = p
+            const [cx, cy] = p
             return (
               <Popover
                 placement="topRight"
@@ -260,7 +260,7 @@ const LineChart = ({
                   </div>
                 )}
               >
-                <circle className="lineCircle" fill="#43998F" cx={x} cy={y} data-value={targetValue} r="4" key={px} />
+                <circle className="lineCircle" fill="#43998F" cx={cx || 55} cy={cy} data-value={targetValue} r="4" key={px} />
               </Popover>
             )
           })}

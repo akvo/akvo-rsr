@@ -17,6 +17,7 @@ from django.test import TestCase
 
 from akvo.rest.viewsets import PublicProjectViewSet, ReadOnlyPublicProjectViewSet
 from akvo.rsr import models as M
+from akvo.rsr.usecases.period_update_aggregation import aggregate
 from akvo.utils import check_auth_groups
 
 
@@ -209,11 +210,12 @@ class CreatePermissionFilteringTestCase(TestCase):
                                                            latitude=update.id,
                                                            longitude=update.id)
                     # indicator period data
-                    data = M.IndicatorPeriodData.objects.create(period=period, user=user)
+                    data = M.IndicatorPeriodData.objects.create(period=period, user=user, status=M.IndicatorPeriodData.STATUS_APPROVED_CODE)
                     # disaggregation
                     M.Disaggregation.objects.create(update=data, dimension_value=dimension_value)
                     # indicator period data comment
                     M.IndicatorPeriodDataComment.objects.create(data=data, user=user)
+                    aggregate(period)
 
             # PartnerSite
             M.PartnerSite.objects.create(organisation=organisation,
@@ -520,6 +522,12 @@ class CreatePermissionFilteringTestCase(TestCase):
         model_map[M.IndicatorPeriod] = {
             'group_count': group_count(8, 2, 6, 4),
             'project_relation': 'indicator__result__project__'
+        }
+
+        # one indicator period per indicator
+        model_map[M.IndicatorPeriodAggregationJob] = {
+            'group_count': group_count(8, 2, 6, 4),
+            'project_relation': 'period__indicator__result__project__'
         }
 
         # one indicator period actual location per period

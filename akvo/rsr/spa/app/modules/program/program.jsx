@@ -13,7 +13,8 @@ import api from '../../utils/api'
 import Reports from '../reports/reports'
 import countriesDict from '../../utils/countries-dict'
 import StickyClass from './sticky-class'
-import * as actions from '../editor/actions'
+import { setProjectTitle } from '../editor/actions'
+import * as programmeActions from './store/actions'
 
 const { Panel } = Collapse
 const { TabPane } = Tabs
@@ -25,9 +26,13 @@ const ExpandIcon = ({ isActive }) => (
   </div>
 )
 
-const Program = ({ match: {params}, userRdr, ...props }) => {
+const Program = ({
+  match: { params },
+  userRdr,
+  programmeRdr: results,
+  ...props
+}) => {
   const { t } = useTranslation()
-  const [results, setResults] = useState([])
   const [title, setTitle] = useState('')
   const [loading, setLoading] = useState(true)
   const [countryOpts, setCountryOpts] = useState([])
@@ -38,7 +43,8 @@ const Program = ({ match: {params}, userRdr, ...props }) => {
     if (params.projectId !== 'new') {
       api.get(`/project/${params.projectId}/results`)
         .then(({ data }) => {
-          setResults(data.results.map(it => ({ ...it, indicators: [], fetched: false })))
+          const _results = data.results.map(it => ({ ...it, indicators: [], fetched: false }))
+          props.setProgrammeResults(_results)
           setTitle(data.title)
           props.setProjectTitle(data.title)
           document.title = `${data.title} | Akvo RSR`
@@ -111,7 +117,7 @@ const Program = ({ match: {params}, userRdr, ...props }) => {
                   </StickyClass>
                 )}
               >
-                <Result programId={params.projectId} {...{ ...result, countryFilter, results, setResults, targetsAt }} />
+                <Result programId={params.projectId} {...{ ...result, countryFilter, targetsAt }} />
               </Panel>
             )}
           </Collapse>
@@ -136,5 +142,5 @@ const Program = ({ match: {params}, userRdr, ...props }) => {
 }
 
 export default connect(
-  ({ editorRdr: {section1: {fields: {title}}}, userRdr }) => ({ title, userRdr }), actions
+  ({ editorRdr: {section1: {fields: {title}}}, userRdr, programmeRdr }) => ({ title, userRdr, programmeRdr }), ({ ...programmeActions, setProjectTitle })
 )(Program)

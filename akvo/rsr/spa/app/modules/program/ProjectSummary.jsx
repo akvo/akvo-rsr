@@ -1,6 +1,9 @@
 import React from 'react'
 import moment from 'moment'
-import { Icon, Tooltip } from 'antd'
+import { Tooltip } from 'antd'
+import Icon from '../../components/Icon'
+import ActualValue from './ActualValue'
+import { setNumberFormat } from '../../utils/misc'
 
 const getAggregatedUpdatesLength = (updates, contributors) => {
   let total = 0
@@ -21,7 +24,8 @@ const ProjectSummary = ({
   actualValue,
   updatesValue,
   updates,
-  contributors
+  contributors,
+  job
 }) => {
   if (indicatorType === 'quantitative') {
     return (
@@ -36,13 +40,13 @@ const ProjectSummary = ({
           openedItem === _index
             ? (
               <div className="value">
-                <b>{String(updatesValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+                <ActualValue {...{ actualValue, job }} />
                 {actualValue > 0 && <small>{Math.round(((updatesValue) / actualValue) * 100 * 10) / 10}%</small>}
                 {updates.length > 0 &&
                   <div className="updates-popup">
                     <header>{updates.length} approved updates</header>
                     <ul>
-                      {updates.map(update => <li><span>{moment(update.createdAt).format('DD MMM YYYY')}</span><span>{update.user.name}</span><b>{String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b></li>)}
+                      {updates.map(update => <li key={update?.id}><span>{moment(update.createdAt).format('DD MMM YYYY')}</span><span>{update.user.name}</span><b>{setNumberFormat(update.value)}</b></li>)}
                     </ul>
                   </div>
                 }
@@ -51,7 +55,7 @@ const ProjectSummary = ({
             :
             (
               <div className="value">
-                <b>{String(actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+                <ActualValue {...{ actualValue, job }} />
                 {aggFilteredTotal > 0 && <small>{Math.round((actualValue / aggFilteredTotal) * 100 * 10) / 10}%</small>}
               </div>
             )
