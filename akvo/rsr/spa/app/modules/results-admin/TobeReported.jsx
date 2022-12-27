@@ -154,7 +154,7 @@ const TobeReported = ({
       grid={{ column: 1 }}
       itemLayout="vertical"
       className="tobe-reported"
-      dataSource={orderBy(updates, ['indicator.title'], ['asc'])}
+      dataSource={orderBy(dataSource, ['indicator.title'], ['asc'])}
       renderItem={(item, ix) => {
         const iKey = item?.id || `${item?.indicator?.id}0${ix}`
         const updateClass = item?.statusDisplay?.toLowerCase()?.replace(/\s+/g, '-')
