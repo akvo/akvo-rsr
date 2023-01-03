@@ -20,6 +20,7 @@ import { PrevUpdate } from './PrevUpdate'
 import ScoringField from './ScoringField'
 import { StatusUpdate } from './StatusUpdate'
 import LineChart from './LineChart'
+import { measureType } from '../utils/constants'
 
 const axiosConfig = {
   headers: { ...config.headers, 'Content-Type': 'multipart/form-data' },
@@ -64,7 +65,7 @@ export const AddUpdate = ({
     setFileSet([])
   }, [period])
   const draftUpdate = period.updates.find(it => it.status === 'D')
-  const pendingUpdate = (period.updates[0]?.status === 'P' || (indicator.measure === '2' && period.updates[0]?.status !== 'R')/* trick % measure update to show as "pending update" */) ? period.updates[0] : null
+  const pendingUpdate = (period.updates[0]?.status === 'P' || (indicator.measure === measureType.PERCENTAGE && period.updates[0]?.status !== 'R')/* trick % measure update to show as "pending update" */) ? period.updates[0] : null
   const recentUpdate = /* in the last 12 hours AND NOT returned for revision */ period.updates.filter(it => it.status !== 'R').find(it => { const minDiff = (new Date().getTime() - new Date(it.lastModifiedAt).getTime()) / 60000; return minDiff < 720 })
   // the above is used for the M&E view bc their value updates skip the "pending" status
   const submittedUpdate = pendingUpdate || recentUpdate
@@ -282,7 +283,7 @@ export const AddUpdate = ({
                           <h5>{group.name}</h5>
                         </div>
                         {group.dimensionValues.map(dsg => {
-                          return indicator.measure === '1' ? (
+                          return indicator.measure === measureType.UNIT ? (
                             <FinalField
                               name={`disaggregations[${disaggregations.findIndex(it => it.typeId === dsg.id && group.id === it.groupId)}].value`}
                               control="input-number"
@@ -331,11 +332,11 @@ export const AddUpdate = ({
                             if (item.denominator) dsgGroups[item.category].denominator += item.denominator
                           })
                           const categories = Object.keys(dsgGroups)
-                          if (categories.length > 0 && indicator.measure === '1') {
+                          if (categories.length > 0 && indicator.measure === measureType.UNIT) {
                             const value = categories.reduce((acc, key) => dsgGroups[key].value > acc ? dsgGroups[key].value : acc, 0)
                             if (value > 0) form.change('value', value)
                           }
-                          if (categories.length > 0 && indicator.measure === '2') {
+                          if (categories.length > 0 && indicator.measure === measureType.PERCENTAGE) {
                             const [numerator, denominator] = categories.reduce(([numerator, denominator], key) => [
                               dsgGroups[key].numerator > numerator ? dsgGroups[key].numerator : numerator,
                               dsgGroups[key].denominator > denominator ? dsgGroups[key].denominator : denominator
@@ -346,7 +347,7 @@ export const AddUpdate = ({
                           return null
                         }}
                       />,
-                      indicator.measure === '1' ?
+                      indicator.measure === measureType.UNIT ?
                         <FinalField
                           withLabel
                           dict={{ label: period?.disaggregationTargets.length > 0 ? t('Total value') : t('Value') }}
@@ -365,7 +366,7 @@ export const AddUpdate = ({
                           step={1}
                           disabled={disableInputs}
                         />,
-                      (indicator.measure === '1' && period.updates.length > 0) && [
+                      (indicator.measure === measureType.UNIT && period.updates.length > 0) && [
                         <div className="updated-actual">
                           <div className="cap">{t('Updated actual value')}</div>
                           <Field
@@ -382,7 +383,7 @@ export const AddUpdate = ({
                           />
                         </div>
                       ],
-                      indicator.measure === '2' && [
+                      indicator.measure === measureType.PERCENTAGE && [
                         <FinalField
                           withLabel
                           dict={{ label: 'Denominator' }}
@@ -430,7 +431,7 @@ export const AddUpdate = ({
                       />
                     ]}
                   </div>
-                  {!mneView && !(indicator.measure === '2' && period.updates.length > 0) &&
+                  {!mneView && !(indicator.measure === measureType.PERCENTAGE && period.updates.length > 0) &&
                     <PrevUpdate update={period.updates.filter(it => it.status === 'A' || it.status === 'R')[0]} {...{ period, indicator }} />
                   }
                   {(mneView && indicator.type === 1) && (

@@ -35,7 +35,7 @@ export const indicatorTypes = [
 
 export const measureType = {
   UNIT: '1',
-  PERCENTAGE: '2'
+  PERCENTAGE: '2',
 }
 
 export const indicatorType = {

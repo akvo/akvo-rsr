@@ -275,6 +275,17 @@ export default (state = initialState, action) => {
     case actionTypes.VALIDATION_SYNC:
       newState[sectionKey].errors = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
       return newState
+    case actionTypes.SET_FIRST_SECTION_ID:
+      return {
+        ...state,
+        section1: {
+          ...state.section1,
+          fields: {
+            ...state.section1.fields,
+            id: action.projectId
+          }
+        },
+      }
     case actionTypes.SET_EXTERNAL_PROJECT:
       return { ...state, externalProjects: action.payload }
     case actionTypes.ADD_EXTERNAL_PROJECT:

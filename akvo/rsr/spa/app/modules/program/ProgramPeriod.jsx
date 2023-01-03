@@ -1,6 +1,6 @@
 /* global document */
-import React from 'react'
-import { Collapse, Icon, Select } from 'antd'
+import React, { useState } from 'react'
+import { Collapse, Select } from 'antd'
 import moment from 'moment'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
@@ -13,6 +13,10 @@ import Comments from './Comments'
 import ExpandIcon from './ExpandIcon'
 import ProjectSummary from './ProjectSummary'
 import Disaggregations from './Disaggregations'
+import Icon from '../../components/Icon'
+import ActualValue from './ActualValue'
+import AggregatedActual from './AggregatedActual'
+import { printIndicatorPeriod } from '../../utils/dates'
 
 const { Panel } = Collapse
 const { Option } = Select
@@ -37,7 +41,7 @@ const ProjectHeader = ({
           <b>&nbsp;</b>
         </p>
       </div>
-      <ProjectSummary {...props} />
+      <ProjectSummary contributors={contributors} {...props} />
     </>
   )
 }
@@ -60,13 +64,16 @@ const PeriodHeader = ({
   periodStart,
   periodEnd,
   disaggregationContributions,
-  disaggregationTargets
+  disaggregationTargets,
+  periodId,
+  callback,
+  jobs,
 }) => {
   const { t } = useTranslation()
   return (
     <>
       <div>
-        <h5>{moment(periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - {moment(periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}</h5>
+        <h5>{printIndicatorPeriod(periodStart, periodEnd)}</h5>
         <ul className="small-stats">
           <li><b>{filteredContributors.length}</b> {t('contributor_s', { count: filteredContributors.length })}</li>
           <li><b>{filteredCountries.length}</b> {t('country_s', { count: filteredCountries.length })}</li>
@@ -85,8 +92,18 @@ const PeriodHeader = ({
               />
             )}
             <div className="stat value">
-              <div className="label">aggregated actual value</div>
-              <b>{String(actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+              <div className="label">aggregated actual</div>
+              <AggregatedActual
+                {...{
+                  periodStart,
+                  periodEnd,
+                  periodId,
+                  jobs,
+                }}
+                value={actualValue}
+                total={filteredContributors?.length}
+                callback={callback}
+              />
               {targetsAt && targetsAt === 'period' && targetValue > 0 && (
                 <span>
                   of <b>{setNumberFormat(countryFilter.length > 0 ? aggFilteredTotalTarget : targetValue)}</b> target
@@ -141,9 +158,12 @@ const ProgramPeriod = ({
   aggFilteredTotalTarget,
   aggFilteredTotal,
   openedItem,
+  activePeriod,
+  setActivePeriod,
   handleAccordionChange,
   ...props
 }) => {
+  const [popUp, setPopUp] = useState(false)
   const mouseEnterBar = (index, value, ev) => {
     if (pinned === index || !listRef.current) return
     listRef.current.children[0].children[index].classList.add('active')
@@ -168,6 +188,13 @@ const ProgramPeriod = ({
     if (listRef.current.children[0].children[index].classList.contains('ant-collapse-item-active') === false) {
       listRef.current.children[0].children[index].children[0].click()
     }
+  }
+
+  const clickOnViewAll = () => {
+    setActivePeriod({
+      period,
+      popUp: !activePeriod?.popUp
+    })
   }
 
   const hasDisaggregations = !(
@@ -198,8 +225,9 @@ const ProgramPeriod = ({
             hasDisaggregations,
             clickBar,
             mouseEnterBar,
-            mouseLeaveBar
+            mouseLeaveBar,
           }}
+          callback={clickOnViewAll}
         />
       )}
     >
@@ -243,7 +271,8 @@ const ProgramPeriod = ({
                 return (
                   <Panel
                     className={classNames(indicatorType, {
-                      pinned: pinned === _index
+                      pinned: pinned === _index,
+                      [project?.job?.status]: (project?.job?.status)
                     })}
                     key={_index}
                     header={(
@@ -265,8 +294,8 @@ const ProgramPeriod = ({
                         project.contributors.map(subproject => {
                           const approves = subproject.updates.filter(it => it.status && it.status.code === 'A')
                           return (
-                            <li key={subproject.id}>
-                              <div>
+                            <li key={subproject.id} className={`subproject ${subproject?.job?.status}`}>
+                              <div className="max-w-1180">
                                 <h5>{subproject.projectTitle}</h5>
                                 <p>
                                   {subproject.projectSubtitle && <span>{subproject.projectSubtitle}</span>}
@@ -274,22 +303,24 @@ const ProgramPeriod = ({
                                 </p>
                               </div>
                               <div className={classNames('value', `score-${subproject.scoreIndex + 1}`, { score: indicatorType === 'qualitative' && scoreOptions != null })}>
-                                {indicatorType === 'quantitative' && [
-                                  <b>{String(subproject.actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>,
-                                  <small>{Math.round((subproject.actualValue / project.actualValue) * 100 * 10) / 10}%</small>
-                                ]}
+                                {indicatorType === 'quantitative' && (
+                                  <>
+                                    <ActualValue {...subproject} />
+                                    <small>{Math.round((subproject.actualValue / project.actualValue) * 100 * 10) / 10}%</small>
+                                  </>
+                                )}
                                 {(indicatorType === 'qualitative' && scoreOptions != null) && (
                                   <div className="score-box">Score {subproject.scoreIndex + 1}</div>
                                 )}
                                 {subproject.updates.length > 0 &&
                                   <div className="updates-popup">
                                     <header>{subproject.updates.length} approved updates</header>
-                                    <ul>
+                                    <ul className={subproject?.job?.status}>
                                       {subproject.updates.map(update => (
-                                        <li>
+                                        <li key={update?.id}>
                                           <span>{moment(update.createdAt).format('DD MMM YYYY')}</span>
                                           <span>{update.user.name}</span>
-                                          {update.value && <b>{String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>}
+                                          {update.value && <b>{setNumberFormat(update.value)}</b>}
                                           {update.scoreIndex != null && <b><small>Score {update.scoreIndex + 1}</small></b>}
                                         </li>
                                       ))}

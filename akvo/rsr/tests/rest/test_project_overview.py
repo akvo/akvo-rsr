@@ -4,12 +4,12 @@
 
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
-
 from unittest.mock import patch
 
 from akvo.rsr.models import Result, Indicator, IndicatorPeriod, IndicatorPeriodData
 from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.models.result.utils import QUANTITATIVE, QUALITATIVE, PERCENTAGE_MEASURE
+from akvo.rsr.usecases.period_update_aggregation import aggregate
 
 
 class QuantitativeUnitAggregationTestCase(BaseTestCase):
@@ -563,6 +563,7 @@ class ProjectHierarchyFixtureBuilder(object):
                     score_index=update.get('score_index', None),
                     status=update.get('status', 'A')
                 )
+            aggregate(period)
 
 
 class ProjectMapHelper(object):
