@@ -7,40 +7,22 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-
 import json
 
-from django.conf import settings
-from django.test import TransactionTestCase, Client
-
-from akvo.codelists.models import Country, Version
 from akvo.rsr.forms import PASSWORD_MINIMUM_LENGTH
 from akvo.rsr.models import Organisation, User
-from akvo.utils import check_auth_groups
 from akvo.rsr.tests.base import BaseTestCase
 
 
-# NOTE: Since these tests actually trigger some integrity errors and we want to
-# see if they are handled correctly, we use a TransactionTestCase instead of
-# TestCase, since wrapping the tests in a transaction isn't desirable.
-
-class UserTestCase(TransactionTestCase):
+class UserTestCase(BaseTestCase):
     """Tests REST endpoints in views/user.py."""
 
     def setUp(self):
-        check_auth_groups(settings.REQUIRED_AUTH_GROUPS)
-        self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
+        super().setUp()
         self.org = Organisation.objects.create(name='akvo', long_name='akvo foundation')
         self.user_password = 'password'
         self.user = self._create_user('abc@example.com', self.user_password)
         self.c.login(username=self.user.username, password=self.user_password)
-
-        version = Version.objects.create(code=settings.IATI_VERSION)
-        self.country = Country.objects.create(
-            code='CI',
-            name='CI - C\xc3\xb4te Divoire',
-            version=version
-        )
 
     def test_request_to_list_user_are_forbidden(self):
         response = self.c.get('/rest/v1/user/?format=json')
