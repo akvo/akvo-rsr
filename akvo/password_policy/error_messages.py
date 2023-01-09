@@ -16,6 +16,9 @@ ERROR_MESSAGES = {
     CharacterRule.ERROR_CODE_UPPERCASES: _(
         "Password must contain %(expected)d or more uppercase characters."
     ),
+    CharacterRule.ERROR_CODE_LOWERCASES: _(
+        "Password must contain %(expected)d or more lowercase characters."
+    ),
     CharacterRule.ERROR_CODE_SYMBOLS: _(
         "Password must contain %(expected)d or more symbol characters."
     ),

@@ -5,7 +5,7 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, update_session_auth_hash
 from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import status
@@ -58,8 +58,8 @@ def change_password(request, pk=None):
     # Process request
     serializer = UserPasswordSerializer(data=request.data, instance=user)
     if serializer.is_valid():
-        user = serializer.update(serializer.instance, serializer.validated_data)
-        user.save()
+        user = serializer.save()
+        update_session_auth_hash(request, user)
         return Response({'status': 'password set'})
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

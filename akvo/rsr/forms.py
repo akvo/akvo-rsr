@@ -7,88 +7,48 @@ Forms and validation code for user registration and updating.
 
 """
 
-import re
-
 from django import forms
 from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import SetPasswordForm, PasswordResetForm as PRF
+from django.contrib.auth.forms import PasswordResetForm as PRF, UserCreationForm
+from django.contrib.auth.password_validation import validate_password
 from django.contrib.sites.shortcuts import get_current_site
+from django.core.exceptions import ValidationError
 from django.db.models import F, Q
 from django.utils.translation import ugettext_lazy as _
 from django.utils.safestring import mark_safe
 
 from akvo import settings
+from akvo.password_policy.error_messages import get_error_message
+from akvo.password_policy.rules.character import CharacterRule
+from akvo.password_policy.rules.compound import CompoundRule
+from akvo.password_policy.rules.length import LengthRule
 from akvo.rsr.registration import send_activation_email
 
 PASSWORD_MINIMUM_LENGTH = settings.PASSWORD_MINIMUM_LENGTH
 
-
-def check_password_minimum_length(password):
-    if len(password) < PASSWORD_MINIMUM_LENGTH:
-        raise forms.ValidationError(
-            _('Passwords must be at least {} characters long.'.format(
-                PASSWORD_MINIMUM_LENGTH))
-        )
+User = get_user_model()
 
 
-def check_password_has_number(password):
-    if not re.findall(r'\d', password):
-        raise forms.ValidationError(
-            _('The password must contain at least one digit, 0-9.')
-        )
+def password_policy_fallback(password, *_):
+    rules = [
+        LengthRule(min=PASSWORD_MINIMUM_LENGTH),
+        CharacterRule.letters(min_length=1),
+        CharacterRule.uppercases(min_length=1),
+        CharacterRule.lowercase(min_length=1),
+        CharacterRule.numbers(min_length=1),
+        CharacterRule.symbols(min_length=1),
+    ]
+    validator = CompoundRule(rules)
+    result = validator.validate(password)
+    if not result.is_valid():
+        errors = [
+            ValidationError(get_error_message(error.code), code=error.code, params=error.context)
+            for error in result.errors
+        ]
+        raise ValidationError(errors)
 
 
-def check_password_has_upper(password):
-    if not re.findall('[A-Z]', password):
-        raise forms.ValidationError(
-            _('The password must contain at least one uppercase letter, A-Z.')
-        )
-
-
-def check_password_has_lower(password):
-    if not re.findall('[a-z]', password):
-        raise forms.ValidationError(
-            _('The password must contain at least one lowercase letter, a-z.')
-        )
-
-
-REQUIRED_SYMBOLS = '()[]{}|\\`~!@#$%%^&*_-+=;:\'",<>./?'
-
-
-def check_password_has_symbol(password):
-    if not any(char in REQUIRED_SYMBOLS for char in password):
-        raise forms.ValidationError(
-            _(f'The password must contain at least one symbol: {REQUIRED_SYMBOLS}')
-        )
-
-
-class PasswordValidationMixin():
-
-    def clean(self):
-        if self.errors:
-            raise forms.ValidationError(
-                self.errors[list(self.errors.keys())[0]]
-            )
-
-        if 'password1' in self.cleaned_data:
-            password = self.cleaned_data['password1']
-        elif 'new_password1' in self.cleaned_data:
-            password = self.cleaned_data['new_password1']
-        else:
-            raise forms.ValidationError(
-                _("Couldn't find the password fields in the form")
-            )
-
-        check_password_minimum_length(password)
-        check_password_has_number(password)
-        check_password_has_upper(password)
-        check_password_has_lower(password)
-        check_password_has_symbol(password)
-
-        return self.cleaned_data
-
-
-class RegisterForm(PasswordValidationMixin, forms.Form):
+class RegisterForm(UserCreationForm):
     email = forms.EmailField(
         label=_('Email'),
         max_length=254,
@@ -110,56 +70,17 @@ class RegisterForm(PasswordValidationMixin, forms.Form):
             attrs={'placeholder': _('Last name')}
         ),
     )
-    password1 = forms.CharField(
-        label=_('Password'),
-        widget=forms.PasswordInput(
-            attrs={'placeholder': _('Password')},
-            render_value=False
-        )
-    )
-    password2 = forms.CharField(
-        label=_('Repeat password'),
-        widget=forms.PasswordInput(
-            attrs={'placeholder': _('Repeat password')},
-            render_value=False
-        )
-    )
 
-    def clean_email(self):
-        """
-        Verify that the email entered does not exist as an email or username.
-        """
-        email = self.cleaned_data['email']
-        if get_user_model().objects.filter(email__iexact=email).exists() \
-                or get_user_model().objects.filter(username__iexact=email).exists():
-            raise forms.ValidationError(_('A user with this email address already exists.'))
-        return email
-
-    def clean_password2(self):
-        password1 = self.cleaned_data.get('password1')
-        password2 = self.cleaned_data.get('password2')
-        if password1 and password2:
-            if password1 != password2:
-                raise forms.ValidationError(
-                    _('Passwords do not match. Please enter the same password in both fields.')
-                )
-        return password2
+    class Meta:
+        model = User
+        fields = ('email', 'first_name', 'last_name', 'password1', 'password2')
 
     def save(self, request):
-        """Create the new user and RegistrationProfile, and returns the user."""
-
-        User = get_user_model()
-        username = email = self.cleaned_data['email']
-        password = self.cleaned_data['password1']
-        first_name = self.cleaned_data['first_name']
-        last_name = self.cleaned_data['last_name']
-        user = User.objects.create_user(
-            username, email, password, first_name=first_name, last_name=last_name
-        )
-
+        self.instance.username = self.cleaned_data['email']
+        self.instance.last_login = self.instance.date_joined
+        user = super().save()
         site = get_current_site(request)
         send_activation_email(user, site)
-
         return user
 
 
@@ -189,15 +110,7 @@ class PasswordResetForm(PRF):
         return users
 
 
-class RSRSetPasswordForm(PasswordValidationMixin, SetPasswordForm):
-    """
-    Customization of SetPasswordForm to extend validation
-    """
-    def clean(self):
-        super(RSRSetPasswordForm, self).clean()
-
-
-class InvitedUserForm(PasswordValidationMixin, forms.Form):
+class InvitedUserForm(forms.Form):
     first_name = forms.CharField(
         label=_('First name'),
         max_length=30,
@@ -240,6 +153,7 @@ class InvitedUserForm(PasswordValidationMixin, forms.Form):
                 raise forms.ValidationError(
                     _('Passwords do not match. Please enter the same password in both fields.')
                 )
+        validate_password(password2, self.user)
         return password2
 
     def save(self, request):

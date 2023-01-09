@@ -118,7 +118,7 @@ class UserTestCase(BaseTestCase):
         # Then
         self.assertEqual(response.status_code, 400)
         self.assertTrue(response.content.decode('utf-8').find(
-            'Passwords must be at least {} characters long.'.format(PASSWORD_MINIMUM_LENGTH)) > 0)
+            'Password must be {} or more characters in length.'.format(PASSWORD_MINIMUM_LENGTH)) > 0)
 
     def test_change_password_no_digit_in_password(self):
         # Given
@@ -138,7 +138,7 @@ class UserTestCase(BaseTestCase):
         # Then
         self.assertEqual(response.status_code, 400)
         self.assertTrue(response.content.decode('utf-8').find(
-            'The password must contain at least one digit, 0-9.') > 0)
+            'Password must contain 1 or more numbers.') > 0)
 
     def test_change_password_no_symbol_in_password(self):
         # Given
@@ -158,7 +158,7 @@ class UserTestCase(BaseTestCase):
         # Then
         self.assertEqual(response.status_code, 400)
         self.assertTrue(response.content.decode('utf-8').find(
-            'The password must contain at least one symbol:') > 0)
+            'Password must contain 1 or more symbol characters') > 0)
 
     def _create_user(self, email, password, is_active=True):
         """Create a user with the given email and password."""
