@@ -11,7 +11,7 @@ Usage:
     python manage.py a4a_optimy_import [--project-id <optimy_project_id>]
 
 """
-
+import logging
 from itertools import groupby
 from typing import Optional, Tuple
 
@@ -165,12 +165,13 @@ def get_project_answers(project_id):
 
 
 def get_answer(form_id: str, answers: dict, key: str, ans_key: str = "value"):
-    answer = answers.get(FORM_QUESTION_MAPPING[form_id][key], {}).get(ans_key)
+    answer = answers.get(FORM_QUESTION_MAPPING.get(form_id, {}).get(key), {}).get(ans_key)
     if not answer:
         print(f"Could not find answer for {key}")
     return answer
 
 
+@transaction.atomic()
 def create_project(optimy_project: dict, answers: dict) -> Tuple[Optional[Project], bool]:
     """
     Takes an Optimy project and upserts an RSR project in the DB
@@ -379,10 +380,28 @@ class Command(BaseCommand):
             "Operation",
             "Project Title",
         ]
+        failed_imported_projects = tablib.Dataset()
+        failed_imported_projects.headers = [
+            "Optimy ID",
+            "Contract Status",
+            "Project Title",
+        ]
+
         for optimy_project in optimy_projects:
             optimy_project_id = optimy_project["id"]
             answers = get_project_answers(optimy_project_id)
-            project, created = create_project(optimy_project, answers)
+            try:
+                project, created = create_project(optimy_project, answers)
+            except Exception as e:
+                project = None
+                created = False
+                logging.warning("Couldn't create project %s", optimy_project_id, exc_info=True)
+                failed_imported_projects.append([
+                    optimy_project_id,
+                    CONTRACT_STATUS_IDS.get(optimy_project.get("status_id"), "UNKNOWN"),
+                    get_answer(optimy_project.get("form_id"), answers, "title"),
+                ])
+
             if project is None:
                 continue
             print(f"Imported {optimy_project_id} as {project.id} - {project.title}")
@@ -398,6 +417,8 @@ class Command(BaseCommand):
 
         print("Report:")
         print(imported_projects.export("csv"))
+        print("Failed:")
+        print(failed_imported_projects.export("csv"))
 
         if dry_run:
             raise InterruptedError()
