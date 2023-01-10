@@ -362,11 +362,14 @@ class Command(BaseCommand):
         if not programs_exist():
             raise CommandError("Not all programs are present in the DB")
         optimy_project_id = options["project_id"]
-        if not optimy_project_id:
-            print("Fetching projects from Optimy")
-            optimy_projects = get_optimy_projects()
-        else:
-            optimy_projects = [dict(id=optimy_project_id)]
+        print("Fetching projects from Optimy")
+        optimy_projects = get_optimy_projects()
+        if optimy_project_id:
+            optimy_projects = [
+                optimy_project
+                for optimy_project in optimy_projects
+                if optimy_project.get("id") == optimy_project_id
+            ]
 
         # Set program IDs
         set_program_iati_ids()
