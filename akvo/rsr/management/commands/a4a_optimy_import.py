@@ -117,7 +117,7 @@ VALIDATION_SET_NAME = "DGIS Modified"
 def programs_exist():
     program = Project.objects.filter(id=MASTER_PROGRAM_ID).first()
     if program is not None:
-        sub_programs = set(program.descendants(depth=1).values_list("pk", flat=True))
+        sub_programs = set(program.descendants(max_depth=1).values_list("pk", flat=True))
         program_ids = set(PROGRAM_IDS.values())
         return (sub_programs & program_ids) == program_ids
     return False
