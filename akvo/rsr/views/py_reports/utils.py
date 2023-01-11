@@ -384,15 +384,34 @@ class IndicatorProxy(ObjectReaderProxy):
         return self._real.is_cumulative()
 
     @cached_property
-    def target_value(self):
-        return ensure_decimal(self._real.target_value)
+    def use_indicator_target(self):
+        return self.result.project.use_indicator_target
 
-    @property
-    def sum_of_period_values(self):
+    @cached_property
+    def target_value(self):
+        return ensure_decimal(self._real.target_value) if self.use_indicator_target else self.total_period_targets
+
+    @cached_property
+    def total_period_targets(self):
+        target_value = 0
+        for period in self.periods:
+            target_value += ensure_decimal(period.target_value)
+        return target_value
+
+    @cached_property
+    def total_period_values(self):
+        return self._get_cumulative_period_values() if self.is_cumulative else self._get_non_cumulative_period_values()
+
+    def _get_non_cumulative_period_values(self):
         value = 0
         for period in self._periods:
             value += ensure_decimal(period.actual_value)
         return value
+
+    def _get_cumulative_period_values(self):
+        periods = [period for period in self.periods if period.has_approved_updates]
+        latest_period = sorted(periods, key=lambda p: p.period_start)[-1] if periods else None
+        return ensure_decimal(latest_period.actual_value)
 
     @property
     def periods(self):
@@ -400,12 +419,7 @@ class IndicatorProxy(ObjectReaderProxy):
 
     @cached_property
     def progress(self):
-        actual_values = 0
-        target_values = 0
-        for period in self.periods:
-            actual_values += period.actual_value
-            target_values += period.target_value
-        return calculate_percentage(actual_values, self.target_value or target_values)
+        return calculate_percentage(self.total_period_values, self.target_value or self.total_period_targets)
 
     @property
     def progress_str(self):
@@ -429,7 +443,8 @@ class IndicatorProxy(ObjectReaderProxy):
 
     def _get_cumulative_disaggregations(self):
         disaggregations = {}
-        latest_period = sorted(self.periods, key=lambda p: p.period_start)[-1] if self.periods else None
+        periods = [period for period in self.periods if period.has_approved_updates]
+        latest_period = sorted(periods, key=lambda p: p.period_start)[-1] if periods else None
         if not latest_period:
             return disaggregations
         for d in latest_period.disaggregations.values():
@@ -508,6 +523,10 @@ class PeriodProxy(ObjectReaderProxy):
     @property
     def grade(self):
         return 'low' if self.progress <= 49 else 'high' if self.progress >= 85 else 'medium'
+
+    @cached_property
+    def has_approved_updates(self):
+        return len(self.approved_updates) > 0
 
     @cached_property
     def approved_updates(self):
