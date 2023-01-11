@@ -345,9 +345,9 @@ def render_report(request, project_id):
                 row.cells[1].width = Mm(50)
                 row.cells[2].text = indicator.title
                 row.cells[2].width = Mm(50)
-                row.cells[3].text = indicator.baseline_year or ''
+                row.cells[3].text = str(indicator.baseline_year) or ''
                 row.cells[3].width = Mm(20)
-                row.cells[4].text = indicator.baseline_value or ''
+                row.cells[4].text = str(indicator.baseline_value) or ''
                 row.cells[4].width = Mm(20)
                 if period.period_start:
                     row.cells[5].text = period.period_start.strftime('%Y')
