@@ -157,6 +157,7 @@ class IndicatorFrameworkNotSoLiteSerializer(BaseRSRSerializer):
     labels = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
     disaggregation_targets = serializers.SerializerMethodField()
     dimension_names = serializers.SerializerMethodField()
+    is_cumulative = serializers.ReadOnlyField()
 
     def get_disaggregation_targets(self, obj):
         return serialize_disaggregation_targets(obj)
@@ -182,6 +183,7 @@ class IndicatorFrameworkNotSoLiteSerializer(BaseRSRSerializer):
             'title',
             'type',
             'measure',
+            'is_cumulative',
             'ascending',
             'description',
             'baseline_year',
