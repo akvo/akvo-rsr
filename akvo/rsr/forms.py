@@ -48,6 +48,11 @@ def password_policy_fallback(password, *_):
         raise ValidationError(errors)
 
 
+def resolve_password_policy(user):
+    organisation = user.first_organisation()
+    return organisation.password_policy if organisation else None
+
+
 class RegisterForm(UserCreationForm):
     email = forms.EmailField(
         label=_('Email'),

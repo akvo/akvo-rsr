@@ -9,6 +9,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 import json
 
+from django.urls import reverse
+
+from akvo.password_policy.models import PolicyConfig
 from akvo.rsr.forms import PASSWORD_MINIMUM_LENGTH
 from akvo.rsr.models import Organisation, User
 from akvo.rsr.tests.base import BaseTestCase
@@ -252,3 +255,46 @@ class CurrentUserTestCase(BaseTestCase):
         content = response.data
         program_ids = sorted([p['id'] for p in content['programs']])
         self.assertEqual(sorted([program_a.id, program_b.id]), program_ids)
+
+
+class OrganisationPasswordPolicyTestCase(BaseTestCase):
+    def setUp(self):
+        super().setUp()
+        self.org = self.create_organisation('Akvo')
+        policy = PolicyConfig.objects.create(name='Test policy', min_length=4, uppercases=2, symbols=2)
+        self.org.password_policy = policy
+        self.org.save()
+
+        email = 'foo@example.com'
+        self.initial_password = 'password'
+        self.user = self.create_user(email, self.initial_password)
+        self.make_employment(self.user, self.org, 'Users')
+
+        self.url = f"{reverse('user_change_password', args=(self.user.id,))}"
+        self.c.login(username=email, password=self.initial_password)
+
+    def test_change_password_invalid(self):
+        data = {
+            'old_password': self.initial_password,
+            'new_password1': 'Abcd1234-',
+            'new_password2': 'Abcd1234-',
+        }
+        response = self.c.post(
+            self.url,
+            json.dumps(data),
+            content_type='application/json'
+        )
+        self.assertEquals(response.status_code, 400)
+
+    def test_change_password_valid(self):
+        data = {
+            'old_password': self.initial_password,
+            'new_password1': 'AB?-',
+            'new_password2': 'AB?-',
+        }
+        response = self.c.post(
+            self.url,
+            json.dumps(data),
+            content_type='application/json'
+        )
+        self.assertEquals(response.status_code, 200)
