@@ -81,14 +81,13 @@ def build_log_frame(project_view):
                     previous_indicator = indicator.title
                     current_indicator = indicator.title
                 disaggregations = []
-                for d in period.disaggregations.all():
+                for d in period.disaggregations.values():
                     disaggregations.append({
-                        'label': str(d.dimension_value),
-                        'value': d.value
+                        'label': str(d.get('type', '')),
+                        'value': d.get('value', None)
                     })
                 if len(disaggregations):
                     has_disaggregations = True
-                    print(disaggregations)
 
                 data.append({
                     'result': current_result,

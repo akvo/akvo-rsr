@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { cloneDeep, isEmpty } from 'lodash'
 import classNames from 'classnames'
 import SimpleMarkdown from 'simple-markdown'
+import moment from 'moment'
 
 import { FilterBar, Indicator } from './components'
 import { resultTypes } from '../../utils/constants'
@@ -130,6 +131,20 @@ const ResultOverview = ({
     }
   }
 
+  const sumActualValue = (indicator) => {
+    if (!indicator.isCumulative) {
+      return indicator.periods.reduce((total, currentValue) => total + currentValue.actualValue, 0)
+    }
+    const filteredPeriods = indicator.periods.filter(period => period.updates.length)
+    if (!filteredPeriods.length) {
+      return 0
+    }
+    const latest = filteredPeriods.reduce((a, b) =>
+      (moment(b.periodEnd, 'DD/MM/YYYY') - moment(a.periodEnd, 'DD/MM/YYYY') > 0) ? b : a
+    )
+    return latest.actualValue
+  }
+
   return (
     <div className="mne-view">
       <div className="main-content filterBarVisible">
@@ -169,7 +184,7 @@ const ResultOverview = ({
                 defaultActiveKey={defaultFirstKey ? defaultFirstKey.indicator : null}
               >
                 {result.indicators.filter(indicatorsFilter).map(indicator => {
-                  const sumActualValue = indicator?.periods.reduce((total, currentValue) => total + currentValue.actualValue, 0)
+                  const actualValue = sumActualValue(indicator)
                   return (
                     <Panel
                       header={(
@@ -195,7 +210,7 @@ const ResultOverview = ({
                                 )}
                               </Col>
                               <Col span={4} className="target-indicator border-left">
-                                <TargetCharts actualValue={sumActualValue} targetValue={indicator.targetValue} />
+                                <TargetCharts actualValue={actualValue} targetValue={indicator.targetValue} />
                               </Col>
                               <Col span={3} className="target-indicator" style={{ paddingRight: 10 }}>
                                 <ul>
@@ -203,7 +218,7 @@ const ResultOverview = ({
                                     <div className="label">aggregated actual value</div>
                                   </li>
                                   <li>
-                                    <h4 className="value"><b>{setNumberFormat(sumActualValue)}</b></h4>
+                                    <h4 className="value"><b>{setNumberFormat(actualValue)}</b></h4>
                                   </li>
                                   <li>
                                     <div className="label">of</div>
