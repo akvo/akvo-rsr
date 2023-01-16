@@ -44,6 +44,9 @@ def audit_period_aggregation(period: IndicatorPeriod, result: Optional[AuditResu
     value, *_ = calculate_period_actual_value(period)
     if math.isclose(ensure_decimal(period.actual_value), value, abs_tol=DECIMAL_TOLERANCE):
         result.increment_success()
+    elif period.indicator.is_cumulative() and not period.approved_updates.exists():
+        # carried-over value in the cumulative period is not saved until the actual update for that period is approved
+        result.increment_success()
     else:
         result.add_failure(FailureItem(period=period, expected_value=value))
     for child_period in period.child_periods.all():
