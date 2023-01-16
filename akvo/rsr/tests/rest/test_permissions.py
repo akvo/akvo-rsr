@@ -13,7 +13,6 @@ import re
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser, Group
-from django.core import management
 from django.test import TestCase
 
 from akvo.rest.viewsets import PublicProjectViewSet, ReadOnlyPublicProjectViewSet
@@ -42,7 +41,7 @@ class CreatePermissionFilteringTestCase(TestCase):
         with permissions for them in akvo.rsr.permissions
 
         """
-
+        super().setUpClass()
         # Prepend our messages to default messages.
         cls.longMessage = True
 
@@ -221,10 +220,6 @@ class CreatePermissionFilteringTestCase(TestCase):
             # PartnerSite
             M.PartnerSite.objects.create(organisation=organisation,
                                          hostname='{}.org'.format(org_name))
-
-    @classmethod
-    def tearDownClass(cls):
-        management.call_command('flush', interactive=False)
 
     @staticmethod
     def ensure_model_map_populated(model_map):

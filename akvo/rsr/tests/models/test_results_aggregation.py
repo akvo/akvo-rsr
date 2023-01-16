@@ -35,9 +35,6 @@ class PeriodActualValueTestCase(TestCase):
         vs = ViewSyncer()
         vs.run(True, True)
 
-    def tearDown(self):
-        User.objects.all().delete()
-
     def test_actual_value_with_two_approved_updates(self):
         # Given
         period = self.period
@@ -175,9 +172,6 @@ class PeriodDisaggregationTestCase(TestCase):
         #  set up PG views
         vs = ViewSyncer()
         vs.run(True, True)
-
-    def tearDown(self):
-        User.objects.all().delete()
 
     def test_disaggregated_values_aggregated_over_period(self):
         # Given

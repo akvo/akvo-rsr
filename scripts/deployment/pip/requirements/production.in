@@ -1,37 +1,38 @@
 # Django
 Django>=3.2.10, <4
+markupsafe==2.1.1
 
 # Django filter
-django-filter
+django-filter==21.1
 
 # Django markup
-django-markup
+django-markup==1.5
 # Not direct requirements, but django-markup doesn't seem to pull them in
-bleach-whitelist
-bleach
+bleach-whitelist==0.0.11
+bleach==3.2.1
 
 # Bootstrap
-django-bootstrap3
+django-bootstrap3==15.0.0
 
 # API framework
-python-dateutil
-requests
+python-dateutil==2.8.1
+requests==2.26.0
 
 # DRF
-djangorestframework
+djangorestframework==3.12.4
 # XML end-points
-djangorestframework-xml
+djangorestframework-xml==2.0.0
 # CSV endpoints
-djangorestframework-csv
+djangorestframework-csv==2.1.1
 
 # Docs
-django-rest-swagger
+django-rest-swagger==2.2.0
 
 # Legacy API and token based auth
-django-tastypie
+django-tastypie==0.14.3
 
 # SSL for Email
-django-smtp-ssl
+django-smtp-ssl==1.0
 
 # General requirements
 lxml==4.4.2
@@ -39,42 +40,45 @@ pytz==2014.3
 xmltodict==0.10.2
 
 # RSR requirements
-Markdown
-Pillow
+Markdown==3.3.4
+Pillow==8.0.1
 python-memcached==1.59
 
 # Images and videos
-sorl-thumbnail
-django-embed-video
+sorl-thumbnail==12.7.0
+django-embed-video==1.4.0
 
 # Database requirements
 psycopg2-binary==2.8.4
-django-pgviews
+django-pgviews==0.5.7
+
+# Better support for tree structures
+django-ltree==0.5.3
 
 # App container
-gunicorn==19.5.0
+gunicorn==20.1.0
 
 # Scripts logging support
 tablib==0.14.0
 
 # statsd and graphite integration
-django-statsd-mozilla
+django-statsd-mozilla==0.4.0
 
 # Sentry integration
-sentry-sdk
+sentry-sdk==0.19.2
 
 # Permission rules
-rules
+rules==2.2
 
 # Nested inlines in admin
-django-nested-inline
+django-nested-inline==0.4.4
 
 # JSON fields in django admin
-django-prettyjson
+django-prettyjson==0.4.1
 
 # Task scheduling
-django-crontab
-psutil
+django-crontab==0.7.1
+psutil==5.9.2
 
 # XML Testing
 xmlunittest==0.5
@@ -83,10 +87,10 @@ xmlunittest==0.5
 bcrypt==3.1.4
 
 # Javascript tools integration
-django-webpack-loader
+django-webpack-loader==1.4.1
 
 # Password lockdown partners site
-django-lockdown
+django-lockdown==4.0.0
 
 # Pdf generator
 WeasyPrint==52.5
@@ -98,19 +102,19 @@ geojson==2.5.0
 PyExcelerate==0.8.0
 
 # Google Storage Backend
-django-storages
-google-cloud-storage
+django-storages==1.12.2
+google-cloud-storage<2
 
 # Docx writer
-python-docx
+python-docx==0.8.10
 
 # Django request token
-django_request_token
+django_request_token==0.16.1
 
-timeout-decorator
+timeout-decorator==0.5.0
 
 # Draw chart, mainly used in reports
-matplotlib
+matplotlib==3.5.1
 
 # For profiling on Google cloud Platform
 # Don't install this if you aren't on GCP

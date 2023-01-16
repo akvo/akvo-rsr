@@ -16,7 +16,7 @@ from . import (
 TIMEOUT = timedelta(minutes=30)
 MAX_ATTEMPTS = 3
 HANDLER = {
-    program_overview_pdf_report.REPORT_NAME: program_overview_excel_report.handle_email_report,
+    program_overview_pdf_report.REPORT_NAME: program_overview_pdf_report.handle_email_report,
     program_overview_excel_report.REPORT_NAME: program_overview_excel_report.handle_email_report,
     program_period_labels_overview_pdf_report.REPORT_NAME: program_period_labels_overview_pdf_report.handle_email_report,
     results_indicators_with_map_pdf_reports.ORG_PROJECTS_REPORT_NAME: results_indicators_with_map_pdf_reports.handle_org_projects_email_report,
@@ -35,6 +35,7 @@ def run_job():
     try:
         handler = HANDLER.get(job.report, None)
         if handler:
+            logger.info("Handling job %s for report %s with %s", job.id, job.report)
             handler(job.payload, job.recipient)
         job.mark_finished()
     except Exception:

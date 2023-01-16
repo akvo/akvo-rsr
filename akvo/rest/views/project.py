@@ -6,37 +6,42 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 
 from datetime import timedelta
+
 from django.conf import settings
-from django.utils.timezone import now
-from django.db.models import Q, Count
+from django.db.models import Count, Q
 from django.shortcuts import get_object_or_404
+from django.utils.timezone import now
 from django.views.decorators.cache import cache_page
+from geojson import Feature, FeatureCollection, Point
+from rest_framework import status
 from rest_framework.authentication import SessionAuthentication
-from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.decorators import action, api_view, authentication_classes, permission_classes
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.status import HTTP_201_CREATED, HTTP_403_FORBIDDEN
-from geojson import Feature, Point, FeatureCollection
+from rest_framework.status import HTTP_201_CREATED
 from timeout_decorator import timeout
 
-from akvo.codelists.store.default_codelists import SECTOR_CATEGORY, SECTOR_VOCABULARY, SECTOR
-from akvo.rest.cache import serialized_project
-from akvo.rest.serializers import (ProjectSerializer, ProjectExtraSerializer,
-                                   ProjectExtraDeepSerializer,
-                                   ProjectIatiExportSerializer,
-                                   ProjectUpSerializer,
-                                   TypeaheadOrganisationSerializer,
-                                   ProjectMetadataSerializer,
-                                   OrganisationCustomFieldSerializer,
-                                   ProjectHierarchyRootSerializer,
-                                   ProjectHierarchyTreeSerializer,
-                                   ProjectDirectoryDynamicFieldsSerializer,)
+from akvo.codelists.store.default_codelists import SECTOR, SECTOR_CATEGORY, SECTOR_VOCABULARY
 from akvo.rest.authentication import JWTAuthentication, TastyTokenAuthentication
-from akvo.rsr.models import Project, OrganisationCustomField, IndicatorPeriodData, ProjectRole
+from akvo.rest.cache import serialized_project
+from akvo.rest.serializers import (
+    ExternalProjectSerializer,
+    OrganisationCustomFieldSerializer,
+    ProjectDirectoryDynamicFieldsSerializer,
+    ProjectExtraDeepSerializer,
+    ProjectExtraSerializer,
+    ProjectIatiExportSerializer,
+    ProjectMetadataSerializer,
+    ProjectSerializer,
+    ProjectUpSerializer,
+    TypeaheadOrganisationSerializer,
+)
+from akvo.rsr.models import ExternalProject, IndicatorPeriodData, OrganisationCustomField, Project, ProjectRole
 from akvo.rsr.usecases.iati_validation import schedule_iati_activity_validation
 from akvo.rsr.views.my_rsr import user_viewable_projects
-from akvo.utils import codelist_choices, single_period_dates, get_thumbnail
-from ..viewsets import PublicProjectViewSet, ReadOnlyPublicProjectViewSet
+from akvo.utils import codelist_choices, get_thumbnail, single_period_dates
+from ..viewsets import PublicProjectViewSet
 
 
 class ProjectViewSet(PublicProjectViewSet):
@@ -69,6 +74,71 @@ class ProjectViewSet(PublicProjectViewSet):
                 partnerships__organisation__pk=reporting_org
             ).distinct()
         return super(ProjectViewSet, self).filter_queryset(queryset)
+
+    @action(methods=("GET", "POST"), detail=True)
+    def external_project(self, request, **kwargs):
+        project = self.get_object()
+        if request.method == "GET":
+            # List external projects
+            return Response(ExternalProjectSerializer(
+                ExternalProject.objects.filter(related_project=project), many=True
+            ).data)
+        else:
+            if not request.user.has_perm("rsr.change_project", project):
+                raise PermissionDenied()
+
+            # Create external project
+            serializer = ExternalProjectSerializer(data=request.data)
+            if serializer.is_valid():
+                external_project = serializer.create({
+                    **serializer.validated_data,
+                    "related_project": project
+                })
+                return Response(
+                    ExternalProjectSerializer(external_project).data,
+                    status=status.HTTP_201_CREATED
+                )
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(methods=("GET",), detail=True)
+    def children(self, request, **kwargs):
+        project = self.get_object()
+
+        queryset = self._filter_queryset(project.children().select_related(
+            "primary_organisation",
+        ).prefetch_related(
+            "locations",
+            "recipient_countries",
+            "sectors",
+        ))
+        page = self.paginate_queryset(queryset)
+
+        serializer_context = self.get_serializer_context()
+
+        if page is not None:
+            serializer = ProjectMetadataSerializer(page, many=True, context=serializer_context)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = ProjectMetadataSerializer(queryset, many=True, context=serializer_context).data
+        return Response(serializer.data)
+
+    @action(
+        methods=("DELETE",),
+        detail=True,
+        url_path=r"external_project/(?P<ext_pk>\d+)"
+    )
+    def delete_external_project(self, request, ext_pk, **kwargs):
+        project = self.get_object()
+        if not request.user.has_perm("rsr.change_project", project):
+            raise PermissionDenied()
+
+        ext_project = get_object_or_404(ExternalProject, related_project=project, id=ext_pk)
+        ext_project.delete()
+        return Response(status=status.HTTP_200_OK)
+
+
+class ProjectByUuidViewSet(ProjectViewSet):
+    lookup_field = "uuid"
 
 
 class MyProjectsViewSet(PublicProjectViewSet):
@@ -103,30 +173,6 @@ class MyProjectsViewSet(PublicProjectViewSet):
                 | Q(recipient_countries__country__iexact=country)
             )
         return queryset
-
-
-class ProjectHierarchyViewSet(ReadOnlyPublicProjectViewSet):
-    queryset = Project.objects.none()
-    serializer_class = ProjectHierarchyRootSerializer
-    project_relation = ''
-
-    def get_queryset(self):
-        if self.request.user.is_anonymous:
-            return Project.objects.none()
-        queryset = self.request.user.my_projects()\
-                                    .published()\
-                                    .filter(projecthierarchy__isnull=False)
-        return queryset
-
-    def retrieve(self, request, *args, **kwargs):
-        project = get_object_or_404(Project, pk=self.kwargs['pk'])
-        if not self.request.user.has_perm('rsr.view_project', project):
-            return Response('Request not allowed', status=HTTP_403_FORBIDDEN)
-
-        root = project.ancestor()
-        serializer = ProjectHierarchyTreeSerializer(root, context=self.get_serializer_context())
-
-        return Response(serializer.data)
 
 
 class ProjectIatiExportViewSet(PublicProjectViewSet):
@@ -444,9 +490,9 @@ def project_title(request, project_pk):
 
     data = {
         'title': project.title,
-        'targets_at': project.ancestor().targets_at,
+        'targets_at': project.get_root().targets_at,
         'publishing_status': project.publishingstatus.status,
-        'has_hierarchy': project.parents_all().exists() or project.is_hierarchy_root(),
+        'has_hierarchy': project.has_ancestors or project.is_hierarchy_root(),
         'pending_update_count': IndicatorPeriodData.objects.filter(
             period__indicator__result__project=project,
             status=IndicatorPeriodData.STATUS_PENDING_CODE

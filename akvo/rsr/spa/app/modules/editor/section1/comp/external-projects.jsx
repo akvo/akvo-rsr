@@ -1,66 +1,47 @@
 import React, { useState, useEffect } from 'react'
-import { Button, Modal, Input, Popconfirm } from 'antd'
+import { Button, Modal, Input, Popconfirm, message } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 import api from '../../../../utils/api'
-import actionTypes from '../../action-types'
+import * as actions from '../../actions'
 
-const ExternalProjects = ({ projectId, dispatch }) => {
+const ExternalProjects = ({ externalProjects, addExternalProject, removeExternalProject, setExternalProjects, match: { params } }) => {
   const { t } = useTranslation()
   const [isModalShown, showModal] = useState(false)
   const [inputValue, setInputValue] = useState('')
   const [adding, setAdding] = useState(false)
-  const [projects, setProjects] = useState([])
   useEffect(() => {
-    api.get(`/related_project/?related_project=${projectId}&relation=2`).then(({ data: { results } }) => {
-      if (results.length && results[0]?.relatedProject) {
-        dispatch({
-          type: actionTypes.EDIT_SET_ITEM,
-          sectionIndex: 1,
-          setName: 'relatedProjects',
-          itemIndex: 0,
-          fields: {
-            relatedProject: results[0]?.project,
-            project: results[0]?.relatedProject,
-            relation: 2
-          }
-        })
-        dispatch({
-          type: actionTypes.BACKEND_SYNC,
-          lastSaved: null
-        })
-      }
-      setProjects(results.filter(it => it.relatedIatiId !== ''))
+    api.get(`/project/${params.id}/external_project/`).then(({ data }) => {
+      setExternalProjects(data)
     })
   }, [])
   const handleAdd = () => {
     setAdding(true)
-    api.post('/related_project/', {
-      project: projectId,
-      relatedIatiId: inputValue,
-      relation: '2'
-    }).then(({data}) => {
+    api.post(`/project/${params?.id}/external_project/`, {
+      iatiId: inputValue,
+    }).then(({ data }) => {
       setAdding(false)
       showModal(false)
       setInputValue('')
-      setProjects([...projects, data])
-    }).catch((e) => {
-      console.log(e)
+      addExternalProject(data)
+    }).catch(() => {
       setAdding(false)
     })
   }
   const handleDelete = (project) => {
-    api.delete(`/related_project/${project.id}`)
-    setProjects(projects.filter(it => it.id !== project.id))
+    api.delete(`/project/${params?.id}/external_project/${project.id}/`)
+      .then(() => removeExternalProject(project))
+      .catch(() => message.error('Failed to remove external project'))
   }
   return (
     <div className="external-projects">
-      {projects.length > 0 && (
+      {externalProjects?.length > 0 && (
         <div className="ant-row ant-form-item projects-list">
           <div className="ant-col ant-form-item-label"><label>{t('External child projects')}</label></div>
-          {projects.map((project) =>
+          {externalProjects?.map((project) =>
             <div className="project-row">
-              <span>{project.relatedIatiId}</span>
+              <span>{project.iatiId}</span>
               <Popconfirm
                 title={t('Are you sure to delete this?')}
                 onConfirm={() => handleDelete(project)}
@@ -83,15 +64,12 @@ const ExternalProjects = ({ projectId, dispatch }) => {
         onCancel={() => { showModal(false); setInputValue('') }}
         confirmLoading={adding}
       >
-        <Input disabled={adding} placeholder="IATI Activity ID" value={inputValue} onChange={({target: {value}}) => setInputValue(value)} />
+        <Input disabled={adding} placeholder="IATI Activity ID" value={inputValue} onChange={({ target: { value } }) => setInputValue(value)} />
       </Modal>
     </div>
   )
 }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    dispatch,
-  }
-}
-export default connect(null, mapDispatchToProps)(ExternalProjects)
+export default connect(
+  (({ editorRdr: { externalProjects } }) => ({ externalProjects })), actions
+)(withRouter(ExternalProjects))
