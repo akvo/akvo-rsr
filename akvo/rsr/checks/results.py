@@ -3,6 +3,7 @@ from typing import Dict, Iterable, List
 from django.db.models import QuerySet
 
 from akvo.rsr.models import Project, Result
+from akvo.rsr.models.related_project import get_project_parents
 
 
 def get_with_non_familial_parents() -> Iterable[Result]:
@@ -22,7 +23,7 @@ def get_with_non_familial_parents() -> Iterable[Result]:
     results = get_with_parents()
     return [
         result for result in results
-        if result.parent_result.project not in result.project.parents_all()
+        if result.parent_result.project not in get_project_parents(result.project)
     ]
 
 

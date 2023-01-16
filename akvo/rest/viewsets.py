@@ -169,18 +169,19 @@ class PublicProjectViewSet(BaseRSRViewSet):
         if hasattr(self, '_cached_filtered_queryset'):
             return self._cached_filtered_queryset
 
+        self._cached_filtered_queryset = self._filter_queryset(queryset)
+        return self._cached_filtered_queryset
+
+    def _filter_queryset(self, queryset):
         request = self.request
         user = request.user
         queryset = super().filter_queryset(queryset)
-
         # filter projects if user is "non-privileged"
         if user.is_anonymous or not (user.is_superuser or user.is_admin) and self.action == 'list':
             queryset = self.projects_filter_for_non_privileged_users(
                 user, queryset, self.project_relation, action=self.action
             )
-
-        self._cached_filtered_queryset = queryset.distinct()
-        return self._cached_filtered_queryset
+        return queryset.distinct()
 
     def create(self, request, *args, **kwargs):
         model_name = self.queryset.model._meta.model_name

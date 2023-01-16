@@ -242,7 +242,7 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
     setPinned(String(index))
   }
   const disaggregations = [...updates.reduce((acc, val) => [...acc, ...val.disaggregations.map(it => ({ ...it, status: val.status }))], [])]
-  const canAddUpdate = measure === '2' ? updates.filter(it => !it.isNew).length === 0 : true
+  const canAddUpdate = measure === measureType.PERCENTAGE ? updates.filter(it => !it.isNew).length === 0 : true
   const mdParse = SimpleMarkdown.defaultBlockParse
   const mdOutput = SimpleMarkdown.defaultOutput
   let data = updates

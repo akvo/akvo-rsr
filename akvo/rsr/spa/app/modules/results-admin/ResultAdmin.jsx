@@ -9,6 +9,7 @@ import TobeReported from './TobeReported'
 import PendingApproval from './PendingApproval'
 import api from '../../utils/api'
 import '../results/enumerator.scss'
+import { measureType } from '../../utils/constants'
 
 const { TabPane } = Tabs
 const { Text } = Typography
@@ -186,7 +187,7 @@ const ResultAdmin = ({
         (
           p?.canAddUpdate ||
           (!p?.canAddUpdate && p?.updates.length && p?.indicator?.measure !== '2') ||
-          (p?.indicator?.measure === '2' && myDrafts?.length)
+          (p?.indicator?.measure === measureType.PERCENTAGE && myDrafts?.length)
         )
       )
     })

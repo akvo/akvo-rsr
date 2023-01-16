@@ -82,6 +82,9 @@ router.register(r'(?P<version>(v1))/partnership_more_link', views.PartnershipMor
 router.register(r'(?P<version>(v1))/planned_disbursement', views.PlannedDisbursementViewSet)
 router.register(r'(?P<version>(v1))/policy_marker', views.PolicyMarkerViewSet)
 router.register(r'(?P<version>(v1))/project', views.ProjectViewSet)
+router.register(r'(?P<version>(v1))/raw_project_hierarchy', views.RawProjectHierarchyViewSet)
+router.register(r'(?P<version>(v1))/program', views.ProgramViewSet)
+router.register(r'(?P<version>(v1))/project_by_uuid', views.ProjectByUuidViewSet)
 router.register(r'(?P<version>(v1))/my_projects', views.MyProjectsViewSet)
 router.register(r'(?P<version>(v1))/project_iati_export', views.ProjectIatiExportViewSet,
                 basename='project_iati_export')
@@ -106,16 +109,12 @@ router.register(r'(?P<version>(v1))/project_update', views.ProjectUpdateViewSet,
 router.register(r'(?P<version>(v1))/project_update_location', views.ProjectUpdateLocationViewSet)
 router.register(r'(?P<version>(v1))/project_update_map_location', views.MapProjectUpdateLocationViewSet)
 
-router.register(r'(?P<version>(v1))/project_hierarchy', views.ProjectHierarchyViewSet)
-router.register(r'(?P<version>(v1))/raw_project_hierarchy', views.RawProjectHierarchyViewSet)
-
 router.register(r'(?P<version>(v1))/publishing_status', views.PublishingStatusViewSet)
 router.register(r'(?P<version>(v1))/recipient_country', views.RecipientCountryViewSet)
 router.register(r'(?P<version>(v1))/recipient_organisation_budget', views.OrganisationRecipientOrgBudgetViewSet)
 router.register(r'(?P<version>(v1))/recipient_organisation_budget_line',
                 views.OrganisationRecipientOrgBudgetLineViewSet)
 router.register(r'(?P<version>(v1))/recipient_region', views.RecipientRegionViewSet)
-router.register(r'(?P<version>(v1))/related_project', views.RelatedProjectViewSet)
 router.register(r'(?P<version>(v1))/reports', views.ReportViewSet, basename='reports_api')
 router.register(r'(?P<version>(v1|v2))/result', views.ResultsViewSet)
 router.register(r'(?P<version>(v1))/results_framework', views.ResultsFrameworkViewSet)
@@ -204,6 +203,12 @@ urlpatterns = (
     url(r'v1/bulk-remove-periods/(?P<project_pk>[0-9]+)/$',
         views.bulk_remove_periods,
         name='bulk_remove_periods'),
+    url(r'v1/project/(?P<project_pk>[0-9]+)/indicator/(?P<indicator_pk>[0-9]+)/previous_cumulative_update$',
+        views.indicator_previous_cumulative_update,
+        name='indicator_previous_cumulative_update'),
+    url(r'v1/project/(?P<project_pk>[0-9]+)/indicator/(?P<indicator_pk>[0-9]+)/contribution_count$',
+        views.indicator_contribution_count,
+        name='indicator_contribution_count'),
 )
 
 # Project editor

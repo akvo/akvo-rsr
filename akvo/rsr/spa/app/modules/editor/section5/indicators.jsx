@@ -30,6 +30,7 @@ import Targets from './periods/targets'
 import References from './references/references'
 import SectionContext from '../section-context'
 import { useDefaultPeriodsState } from './periods/defaults-context'
+import { CumulativeToggle } from './cumulative'
 
 const { Item } = Form
 const { Panel } = Collapse
@@ -138,7 +139,7 @@ const Indicators = connect(null, { addSetItem, removeSetItem, moveSetItem })(
                             return (
                               <span className="collapse-header-content">
                                 <span className="capitalized">{type && type.label}</span>
-                        &nbsp;{t('Indicator')} {showIndexNumbers && (index + 1)}
+                                &nbsp;{t('Indicator')} {showIndexNumbers && (index + 1)}
                                 {activeKey.indexOf(String(index)) === -1 && (
                                   <Field
                                     name={`${name}.title`}
@@ -202,7 +203,7 @@ const Indicators = connect(null, { addSetItem, removeSetItem, moveSetItem })(
                     {result != null && result.parentResult && result.indicators[index] && result.indicators[index].parentIndicator == null && <Alert className="not-inherited" message="This indicator does not contribute to the lead project" type="warning" showIcon />}
                     <Condition when={`${name}.type`} is={1}>
                       <Row gutter={16}>
-                        <Col span={12}>
+                        <Col lg={9} md={14} sm={24} xs={24}>
                           <Item label={<InputLabel tooltip={t('Choose how the indicator will be measured (in percentage or units).')}>{t('Measure')}</InputLabel>}>
                             <FinalField
                               name={`${name}.measure`}
@@ -215,7 +216,13 @@ const Indicators = connect(null, { addSetItem, removeSetItem, moveSetItem })(
                             />
                           </Item>
                         </Col>
-                        <Col span={12}>
+                        <Col lg={6} md={10} sm={24} xs={24}>
+                          <Field
+                            name={`${name}.id`}
+                            render={({ input }) => <CumulativeToggle id={input.value} name={name} />}
+                          />
+                        </Col>
+                        <Col lg={9} md={24} sm={24} xs={24}>
                           <Item
                             label={
                               <InputLabel tooltip={t('Choose ascending if the target value of the indicator is higher than the baseline value (eg. people with access to sanitation). Choose descending if the target value of the indicator is lower than the baseline value (eg. people with diarrhea).')}>
@@ -309,8 +316,8 @@ const Indicators = connect(null, { addSetItem, removeSetItem, moveSetItem })(
                                 <Select allowClear {...input}>
                                   {
                                     getScoreOptions(index)
-                                    ? getScoreOptions(index).map((option, key) => <Select.Option key={key} value={option.value}>{option.label}</Select.Option>)
-                                    : <Select.Option value="">No option</Select.Option>
+                                      ? getScoreOptions(index).map((option, key) => <Select.Option key={key} value={option.value}>{option.label}</Select.Option>)
+                                      : <Select.Option value="">No option</Select.Option>
                                   }
                                 </Select>
                               )}

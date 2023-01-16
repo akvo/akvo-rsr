@@ -90,13 +90,6 @@ class AutoSave extends React.Component {
       const savedValues = get(this.props.editorRdr[`section${sectionIndex}`].fields, `${setName}[${itemIndex}]`)
       const item = thisValues
       const difference = customDiff(savedValues, item)
-      if (setName === 'relatedProjects') {
-        if (Object.keys(item).indexOf('relatedProject') === -1) return
-        if (Object.keys(item).length === 1) {
-          item.project = this.props.editorRdr.projectId
-          item.relation = '1'
-        }
-      }
       // if difference is not empty AND the difference is not just the newly created item id inserted from ADDED_NEW_ITEM
       if (!isEmpty(difference)) {
         if (

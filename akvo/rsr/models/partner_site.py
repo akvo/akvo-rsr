@@ -202,7 +202,7 @@ class PartnerSite(TimestampsMixin):
         from .project import Project
         if self.program:
             # Get all projects of a program
-            fk_projects = self.program.root_project.descendants()
+            fk_projects = self.program.root_project.descendants(with_self=True)
         elif self.partner_projects:
             # Get all projects associated via the Page's organisation
             fk_projects = self.organisation.all_projects()

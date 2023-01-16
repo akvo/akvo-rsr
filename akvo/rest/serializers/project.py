@@ -5,15 +5,15 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from datetime import timedelta
-from itertools import chain
 import logging
+from typing import List
 
 from django.conf import settings
 from django.utils.timezone import now
 from rest_framework import serializers
 from timeout_decorator import timeout
 
-from akvo.rsr.models import Project, RelatedProject, ProjectUpdate, IndicatorPeriodData
+from akvo.rsr.models import Project, ProjectUpdate, IndicatorPeriodData
 from akvo.utils import get_thumbnail
 from akvo.rsr.models.project_thumbnail import get_cached_thumbnail
 from akvo.rsr.usecases.iati_validation import schedule_iati_activity_validation
@@ -79,6 +79,8 @@ class ProjectSerializer(BaseRSRSerializer):
     program = serializers.SerializerMethodField()
     targets_at = TargetsAtField(choices=Project.TARGETS_AT_OPTION, required=False)
     iati_profile_url = serializers.SerializerMethodField()
+    path = serializers.SerializerMethodField()
+    uuid = serializers.ReadOnlyField()
 
     class Meta:
         model = Project
@@ -131,6 +133,18 @@ class ProjectSerializer(BaseRSRSerializer):
 
     def get_iati_profile_url(self, obj):
         return obj.get_iati_profile_url()
+
+    def get_path(self, project: Project):
+        return str(project.path)
+
+    def update(self, project: Project, validated_data: dict):
+        # mutual exclusion: contributes_to_project and external_parent_iati_activity_id
+        if "contributes_to_project" in validated_data:
+            validated_data["external_parent_iati_activity_id"] = None
+        elif "external_parent_iati_activity_id" in validated_data:
+            validated_data["contributes_to_project"] = None
+
+        return super().update(project, validated_data)
 
 
 class ProjectDirectorySerializer(serializers.ModelSerializer):
@@ -341,6 +355,10 @@ class ProjectMetadataSerializer(BaseRSRSerializer):
     roles = ProjectRoleSerializer(source='projectrole_set', many=True)
     is_program = serializers.ReadOnlyField(source='is_hierarchy_root')
     primary_organisation = OrganisationBasicSerializer()
+    children_count = serializers.SerializerMethodField()
+
+    def get_children_count(self, obj):
+        return obj.children().count()
 
     def get_locations(self, obj):
         countries = {location.country for location in obj.locations.all() if location.country}
@@ -351,7 +369,7 @@ class ProjectMetadataSerializer(BaseRSRSerializer):
         ]
 
     def get_parent(self, obj):
-        p = obj.parents_all().first()
+        p = obj.parent()
         user = self.context['request'].user
         if not user.can_view_project(p):
             return None
@@ -380,102 +398,30 @@ class ProjectMetadataSerializer(BaseRSRSerializer):
         fields = ('id', 'title', 'subtitle', 'date_end_actual', 'date_end_planned',
                   'date_start_actual', 'date_start_planned', 'locations', 'status',
                   'is_public', 'sectors', 'parent', 'editable', 'recipient_countries',
-                  'restricted', 'roles', 'use_project_roles', 'is_program', 'primary_organisation')
+                  'restricted', 'roles', 'use_project_roles', 'is_program', 'primary_organisation',
+                  'children_count')
 
 
-BASE_HIERARCHY_SERIALIZER_FIELDS = (
-    'id', 'title', 'subtitle', 'date_end_actual', 'date_end_planned',
-    'date_start_actual', 'date_start_planned', 'locations', 'status',
-    'is_public', 'sectors', 'parent', 'editable',
-)
-
-
-class ProjectHierarchyNodeSerializer(ProjectMetadataSerializer):
-    is_program = serializers.SerializerMethodField()
-
-    def get_is_program(self, obj):
-        return obj.is_hierarchy_root()
-
-    def get_parent(self, obj):
-
-        parent_relations = [
-            r for r in chain(obj.related_projects.all(), obj.related_to_projects.all())
-            if
-            (r.project_id == obj.pk and r.relation == RelatedProject.PROJECT_RELATION_PARENT)
-            or (r.related_project_id == obj.pk and r.relation == RelatedProject.PROJECT_RELATION_CHILD)
-        ]
-        if parent_relations:
-            r = parent_relations[0]
-            p = (r.related_project if r.relation == RelatedProject.PROJECT_RELATION_PARENT
-                 else r.project)
-        else:
-            p = None
-        return {'id': p.id, 'title': p.title} if p is not None else None
-
-    class Meta:
-        model = Project
-        fields = BASE_HIERARCHY_SERIALIZER_FIELDS + ('recipient_countries', 'is_program')
-
-
-class ProjectHierarchyRootSerializer(ProjectHierarchyNodeSerializer):
-
-    children_count = serializers.SerializerMethodField()
-
-    def get_children_count(self, obj):
-        return obj.children_all().count()
-
-    class Meta:
-        model = Project
-        fields = BASE_HIERARCHY_SERIALIZER_FIELDS + ('children_count', )
-
-
-class ProjectHierarchyTreeSerializer(ProjectHierarchyNodeSerializer):
-
-    children = serializers.SerializerMethodField()
-    is_master_program = serializers.SerializerMethodField()
-
-    def get_is_master_program(self, obj):
-        return obj.is_master_program()
-
-    def get_children(self, obj):
-        descendants = obj.descendants().prefetch_related(
-            'locations', 'locations__country', 'sectors', 'publishingstatus',
-            'related_projects', 'related_projects__related_project',
-            'related_to_projects', 'related_to_projects__project',
-            'recipient_countries',
-        )
-        serializer = ProjectHierarchyNodeSerializer(descendants, many=True, context=self.context)
-        descendants = serializer.data
-        return make_descendants_tree(descendants, obj)
-
-    class Meta:
-        model = Project
-        fields = BASE_HIERARCHY_SERIALIZER_FIELDS + ('children', 'is_master_program')
-
-
-def make_descendants_tree(descendants, root):
+def make_descendants_tree(descendants: List[dict], root: Project):
     tree = []
-    lookup = {}
+    lookup = {project["uuid"]: project for project in descendants}
+    root_uuid = root.uuid
 
-    for item in descendants:
-        if not item['parent']:
+    for node in descendants:
+        node.setdefault("children", [])  # Required by frontend
+        parent_uuid = node["parent_uuid"]
+        if not parent_uuid:
             continue
 
-        item_id = item['id']
-        parent_id = item['parent']['id']
-
-        if item_id not in lookup:
-            lookup[item_id] = {'children': []}
-
-        lookup[item_id].update(item)
-        node = lookup[item_id]
-
-        if parent_id == root.id:
+        if parent_uuid == root_uuid:
             tree.append(node)
-        else:
-            if parent_id not in lookup:
-                lookup[parent_id] = {'children': []}
 
-            lookup[parent_id]['children'].append(node)
+        parent = lookup.get(parent_uuid)
+        if parent:
+            parent.setdefault("children", []).append(node)
+            node["parent"] = {
+                "id": parent["id"],
+                "title": parent["title"],
+            }
 
     return tree

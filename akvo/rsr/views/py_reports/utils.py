@@ -380,15 +380,38 @@ class IndicatorProxy(ObjectReaderProxy):
         return self.measure == PERCENTAGE_MEASURE
 
     @cached_property
-    def target_value(self):
-        return ensure_decimal(self._real.target_value)
+    def is_cumulative(self):
+        return self._real.is_cumulative()
 
-    @property
-    def sum_of_period_values(self):
+    @cached_property
+    def use_indicator_target(self):
+        return self.result.project.use_indicator_target
+
+    @cached_property
+    def target_value(self):
+        return ensure_decimal(self._real.target_value) if self.use_indicator_target else self.total_period_targets
+
+    @cached_property
+    def total_period_targets(self):
+        target_value = 0
+        for period in self.periods:
+            target_value += ensure_decimal(period.target_value)
+        return target_value
+
+    @cached_property
+    def total_period_values(self):
+        return self._get_cumulative_period_values() if self.is_cumulative else self._get_non_cumulative_period_values()
+
+    def _get_non_cumulative_period_values(self):
         value = 0
         for period in self._periods:
             value += ensure_decimal(period.actual_value)
         return value
+
+    def _get_cumulative_period_values(self):
+        periods = [period for period in self.periods if period.has_approved_updates]
+        latest_period = sorted(periods, key=lambda p: p.period_start)[-1] if periods else None
+        return ensure_decimal(latest_period.actual_value)
 
     @property
     def periods(self):
@@ -396,12 +419,7 @@ class IndicatorProxy(ObjectReaderProxy):
 
     @cached_property
     def progress(self):
-        actual_values = 0
-        target_values = 0
-        for period in self.periods:
-            actual_values += period.actual_value
-            target_values += period.target_value
-        return calculate_percentage(actual_values, self.target_value or target_values)
+        return calculate_percentage(self.total_period_values, self.target_value or self.total_period_targets)
 
     @property
     def progress_str(self):
@@ -413,18 +431,7 @@ class IndicatorProxy(ObjectReaderProxy):
 
     @cached_property
     def disaggregations(self):
-        disaggregations = {}
-        for period in self.periods:
-            for d in period.approved_updates.disaggregations.values():
-                category = d['category']
-                type = d['type']
-                if category not in disaggregations:
-                    disaggregations[category] = {}
-                if type not in disaggregations[category]:
-                    disaggregations[category][type] = {'value': 0, 'numerator': 0, 'denominator': 0}
-                disaggregations[category][type]['value'] += (d['value'] or 0)
-                disaggregations[category][type]['numerator'] += (d['numerator'] or 0)
-                disaggregations[category][type]['denominator'] += (d['denominator'] or 0)
+        disaggregations = self._get_cumulative_disaggregations() if self.is_cumulative else self._get_non_cumulative_disaggregations()
         if self.is_percentage:
             for category, types in disaggregations.items():
                 for type in types.keys():
@@ -432,6 +439,34 @@ class IndicatorProxy(ObjectReaderProxy):
                         disaggregations[category][type]['numerator'],
                         disaggregations[category][type]['denominator']
                     )
+        return disaggregations
+
+    def _get_cumulative_disaggregations(self):
+        disaggregations = {}
+        periods = [period for period in self.periods if period.has_approved_updates]
+        latest_period = sorted(periods, key=lambda p: p.period_start)[-1] if periods else None
+        if not latest_period:
+            return disaggregations
+        for d in latest_period.disaggregations.values():
+            category = d['category']
+            type = d['type']
+            disaggregations.setdefault(category, {})[type] = {
+                'value': d['value'],
+                'numerator': d['numerator'],
+                'denominator': d['denominator'],
+            }
+        return disaggregations
+
+    def _get_non_cumulative_disaggregations(self):
+        disaggregations = {}
+        for period in self.periods:
+            for d in period.approved_updates.disaggregations.values():
+                category = d['category']
+                type = d['type']
+                disaggregations.setdefault(category, {}).setdefault(type, {'value': 0, 'numerator': 0, 'denominator': 0})
+                disaggregations[category][type]['value'] += (d['value'] or 0)
+                disaggregations[category][type]['numerator'] += (d['numerator'] or 0)
+                disaggregations[category][type]['denominator'] += (d['denominator'] or 0)
         return disaggregations
 
 
@@ -446,6 +481,10 @@ class PeriodProxy(ObjectReaderProxy):
         return self._indicator
 
     @cached_property
+    def is_cumulative(self):
+        return self.indicator.is_cumulative
+
+    @cached_property
     def period_start(self):
         return get_period_start(self._real, self.indicator.result.project.in_eutf_hierarchy)
 
@@ -455,7 +494,7 @@ class PeriodProxy(ObjectReaderProxy):
 
     @property
     def actual_value(self):
-        return self.approved_updates.total_value
+        return self.approved_updates.total_value if not self.is_cumulative else ensure_decimal(self._real.actual_value)
 
     @property
     def actual_comment(self):
@@ -486,6 +525,10 @@ class PeriodProxy(ObjectReaderProxy):
         return 'low' if self.progress <= 49 else 'high' if self.progress >= 85 else 'medium'
 
     @cached_property
+    def has_approved_updates(self):
+        return len(self.approved_updates) > 0
+
+    @cached_property
     def approved_updates(self):
         return ApprovedUpdateCollection(self, self.type)
 
@@ -499,12 +542,26 @@ class PeriodProxy(ObjectReaderProxy):
 
     @cached_property
     def disaggregation_targets(self):
-        print('disaggregation_targets hits')
         disaggregations = [
             DisaggregationTarget(t)
             for t in self._real.disaggregation_targets.all()
         ]
         return {(d.category, d.type): d for d in disaggregations}
+
+    @cached_property
+    def disaggregations(self):
+        disaggregations = {}
+        for d in self._real.disaggregations.all():
+            category = d.dimension_value.name.name
+            type = d.dimension_value.value
+            disaggregations[(category, type)] = {
+                'category': category,
+                'type': type,
+                'value': d.value,
+                'numerator': d.numerator,
+                'denominator': d.denominator,
+            }
+        return disaggregations
 
     def get_disaggregation_target_of(self, category, type):
         key = (category, type)
@@ -514,9 +571,10 @@ class PeriodProxy(ObjectReaderProxy):
 
     def get_disaggregation_of(self, category, type):
         key = (category, type)
-        if key not in self.approved_updates.disaggregations:
-            return None
-        return self.approved_updates.disaggregations[key]['value']
+        if self.is_cumulative:
+            return self.disaggregations[key]['value'] if key in self.disaggregations else None
+        return self.approved_updates.disaggregations[key]['value'] \
+            if key in self.approved_updates.disaggregations else None
 
 
 class ApprovedUpdateCollection(ObjectReaderProxy):
