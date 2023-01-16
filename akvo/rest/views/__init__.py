@@ -26,7 +26,7 @@ from .goal import GoalViewSet
 from .humanitarian_scope import HumanitarianScopeViewSet
 from .iati_check import IatiCheckViewSet
 from .iati_export import IatiActivityExportViewSet, IatiExportViewSet
-from .indicator import IndicatorViewSet, IndicatorFrameworkViewSet
+from .indicator import IndicatorViewSet, IndicatorFrameworkViewSet, indicator_contribution_count
 from .indicator_custom_field import IndicatorCustomFieldViewSet, IndicatorCustomValueViewSet
 from .indicator_dimension_name import IndicatorDimensionNameViewSet
 from .indicator_dimension_value import IndicatorDimensionValueViewSet
@@ -37,7 +37,8 @@ from .indicator_period import (IndicatorPeriodViewSet, IndicatorPeriodFrameworkV
                                set_periods_locked, bulk_add_periods, bulk_remove_periods)
 from .indicator_period_data import (IndicatorPeriodDataViewSet, IndicatorPeriodDataFrameworkViewSet,
                                     IndicatorPeriodDataCommentViewSet, indicator_upload_file,
-                                    period_update_files, period_update_photos, set_updates_status)
+                                    period_update_files, period_update_photos, set_updates_status,
+                                    indicator_previous_cumulative_update)
 from .indicator_period_disaggregation import IndicatorPeriodDisaggregationViewSet
 from .disaggregation import DisaggregationViewSet
 from .disaggregation_target import DisaggregationTargetViewSet
@@ -67,9 +68,10 @@ from .partner_site import PartnerSiteViewSet
 from .partnership import PartnershipViewSet, PartnershipMoreLinkViewSet
 from .planned_disbursement import PlannedDisbursementViewSet
 from .policy_marker import PolicyMarkerViewSet
-from .project import (ProjectViewSet, ProjectExtraViewSet, ProjectExtraDeepViewSet,
+from .program import ProgramViewSet
+from .project import (ProjectViewSet, ProjectByUuidViewSet, ProjectExtraViewSet, ProjectExtraDeepViewSet,
                       ProjectIatiExportViewSet, ProjectUpViewSet, project_location_geojson,
-                      MyProjectsViewSet, ProjectHierarchyViewSet, add_project_to_program,
+                      MyProjectsViewSet, add_project_to_program,
                       project_directory, project_title, projects_by_id, project_published_search)
 from .project_editor import (project_editor_reorder_items,
                              project_editor_copy_results,
@@ -93,7 +95,6 @@ from .project_update import (ProjectUpdateViewSet,
 from .project_update_location import ProjectUpdateLocationViewSet, MapProjectUpdateLocationViewSet
 from .publishing_status import PublishingStatusViewSet
 from .recipient_country import RecipientCountryViewSet
-from .related_project import RelatedProjectViewSet
 from .region import RecipientRegionViewSet
 from .report import (report_formats, ReportViewSet, project_reports, program_reports, organisation_reports,
                      project_reports_period_dates, program_reports_period_dates, program_reports_countries)
@@ -192,6 +193,7 @@ __all__ = [
     'PartnerSiteViewSet',
     'PlannedDisbursementViewSet',
     'PolicyMarkerViewSet',
+    'ProgramViewSet',
     'ProjectConditionViewSet',
     'ProjectContactViewSet',
     'ProjectCustomFieldViewSet',
@@ -206,9 +208,9 @@ __all__ = [
     'ProjectUpdateLocationViewSet',
     'ProjectUpdateViewSet',
     'ProjectUpViewSet',
+    'ProjectByUuidViewSet',
     'ProjectViewSet',
     'MyProjectsViewSet',
-    'ProjectHierarchyViewSet',
     'project_enumerators',
     'project_location_geojson',
     'project_editor_copy_results',
@@ -218,7 +220,6 @@ __all__ = [
     'PublishingStatusViewSet',
     'RecipientCountryViewSet',
     'RecipientRegionViewSet',
-    'RelatedProjectViewSet',
     'report_formats',
     'ReportViewSet',
     'project_reports',

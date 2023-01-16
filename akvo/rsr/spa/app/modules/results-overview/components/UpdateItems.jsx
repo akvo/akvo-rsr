@@ -84,7 +84,7 @@ const UpdateItems = ({
                 <ProgressBar period={period} values={period.updates} onlyApproved />
               </Card.Grid>
               {
-                (data.length > 0 && indicator?.measure === '1') && (
+                (data.length > 0 && indicator?.measure === measureType.UNIT) && (
                   <Card.Grid hoverable={false} style={{ width: '100%' }}>
                     <LineChart
                       width={480}

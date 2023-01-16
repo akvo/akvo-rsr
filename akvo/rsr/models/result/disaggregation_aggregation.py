@@ -6,7 +6,10 @@
 
 from django.apps import apps
 from django.db.models import Sum
+
 from akvo.utils import ensure_decimal
+
+from .utils import get_per_user_latest_indicator_update_ids
 
 
 class DisaggregationAggregation(object):
@@ -33,6 +36,22 @@ class DisaggregationAggregation(object):
             self.aggregate(period.parent_period, dimension_value.parent_dimension_value)
 
     def _get_local_values(self, period, dimension_value):
+        return self._get_local_cumulative_values(period, dimension_value) \
+            if period.indicator.is_cumulative() \
+            else self._get_local_non_cumulative_values(period, dimension_value)
+
+    def _get_local_cumulative_values(self, period, dimension_value):
+        latest_per_users = get_per_user_latest_indicator_update_ids(period)
+        return self.disaggregations.filter(
+            update__in=latest_per_users,
+            dimension_value=dimension_value
+        ).aggregate(
+            value=Sum('value'),
+            numerator=Sum('numerator'),
+            denominator=Sum('denominator')
+        )
+
+    def _get_local_non_cumulative_values(self, period, dimension_value):
         IndicatorPeriodData = apps.get_model('rsr', 'IndicatorPeriodData')
         return self.disaggregations.filter(
             update__period=period,

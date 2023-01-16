@@ -32,6 +32,7 @@ import * as actions from '../results/actions'
 const { Text } = Typography
 
 const TobeReported = ({
+  userRdr,
   keyword,
   results,
   updates,
@@ -55,6 +56,7 @@ const TobeReported = ({
 
   const mdParse = SimpleMarkdown.defaultBlockParse
   const mdOutput = SimpleMarkdown.defaultOutput
+  const dataSource = updates?.filter((u) => u?.id === null || u?.userDetails?.id === userRdr?.id)
 
   const deleteOnUpdate = (update) => {
     Modal.confirm({
@@ -152,7 +154,7 @@ const TobeReported = ({
       grid={{ column: 1 }}
       itemLayout="vertical"
       className="tobe-reported"
-      dataSource={orderBy(updates, ['indicator.title'], ['asc'])}
+      dataSource={orderBy(dataSource, ['indicator.title'], ['asc'])}
       renderItem={(item, ix) => {
         const iKey = item?.id || `${item?.indicator?.id}0${ix}`
         const updateClass = item?.statusDisplay?.toLowerCase()?.replace(/\s+/g, '-')
@@ -241,5 +243,5 @@ const TobeReported = ({
 }
 
 export default connect(
-  (({ resultRdr }) => ({ resultRdr })), actions
+  (({ resultRdr, userRdr }) => ({ resultRdr, userRdr })), actions
 )(TobeReported)

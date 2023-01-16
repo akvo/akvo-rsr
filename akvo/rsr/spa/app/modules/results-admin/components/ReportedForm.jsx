@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Field, FormSpy } from 'react-final-form'
-import { Icon, Form, Divider, Upload, Typography } from 'antd'
+import { Icon, Form, Divider, Upload, Typography, Button } from 'antd'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import SimpleMarkdown from 'simple-markdown'
@@ -11,16 +11,26 @@ import {
 } from 'lodash'
 
 import DsgOverview from '../../results/dsg-overview'
-import { DeclinedStatus } from '../../../components/DeclinedStatus'
-import { PrevUpdate } from '../../../components/PrevUpdate'
-import { StatusUpdate } from '../../../components/StatusUpdate'
+import {
+  DeclinedStatus,
+  StatusUpdate,
+} from '../../../components'
+import api from '../../../utils/api'
 import FinalField from '../../../utils/final-field'
-import { getMaxDisaggregation, getSumValues, nicenum } from '../../../utils/misc'
 import RTE from '../../../utils/rte'
 import ScoringField from '../../../components/ScoringField'
 import LineChart from '../../../components/LineChart'
+import UpdatesHint from '../../../components/UpdatesHint'
+import {
+  getMaxDisaggregation,
+  getSumValues,
+  getPercentage,
+  setNumberFormat,
+} from '../../../utils/misc'
 import { isNSOProject } from '../../../utils/feat-flags'
-import { measureType } from '../../../utils/constants'
+import { indicatorType, measureType } from '../../../utils/constants'
+import DisaggregationsInput from './DisaggregationsInput'
+import UpdatesHistory from '../../../components/UpdatesHistory'
 
 const { Text } = Typography
 
@@ -37,64 +47,50 @@ const ReportedForm = ({
   setFileSet,
   mneView,
   fileSet,
-  deleteFile
+  deleteFile,
+  jwtView = false,
 }) => {
+  const [cumulativeUpdate, setCumulativeUpdate] = useState(null)
   const { t } = useTranslation()
+  useEffect(() => {
+    if (!jwtView) {
+      api
+        .get(`/project/${project?.id}/indicator/${indicator?.id}/previous_cumulative_update?format=json`)
+        .then(({ data }) => setCumulativeUpdate(data))
+    }
+  }, [])
+  const lastUpdate = period
+    ?.updates
+    ?.filter(it => it.status === 'A' || it.status === 'R')
+    ?.slice(0, 1)
+    ?.pop()
+  const updatesHintProps = {
+    cumulativeUpdate,
+    lastUpdate,
+    indicator,
+    period,
+  }
+  const disaggregationsProps = {
+    ...indicator,
+    disaggregations,
+    disableInputs,
+    period,
+    mneView,
+  }
   return (
     <div className="add-update">
+      {(lastUpdate?.id && indicator?.type === indicatorType.QUANTITATIVE) && <UpdatesHint {...updatesHintProps} />}
       <StatusUpdate {...init} />
       {(init?.status === 'R') && <DeclinedStatus update={init} />}
       <Form aria-orientation="vertical">
         <div className={classNames('inputs-container', { qualitative: indicator.type === 2, 'no-prev': period?.updates?.filter(it => it.status === 'A').length === 0 })}>
-          <div className="inputs">
+          <div className={classNames('inputs', { mneView })}>
             {mneView && indicator.type === 1 && <h4>Add a value update</h4>}
             {(typeof errors === 'object' && errors?.length > 0) && <>{errors?.map((err, ex) => <Text type="danger" key={ex}>{err}</Text>)}</>}
             {((typeof errors === 'string') && errors?.match(new RegExp('multiple|updates|percentages', 'g'))?.length > 0) && (
               <Text type="danger">{t('Value already reported')}</Text>
             )}
-            {indicator.dimensionNames.map(group =>
-              <div className="dsg-group" key={group.name}>
-                <div className="h-holder">
-                  <h5>{group.name}</h5>
-                </div>
-                {group.dimensionValues.map(dsg => {
-                  return indicator.measure === measureType.UNIT ? (
-                    <FinalField
-                      name={`disaggregations[${disaggregations.findIndex(it => it.typeId === dsg.id && group.id === it.groupId)}].value`}
-                      control="input-number"
-                      withLabel
-                      dict={{ label: dsg.value }}
-                      min={-Infinity}
-                      step={1}
-                      disabled={disableInputs}
-                    />
-                  ) : (
-                    <div>
-                      <div style={{ paddingLeft: '1em' }}>{dsg.value}</div>
-                      <FinalField
-                        name={`disaggregations[${disaggregations.findIndex(it => it.typeId === dsg.id && group.id === it.groupId)}].numerator`}
-                        control="input-number"
-                        withLabel
-                        dict={{ label: 'Enumerator' }}
-                        min={-Infinity}
-                        step={1}
-                        disabled={disableInputs}
-                      />
-                      <FinalField
-                        name={`disaggregations[${disaggregations.findIndex(it => it.typeId === dsg.id && group.id === it.groupId)}].denominator`}
-                        control="input-number"
-                        withLabel
-                        dict={{ label: 'Denominator' }}
-                        min={-Infinity}
-                        step={1}
-                        disabled={disableInputs}
-                      />
-                    </div>
-                  )
-                }
-                )}
-              </div>
-            )}
+            <DisaggregationsInput {...disaggregationsProps} />
             {indicator.type === 1 ?
               (
                 <>
@@ -148,6 +144,7 @@ const ReportedForm = ({
                         step={1}
                         disabled={disableInputs}
                       />
+                      <UpdatesHistory {...period} mneView={mneView} />
                       {(period.updates.length > 0) && (
                         <div className="updated-actual">
                           <div className="cap">{t('Updated actual value')}</div>
@@ -157,8 +154,8 @@ const ReportedForm = ({
                               const updatedTotal = disableInputs ? 0 : input.value
                               return (
                                 <div className="value">
-                                  <b>{nicenum(updatedTotal)}</b>
-                                  {period.targetValue > 0 && <small>{(Math.round((updatedTotal / period.targetValue) * 100 * 10) / 10)}% of target</small>}
+                                  <b>{setNumberFormat(updatedTotal)}</b>
+                                  {period.targetValue > 0 && <small>{getPercentage(updatedTotal, period.targetValue)}% of target</small>}
                                 </div>
                               )
                             }}
@@ -193,7 +190,7 @@ const ReportedForm = ({
                         <FormSpy subscription={{ values: true }}>
                           {({ values }) => {
                             if (values.numerator !== '' && values.numerator != null && values.denominator) {
-                              const value = Math.round((values.numerator / values.denominator) * 100 * 10) / 10
+                              const value = getPercentage(values.numerator, values.denominator)
                               if (value !== values.value) {
                                 form.change('value', value)
                               }
@@ -220,7 +217,7 @@ const ReportedForm = ({
                   render={({ input }) => {
                     if (disableInputs) {
                       const parse = SimpleMarkdown.defaultBlockParse
-                      const mdOutput = SimpleMarkdown.defaultOutput
+                      const mdOutput = SimpleMarkdown.defaultReactOutput
                       return <div className="md-output">{mdOutput(parse(input.value))}</div>
                     }
                     return [
@@ -230,47 +227,45 @@ const ReportedForm = ({
                 />
               ]}
           </div>
-          {!mneView && !(indicator.measure === measureType.PERCENTAGE && period.updates.length > 0) &&
-            <PrevUpdate update={period.updates.filter(it => it.status === 'A' || it.status === 'R')[0]} {...{ period, indicator }} />
-          }
-          {(mneView && indicator.type === 1 && disaggregations.length > 0) && (
-            <FormSpy subscription={{ values: true }}>
-              {({ values }) => {
-                const periodUpdates = [...period.updates, { ...values, status: 'D' }]
-                const dgs = [...periodUpdates.reduce((acc, val) => [...acc, ...val.disaggregations.map(it => ({ ...it, status: val.status }))], [])]
-                if (dgs.length) {
-                  disaggregations = dgs.map((dg, dgx) => ({ ...dg, typeId: disaggregations[dgx]?.typeId }))
-                }
-                const valueUpdates = periodUpdates.map(it => ({ value: it.value, status: it.status }))
-                return <DsgOverview {...{ disaggregations, targets: period.disaggregationTargets, period, editPeriod: (props) => { editPeriod(props, indicator) }, values: valueUpdates }} />
-              }}
-            </FormSpy>
-          )}
-          {(indicator?.measure === measureType.UNIT && indicator?.type === 1) && (
-            <div className="timeline-outer">
-              <FormSpy subscription={{ values: true }}>
-                {({ values }) => {
-                  const updates = [...period.updates, { ...values, status: 'D' }].filter(it => it !== null)
-                  let data = updates?.map(u => ({
-                    label: u.createdAt ? moment(u.createdAt, 'YYYY-MM-DD').format('DD-MM-YYYY') : null,
-                    unix: u.createdAt ? moment(u.createdAt, 'YYYY-MM-DD').unix() : null,
-                    y: u.value || 0
-                  }))
-                  data = orderBy(data, ['unix'], ['asc']).map((u, index) => ({ ...u, x: index }))
-                  return (
-                    <LineChart
-                      data={data}
-                      width={480}
-                      height={300}
-                      horizontalGuides={5}
-                      precision={2}
-                      verticalGuides={1}
-                      {...period}
-                    />
-                  )
-                }}
-              </FormSpy>
-            </div>
+          {(mneView && indicator.type === 1) && (
+            disaggregations.length > 0 ?
+              (
+                <FormSpy subscription={{ values: true }}>
+                  {({ values }) => {
+                    const periodUpdates = [...period.updates, { ...values, status: 'D' }]
+                    const dgs = [...periodUpdates.reduce((acc, val) => [...acc, ...val.disaggregations.map(it => ({ ...it, status: val.status }))], [])]
+                    if (dgs.length) {
+                      disaggregations = dgs.map((dg, dgx) => ({ ...dg, typeId: disaggregations[dgx]?.typeId }))
+                    }
+                    const valueUpdates = periodUpdates.map(it => ({ value: it.value, status: it.status }))
+                    return <DsgOverview {...{ disaggregations, targets: period.disaggregationTargets, period, editPeriod: (props) => { editPeriod(props, indicator) }, values: valueUpdates }} />
+                  }}
+                </FormSpy>
+              ) :
+              <div className="timeline-outer">
+                <FormSpy subscription={{ values: true }}>
+                  {({ values }) => {
+                    const updates = [...period.updates, { ...values, status: 'D' }].filter(it => it !== null)
+                    let data = updates?.map(u => ({
+                      label: u.createdAt ? moment(u.createdAt, 'YYYY-MM-DD').format('DD-MM-YYYY') : null,
+                      unix: u.createdAt ? moment(u.createdAt, 'YYYY-MM-DD').unix() : null,
+                      y: u.value || 0
+                    }))
+                    data = orderBy(data, ['unix'], ['asc']).map((u, index) => ({ ...u, x: index }))
+                    return (
+                      <LineChart
+                        data={data}
+                        width={480}
+                        height={300}
+                        horizontalGuides={5}
+                        precision={2}
+                        verticalGuides={1}
+                        {...period}
+                      />
+                    )
+                  }}
+                </FormSpy>
+              </div>
           )}
         </div>
         <Divider />

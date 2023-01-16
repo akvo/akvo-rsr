@@ -63,6 +63,12 @@ class Indicator(models.Model):
                     'baseline value (eg. people with access to sanitation). Choose descending if '
                     'the target value of the indicator is lower than the baseline value '
                     '(eg. people with diarrhea).'))
+    cumulative = models.BooleanField(
+        _('cumulative'), default=False,
+        help_text=_('Select if indicators report a running total so that each reported actual '
+                    'includes the previously reported actual and adds any progress made since '
+                    'the last reporting period.')
+    )
     description = ValidXMLCharField(
         _('indicator description'), blank=True, max_length=2000,
         help_text=_('You can provide further information of the indicator here.')
@@ -174,6 +180,18 @@ class Indicator(models.Model):
 
         super(Indicator, self).delete(*args, **kwargs)
 
+    def descendants(self, depth=None):
+        family = {self.pk}
+        children = {self.pk}
+        search_depth = 0
+        while depth is None or search_depth < depth:
+            children = Indicator.objects.filter(parent_indicator__in=children).values_list('pk', flat=True)
+            if family.union(children) == family:
+                break
+            family = family.union(children)
+            search_depth += 1
+        return Indicator.objects.filter(pk__in=family)
+
     def iati_measure(self):
         return codelist_value(IndicatorMeasure, self, 'measure')
 
@@ -194,6 +212,13 @@ class Indicator(models.Model):
         Indicates whether this indicator has children.
         """
         return self.child_indicators.count() > 0
+
+    def is_cumulative(self):
+        """
+        The cumulative setting is ignored if the indicator is a percentage measure
+        because the percentage measure can only be updated once per period.
+        """
+        return self.cumulative and self.measure != PERCENTAGE_MEASURE
 
     @property
     def children_aggregate_percentage(self):

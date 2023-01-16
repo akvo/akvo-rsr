@@ -1,3 +1,6 @@
+import moment from 'moment'
+import { statusUpdate } from '../../utils/constants'
+import { getUserFullName, setNumberFormat } from '../../utils/misc'
 import actionTypes from './action-types'
 
 const initialState = [
@@ -20,7 +23,37 @@ const initialState = [
 export default (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.SET_RESULTS:
-      return action.payload
+      const _results = action.payload
+        ?.map((r) => ({
+          ...r,
+          indicators: r?.indicators?.map((i) => ({
+            ...i,
+            periods: i?.periods?.map((p) => {
+              const tables = p.updates.map((u) => {
+                const { value, createdAt, userDetails } = u
+                const _logItem = {}
+                const _dsg = u?.disaggregations?.map((d) => ({ [d.type]: d.value }))
+                for (let x = 0; x < _dsg.length; x += 1) {
+                  Object.assign(_logItem, _dsg[x])
+                }
+                return {
+                  ..._logItem,
+                  value: setNumberFormat(value),
+                  date: moment(createdAt).format('DD MMM YYYY HH:mm'),
+                  user: getUserFullName(userDetails),
+                  status: statusUpdate[u?.status] || u?.status,
+                  rowKey: u?.id,
+                }
+              })
+              return ({
+                ...p,
+                tables,
+                columns: tables[0] || [],
+              })
+            })
+          }))
+        }))
+      return _results
     case actionTypes.UPDATE_RESULT:
       return state.map((s) => {
         if (s.id === action?.payload?.id) {

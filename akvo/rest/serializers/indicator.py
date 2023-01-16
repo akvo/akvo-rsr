@@ -13,6 +13,7 @@ from akvo.rest.serializers.indicator_reference import IndicatorReferenceSerializ
 from akvo.rest.serializers.rsr_serializer import BaseRSRSerializer
 from akvo.rsr.models import (
     Indicator, IndicatorDimensionName, IndicatorLabel, IndicatorDisaggregationTarget)
+from akvo.rsr.usecases.indicator_contribution import get_indicator_contribution_count
 
 from rest_framework import serializers
 
@@ -103,6 +104,15 @@ class IndicatorFrameworkSerializer(BaseRSRSerializer):
         create_or_update_disaggregation_targets(instance, disaggregation_targets)
         return instance
 
+    def validate_cumulative(self, data):
+        if not self.instance or self.instance.cumulative == data:
+            return data
+        if get_indicator_contribution_count(self.instance) > 0:
+            raise serializers.ValidationError(
+                "Switching cumulative reporting is not allowed when the indicator already has updates"
+            )
+        return data
+
     def validate_disaggregation_targets(self, data):
         for target in data:
             if 'value' not in target:
@@ -147,6 +157,7 @@ class IndicatorFrameworkNotSoLiteSerializer(BaseRSRSerializer):
     labels = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
     disaggregation_targets = serializers.SerializerMethodField()
     dimension_names = serializers.SerializerMethodField()
+    is_cumulative = serializers.ReadOnlyField()
 
     def get_disaggregation_targets(self, obj):
         return serialize_disaggregation_targets(obj)
@@ -172,6 +183,7 @@ class IndicatorFrameworkNotSoLiteSerializer(BaseRSRSerializer):
             'title',
             'type',
             'measure',
+            'is_cumulative',
             'ascending',
             'description',
             'baseline_year',

@@ -5,16 +5,20 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from typing import Dict, Optional
+
 from django.db import transaction
-from akvo.rsr.models import Project, RelatedProject
+
+from akvo.rsr.models import Project
 from akvo.rsr.usecases.utils import (
     RF_MODELS_CONFIG, get_direct_lineage_hierarchy_ids, make_trees_from_list, make_source_to_target_map
 )
+from akvo.rsr.models.tree.usecases import check_set_parent, set_parent
 
 
 def get_rf_change_candidates(project: Project, new_parent: Project) -> Dict[str, Dict[int, Optional[int]]]:
     project_ids = get_direct_lineage_hierarchy_ids(project, new_parent)
     if not project_ids:
+        print('No common ancestor found')
         return {}
     candidates = {}
     for key, config in RF_MODELS_CONFIG.items():
@@ -37,12 +41,8 @@ def change_parent(project: Project, new_parent: Project, reimport=False, verbosi
     tree connection to resolve each RF object's new parent.
 
     """
+    check_set_parent(project, new_parent)
 
-    old_parent = project.parents_all().first()
-    if old_parent is None or old_parent.pk == new_parent.pk:
-        if verbosity > 0:
-            print("New parent same as current parent")
-        return
     # change parents of RF items
     change_candidates = get_rf_change_candidates(project, new_parent)
     for key, candidates in change_candidates.items():
@@ -52,13 +52,11 @@ def change_parent(project: Project, new_parent: Project, reimport=False, verbosi
                 print(f"Change {key} parent of {item_id} to {target_id}")
             model.objects.filter(id__in=[item_id]).update(**{f"{parent_attr}_id": target_id})
     if verbosity > 0:
-        print(f"Change project {project.title} (ID:{project.pk}) parent to {new_parent.title} (ID:{new_parent.pk})")
-    RelatedProject.objects.filter(
-        project=old_parent, related_project=project, relation='2'
-    ).update(project=new_parent)
-    RelatedProject.objects.filter(
-        related_project=old_parent, project=project, relation='1'
-    ).update(related_project=new_parent)
+        print(f"Change project {project.title} (ID:{project.id}) parent to {new_parent.title} (ID:{new_parent.id})")
+
+    # Set the new parent and update the descendants
+    set_parent(project, new_parent)
+
     if reimport:
         if verbosity > 1:
             print("Reimporting new parent's results framework")

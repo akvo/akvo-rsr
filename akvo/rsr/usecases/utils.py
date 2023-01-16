@@ -4,9 +4,8 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from akvo.rsr.models import Project, RelatedProject, Result, Indicator, IndicatorPeriod, IndicatorDimensionName, IndicatorDimensionValue, DefaultPeriod
+from akvo.rsr.models import Project, Result, Indicator, IndicatorPeriod, IndicatorDimensionName, IndicatorDimensionValue, DefaultPeriod
 from dataclasses import dataclass, field
-from django.db.models import Q
 from typing import List, Callable, Set, Optional, Iterable, Dict, TypedDict, Tuple
 
 RF_MODELS_CONFIG = {
@@ -21,23 +20,7 @@ RF_MODELS_CONFIG = {
 
 
 def get_project_lineage_ids(project: Project) -> List[int]:
-    project_id = project.pk
-    lineage = [project_id]
-    while True:
-        parent_id = Project.objects.filter(
-            Q(
-                related_projects__related_project=project_id,
-                related_projects__relation=RelatedProject.PROJECT_RELATION_CHILD
-            ) | Q(
-                related_to_projects__project=project_id,
-                related_to_projects__relation=RelatedProject.PROJECT_RELATION_PARENT
-            )
-        ).values_list('pk', flat=True).first()
-        if parent_id is None:
-            break
-        lineage.append(parent_id)
-        project_id = parent_id
-    return lineage
+    return project.ancestors().values_list("id", flat=True)
 
 
 def get_first_common_item(left: List[int], right: List[int]) -> Optional[int]:

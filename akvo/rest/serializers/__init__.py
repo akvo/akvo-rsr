@@ -18,6 +18,7 @@ from .custom_field import OrganisationCustomFieldSerializer, ProjectCustomFieldS
 from .default_period import DefaultPeriodSerializer
 from .disaggregation import DisaggregationSerializer
 from .disaggregation_target import DisaggregationTargetSerializer
+from .external_project import ExternalProjectSerializer
 from .indicator_disaggregation_target import IndicatorDisaggregationTargetSerializer
 from .employment import EmploymentSerializer
 from .focus_area import FocusAreaSerializer
@@ -75,8 +76,7 @@ from .planned_disbursement import (PlannedDisbursementSerializer,
 from .policy_marker import PolicyMarkerSerializer, PolicyMarkerRawSerializer
 from .project import (ProjectSerializer, ProjectExtraSerializer, ProjectExtraDeepSerializer,
                       ProjectIatiExportSerializer, ProjectDirectorySerializer, ProjectUpSerializer,
-                      ProjectMetadataSerializer, ProjectHierarchyRootSerializer,
-                      ProjectHierarchyTreeSerializer, ProjectDirectoryDynamicFieldsSerializer)
+                      ProjectMetadataSerializer, ProjectDirectoryDynamicFieldsSerializer)
 from .project_condition import ProjectConditionSerializer, ProjectConditionRawSerializer
 from .project_contact import (ProjectContactSerializer,
                               ProjectContactRawSerializer,
@@ -128,6 +128,7 @@ __all__ = [
     'DefaultPeriodSerializer',
     'DisaggregationSerializer',
     'DisaggregationTargetSerializer',
+    'ExternalProjectSerializer',
     'IndicatorDisaggregationTargetSerializer',
     'EmploymentSerializer',
     'FocusAreaSerializer',
@@ -208,6 +209,7 @@ __all__ = [
     'ProjectLocationCountryNameSerializer',
     'ProjectLocationRawSerializer',
     'ProjectHierarchySerializer',
+    'ProjectMetadataSerializer',
     'ProjectSerializer',
     'ProjectRoleSerializer',
     'ProjectUpdateDirectorySerializer',
@@ -218,8 +220,6 @@ __all__ = [
     'ProjectUpdateSerializer',
     'ProjectUpdateDeepSerializer',
     'ProjectUpSerializer',
-    'ProjectHierarchyRootSerializer',
-    'ProjectHierarchyTreeSerializer',
     'PublishingStatusSerializer',
     'RecipientCountrySerializer',
     'RecipientCountryRawSerializer',
