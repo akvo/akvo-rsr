@@ -1,12 +1,17 @@
 # -*- coding: utf-8 -*-
-
+import argparse
 # Akvo Reporting is covered by the GNU Affero General Public License.
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
+import collections
 import datetime
+from pathlib import Path
+from typing import Iterable, Optional, OrderedDict
+
 import tablib
+from tablib.formats import available as tablib_formats
 
 from django.contrib.admin.models import LogEntry
 from django.core.management.base import BaseCommand
@@ -17,6 +22,21 @@ from akvo.rsr.models import (
     LoginLog, PublishingStatus,
 )
 
+
+def get_dataset(title, objects: Iterable, mapping: OrderedDict[str, Optional[str]]):
+    dataset = tablib.Dataset()
+    dataset.title = title
+    dataset.headers = list(mapping.keys())
+    for _object in objects:
+        row = []
+        for attr_name in mapping.values():
+            if attr_name:
+                row.append(getattr(_object, attr_name, None))
+            else:
+                row.append(str(_object))
+        dataset.append(row)
+
+    return dataset
 
 def get_active_organisations(date_start, date_end):
     projects_with_project_updates = Project.objects.filter(
@@ -60,10 +80,14 @@ def get_projects_with_active_results_framework(date_start, date_end):
 
 
 def get_unique_login_emails(date_start, date_end):
-    return LoginLog.objects\
-        .filter(success=True, created_at__range=(date_start, date_end))\
-        .values('email')\
-        .distinct()
+    logins = []
+    unique_emails = set()
+    for log in LoginLog.objects.filter(success=True, created_at__range=(date_start, date_end)):
+        if (email := log.email) in unique_emails:
+            continue
+        unique_emails.add(email)
+        logins.append(log)
+    return logins
 
 
 def get_published_projects(date_latest):
@@ -115,7 +139,7 @@ class Command(BaseCommand):
     <script> <date_start:%Y-%m-%d> <date_end:%Y-%m-%d>
     """
 
-    def add_arguments(self, parser):
+    def add_arguments(self, parser: argparse.ArgumentParser):
         parser.add_argument(
             'date_start',
             type=lambda date: datetime.datetime.strptime(date, '%Y-%m-%d').date(),
@@ -126,40 +150,91 @@ class Command(BaseCommand):
             type=lambda date: datetime.datetime.strptime(date, '%Y-%m-%d').date(),
             help='End date for the period',
         )
+        output_group = parser.add_argument_group("output", "Control the report output")
+        # Formats that support outputting books with sheets of tables
+        book_formats = [
+            tl_format.title
+            for tl_format in tablib_formats
+            if hasattr(tl_format, "export_book")
+        ]
+        output_group.add_argument(
+            '-f', '--format',
+            choices=book_formats,
+            default=book_formats[0],
+            help='What format the output file will have',
+        )
+        output_group.add_argument(
+            '-o', '--output',
+            help='Where to output the report. "-" means to stdout',
+        )
 
     def handle(self, *args, **options):
         date_start = options['date_start']
         date_end = options['date_end']
-
-        print(f'RSR Metrics Report ({date_start:%Y-%m-%d} - {date_end:%Y-%m-%d})')
+        output_format = options["format"]
+        output_destination = options.get("output")
 
         active_partners = get_active_organisations(date_start, date_end)
-        print(f'# of active partners using RSR: {active_partners.count()}')
-
         new_orgs = Organisation.objects.filter(created_at__range=(date_start, date_end))
-        print(f'# of new partners using RSR: {new_orgs.count()}')
-
         unique_login_emails = get_unique_login_emails(date_start, date_end)
-        print(f'# of unique login: {unique_login_emails.count()}')
-
         new_projects = Project.objects.filter(created_at__range=(date_start, date_end))
-        print(f'# of new projects in RSR: {new_projects.count()}')
-
         published_projects = get_published_projects(date_end)
-        print(f'# of published RSR projects (total): {published_projects.count()}')
-
         active_projects = get_projects_with_active_results_framework(date_start, date_end)
-        print(f'# of projects using the RSR results framework: {active_projects.count()}')
-
         indicator_updates = get_indicator_updates(date_start, date_end)
-        print(f'# of indicator updates in RSR: {indicator_updates.count()}')
-
         orgs_reporting_to_iati = get_orgs_reporting_to_iati(date_start, date_end)
-        print(f'# of partners reporting to IATI: {orgs_reporting_to_iati.count()}')
-
         projects_reporting_to_iati = get_projects_reporting_to_iati(date_start, date_end)
-        print(f'# of projects reporting to IATI: {projects_reporting_to_iati.count()}')
-
-        print('')
         orgs_reporting_to_iati_list = make_orgs_reporting_to_iati_list(orgs_reporting_to_iati, date_start, date_end)
-        print(orgs_reporting_to_iati_list.export('rst'))
+        orgs_reporting_to_iati_list.title = "Projects reporting to IATI"
+
+        if output_destination:
+            # Ensure path isn't a directory
+            output_path = Path(output_destination)
+            if output_path.is_dir():
+                self.stderr.write("output path cannot be a directory\n")
+                exit(1)
+            # Create parent directory structure in order to be able to write a file
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+
+            org_column_map = collections.OrderedDict([
+                ("ID", "id"),
+                ("Name", "name"),
+                ("Created At", "created_at"),
+            ])
+            project_column_map = collections.OrderedDict([
+                ("ID", "id"),
+                ("TItle", "title"),
+                ("Created At", "created_at"),
+            ])
+            book = tablib.Databook([
+                get_dataset("Active Partners", active_partners, org_column_map),
+                get_dataset("New Organisations", new_orgs, org_column_map),
+                get_dataset("Unique Login Emails", unique_login_emails, collections.OrderedDict([
+                    ("Email", "email"),
+                    ("Date", "created_at"),
+                ])),
+                get_dataset("New Projects", new_projects, project_column_map),
+                get_dataset("Published Projects", published_projects, project_column_map),
+                get_dataset("Active Projects", active_projects, project_column_map),
+                get_dataset("Orgs reporting to IATI", orgs_reporting_to_iati, org_column_map),
+                orgs_reporting_to_iati_list,
+            ])
+
+            # Output the export to stdout or file
+            export = book.export(output_format)
+            if output_destination == "-":
+                self.stdout.write(export)
+            else:
+                output_path.write_bytes(export)
+        else:
+            print(f'RSR Metrics Report ({date_start:%Y-%m-%d} - {date_end:%Y-%m-%d})')
+            print(f'# of active partners using RSR: {active_partners.count()}')
+            print(f'# of new partners using RSR: {new_orgs.count()}')
+            print(f'# of unique login: {len(unique_login_emails)}')
+            print(f'# of new projects in RSR: {new_projects.count()}')
+            print(f'# of published RSR projects (total): {published_projects.count()}')
+            print(f'# of projects using the RSR results framework: {active_projects.count()}')
+            print(f'# of indicator updates in RSR: {indicator_updates.count()}')
+            print(f'# of partners reporting to IATI: {orgs_reporting_to_iati.count()}')
+            print(f'# of projects reporting to IATI: {projects_reporting_to_iati.count()}')
+            print('')
+            print(orgs_reporting_to_iati_list.export('rst'))
