@@ -9,7 +9,7 @@ Deploying to https://rsr.akvotest.org is done automatically once a PR is merged 
 
 # Production
 
-Currently, we use the `production` branch to promote changes to master.
+Currently, we use the `master` branch to promote changes to production.
 This a **manual** operation.
 
 In order to deploy to [production](https://rsr.akvo.org), the docker image must exist in the docker registry.

@@ -14,7 +14,6 @@ export PROJECT_NAME=akvo-lumen
 # master applies config in test
 # promote-* tags applies config in production
 if [[ "${CI_BRANCH}" != "master" ]] \
-    && [[ "${CI_BRANCH}" != "production" ]] \
     && [[ "${CI_BRANCH}" != rsr-env-* ]] \
     && [[ ! "${CI_TAG:-}" =~ promote-.* ]]
 then
@@ -52,7 +51,7 @@ else
 
 fi
 
-if [[ "${CI_BRANCH}" = rsr-env-* ]] || [[ "${CI_BRANCH}" = "production" ]]; then
+if [[ "${CI_BRANCH}" = rsr-env-* ]] ; then
     exit 0
 fi
 
