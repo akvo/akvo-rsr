@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -eu
 
-DEPLOY_COMMITISH="${1:-production}"
+DEPLOY_COMMITISH="${1:-master}"
 git fetch --all
 
 echo "Running E2E tests"
