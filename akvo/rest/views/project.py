@@ -6,6 +6,8 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 
 from datetime import timedelta
+from typing import Dict, List
+from uuid import UUID
 
 from django.conf import settings
 from django.db.models import Count, Q
@@ -104,22 +106,39 @@ class ProjectViewSet(PublicProjectViewSet):
     def children(self, request, **kwargs):
         project = self.get_object()
 
-        queryset = self._filter_queryset(project.children().select_related(
+        queryset = self._filter_queryset(project.descendants(max_depth=2, with_self=False).select_related(
             "primary_organisation",
+            "projecthierarchy",
+            "publishingstatus",
         ).prefetch_related(
-            "locations",
+            "locations__country",
             "recipient_countries",
             "sectors",
+            "projectrole_set",
         ))
-        page = self.paginate_queryset(queryset)
-
+        descendants = list(queryset)
         serializer_context = self.get_serializer_context()
 
-        if page is not None:
-            serializer = ProjectMetadataSerializer(page, many=True, context=serializer_context)
-            return self.get_paginated_response(serializer.data)
+        # Optimization to count the children
+        # Collect the children of each project in a list
+        # The alternative is a subquery, but that's extra slow due to lacking psql indices
+        parent_to_children: Dict[UUID, List[Project]] = dict()
+        children: List[Project] = []
+        parent_uuid = project.uuid
+        for descendant in descendants:
+            if not (curr_parent_uuid := descendant.get_parent_uuid()):
+                continue
+            parent_to_children.setdefault(curr_parent_uuid, []).append(descendant)
 
-        serializer = ProjectMetadataSerializer(queryset, many=True, context=serializer_context).data
+            if curr_parent_uuid == parent_uuid:
+                children.append(descendant)
+
+        serializer_context["parents_to_children"] = parent_to_children
+
+        # optimization for ProjectMetadataSerializer.get_parent
+        serializer_context["parent"] = project
+
+        serializer = ProjectMetadataSerializer(children, many=True, context=serializer_context)
         return Response(serializer.data)
 
     @action(

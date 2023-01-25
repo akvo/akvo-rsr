@@ -88,23 +88,22 @@ class ProjectHierarchyTestCase(BaseTestCase):
         self.assertFalse(self.user.has_perm('rsr.view_project', self.p5))
         self.assertFalse(self.user.has_perm('rsr.view_project', self.p6))
 
-    def assertReturnsProjects(self, response, project_set):
-        results = response.data["results"]
-        self.assertEqual(len(project_set), response.data["count"])
+    def assertReturnsProjects(self, results, count, project_set):
+        self.assertEqual(len(project_set), count)
         self.assertEqual(project_set, {p['id'] for p in results})
         self.assertFalse(results[0]['editable'])
 
     def test_fetch_root_projects(self):
         response = self.c.get('/rest/v1/program/?format=json', follow=True)
-        self.assertReturnsProjects(response, {self.p1.id, self.p5.id})
+        self.assertReturnsProjects(response.data["results"], response.data["count"], {self.p1.id, self.p5.id})
 
     def test_get_program_children(self):
         response = self.c.get(f'/rest/v1/project/{self.p1.id}/children?format=json', follow=True)
-        self.assertReturnsProjects(response, {self.p2.id})
+        self.assertReturnsProjects(response.data, len(response.data), {self.p2.id})
 
     def test_get_project_children(self):
         response = self.c.get(f'/rest/v1/project/{self.p2.id}/children?format=json', follow=True)
-        self.assertReturnsProjects(response, {self.p3.id})
+        self.assertReturnsProjects(response.data, len(response.data), {self.p3.id})
 
 
 class RawProjectHierarchyTestCase(BaseTestCase):
