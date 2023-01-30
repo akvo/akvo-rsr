@@ -29,6 +29,7 @@ const ExpandIcon = ({ isActive }) => (
 const Program = ({
   match: { params },
   userRdr,
+  editable,
   programmeRdr: results,
   ...props
 }) => {
@@ -82,7 +83,7 @@ const Program = ({
     }
     return found
   }
-  const canEdit = userRdr.programs && userRdr.programs.find(program => program.id === parseInt(params.projectId, 10))?.canEditProgram
+  const canEdit = (editable || (userRdr.programs && userRdr.programs.find(program => program.id === parseInt(params.projectId, 10))?.canEditProgram))
   const _title = (!props?.title && title) ? title : props?.title ? props.title : t('Untitled program')
   return (
     <div className="program-view">
@@ -142,5 +143,21 @@ const Program = ({
 }
 
 export default connect(
-  ({ editorRdr: {section1: {fields: {title}}}, userRdr, programmeRdr }) => ({ title, userRdr, programmeRdr }), ({ ...programmeActions, setProjectTitle })
+    ({
+         editorRdr: {
+             section1: {
+                 fields: {
+                     title,
+                     editable,
+                 }
+             }
+         },
+         userRdr,
+         programmeRdr
+     }) => ({
+        title,
+        editable,
+        userRdr,
+        programmeRdr
+    }), ({...programmeActions, setProjectTitle})
 )(Program)

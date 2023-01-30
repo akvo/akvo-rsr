@@ -48,7 +48,6 @@ const Enumerators = ({ match: { params: { id } }, rf, setRF, setProjectTitle }) 
         })
     } else {
       setLoading(false)
-      setProjectTitle(rf.title)
       generateIndicatorMap(rf)
     }
     api.get(`/project/${id}/enumerators/`)
