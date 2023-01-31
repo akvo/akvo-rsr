@@ -139,7 +139,8 @@ const PendingApproval = ({
           id: i.id,
           title: i.title,
           type: i.type,
-          result: i.result
+          result: i.result,
+          scores: i.scores
         }
       }))
     })
@@ -367,10 +368,20 @@ const PendingApproval = ({
                     <Disaggregations values={update.disaggregations} />
                   </div>
                 )}
-                {update.indicator.type === 2 && (
+                {update.indicator?.type === 2 && (
                   <div className="update-col qualitative">
                     <div className="label">{t('update')}</div>
                     <div className="qualitative-value">
+                      {update.indicator?.scores?.length > 0 && update.scoreIndices?.length > 0 && (
+                        <>
+                          <div>Scores:</div>
+                          <ul>
+                            {update.scoreIndices?.map((score) => (
+                              <li>{update.indicator?.scores?.length < score ? '' : update.indicator?.scores[score - 1]}</li>
+                            ))}
+                          </ul>
+                        </>
+                      )}
                       <ShowMoreText lines={3}>{update.narrative}</ShowMoreText>
                     </div>
                   </div>
