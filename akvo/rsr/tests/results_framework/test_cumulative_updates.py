@@ -9,6 +9,7 @@ from akvo.rsr.usecases.period_update_aggregation import aggregate
 class CumulativeTestMixin:
     PERIOD_1_START = date(2020, 1, 1)
     PERIOD_2_START = date(2021, 1, 1)
+    PERIOD_3_START = date(2022, 1, 1)
     DISAGGREGATION_CATEGORY = 'Gender'
     DISAGGREGATION_TYPE_1 = 'Male'
     DISAGGREGATION_TYPE_2 = 'Female'
@@ -27,7 +28,8 @@ class CumulativeTestMixin:
                 'cumulative': True,
                 'periods': [
                     {'period_start': self.PERIOD_1_START, 'period_end': date(2020, 12, 31)},
-                    {'period_start': self.PERIOD_2_START, 'period_end': date(2021, 12, 31)}
+                    {'period_start': self.PERIOD_2_START, 'period_end': date(2021, 12, 31)},
+                    {'period_start': self.PERIOD_3_START, 'period_end': date(2022, 12, 31)},
                 ]
             }]
         }])
@@ -72,6 +74,9 @@ class SingleUserCumulativeUnitUpdatesTestCase(CumulativeTestMixin, BaseTestCase)
         })
         aggregate(self.period2.object)
 
+        self.period3 = self.project.get_period(period_start=self.PERIOD_3_START)
+        aggregate(self.period3.object)
+
     def test_period1(self):
         period1 = self.project.periods.get(id=self.period1.id)
         self.assertEqual(2, Decimal(period1.actual_value))
@@ -83,6 +88,13 @@ class SingleUserCumulativeUnitUpdatesTestCase(CumulativeTestMixin, BaseTestCase)
         self.assertEqual(5, Decimal(period2.actual_value))
         self.assertEqual(3, period2.disaggregations.get(dimension_value__value=self.DISAGGREGATION_TYPE_1).value)
         self.assertEqual(2, period2.disaggregations.get(dimension_value__value=self.DISAGGREGATION_TYPE_2).value)
+
+    def test_period_without_updates(self):
+        """
+        A cumulative indicator in a new period should carry over the value from the last period
+        """
+        period3 = self.project.periods.get(id=self.period3.id)
+        self.assertEqual(5, Decimal(period3.actual_value))
 
 
 class MultiUserCumulativeUnitUpdatesTestCase(CumulativeTestMixin, BaseTestCase):
