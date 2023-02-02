@@ -63,8 +63,15 @@ def execute_aggregation_jobs():
     Call the aggregation function for each aggregation job
     """
     handle_failed_jobs()
-
+    logger.info("Started with %s jobs", get_scheduled_jobs().count())
     while (scheduled_job := get_scheduled_jobs().first()):
+        logger.info(
+            "Running job %s for period '%s - %s' and indicator: %s",
+            scheduled_job.id,
+            scheduled_job.period.period_start,
+            scheduled_job.period.period_end,
+            scheduled_job.period.indicator,
+        )
         scheduled_job.mark_running()
         try:
             run_aggregation(scheduled_job.period)
