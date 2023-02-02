@@ -9,6 +9,7 @@ class Command(BaseCommand):
     help = 'Script for recalculating periods aggregation of a project'
 
     def add_arguments(self, parser):
+        parser.add_argument('--no-filter', action='store_true')
         parser.add_argument('project_id', type=int)
 
     def handle(self, *args, **options):
@@ -19,9 +20,11 @@ class Command(BaseCommand):
             return
 
         descendants = project.descendants()
-        periods = IndicatorPeriod.objects\
-            .annotate(approved_count=Count('data', filter=Q(data__status=IndicatorPeriodData.STATUS_APPROVED_CODE)))\
-            .filter(approved_count__gte=1, indicator__result__project__in=descendants)
+        periods = IndicatorPeriod.objects.filter(indicator__result__project__in=descendants)
+        if options.get("no_filter") is None:
+            periods = periods.annotate(
+                approved_count=Count('data', filter=Q(data__status=IndicatorPeriodData.STATUS_APPROVED_CODE))
+            ).filter(approved_count__gte=1)
 
         for period in periods:
             schedule_aggregation_job(period)

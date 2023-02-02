@@ -42,18 +42,21 @@ def get_finished_jobs() -> QuerySet[IndicatorPeriodAggregationJob]:
 
 
 def base_get_jobs() -> QuerySet[IndicatorPeriodAggregationJob]:
+    # TODO: sort by creation date ascending order
     return IndicatorPeriodAggregationJob.objects.select_related("period__indicator")
 
 
-def schedule_aggregation_job(period: IndicatorPeriod) -> IndicatorPeriodAggregationJob:
+def schedule_aggregation_job(period: IndicatorPeriod) -> List[IndicatorPeriodAggregationJob]:
     """
     Schedule a job for the period to be aggregated upwards if no job exists
     """
     logger.info("Scheduling indicator aggregation job for %s: %s", period, period.indicator.title)
+    # TODO: Get future periods if indicator is cumulative
     if existing_job := get_scheduled_jobs().filter(period=period).first():
         existing_job.save()
         return existing_job
 
+    # TODO: Create jobs for each future period in ascending order
     root_period = period.get_root_period()
     return IndicatorPeriodAggregationJob.objects.create(period=period, root_period=root_period)
 
@@ -63,8 +66,15 @@ def execute_aggregation_jobs():
     Call the aggregation function for each aggregation job
     """
     handle_failed_jobs()
-
+    logger.info("Started with %s jobs", get_scheduled_jobs().count())
     while (scheduled_job := get_scheduled_jobs().first()):
+        logger.info(
+            "Running job %s for period '%s - %s' and indicator: %s",
+            scheduled_job.id,
+            scheduled_job.period.period_start,
+            scheduled_job.period.period_end,
+            scheduled_job.period.indicator,
+        )
         scheduled_job.mark_running()
         try:
             run_aggregation(scheduled_job.period)
