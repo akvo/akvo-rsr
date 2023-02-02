@@ -7,40 +7,25 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-
 import json
 
-from django.conf import settings
-from django.test import TransactionTestCase, Client
+from django.urls import reverse
 
-from akvo.codelists.models import Country, Version
+from akvo.password_policy.models import PolicyConfig
 from akvo.rsr.forms import PASSWORD_MINIMUM_LENGTH
 from akvo.rsr.models import Organisation, User
-from akvo.utils import check_auth_groups
 from akvo.rsr.tests.base import BaseTestCase
 
 
-# NOTE: Since these tests actually trigger some integrity errors and we want to
-# see if they are handled correctly, we use a TransactionTestCase instead of
-# TestCase, since wrapping the tests in a transaction isn't desirable.
-
-class UserTestCase(TransactionTestCase):
+class UserTestCase(BaseTestCase):
     """Tests REST endpoints in views/user.py."""
 
     def setUp(self):
-        check_auth_groups(settings.REQUIRED_AUTH_GROUPS)
-        self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
+        super().setUp()
         self.org = Organisation.objects.create(name='akvo', long_name='akvo foundation')
         self.user_password = 'password'
         self.user = self._create_user('abc@example.com', self.user_password)
         self.c.login(username=self.user.username, password=self.user_password)
-
-        version = Version.objects.create(code=settings.IATI_VERSION)
-        self.country = Country.objects.create(
-            code='CI',
-            name='CI - C\xc3\xb4te Divoire',
-            version=version
-        )
 
     def test_request_to_list_user_are_forbidden(self):
         response = self.c.get('/rest/v1/user/?format=json')
@@ -136,7 +121,7 @@ class UserTestCase(TransactionTestCase):
         # Then
         self.assertEqual(response.status_code, 400)
         self.assertTrue(response.content.decode('utf-8').find(
-            'Passwords must be at least {} characters long.'.format(PASSWORD_MINIMUM_LENGTH)) > 0)
+            'Password must be {} or more characters in length.'.format(PASSWORD_MINIMUM_LENGTH)) > 0)
 
     def test_change_password_no_digit_in_password(self):
         # Given
@@ -156,7 +141,7 @@ class UserTestCase(TransactionTestCase):
         # Then
         self.assertEqual(response.status_code, 400)
         self.assertTrue(response.content.decode('utf-8').find(
-            'The password must contain at least one digit, 0-9.') > 0)
+            'Password must contain 1 or more numbers.') > 0)
 
     def test_change_password_no_symbol_in_password(self):
         # Given
@@ -176,7 +161,7 @@ class UserTestCase(TransactionTestCase):
         # Then
         self.assertEqual(response.status_code, 400)
         self.assertTrue(response.content.decode('utf-8').find(
-            'The password must contain at least one symbol:') > 0)
+            'Password must contain 1 or more symbol characters') > 0)
 
     def _create_user(self, email, password, is_active=True):
         """Create a user with the given email and password."""
@@ -270,3 +255,46 @@ class CurrentUserTestCase(BaseTestCase):
         content = response.data
         program_ids = sorted([p['id'] for p in content['programs']])
         self.assertEqual(sorted([program_a.id, program_b.id]), program_ids)
+
+
+class OrganisationPasswordPolicyTestCase(BaseTestCase):
+    def setUp(self):
+        super().setUp()
+        self.org = self.create_organisation('Akvo')
+        policy = PolicyConfig.objects.create(name='Test policy', min_length=4, uppercases=2, symbols=2)
+        self.org.password_policy = policy
+        self.org.save()
+
+        email = 'foo@example.com'
+        self.initial_password = 'password'
+        self.user = self.create_user(email, self.initial_password)
+        self.make_employment(self.user, self.org, 'Users')
+
+        self.url = f"{reverse('user_change_password', args=(self.user.id,))}"
+        self.c.login(username=email, password=self.initial_password)
+
+    def test_change_password_invalid(self):
+        data = {
+            'old_password': self.initial_password,
+            'new_password1': 'Abcd1234-',
+            'new_password2': 'Abcd1234-',
+        }
+        response = self.c.post(
+            self.url,
+            json.dumps(data),
+            content_type='application/json'
+        )
+        self.assertEquals(response.status_code, 400)
+
+    def test_change_password_valid(self):
+        data = {
+            'old_password': self.initial_password,
+            'new_password1': 'AB?-',
+            'new_password2': 'AB?-',
+        }
+        response = self.c.post(
+            self.url,
+            json.dumps(data),
+            content_type='application/json'
+        )
+        self.assertEquals(response.status_code, 200)
