@@ -57,7 +57,6 @@ class SingleUserCumulativeUnitUpdatesTestCase(CumulativeTestMixin, BaseTestCase)
                 self.DISAGGREGATION_TYPE_2: {'value': 1},
             }
         })
-        aggregate(self.period1.object)
 
         self.period2 = self.project.get_period(period_start=self.PERIOD_2_START)
         self.period2.add_update(user=user, value=3, disaggregations={
@@ -72,10 +71,12 @@ class SingleUserCumulativeUnitUpdatesTestCase(CumulativeTestMixin, BaseTestCase)
                 self.DISAGGREGATION_TYPE_2: {'value': 2},
             }
         })
-        aggregate(self.period2.object)
 
         self.period3 = self.project.get_period(period_start=self.PERIOD_3_START)
+        # The execution order of the aggregate function doesn't matters
         aggregate(self.period3.object)
+        aggregate(self.period1.object)
+        aggregate(self.period2.object)
 
     def test_period1(self):
         period1 = self.project.periods.get(id=self.period1.id)

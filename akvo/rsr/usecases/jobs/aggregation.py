@@ -42,8 +42,7 @@ def get_finished_jobs() -> QuerySet[IndicatorPeriodAggregationJob]:
 
 
 def base_get_jobs() -> QuerySet[IndicatorPeriodAggregationJob]:
-    # TODO: sort by creation date ascending order
-    return IndicatorPeriodAggregationJob.objects.select_related("period__indicator")
+    return IndicatorPeriodAggregationJob.objects.select_related("period__indicator").order_by("id")
 
 
 def schedule_aggregation_job(period: IndicatorPeriod) -> List[IndicatorPeriodAggregationJob]:
@@ -51,12 +50,34 @@ def schedule_aggregation_job(period: IndicatorPeriod) -> List[IndicatorPeriodAgg
     Schedule a job for the period to be aggregated upwards if no job exists
     """
     logger.info("Scheduling indicator aggregation job for %s: %s", period, period.indicator.title)
-    # TODO: Get future periods if indicator is cumulative
-    if existing_job := get_scheduled_jobs().filter(period=period).first():
-        existing_job.save()
-        return existing_job
 
-    # TODO: Create jobs for each future period in ascending order
+    affected_periods = _get_affected_periods(period)
+    existing_jobs = get_scheduled_jobs().filter(period__in=affected_periods)
+    existing_job_periods = []
+    for job in existing_jobs:
+        job.save()
+        existing_job_periods.append(job.period)
+
+    candidate_periods = [p for p in affected_periods if p not in existing_job_periods]
+    new_jobs = [_create_aggregation_job(p) for p in candidate_periods]
+
+    return [p for p in existing_jobs] + new_jobs
+
+
+def _get_affected_periods(period: IndicatorPeriod) -> QuerySet[IndicatorPeriod]:
+    """
+    For cumulative indicators, subsequent periods needs to be calculated in advance to reflect the carried-over values.
+    This approach has the least amount of generated jobs compared to the other approaches we found. The compromise
+    of this approach is that when visualizing data, it is necessary to add logic to hide values of future periods so
+    as not to cause confusion to users.
+    """
+    queryset = period.indicator.periods.all()
+    if not period.indicator.is_cumulative():
+        return queryset.filter(id=period.id)
+    return queryset.filter(period_start__gte=period.period_start).order_by('period_start')
+
+
+def _create_aggregation_job(period: IndicatorPeriod) -> IndicatorPeriodAggregationJob:
     root_period = period.get_root_period()
     return IndicatorPeriodAggregationJob.objects.create(period=period, root_period=root_period)
 
