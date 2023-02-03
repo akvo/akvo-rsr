@@ -1,6 +1,7 @@
 /* globals FileReader, window */
 import { diff } from 'deep-object-diff'
 import defaults from 'lodash/defaults'
+import sumBy from 'lodash/sumBy'
 
 export const datePickerConfig = {
   format: 'DD/MM/YYYY',
@@ -233,3 +234,22 @@ export const getShrink = items => {
     return !parentId
   })
 }
+
+export const getPercentage = (numerator, denominator) => Math.round((numerator / denominator) * 100 * 10) / 10
+
+export const makeATree = (data, pid = null) => {
+  return data.reduce((r, d) => {
+    const parentId = d?.parent?.id || d?.parent
+    if (parentId === pid) {
+      const obj = { ...d }
+      const children = makeATree(data, d?.id)
+      if (children.length) obj.children = children
+      r.push(obj)
+    }
+    return r
+  }, [])
+}
+
+export const getUserFullName = user => (user?.firstName?.length || user?.lastName?.length)
+  ? `${user.firstName} ${user.lastName}`
+  : user.email
