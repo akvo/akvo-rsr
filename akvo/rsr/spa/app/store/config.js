@@ -14,7 +14,8 @@ export default (initialState) => {
       'userRdr',
       'editorRdr',
       'resultRdr',
-      'programmeRdr',
+      'filterRdr',
+      'programRdr',
     ]
   }
   const persistedReducer = persistReducer(rootPersistConfig, rootReducer)
