@@ -42,18 +42,42 @@ def get_finished_jobs() -> QuerySet[IndicatorPeriodAggregationJob]:
 
 
 def base_get_jobs() -> QuerySet[IndicatorPeriodAggregationJob]:
-    return IndicatorPeriodAggregationJob.objects.select_related("period__indicator")
+    return IndicatorPeriodAggregationJob.objects.select_related("period__indicator").order_by("id")
 
 
-def schedule_aggregation_job(period: IndicatorPeriod) -> IndicatorPeriodAggregationJob:
+def schedule_aggregation_job(period: IndicatorPeriod) -> List[IndicatorPeriodAggregationJob]:
     """
     Schedule a job for the period to be aggregated upwards if no job exists
     """
     logger.info("Scheduling indicator aggregation job for %s: %s", period, period.indicator.title)
-    if existing_job := get_scheduled_jobs().filter(period=period).first():
-        existing_job.save()
-        return existing_job
 
+    affected_periods = _get_affected_periods(period)
+    existing_jobs = get_scheduled_jobs().filter(period__in=affected_periods)
+    existing_job_periods = []
+    for job in existing_jobs:
+        job.save()
+        existing_job_periods.append(job.period)
+
+    candidate_periods = [p for p in affected_periods if p not in existing_job_periods]
+    new_jobs = [_create_aggregation_job(p) for p in candidate_periods]
+
+    return [p for p in existing_jobs] + new_jobs
+
+
+def _get_affected_periods(period: IndicatorPeriod) -> QuerySet[IndicatorPeriod]:
+    """
+    For cumulative indicators, subsequent periods needs to be calculated in advance to reflect the carried-over values.
+    This approach has the least amount of generated jobs compared to the other approaches we found. The compromise
+    of this approach is that when visualizing data, it is necessary to add logic to hide values of future periods so
+    as not to cause confusion to users.
+    """
+    queryset = period.indicator.periods.all()
+    if not period.indicator.is_cumulative():
+        return queryset.filter(id=period.id)
+    return queryset.filter(period_start__gte=period.period_start).order_by('period_start')
+
+
+def _create_aggregation_job(period: IndicatorPeriod) -> IndicatorPeriodAggregationJob:
     root_period = period.get_root_period()
     return IndicatorPeriodAggregationJob.objects.create(period=period, root_period=root_period)
 
@@ -63,8 +87,15 @@ def execute_aggregation_jobs():
     Call the aggregation function for each aggregation job
     """
     handle_failed_jobs()
-
+    logger.info("Started with %s jobs", get_scheduled_jobs().count())
     while (scheduled_job := get_scheduled_jobs().first()):
+        logger.info(
+            "Running job %s for period '%s - %s' and indicator: %s",
+            scheduled_job.id,
+            scheduled_job.period.period_start,
+            scheduled_job.period.period_end,
+            scheduled_job.period.indicator,
+        )
         scheduled_job.mark_running()
         try:
             run_aggregation(scheduled_job.period)
