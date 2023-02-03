@@ -42,7 +42,7 @@ class EndpointTestCase(AggregationJobBaseTests):
         self.private_result = self.result.child_results.first()
         self.private_indicator = self.indicator.child_indicators.first()
         self.private_period = self.period.child_periods.first()
-        self.private_job = schedule_aggregation_job(self.private_period)
+        self.private_job = schedule_aggregation_job(self.private_period)[0]
 
         # Create private project in another org
         self.other_private_user = self.create_user("other_private@akvo.org", "password", is_superuser=False)
@@ -51,7 +51,7 @@ class EndpointTestCase(AggregationJobBaseTests):
 
         self.other_private_result, self.other_private_indicator, self.other_private_period = \
             self._make_results_framework(self.other_private_project)
-        self.other_private_job = schedule_aggregation_job(self.other_private_period)
+        self.other_private_job = schedule_aggregation_job(self.other_private_period)[0]
 
     def test_super_user(self):
         """Super users should be able to access all jobs"""
@@ -141,7 +141,7 @@ class EndpointTestCase(AggregationJobBaseTests):
         self.assertEqual(response.status_code, HTTP_200_OK)
 
         data = response.json()
-        self.assertNotEqual(data["id"], self.private_job.id)
+        self.assertNotEqual(data[0]["id"], self.private_job.id)
 
         self.assertEqual(
             IndicatorPeriodAggregationJob.objects.filter(period=self.private_period).count(),
