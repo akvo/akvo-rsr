@@ -41,7 +41,7 @@ class IndicatorPeriodAggregationJobViewSet(ReadOnlyPublicProjectViewSet):
         if job.status != IndicatorPeriodAggregationJob.Status.MAXXED:
             raise ValidationError("Maximum number of attempts not reached")
 
-        new_job = schedule_aggregation_job(job.period)
-        serializer = self.get_serializer(new_job)
+        new_jobs = schedule_aggregation_job(job.period)
+        serializer = self.get_serializer(new_jobs, many=True)
 
         return Response(serializer.data)
