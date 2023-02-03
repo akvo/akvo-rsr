@@ -236,7 +236,7 @@ const Indicator = ({ setResults, indicator, treeFilter, statusFilter, pushUpdate
           <Col span={16} />
           <Col span={4} className="stats-indicator">
             <div className="stat value">
-              <div className="label">aggregated actual value</div>
+              <div className="label">Aggregate Actual</div>
               <b>{setNumberFormat(sumActualValue)}</b><br />
               <span>
                 of <b>{indicator?.targetValue}</b> target
