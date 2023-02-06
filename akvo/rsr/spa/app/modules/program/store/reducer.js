@@ -86,6 +86,18 @@ export default (state = [], action) => {
           }))
         }))
       }))
+    case actionTypes.UPDATE_PERIOD_N_CONTRIBUTORS:
+      const { period, contributors } = action.payload
+      return state?.map((s) => ({
+        ...s,
+        indicators: s?.indicators?.map((i) => ({
+          ...i,
+          periods: i?.periods?.map((p) => (p?.id === period?.id)
+            ? ({ ...p, ...period, contributors, fetched: true })
+            : p
+          )
+        }))
+      }))
     default:
       return state
   }
