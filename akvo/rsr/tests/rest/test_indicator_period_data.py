@@ -1904,6 +1904,7 @@ class PreviousCumulativeUpdateEndpointTestCase(BaseTestCase):
             }
         })
 
+
 class IndicatorUpdatesByPeriodIdTestCase(BaseTestCase):
     def _setup_admin(self):
         admin = self.create_user("user@akvo.org", "password", is_admin=True)
