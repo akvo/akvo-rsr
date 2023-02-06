@@ -234,7 +234,7 @@ export const getFlatten = data => {
   let children = []
   let flattened = data.map(m => {
     if (m.contributors && m.contributors.length) {
-      children = [...children, ...m.contributors.map((cb) => ({ ...cb, parentId: m.id }))]
+      children = [...children, ...m.contributors.map((cb) => ({ ...cb, parentId: m?.id || m?.projectId }))]
     }
     return m
   })
@@ -248,7 +248,7 @@ export const getFlatten = data => {
 export const getShrink = items => {
   const nodes = {}
   return items.filter((obj) => {
-    const id = obj.id
+    const id = obj.projectId
     const parentId = obj.parentId
     nodes[id] = defaults(obj, nodes[id], { contributors: [] })
     parentId && (nodes[parentId] = (nodes[parentId] || { contributors: [] })).contributors.push(obj)

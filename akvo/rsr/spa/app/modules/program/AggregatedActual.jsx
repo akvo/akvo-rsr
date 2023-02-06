@@ -25,7 +25,7 @@ const AggregatedActual = ({
   })
 
   useEffect(() => {
-    if (items.length === 0 && preload.fetched && preload.created) {
+    if (items.length === 0 && preload.fetched && preload.created && periodId) {
       setPreload({
         ...preload,
         fetched: false,
@@ -54,7 +54,7 @@ const AggregatedActual = ({
       })
       setRootPeriodJobStatus(periodId, items)
     }
-  }, [items, preload])
+  }, [items, preload, periodId])
 
   const _periods = getAllPeriods(programmeRdr)
   const _projects = jobs?.length ? jobs?.map((j) => getProjectByPeriodID(_periods, j?.period)) : []

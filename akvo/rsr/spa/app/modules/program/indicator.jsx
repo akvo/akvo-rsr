@@ -1,6 +1,8 @@
 /* global window, document */
 import React, { useState, useRef, useEffect } from 'react'
 import { Row, Col, Collapse } from 'antd'
+import moment from 'moment'
+
 import { setNumberFormat } from '../../utils/misc'
 import TargetCharts from '../../utils/target-charts'
 import ExpandIcon from './ExpandIcon'
@@ -11,10 +13,9 @@ import AggregationModal from './AggregationModal'
 const Indicator = ({
   periods,
   indicatorType,
-  countryFilter,
   scoreOptions,
   targetsAt,
-  indicator
+  indicator,
 }) => {
   const [pinned, setPinned] = useState(-1)
   const [openedItem, setOpenedItem] = useState(null)
@@ -33,13 +34,6 @@ const Indicator = ({
   let scrollingTransition
   let tmid
 
-  const filterProjects = it => {
-    if (countriesFilter.length === 0 && countryFilter.length === 0) return true
-    if (countryFilter && countryFilter.length > 0) {
-      return countryFilter.findIndex(_it => it.country && it.country.isoCode === _it) !== -1
-    }
-    return countriesFilter.findIndex(_it => it.country && it.country.isoCode === _it) !== -1
-  }
   const _setPinned = (to) => {
     setPinned(to)
     pinnedRef.current = to
@@ -91,44 +85,45 @@ const Indicator = ({
           </Col>
         </Row>
       )}
-      <Collapse expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
-        {periods.map((period, index) => {
-          const filteredContributors = period.contributors.filter(filterProjects)
-          const filteredCountries = countryFilter.length > 0 ? countryFilter : period.countries
-          const aggFilteredTotal = filteredContributors.reduce((prev, value) => prev + value.actualValue, 0)
-          const aggFilteredTotalTarget = filteredContributors.reduce((prev, value) => prev + (value.targetValue ? value.targetValue : 0), 0)
-          const actualValue = countryFilter.length > 0 ? aggFilteredTotal : period.actualValue
-          const targetValue = countryFilter.length > 0 ? aggFilteredTotalTarget : period.targetValue
-          return (
-            <ProgramPeriod
-              key={index}
-              {...{
-                listRef,
-                tooltipRef,
-                disaggTooltipRef,
-                period,
-                targetsAt,
-                indicatorType,
-                scoreOptions,
-                countryFilter,
-                filteredContributors,
-                filteredCountries,
-                actualValue,
-                targetValue,
-                aggFilteredTotalTarget,
-                aggFilteredTotal,
-                pinned,
-                countriesFilter,
-                openedItem,
-                periodIndex: index,
-                activePeriod,
-                setActivePeriod,
-                handleCountryFilter: setCountriesFilter,
-                handleAccordionChange
-              }}
-            />
-          )
-        })}
+      <Collapse defaultActiveKey={[0]} expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
+        {
+          periods
+            ?.sort((a, b) => moment(a.periodEnd, 'DD/MM/YYYY').format('YYYY') - moment(b.periodEnd, 'DD/MM/YYYY').format('YYYY'))
+            ?.map((period, index) => {
+              const filteredContributors = period?.filteredContributors || period.contributors
+              const aggFilteredTotal = filteredContributors.reduce((prev, value) => prev + value.actualValue, 0)
+              const aggFilteredTotalTarget = filteredContributors.reduce((prev, value) => prev + (value.targetValue ? value.targetValue : 0), 0)
+              const actualValue = period.actualValue
+              const targetValue = period.targetValue
+              return (
+                <ProgramPeriod
+                  key={index}
+                  {...{
+                    listRef,
+                    tooltipRef,
+                    disaggTooltipRef,
+                    period,
+                    targetsAt,
+                    indicatorType,
+                    scoreOptions,
+                    filteredContributors,
+                    actualValue,
+                    targetValue,
+                    aggFilteredTotalTarget,
+                    aggFilteredTotal,
+                    pinned,
+                    countriesFilter,
+                    openedItem,
+                    periodIndex: index,
+                    activePeriod,
+                    setActivePeriod,
+                    handleCountryFilter: setCountriesFilter,
+                    handleAccordionChange
+                  }}
+                />
+              )
+            })
+        }
       </Collapse>
       {activePeriod?.period && (
         <AggregationModal

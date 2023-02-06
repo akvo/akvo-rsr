@@ -316,6 +316,10 @@ def indicator_previous_cumulative_update(request, project_pk, indicator_pk):
         return HttpResponseForbidden()
     data = get_previous_cumulative_update_value(user, indicator)
     return Response(data)
+
+
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, TastyTokenAuthentication])
 def indicator_updates_by_period_id(request, program_pk):
     program = get_object_or_404(Project, pk=program_pk)
     user = request.user
