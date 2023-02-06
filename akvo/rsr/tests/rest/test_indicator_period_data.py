@@ -1921,50 +1921,16 @@ class IndicatorUpdatesByPeriodIdTestCase(BaseTestCase):
                     'indicators': [
                         {
                             'title': 'Indicator #1',
-                            'cumulative': True,
                             'periods': [
                                 {
-                                    'period_start': date(2010, 1, 1),
-                                    'period_end': date(2010, 12, 31),
+                                    'period_start': '2010-1-1',
+                                    'period_end': '2010-12-31',
                                 },
-                                {
-                                    'period_start': date(2011, 1, 1),
-                                    'period_end': date(2011, 12, 31),
-                                },
-                            ]
-                        }
+                            ],
+                        },
                     ]
-                }
+                },
             ])\
-            .build()
-        self.project.get_period(period_start=date(2010, 1, 1)).add_update(
-            self.user, value=10,
-            disaggregations={
-                'Gender': {
-                    'Male': {'value': 3},
-                    'Female': {'value': 7},
-                }
-            }
-        )
-        self.indicator = self.project.indicators.get(title='Indicator #1')
-        self.c.login(username=self.user.email, password='password')
-
-    def test_endpoint(self):
-        result = self.c.get(
-            f'/rest/v1/project/{self.project.object.id}/indicator/{self.indicator.id}/previous_cumulative_update?format=json',
-            content_type='application/json'
-        )
-        self.assertEqual(result.data, {
-            'value': 10,
-            'numerator': None,
-            'denominator': None,
-            'disaggregations': {
-                'Gender': {
-                    'Male': {'value': 3, 'numerator': None, 'denominator': None},
-                    'Female': {'value': 7, 'numerator': None, 'denominator': None},
-                }
-            }
-        })\
             .with_contributors([
                 {'title': 'Project #1'},
                 {'title': 'Project #2'},
