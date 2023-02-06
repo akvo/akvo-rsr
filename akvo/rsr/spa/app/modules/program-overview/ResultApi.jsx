@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react"
-import { connect } from "react-redux"
-import { updateProgrammePerResult } from "../program/store/actions"
-import api from "../../utils/api"
+import { useEffect, useState } from 'react'
+import { connect } from 'react-redux'
+import { updateProgrammePerResult } from '../program/store/actions'
+import api from '../../utils/api'
 
 const ResultApi = ({
   fetched,

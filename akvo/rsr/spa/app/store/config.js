@@ -16,7 +16,7 @@ export default (initialState) => {
       'resultRdr',
       'programmeRdr',
       'filterRdr',
-      //'programRdr',
+      // 'programRdr',
     ]
   }
   const persistedReducer = persistReducer(rootPersistConfig, rootReducer)
