@@ -35,34 +35,34 @@ const ProgramContributor = ({
   onChange
 }) => {
   const { t } = useTranslation()
-  const [preload, setPreload] = useState(true)
-  const [fetching, setFetching] = useState(true)
+  const [preload, setPreload] = useState(false)
+  const [fetching, setFetching] = useState(false)
   const [contribKey, setContribKey] = useState(['0'])
 
   const { hasContrib, hasPartner, hasCountry } = getStatusFiltering(filtering)
 
-  useEffect(() => {
-    if (preload) {
-      setPreload(false)
-      const allContributors = getFlatten(contributors)
-      const ids = allContributors?.map((cb) => cb?.id)?.join(',')
-      api
-        .get(`/program/${dataId}/indicator_updates_by_period_id/?format=json&ids=${ids}`)
-        .then(({ data }) => {
-          const allUpdates = allContributors?.map((cb) => {
-            const _updates = data.filter((u) => u.period === cb?.id)
-            return ({ ...cb, updates: _updates })
-          })
-          const projects = getShrink(allUpdates)
-          setContributors({ periodID, data: projects })
-          setFetching(false)
-        })
-        .catch((err) => {
-          console.log('error', err)
-          setFetching(false)
-        })
-    }
-  }, [updates, fetched, fetching, preload])
+  // useEffect(() => {
+  //   if (preload) {
+  //     setPreload(false)
+  //     const allContributors = getFlatten(contributors)
+  //     const ids = allContributors?.map((cb) => cb?.id)?.join(',')
+  //     api
+  //       .get(`/program/${dataId}/indicator_updates_by_period_id/?format=json&ids=${ids}`)
+  //       .then(({ data }) => {
+  //         const allUpdates = allContributors?.map((cb) => {
+  //           const _updates = data.filter((u) => u.period === cb?.id)
+  //           return ({ ...cb, updates: _updates })
+  //         })
+  //         const projects = getShrink(allUpdates)
+  //         setContributors({ periodID, data: projects })
+  //         setFetching(false)
+  //       })
+  //       .catch((err) => {
+  //         console.log('error', err)
+  //         setFetching(false)
+  //       })
+  //   }
+  // }, [updates, fetched, fetching, preload])
 
   return contributors.length
     ? (

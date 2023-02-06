@@ -33,7 +33,7 @@ const PeriodHeader = ({
   disaggTooltipRef,
   match: { params },
   updateReportingPeriod,
-  programRdr,
+  programmeRdr,
 }) => {
   const [preload, setPreload] = useState(true)
   const { t } = useTranslation()
@@ -94,7 +94,7 @@ const PeriodHeader = ({
     if (preload && fetched) {
       setPreload(false)
     }
-  }, [preload, fetched, programRdr])
+  }, [preload, fetched, programmeRdr])
   return (
     <>
       <div>
@@ -161,5 +161,5 @@ const PeriodHeader = ({
 }
 
 export default connect(
-  ({ programRdr }) => ({ programRdr }), actions
+  ({ programmeRdr }) => ({ programmeRdr }), actions
 )(withRouter(PeriodHeader))

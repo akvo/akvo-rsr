@@ -49,12 +49,12 @@ const Program = ({
   loading,
   initial,
   params,
-  programRdr,
+  programmeRdr,
   filterRdr: filtering,
   ...actionProps
 }) => {
   const {
-    appendResults,
+    setProgrammeResults,
     applyFilter,
     setFilterItems,
     removeFilterItem,
@@ -108,7 +108,7 @@ const Program = ({
     removeFilterItem({ fieldName, id })
   }
   const { allFilters } = getStatusFiltering(filtering)
-  const resultItems = handleOnFiltering(programRdr, filtering, search)
+  const resultItems = handleOnFiltering(programmeRdr, filtering, search)
   const totalItems = sum(allFilters.map((v) => v.items.length))
   const totalMatches = handleOnCountFiltering(resultItems, filtering, search)
 
@@ -148,18 +148,18 @@ const Program = ({
       ?.flatMap((i) => i?.periods)
       ?.flatMap((p) => p?.contributors)
       ?.length
-    const currentContribtorsLength = programRdr
+    const currentContribtorsLength = programmeRdr
       ?.flatMap((r) => r?.indicators)
       ?.flatMap((i) => i?.periods)
       ?.flatMap((p) => p?.contributors)
       ?.length
 
-    if ((dataResults && (dataResults.length !== programRdr.length)) || (apiData && (totalItems === 0 && (originContributorsLength !== currentContribtorsLength)))) {
-      appendResults(dataResults)
+    if ((dataResults && (dataResults.length !== programmeRdr.length)) || (apiData && (totalItems === 0 && (originContributorsLength !== currentContribtorsLength)))) {
+      setProgrammeResults(dataResults)
     }
   }, [
     initial,
-    programRdr,
+    programmeRdr,
     filtering,
     params,
     preload,
@@ -321,5 +321,5 @@ const Program = ({
 }
 
 export default connect(
-  ({ programRdr, filterRdr }) => ({ programRdr, filterRdr }), { ...actions, ...filterActions }
+  ({ programmeRdr, filterRdr }) => ({ programmeRdr, filterRdr }), { ...actions, ...filterActions }
 )(Program)

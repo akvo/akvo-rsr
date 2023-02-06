@@ -26,6 +26,7 @@ import {
   findProjects,
   getStatusFiltering,
 } from './utils/filters'
+import ResultApi from './ResultApi'
 
 const { Panel } = Collapse
 
@@ -100,6 +101,7 @@ const ProgramView = ({
             </StickyClass>
           )}
         >
+          <ResultApi {...result} index={rx} programId={dataId} />
           <Collapse
             activeKey={indicatorKeys}
             onChange={setIndicatorKeys}
