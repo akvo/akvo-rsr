@@ -316,3 +316,29 @@ def indicator_previous_cumulative_update(request, project_pk, indicator_pk):
         return HttpResponseForbidden()
     data = get_previous_cumulative_update_value(user, indicator)
     return Response(data)
+
+
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, TastyTokenAuthentication])
+def indicator_updates_by_period_id(request, program_pk):
+    program = get_object_or_404(Project, pk=program_pk)
+    user = request.user
+    if not user.has_perm('rsr.view_project', program):
+        return HttpResponseForbidden()
+    period_ids = {id for id in request.GET.get('ids', '').split(',') if id}
+    contributors = program.descendants()
+    queryset = IndicatorPeriodData.objects\
+        .select_related(
+            'period',
+            'user',
+            'approved_by',
+        ).prefetch_related(
+            'comments',
+            'disaggregations',
+        ).filter(
+            status=IndicatorPeriodData.STATUS_APPROVED_CODE,
+            period__indicator__result__project__in=contributors,
+            period__in=period_ids
+        )
+    serializer = IndicatorPeriodDataFrameworkSerializer(queryset, many=True)
+    return Response(serializer.data)

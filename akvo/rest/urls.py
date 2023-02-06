@@ -317,6 +317,15 @@ urlpatterns += (
     url(r'v1/program/(?P<program_pk>[0-9]+)/updates/$',
         views.program_updates,
         name='program_updates'),
+    url(r'v1/program/(?P<program_pk>[0-9]+)/results/$',
+        views.get_program_results,
+        name='get_program_results'),
+    url(r'v1/program/(?P<program_pk>[0-9]+)/indicator_updates_by_period_id/$',
+        views.indicator_updates_by_period_id,
+        name='indicator_updates_by_period_id'),
+    url(r'v1/program/(?P<program_pk>[0-9]+)/indicator_period_by_ids/$',
+        views.indicator_period_by_ids,
+        name='indicator_period_by_ids'),
 )
 
 
