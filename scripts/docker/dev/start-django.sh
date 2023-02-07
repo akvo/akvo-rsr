@@ -21,5 +21,8 @@ if [ -z "${IS_REPORTS_CONTAINER:-}" ]; then
   python manage.py loaddata --app rsr project_validations
 fi
 
-
-python manage.py runserver 0.0.0.0:${DJANGO_PORT:-8000}
+if [[ -z "${IS_WORKER:-}" ]] ; then
+  python manage.py runserver 0.0.0.0:${DJANGO_PORT:-8000}
+else
+  ./manage.py qcluster
+fi
