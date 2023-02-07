@@ -55,7 +55,6 @@ const PeriodHeader = ({
   actualValue,
   targetValue,
   targetsAt,
-  countryFilter,
   aggFilteredTotalTarget,
   hasDisaggregations,
   clickBar,
@@ -106,7 +105,7 @@ const PeriodHeader = ({
               />
               {targetsAt && targetsAt === 'period' && targetValue > 0 && (
                 <span>
-                  of <b>{setNumberFormat(countryFilter.length > 0 ? aggFilteredTotalTarget : targetValue)}</b> target
+                  of <b>{setNumberFormat(targetValue)}</b> target
                 </span>
               )}
             </div>
@@ -148,7 +147,6 @@ const ProgramPeriod = ({
   targetsAt,
   indicatorType,
   scoreOptions,
-  countryFilter,
   filteredContributors,
   filteredCountries,
   actualValue,
@@ -220,7 +218,6 @@ const ProgramPeriod = ({
             actualValue,
             targetValue,
             targetsAt,
-            countryFilter,
             aggFilteredTotalTarget,
             hasDisaggregations,
             clickBar,
@@ -231,7 +228,7 @@ const ProgramPeriod = ({
         />
       )}
     >
-      {(period.contributors.length > 1 && !countryFilter) &&
+      {(period.contributors.length > 1) &&
         <div className="filters">
           <Select
             className="country-filter"

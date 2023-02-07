@@ -69,7 +69,7 @@ const Root = ({ dispatch }) => {
           <Route path="/iati" component={IATI} />
           <Route path="/my-details" component={Profile} />
         </div>
-        <Route path="/programs/:projectId" component={ProgramOverview} />
+        <Route path="/programs/:projectId" component={Program} />
       </div>
       </LastLocationProvider>
     </Router>
