@@ -9,6 +9,8 @@ see < http://www.gnu.org/licenses/agpl.html >.
 
 import copy
 from collections import OrderedDict
+from datetime import date
+from functools import cached_property
 from django.conf import settings
 from akvo.rsr.models import IndicatorPeriod, IndicatorPeriodData
 from akvo.rsr.models.result.utils import QUALITATIVE, PERCENTAGE_MEASURE, calculate_percentage
@@ -127,7 +129,6 @@ class PeriodProxy(ObjectReaderProxy):
         self._project = None
         self._updates = None
         self._actual_comment = None
-        self._actual_value = None
         self._actual_numerator = None
         self._actual_denominator = None
         self._target_value = None
@@ -192,6 +193,10 @@ class PeriodProxy(ObjectReaderProxy):
                 self._indicator_target_value = ensure_decimal(self.indicator.target_value)
         return self._indicator_target_value
 
+    @cached_property
+    def is_cumulative(self):
+        return self.indicator.is_cumulative()
+
     @property
     def actual_comment(self):
         if self._actual_comment is None:
@@ -200,13 +205,13 @@ class PeriodProxy(ObjectReaderProxy):
                 else False
         return self._actual_comment or None
 
-    @property
+    @cached_property
     def actual_value(self):
-        if self._actual_value is None:
-            self._actual_value = calculate_percentage(self.actual_numerator, self.actual_denominator) \
-                if self.type == IndicatorType.PERCENTAGE \
-                else ensure_decimal(self._real.actual_value)
-        return self._actual_value
+        if self.type == IndicatorType.PERCENTAGE:
+            return calculate_percentage(self.actual_numerator, self._actual_denominator)
+        if self.is_cumulative and self.period_start and self.period_start > date.today():
+            return 0
+        return self._real.actual_value
 
     @property
     def actual_numerator(self):
@@ -351,7 +356,7 @@ class ContributorCollection(object):
             contributor = Contributor(node['item'], node['children'], self.type, self._project_disaggregations)
 
             if not contributor.project.aggregate_to_parent or (
-                contributor.actual_value < 1 and len(contributor.updates) < 1
+                ensure_decimal(contributor.actual_value) < 1 and len(contributor.updates) < 1
             ):
                 continue
 
@@ -364,7 +369,7 @@ class ContributorCollection(object):
                 self._total_numerator += contributor.actual_numerator
                 self._total_denominator += contributor.actual_denominator
             else:
-                self._total_value += contributor.actual_value
+                self._total_value += ensure_decimal(contributor.actual_value)
 
             # calculate disaggregations
             for key in contributor.contributors.disaggregations:
@@ -387,7 +392,6 @@ class Contributor(object):
         self._project_disaggregations = project_disaggregations
         self._project = None
         self._country = None
-        self._actual_value = None
         self._actual_numerator = None
         self._actual_denominator = None
         self._location = None
@@ -419,13 +423,17 @@ class Contributor(object):
             self._updates = UpdateCollection(self.period, self.type)
         return self._updates
 
-    @property
+    @cached_property
+    def is_cumulative(self):
+        return self.period.indicator.is_cumulative()
+
+    @cached_property
     def actual_value(self):
-        if self._actual_value is None:
-            self._actual_value = calculate_percentage(self.actual_numerator, self.actual_denominator) \
-                if self.type == IndicatorType.PERCENTAGE \
-                else ensure_decimal(self.period.actual_value)
-        return self._actual_value
+        if self.type == IndicatorType.PERCENTAGE:
+            return calculate_percentage(self.actual_numerator, self._actual_denominator)
+        if self.is_cumulative and self.period.period_start and self.period.period_start > date.today():
+            return 0
+        return ensure_decimal(self.period.actual_value)
 
     @property
     def actual_numerator(self):

@@ -122,8 +122,8 @@
               <tr class="level level-one">
                 <td>{{ contrib.project.title }}</td>
                 <td class="text-center">{{ contrib.country.name }}</td>
-                <td class="text-center">{{ contrib.updates.total_value|floatformat|intcomma }}</td>
-                <td class="text-center">{{ contrib.updates.total_value|percent_of:period.actual_value|floatformat }}%</td>
+                <td class="text-center">{{ contrib.actual_value|floatformat|intcomma }}</td>
+                <td class="text-center">{{ contrib.actual_value|percent_of:period.actual_value|floatformat }}%</td>
               </tr>
 
               {% if contrib.updates.disaggregations %}
