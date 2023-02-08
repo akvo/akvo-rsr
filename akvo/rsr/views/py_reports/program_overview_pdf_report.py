@@ -39,8 +39,8 @@ def add_email_report_job(request, program_id):
 def handle_email_report(params, recipient):
     now = datetime.today()
     program = Project.objects.prefetch_related('results').get(pk=params['program_id'])
-    start_date = utils.parse_date(params.get('period_start', ''))
-    end_date = utils.parse_date(params.get('period_end', ''))
+    start_date = utils.parse_date(params.get('period_start', ''), datetime(1900, 1, 1))
+    end_date = utils.parse_date(params.get('period_end', ''), datetime(2999, 12, 31))
     program_view = build_view_object(program, start_date or datetime(1900, 1, 1), end_date or (datetime.today() + relativedelta(years=10)))
     coordinates = [
         Coordinate(loc.latitude, loc.longitude)
