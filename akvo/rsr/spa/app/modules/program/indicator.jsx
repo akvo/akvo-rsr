@@ -11,7 +11,6 @@ import AggregationModal from './AggregationModal'
 const Indicator = ({
   periods,
   indicatorType,
-  countryFilter,
   scoreOptions,
   targetsAt,
   indicator
@@ -33,13 +32,6 @@ const Indicator = ({
   let scrollingTransition
   let tmid
 
-  const filterProjects = it => {
-    if (countriesFilter.length === 0 && countryFilter.length === 0) return true
-    if (countryFilter && countryFilter.length > 0) {
-      return countryFilter.findIndex(_it => it.country && it.country.isoCode === _it) !== -1
-    }
-    return countriesFilter.findIndex(_it => it.country && it.country.isoCode === _it) !== -1
-  }
   const _setPinned = (to) => {
     setPinned(to)
     pinnedRef.current = to
@@ -79,7 +71,7 @@ const Indicator = ({
         <Row type="flex" justify="end" align="middle">
           <Col span={4} className="stats-indicator text-right">
             <div className="stat value">
-              <div className="label">aggregated actual</div>
+              <div className="label">Aggregate Actual</div>
               <b>{setNumberFormat(sumActualValue)}</b><br />
               <span>
                 of <b>{indicator.targetValue}</b> target
@@ -93,12 +85,12 @@ const Indicator = ({
       )}
       <Collapse expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
         {periods.map((period, index) => {
-          const filteredContributors = period.contributors.filter(filterProjects)
-          const filteredCountries = countryFilter.length > 0 ? countryFilter : period.countries
+          const filteredContributors = period?.filteredContributors || period.contributors
+          const filteredCountries = period.countries
           const aggFilteredTotal = filteredContributors.reduce((prev, value) => prev + value.actualValue, 0)
           const aggFilteredTotalTarget = filteredContributors.reduce((prev, value) => prev + (value.targetValue ? value.targetValue : 0), 0)
-          const actualValue = countryFilter.length > 0 ? aggFilteredTotal : period.actualValue
-          const targetValue = countryFilter.length > 0 ? aggFilteredTotalTarget : period.targetValue
+          const actualValue = period.actualValue
+          const targetValue = period.targetValue
           return (
             <ProgramPeriod
               key={index}
@@ -110,7 +102,6 @@ const Indicator = ({
                 targetsAt,
                 indicatorType,
                 scoreOptions,
-                countryFilter,
                 filteredContributors,
                 filteredCountries,
                 actualValue,
