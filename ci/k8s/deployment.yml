@@ -202,6 +202,27 @@ spec:
         - <<: *gunicorn-debug-args
         - <<: *django-secret-key
         - <<: *enable-stats
+      - <<: *backend
+        name: worker
+        readinessProbe:
+          exec:
+            command:
+              - "./manage.py probe_django_q"
+        livenessProbe:
+          exec:
+            command:
+              - "./manage.py probe_django_q"
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        resources:
+          requests:
+            cpu: "100m"
+          limits:
+            cpu: "1000m"
+        env:
+        - name: IS_WORKER
+          value: "yes"
+        - <<: *django-secret-key
       - name: rsr-statsd-to-prometheus
         image: eu.gcr.io/akvo-lumen/rsr-statsd-to-prometheus:${TRAVIS_COMMIT}
         ports:
