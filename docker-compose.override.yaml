@@ -21,9 +21,21 @@ services:
     <<: *web-common
     environment:
       IS_WORKER: "yes"
+      DJANGO_SECRET_KEY: secretkey
+      DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
+    healthcheck:
+      test: [ "CMD", "./manage.py", "probe_django_q" ]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     depends_on:
       web:
         condition: service_healthy
+    volumes:
+      - .:/var/akvo/rsr/code:delegated
+      - /var/akvo/rsr/code/src/
+      - ./scripts/docker/dev/50-docker-local-dev.conf:/config_overrides/50-docker-local-dev.conf
 
   web-dir:
     <<: *web-common
