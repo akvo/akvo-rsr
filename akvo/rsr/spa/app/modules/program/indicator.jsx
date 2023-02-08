@@ -85,7 +85,7 @@ const Indicator = ({
       )}
       <Collapse expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
         {periods.map((period, index) => {
-          const filteredContributors = period.contributors
+          const filteredContributors = period?.filteredContributors || period.contributors
           const filteredCountries = period.countries
           const aggFilteredTotal = filteredContributors.reduce((prev, value) => prev + value.actualValue, 0)
           const aggFilteredTotalTarget = filteredContributors.reduce((prev, value) => prev + (value.targetValue ? value.targetValue : 0), 0)

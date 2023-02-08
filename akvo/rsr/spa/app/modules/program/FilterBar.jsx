@@ -12,17 +12,21 @@ import {
   Typography,
 } from 'antd'
 import moment from 'moment'
-import uniq from 'lodash/uniq'
 import sum from 'lodash/sum'
+import uniq from 'lodash/uniq'
+import uniqBy from 'lodash/uniqBy'
 import classNames from 'classnames'
+import useSWR from 'swr'
 import { connect } from 'react-redux'
 
 import Filter from '../../components/filter'
 import countriesDict from '../../utils/countries-dict'
 import { setNumberFormat } from '../../utils/misc'
 import { getStatusFiltering } from './utils/filters'
-import { handleOnCountFiltering, handleOnFiltering } from './utils/query'
+import { handleOnCountFiltering } from './utils/query'
 import * as actions from '../../store/filter/actions'
+import { updateContributors } from './store/actions'
+import api from '../../utils/api'
 
 const { Panel } = Collapse
 const { Text, Title } = Typography
@@ -41,26 +45,28 @@ const PanelHeader = ({ count, text }) => (
 const FilterBar = ({
   filterRdr: filtering,
   programmeRdr,
-  source,
-  loading,
+  programID,
+  totalMatches,
+  search,
+  setSearch,
   ...actionProps
 }) => {
-  const {
-    applyFilter,
-    setFilterItems,
-    removeFilterItem,
-    clearFilter,
-  } = actionProps
-
   const [countryOpts, setCountryOpts] = useState([])
   const [contributors, setContributors] = useState([])
   const [periods, setPeriods] = useState([])
   const [partners, setPartners] = useState([])
   const [toggle, setToggle] = useState(false)
   const [preload, setPreload] = useState(true)
-  const [search, setSearch] = useState(null)
-  const itemPeriods = periods?.map((p, px) => ({ id: px, value: p }))
-  const countries = countryOpts?.map((c) => ({ id: c, value: countriesDict[c] }))
+  const [loading, setLoading] = useState(true)
+
+  const { data: apiData, error: apiError } = useSWR(`/program/${programID}/results?format=json`, url => api.get(url).then(res => res.data))
+  const {
+    applyFilter,
+    setFilterItems,
+    removeFilterItem,
+    clearFilter,
+    updateContributors,
+  } = actionProps
 
   const handleOnUnique = (data, field) => {
     const ds = data
@@ -81,7 +87,12 @@ const FilterBar = ({
     setToggle(false)
   }
   const handleOnSetItems = (fieldName, items = []) => {
-    const fields = { countries, partners, contributors, periods: itemPeriods }
+    const fields = {
+      partners,
+      contributors,
+      periods,
+      countries: countryOpts,
+    }
     const data = items.map(it => Object.values(fields[fieldName]).find((d) => d.id === it))
     setFilterItems({ fieldName, data })
   }
@@ -94,11 +105,8 @@ const FilterBar = ({
   const handleOnCloseTag = (fieldName, id) => removeFilterItem({ fieldName, id })
 
   const { allFilters } = getStatusFiltering(filtering)
-  const resultItems = []
-  // handleOnFiltering(programmeRdr, filtering, search)
-  const totalItems = sum(allFilters.map((v) => v.items.length))
-  const totalMatches = handleOnCountFiltering(resultItems, filtering, search)
-  console.log('filtering', filtering);
+
+  const totalFilters = sum(allFilters.map((v) => v.items.length))
 
   useEffect(() => {
     if (preload) {
@@ -108,35 +116,57 @@ const FilterBar = ({
       setPreload(false)
       clearFilter()
     }
-    if (source && !countryOpts.length && !contributors.length && !partners.length && !periods.length) {
-      const opts = []
-      source.forEach(result => {
-        result.countries.forEach(opt => { if (opts.indexOf(opt) === -1) opts.push(opt) })
-      })
-      setCountryOpts(opts)
-      setContributors(handleOnUnique(source, 'contributors'))
-      setPartners(handleOnUnique(source, 'partners'))
-      const pds = uniq(source
+    if (programmeRdr && !countryOpts.length && !contributors.length && !partners.length && !periods.length) {
+      setContributors(handleOnUnique(programmeRdr, 'contributors'))
+      setPartners(handleOnUnique(programmeRdr, 'partners'))
+      const _countries = uniq(programmeRdr?.flatMap((s) => s?.countries))
+        ?.map((c) => ({
+          id: c,
+          value: countriesDict[c]
+        }))
+      setCountryOpts(_countries)
+      const pds = programmeRdr
         ?.flatMap((r) => r.periods)
-        ?.filter((p) => (p[0] && p[1]))
-        ?.map((p) => `${moment(p[0], 'YYYY-MM-DD').format('DD/MM/YYYY')} - ${moment(p[1], 'YYYY-MM-DD').format('DD/MM/YYYY')}`))
-        ?.sort((a, b) => {
-          const xb = b.split(' - ')
-          const xa = a.split(' - ')
-          return moment(xa[1], 'DD/MM/YYYY').format('YYYY') - moment(xb[1], 'DD/MM/YYYY').format('YYYY')
+        ?.filter((p) => {
+          const { 0: periodStart, 1: periodEnd } = p
+          return (periodStart && periodEnd)
         })
-      setPeriods(pds)
+        ?.sort((a, b) => {
+          const { 1: periodEndA } = a
+          const { 1: periondEndB } = b
+          return moment(periodEndA, 'YYYY-MM-DD').format('YYYY') - moment(periondEndB, 'YYYY-MM-DD').format('YYYY')
+        })
+        ?.map((p, px) => {
+          const { 0: periodStart, 1: periodEnd } = p
+          const _period = `${moment(periodStart, 'YYYY-MM-DD').format('DD/MM/YYYY')} - ${moment(periodEnd, 'YYYY-MM-DD').format('DD/MM/YYYY')}`
+          return {
+            id: px,
+            value: _period
+          }
+        })
+      setPeriods(uniqBy(pds, 'value'))
     }
-    if (totalItems === 0 && allFilters.length) {
+    if (totalFilters === 0 && allFilters.length) {
       handleOnClear()
     }
+    const fetchedItems = programmeRdr?.filter((r) => (r?.fetched))
+    if (loading && apiData && fetchedItems?.length) {
+      const { results: payload } = apiData || {}
+      updateContributors(payload)
+      setLoading(false)
+    }
+    if (loading && apiError) {
+      setLoading(false)
+    }
   }, [
-    source,
+    programmeRdr,
     preload,
     countryOpts,
     contributors,
     periods,
-    partners
+    partners,
+    apiData,
+    apiError,
   ])
 
   return (
@@ -146,7 +176,7 @@ const FilterBar = ({
           placeholder="Search title"
           visible={toggle}
           loading={loading}
-          count={totalItems}
+          count={totalFilters}
           onPopOver={() => setToggle(!toggle)}
           value={search}
           onChange={e => setSearch(e.target.value)}
@@ -225,7 +255,7 @@ const FilterBar = ({
             <Text strong>Applied Filter Results</Text>
           </Col>
           <Col span={8} className="total-filter">
-            <Title level={4}>{totalItems}</Title>
+            <Title level={4}>{totalFilters}</Title>
             <Button type="link" onClick={handleOnClear}><Icon type="close-circle" /></Button>
           </Col>
         </Row>
@@ -234,7 +264,7 @@ const FilterBar = ({
             <Collapse accordion bordered={false} expandIconPosition="right">
               <Panel header={<PanelHeader count={filtering.countries.items.length} text="Location" />} key="1">
                 <Filter.Items
-                  data={countries}
+                  data={countryOpts}
                   picked={filtering.countries.items}
                   title="Select project Location(s)"
                   onApply={() => handleOnApply('countries')}
@@ -280,5 +310,5 @@ const FilterBar = ({
 }
 
 export default connect(
-  ({ programmeRdr, filterRdr }) => ({ programmeRdr, filterRdr }), actions
+  ({ programmeRdr, filterRdr }) => ({ programmeRdr, filterRdr }), { ...actions, updateContributors }
 )(FilterBar)

@@ -1,5 +1,4 @@
-import { groupBy, sum, sumBy, uniq, uniqBy } from 'lodash'
-import moment from 'moment'
+import { groupBy, sumBy, uniq, uniqBy } from 'lodash'
 
 import countriesDict from '../../../utils/countries-dict'
 import { getFlatten, getShrink } from '../../../utils/misc'
@@ -16,15 +15,6 @@ import {
   onlyHasCountries,
   onlyHasPartners
 } from './filters'
-import { setActualContributor, setProjectSubtitle } from './transform'
-
-const getSingleClassStatus = p => (
-  (p?.contributors?.length === 1) ||
-  (
-    p?.fetched &&
-    p?.contributors?.filter(it => parseFloat(it.actualValue, 10) > 0)?.length === 0
-  )
-)
 
 export const getAllCountries = (contributors, filtering) => {
   const { hasCountry } = getStatusFiltering(filtering)
@@ -46,7 +36,7 @@ const getDisaggregations = contributors => contributors
 const getTheSumResult = (data, field, decimalPlaces = 3) => Number(parseFloat(sumBy(data, field), 10).toFixed(decimalPlaces))
 
 const getTopParent = (contributors, id) => {
-  const obj = contributors?.find((c) => c.id === id)
+  const obj = contributors?.find((c) => c.projectId === id)
   if (obj) {
     return obj.parentId === null ? obj : getTopParent(contributors, obj.parentId)
   }
@@ -61,16 +51,15 @@ const handleOnParentConcat = (contributors, allItems) => {
         parent,
         {
           ...a,
-          parentId: parent?.id
+          parentId: parent?.projectId
         }
       ]
     })
-  return uniqBy(items, 'id')?.filter((item) => item)
+  return uniqBy(items, 'projectId')?.filter((item) => item)
 }
 
 const handleOnFilteringContributors = (filtering, contributors) => {
-  let allContributors = contributors?.sort((a, b) => a?.value?.localeCompare(b?.value))
-
+  let allContributors = contributors?.sort((a, b) => a?.projectTitle?.localeCompare(b?.projectTitle))
   if (hasAllCriteria(filtering)) {
     allContributors = allContributors
       ?.filter((cb) => (cb?.country))
@@ -122,44 +111,46 @@ const handleOnFilteringContributors = (filtering, contributors) => {
   }
 
   if (onlyHasPartners(filtering)) {
-    allContributors = allContributors?.filter((cb) => findPartners(filtering, cb))
+    allContributors = allContributors?.filter((cb) => {
+      if (cb?.partners) {
+        return findPartners(filtering, cb)
+      }
+      return false
+    })
   }
   return allContributors
 }
 
 const handleOnFilteringDisaggregations = (filtering, isFiltering, disaggregations) => {
-  const dsgGroups = groupBy(disaggregations, 'category')
+  const dsg = disaggregations?.filter((dg) => {
+    if (
+      dg?.category?.toLowerCase() === 'country' &&
+      (filtering?.countries?.items?.length && filtering?.countries?.apply)
+    ) {
+      return filtering
+        .countries
+        .items.filter((ci) => {
+          const currentCountry = ci?.value?.toLowerCase()
+          const country = dg?.type?.toLowerCase()
+          const regex = new RegExp(`${currentCountry}*`, 'g')
+          return regex.test(country) || country === currentCountry || currentCountry.includes(country)
+        })
+    }
+    return dg
+  })
+  const dsgGroups = groupBy(dsg, 'category')
   return Object.keys(dsgGroups)
     ?.map((dsgKey) => {
       const groupTypes = groupBy(dsgGroups[dsgKey], 'type')
-      const groupItems = Object.keys(groupTypes)
-        ?.filter((typeKey) => {
-          const { hasCountry } = getStatusFiltering(filtering)
-          if (hasCountry && dsgKey?.toLowerCase() === 'country') {
-            return filtering
-              .countries
-              .items.filter((ci) => {
-                const currentCountry = ci?.value?.toLowerCase()
-                const country = typeKey?.toLowerCase()
-                const regex = new RegExp(`${currentCountry}*`, 'g')
-                return regex.test(country) || country === currentCountry || currentCountry.includes(country)
-              })
-              .length
-          }
-          return typeKey
-        })
+      return Object.keys(groupTypes)
         ?.map((typeKey) => ({
           ...groupTypes[typeKey][0] || {},
-          total: getTheSumResult(groupTypes[typeKey], 'value')
+          value: getTheSumResult(groupTypes[typeKey], 'value')
         }))
-        ?.filter((v) => ((isFiltering && v.total) || !isFiltering))
-        ?.sort((a, b) => a.total - b.total)
-      return {
-        name: dsgKey,
-        items: groupItems
-      }
+        ?.filter((v) => ((isFiltering && v.value) || !isFiltering))
+        ?.sort((a, b) => a.value - b.value)
     })
-    ?.filter((item) => ((isFiltering && item.items.length) || !isFiltering))
+    ?.flatMap((dg) => dg)
 }
 
 export const handleOnFiltering = (results, filtering, search) => {
@@ -184,66 +175,58 @@ export const handleOnFiltering = (results, filtering, search) => {
       }
       return r
     })
-    ?.map((r) => ({
-      ...r,
-      indicators: r
-        ?.indicators
-        ?.map((i) => {
-          const periods = i?.periods
-            ?.sort((a, b) => moment(a.periodStart, 'DD/MM/YYYY').unix() - moment(b.periodStart, 'DD/MM/YYYY').unix())
-            ?.filter((p) => {
-              if (filtering.periods.items.length && filtering.periods.apply) {
-                return filtering
-                  .periods
-                  .items.filter((ip) => {
-                    const [periodStart, periodEnd] = ip?.value?.split(' - ')
-                    return (p.periodStart === periodStart && p.periodEnd === periodEnd)
+    ?.map((r) => {
+      if (isFiltering || search) {
+        return ({
+          ...r,
+          indicators: r
+            ?.indicators
+            ?.map((i) => {
+              const fp = i
+                ?.periods
+                ?.filter((p) => {
+                  if (filtering.periods.items.length && filtering.periods.apply) {
+                    return filtering
+                      .periods
+                      .items.filter((ip) => {
+                        const [periodStart, periodEnd] = ip?.value?.split(' - ')
+                        return (p.periodStart === periodStart && p.periodEnd === periodEnd)
+                      })
+                      .length > 0
+                  }
+                  return p
+                })
+                ?.map((p) => {
+                  const allContributors = getFlatten(p?.contributors)
+                  let fcb = handleOnFilteringContributors(filtering, allContributors)
+                  fcb = handleOnParentConcat(fcb, allContributors)
+                  const cs = getShrink(fcb)
+                  const cb = cs?.length ? cs : fcb
+                  const disaggregations = getDisaggregations(cb)
+                  const disaggregationContributions = handleOnFilteringDisaggregations(filtering, isFiltering, disaggregations)
+                  return ({
+                    ...p,
+                    filteredContributors: cb,
+                    disaggregations,
+                    disaggregationContributions,
                   })
-                  .length > 0
-              }
-              return p
-            })
-            ?.map((p) => {
-              const allItems = getFlatten(p?.contributors)
-              let allContributors = handleOnFilteringContributors(filtering, allItems)?.map((cb) => setProjectSubtitle(filtering, cb))
-              allContributors = isFiltering ? handleOnParentConcat(allContributors, allItems) : allContributors
-              allContributors = allContributors?.map(setActualContributor)
-              const contribTransform = getShrink(allContributors)
-              const contributors = contribTransform?.length ? contribTransform : allContributors
-
-              const disaggregations = getDisaggregations(contributors)
-              const dsgItems = handleOnFilteringDisaggregations(filtering, isFiltering, disaggregations)
-
-              const actualValue = isFiltering
-                ? sum(allContributors?.map(setActualContributor)?.map((cb) => cb?.actualValue))
-                : parseFloat(p?.actualValue || null, 10)
-              const countries = getAllCountries(allContributors, filtering)
-              const single = getSingleClassStatus(p)
+                })
+                ?.filter((p) => isFiltering ? (p?.filteredContributors?.length) : p)
               return ({
-                ...p,
-                single,
-                dsgItems,
-                actualValue,
-                disaggregations,
-                countries,
-                contributors
+                ...i,
+                periods: fp
               })
             })
-          const _periods = periods?.filter((p) => (isFiltering) ? (p?.contributors?.length) : p)
-          const sumActualValue = sum(_periods?.filter((p) => !(Number.isNaN(Number(p?.actualValue))))?.map((p) => p?.actualValue))
-          return ({
-            ...i,
-            periods: _periods,
-            sumActualValue,
-          })
+            ?.filter((i) => {
+              if (isFiltering) {
+                return (i?.periods?.length)
+              }
+              return i
+            })
         })
-        ?.filter((i) => {
-          if (isFiltering) {
-            return (i?.periods?.length)
-          }
-          return i
-        })
-    }))
+      }
+      return r
+    })
     ?.filter((r) => {
       if (isFiltering || search) {
         return (r?.indicators?.length)
@@ -272,4 +255,34 @@ export const handleOnCountFiltering = (results, filtering, search) => {
       ?.length
   }
   return results?.length
+}
+
+export const handleOnSetPartners = (fs, i) => {
+  const fi = fs?.indicators?.find((it) => it?.id === i.id)
+  return ({
+    ...i,
+    periods: i?.periods?.map((p) => {
+      const fp = fi?.periods?.find((it) => it?.id === p?.periodId)
+      if (fp) {
+        const contribA = getFlatten(fp?.contributors)
+        const contribB = getFlatten(p?.contributors)
+          ?.map((cb) => {
+            if (cb?.partners === undefined) {
+              const fca = contribA?.find((it) => it?.projectId === cb?.projectId)
+              return ({
+                ...cb,
+                partners: fca?.partners
+              })
+            }
+            return cb
+          })
+          const _contributors = getShrink(contribB)
+          return ({
+            ...p,
+            contributors: _contributors
+          })
+      }
+      return p
+    })
+  })
 }

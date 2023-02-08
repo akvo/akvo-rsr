@@ -3,6 +3,7 @@ import orderBy from 'lodash/orderBy'
 
 import actionTypes from './action-types'
 import { getSummaryStatus } from '../services'
+import { handleOnSetPartners } from '../utils/query'
 
 export default (state = [], action) => {
   switch (action.type) {
@@ -10,9 +11,16 @@ export default (state = [], action) => {
       return action.payload
     case actionTypes.UPDATE_RESULT:
       const { resultIndex, data } = action.payload
+      const rs = state[resultIndex]
       return [
         ...state.slice(0, resultIndex),
-        { ...state[resultIndex], ...data },
+        {
+          ...rs,
+          ...{
+            ...data,
+            indicators: data?.indicators?.map((i) => handleOnSetPartners(rs, i))
+          }
+        },
         ...state.slice(resultIndex + 1)
       ]
     case actionTypes.SET_JOB_STATUS:
@@ -86,18 +94,25 @@ export default (state = [], action) => {
           }))
         }))
       }))
-    case actionTypes.UPDATE_PERIOD_N_CONTRIBUTORS:
-      const { period, contributors } = action.payload
-      return state?.map((s) => ({
-        ...s,
-        indicators: s?.indicators?.map((i) => ({
-          ...i,
-          periods: i?.periods?.map((p) => (p?.id === period?.id)
-            ? ({ ...p, ...period, contributors, fetched: true })
-            : p
-          )
-        }))
-      }))
+    case actionTypes.UPDATE_CONTRIBUTORS:
+      return state?.map((s) => {
+        const fs = action?.payload?.find((p) => p?.id === s?.id) || {}
+        return s.fetched === false
+        ? ({
+            ...s,
+            ...{
+              ...fs,
+              indicators: fs?.indicators?.map((it) => ({
+                ...it,
+                periodCount: it?.periods?.length,
+              }))
+            }
+          })
+        : ({
+          ...s,
+          indicators: s?.indicators?.map((i) => handleOnSetPartners(fs, i))
+        })
+      })
     default:
       return state
   }

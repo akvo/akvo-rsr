@@ -1,9 +1,10 @@
 /* global document */
-import React, { useState } from 'react'
-import { Collapse, Select } from 'antd'
+import React from 'react'
+import { Collapse } from 'antd'
 import moment from 'moment'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
+import { connect } from 'react-redux'
 
 import countriesDict from '../../utils/countries-dict'
 import { setNumberFormat } from '../../utils/misc'
@@ -19,7 +20,6 @@ import AggregatedActual from './AggregatedActual'
 import { printIndicatorPeriod } from '../../utils/dates'
 
 const { Panel } = Collapse
-const { Option } = Select
 
 const ProjectHeader = ({
   country,
@@ -74,8 +74,8 @@ const PeriodHeader = ({
       <div>
         <h5>{printIndicatorPeriod(periodStart, periodEnd)}</h5>
         <ul className="small-stats">
-          <li><b>{filteredContributors.length}</b> {t('contributor_s', { count: filteredContributors.length })}</li>
-          <li><b>{filteredCountries.length}</b> {t('country_s', { count: filteredCountries.length })}</li>
+          <li><b>{filteredContributors?.length}</b> {t('contributor_s', { count: filteredContributors?.length })}</li>
+          <li><b>{filteredCountries?.length}</b> {t('country_s', { count: filteredCountries?.length })}</li>
         </ul>
       </div>
       {
@@ -114,7 +114,7 @@ const PeriodHeader = ({
         )
       }
       {
-        (indicatorType === 'quantitative' && filteredContributors.filter(it => it.actualValue > 0).length > 1) && (
+        (indicatorType === 'quantitative' && filteredContributors?.filter(it => it.actualValue > 0)?.length > 1) && (
           <ul
             className={classNames('bar', {
               'contains-pinned': pinned !== -1
@@ -159,9 +159,9 @@ const ProgramPeriod = ({
   activePeriod,
   setActivePeriod,
   handleAccordionChange,
+  filterRdr: filtering,
   ...props
 }) => {
-  const [popUp, setPopUp] = useState(false)
   const mouseEnterBar = (index, value, ev) => {
     if (pinned === index || !listRef.current) return
     listRef.current.children[0].children[index].classList.add('active')
@@ -196,15 +196,15 @@ const ProgramPeriod = ({
   }
 
   const hasDisaggregations = !(
-    period?.disaggregationTargets?.filter(it => it.value).length <= 1 &&
-    period?.disaggregationContributions?.filter(it => it.value).length <= 1
+    period?.disaggregationTargets?.filter(it => it.value)?.length <= 1 &&
+    period?.disaggregationContributions?.filter(it => it.value)?.length <= 1
   )
   return (
     <Panel
       {...props}
       key={periodIndex}
       className={classNames(indicatorType, {
-        single: filteredContributors.length === 1 || filteredContributors.filter(it => it.actualValue > 0).length === 0
+        single: filteredContributors?.length === 1 || filteredContributors?.filter(it => it.actualValue > 0)?.length === 0
       })}
       header={(
         <PeriodHeader
@@ -228,27 +228,6 @@ const ProgramPeriod = ({
         />
       )}
     >
-      {(period.contributors.length > 1) &&
-        <div className="filters">
-          <Select
-            className="country-filter"
-            mode="multiple"
-            allowClear
-            placeholder={<span><Icon type="filter" /> Filter countries</span>}
-            onChange={handleCountryFilter}
-            value={countriesFilter}
-          >
-            {period.countries.map(it => <Option value={it.isoCode}>{countriesDict[it.isoCode]} ({period.contributors.filter(_it => _it.country && _it.country.isoCode === it.isoCode).length})</Option>)}
-          </Select>
-          {countriesFilter.length > 0 && [
-            <span className="filtered-project-count label">{period.contributors.filter(it => { if (countriesFilter.length === 0) return true; return countriesFilter.findIndex(_it => it.country && it.country.isoCode === _it) !== -1 }).length} projects</span>,
-            <div className="total">
-              <span className="label">Filtered {Math.round((aggFilteredTotal / period.actualValue) * 100 * 10) / 10}% of total</span>
-              <b>{String(aggFilteredTotal).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
-            </div>
-          ]}
-        </div>
-      }
       <div ref={ref => { listRef.current = ref }}>
         {period.contributors.length === 0 &&
           <span>No data</span>
@@ -289,7 +268,7 @@ const ProgramPeriod = ({
                     <ul className="sub-contributors">
                       {
                         project.contributors.map(subproject => {
-                          const approves = subproject.updates.filter(it => it.status && it.status.code === 'A')
+                          const approves = subproject?.updates?.filter(it => it.status && it.status.code === 'A')
                           return (
                             <li key={subproject.id} className={`subproject ${subproject?.job?.status}`}>
                               <div className="max-w-1180">
@@ -309,7 +288,7 @@ const ProgramPeriod = ({
                                 {(indicatorType === 'qualitative' && scoreOptions != null) && (
                                   <div className="score-box">Score {subproject.scoreIndex + 1}</div>
                                 )}
-                                {subproject.updates.length > 0 &&
+                                {subproject?.updates?.length > 0 &&
                                   <div className="updates-popup">
                                     <header>{subproject.updates.length} approved updates</header>
                                     <ul className={subproject?.job?.status}>
@@ -342,4 +321,5 @@ const ProgramPeriod = ({
   )
 }
 
-export default ProgramPeriod
+export default connect(({ filterRdr }) => ({ filterRdr }), null
+)(ProgramPeriod)

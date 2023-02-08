@@ -14,7 +14,6 @@ const ExpandIcon = ({ isActive }) => (
     <Icon type="down" />
   </div>
 )
-const Aux = node => node.children
 
 const Result = ({
   id,
@@ -27,7 +26,7 @@ const Result = ({
 }) => {
   const { t } = useTranslation()
   useEffect(() => {
-    if (!fetched && !(indicators.length)) {
+    if (!fetched) {
       const resultIndex = results.findIndex(it => it.id === id)
       api
         ?.get(`/project/${programId}/result/${id}/`)
@@ -42,26 +41,23 @@ const Result = ({
     }
   }, [fetched, indicators])
   return (
-    <Aux>
-      {!fetched && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 32 }} spin />} /></div>}
-      {fetched &&
+    <Spin spinning={!fetched} indicator={<Icon type="loading" style={{ fontSize: 32 }} spin />}>
       <Collapse defaultActiveKey={indicators.map(it => it.id)} expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
-      {indicators.map((indicator) =>
-        <Panel
-          key={indicator.id}
-          header={
-            <StickyClass top={40}>
-              <h3>{indicator.title}</h3>
-              <div><span className="type">{indicator.type}</span> <span className="periods">{t('nperiods', { count: indicator.periodCount })}</span></div>
-            </StickyClass>}
-          destroyInactivePanel
-        >
-          <Indicator periods={indicator.periods} indicatorType={indicator.type} scoreOptions={indicator.scoreOptions} {...{ targetsAt, indicator }} />
-        </Panel>
-      )}
+        {indicators.map((indicator) =>
+          <Panel
+            key={indicator.id}
+            header={
+              <StickyClass top={40}>
+                <h3>{indicator.title}</h3>
+                <div><span className="type">{indicator.type}</span> <span className="periods">{t('nperiods', { count: indicator.periodCount })}</span></div>
+              </StickyClass>}
+            destroyInactivePanel
+          >
+            <Indicator periods={indicator.periods} indicatorType={indicator.type} scoreOptions={indicator.scoreOptions} {...{ targetsAt, indicator }} />
+          </Panel>
+        )}
       </Collapse>
-      }
-    </Aux>
+    </Spin>
   )
 }
 

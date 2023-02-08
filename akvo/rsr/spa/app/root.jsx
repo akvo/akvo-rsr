@@ -17,7 +17,6 @@ import Users from './modules/users/users'
 import Reports from './modules/reports/reports'
 import IATI from './modules/iati/iati'
 import Profile from './modules/profile/profile'
-import ProgramOverview from './modules/program-overview/ProgramOverview'
 
 if (!(env && env.LOCALDEV)) {
   Sentry.init({
