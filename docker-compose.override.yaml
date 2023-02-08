@@ -1,22 +1,29 @@
-version: '3.7'
+version: '3.8'
 
 x-web-common: &web-common
   build:
     context: .
     dockerfile: Dockerfile-dev
   entrypoint: scripts/docker/dev/run-as-user.sh
+  command: scripts/docker/dev/start-django.sh
 
 services:
 
   web:
     <<: *web-common
-    command: scripts/docker/dev/start-django.sh
     expose:
       - 8000
     ports:
       - "8082:8082" # snakeviz
     depends_on:
       - rsrdbhost
+  worker:
+    <<: *web-common
+    environment:
+      IS_WORKER: "yes"
+    depends_on:
+      web:
+        condition: service_healthy
 
   web-dir:
     <<: *web-common
@@ -27,9 +34,20 @@ services:
       - 8081
     ports:
       - "127.0.0.1:8081:8081"
+    environment:
+      - DJANGO_SECRET_KEY=secretkey
+      - DEFAULT_FILE_STORAGE=django.core.files.storage.FileSystemStorage
+      - GOOGLE_APPLICATION_CREDENTIALS=/var/akvo/rsr/code/akvo/akvo-lumen-service-account-credentials.json
+    healthcheck:
+      test: [ "CMD", "./manage.py", "probe_django_q" ]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     volumes:
       - .:/var/akvo/rsr/code:delegated
       - /var/akvo/rsr/code/src/
+      - ./scripts/docker/dev/50-docker-local-dev.conf:/config_overrides/50-docker-local-dev.conf
 
   web-spa:
     <<: *web-common
