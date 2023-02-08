@@ -114,6 +114,7 @@ class ContributorProjectData(object):
 
 
 class ReportingPeriodMixin(ABC):
+    period_start: Optional[date] = None
     target_value: Optional[Decimal] = None
     indicator_type: int = QUANTITATIVE
     indicator_measure: str = ''
@@ -138,6 +139,10 @@ class ReportingPeriodMixin(ABC):
     @property
     def is_cumulative(self):
         return self.indicator_cumulative and not self.is_percentage
+
+    @property
+    def is_cumulative_future(self):
+        return self.is_cumulative and self.period_start and self.period_start > date.today()
 
     @cached_property
     def approved_updates(self):
@@ -174,7 +179,7 @@ class ReportingPeriodMixin(ABC):
     def aggregated_value(self):
         if self.is_percentage or self.is_qualitative:
             return None
-        value = self.updates_value
+        value = ensure_decimal(self.updates_value)
         for contributor in self.contributors:
             value += ensure_decimal(contributor.aggregated_value)
         return value
@@ -183,7 +188,7 @@ class ReportingPeriodMixin(ABC):
     def aggregated_numerator(self):
         if not self.is_percentage:
             return None
-        value = self.updates_numerator
+        value = ensure_decimal(self.updates_numerator)
         for contributor in self.contributors:
             value += ensure_decimal(contributor.aggregated_numerator)
         return value
@@ -192,7 +197,7 @@ class ReportingPeriodMixin(ABC):
     def aggregated_denominator(self):
         if not self.is_percentage:
             return None
-        value = self.updates_denominator
+        value = ensure_decimal(self.updates_denominator)
         for contributor in self.contributors:
             value += ensure_decimal(contributor.aggregated_denominator)
         return value
@@ -272,6 +277,8 @@ class ReportingPeriodMixin(ABC):
         return item.value if item else None
 
     def get_disaggregation_value(self, category, type):
+        if self.is_cumulative_future:
+            return None
         item = self._select_disaggregation(self.period_disaggregations if self.is_cumulative else self.disaggregations, category, type)
         if not item:
             return None
@@ -280,6 +287,8 @@ class ReportingPeriodMixin(ABC):
         return item.value
 
     def get_aggregated_disaggregation_value(self, category, type):
+        if self.is_cumulative_future:
+            return None
         item = self._select_disaggregation(self.period_disaggregations if self.is_cumulative else self.aggregated_disaggregations, category, type)
         if not item:
             return None
@@ -305,6 +314,7 @@ class ReportingPeriodMixin(ABC):
 @dataclass(frozen=True)
 class ContributorData(ReportingPeriodMixin):
     id: int
+    period_start: Optional[date] = None
     parent: Optional[int] = None
     indicator_type: int = QUANTITATIVE
     indicator_measure: str = ''
@@ -323,6 +333,7 @@ class ContributorData(ReportingPeriodMixin):
     def make(cls, data, prefix=''):
         return cls(
             id=data[f"{prefix}id"],
+            period_start=data.get(f"{prefix}period_start", None),
             parent=data.get(f"{prefix}parent_period", None),
             indicator_type=data.get(f"{prefix}indicator__type", QUANTITATIVE),
             indicator_measure=data.get(f"{prefix}indicator__measure", ''),
@@ -347,6 +358,8 @@ class ContributorData(ReportingPeriodMixin):
     def actual_value(self):
         if self.is_qualitative:
             return None
+        if self.is_cumulative_future:
+            return 0
         if self.is_cumulative:
             return self.period_actual_value
         if self.is_percentage:
@@ -361,7 +374,7 @@ class PeriodData(ReportingPeriodMixin):
     period_end: Optional[date] = None
     target_value: Optional[Decimal] = None
     target_comment: str = ''
-    actual_value: Optional[Decimal] = None
+    period_actual_value: Optional[Decimal] = None
     actual_comment: str = ''
     narrative: str = ''
     indicator_type: int = QUANTITATIVE
@@ -380,7 +393,7 @@ class PeriodData(ReportingPeriodMixin):
             period_end=data.get(f"{prefix}period_end", None),
             target_value=maybe_decimal(data.get(f"{prefix}target_value", None)),
             target_comment=data.get(f"{prefix}target_comment", ''),
-            actual_value=maybe_decimal(data.get(f"{prefix}actual_value", None)),
+            period_actual_value=ensure_decimal(data.get(f"{prefix}actual_value", None)),
             actual_comment=data.get(f"{prefix}actual_comment", ''),
             narrative=data.get(f"{prefix}narrative", ''),
             indicator_type=data.get(f"{prefix}indicator__type", QUANTITATIVE),
@@ -392,14 +405,26 @@ class PeriodData(ReportingPeriodMixin):
     def aggregated_value(self):
         if self.is_qualitative:
             return None
+        if self.is_cumulative_future:
+            return 0
         if self.is_cumulative:
             return self.actual_value
         if self.is_percentage:
             return calculate_percentage(self.aggregated_numerator, self.aggregated_denominator)
-        value = self.updates_value
+        value = ensure_decimal(self.updates_value)
         for contributor in self.contributors:
             value += ensure_decimal(contributor.aggregated_value)
         return value
+
+    @cached_property
+    def actual_value(self):
+        if self.is_qualitative:
+            return None
+        if self.is_percentage:
+            return calculate_percentage(self.updates_numerator, self.updates_denominator)
+        if self.is_cumulative_future:
+            return 0
+        return self.period_actual_value
 
     @cached_property
     def pending_updates(self):

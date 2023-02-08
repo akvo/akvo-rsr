@@ -409,9 +409,9 @@ class IndicatorProxy(ObjectReaderProxy):
         return value
 
     def _get_cumulative_period_values(self):
-        periods = [period for period in self.periods if period.has_approved_updates]
+        periods = [period for period in self.periods if period.period_start < date.today()]
         latest_period = sorted(periods, key=lambda p: p.period_start)[-1] if periods else None
-        return ensure_decimal(latest_period.actual_value)
+        return ensure_decimal(latest_period.actual_value) if latest_period else 0
 
     @property
     def periods(self):
@@ -492,9 +492,13 @@ class PeriodProxy(ObjectReaderProxy):
     def period_end(self):
         return get_period_end(self._real, self.indicator.result.project.in_eutf_hierarchy)
 
-    @property
+    @cached_property
     def actual_value(self):
-        return self.approved_updates.total_value if not self.is_cumulative else ensure_decimal(self._real.actual_value)
+        if self.is_cumulative and self.period_start and self.period_start > date.today():
+            return 0
+        if self.is_cumulative:
+            return ensure_decimal(self._real.actual_value)
+        return self.approved_updates.total_value
 
     @property
     def actual_comment(self):

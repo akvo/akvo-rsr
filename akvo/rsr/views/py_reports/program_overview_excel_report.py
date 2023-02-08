@@ -69,7 +69,7 @@ def fetch_contributors(root_period_ids):
         )\
         .filter(id__in=contributor_ids)\
         .values(
-            'id', 'parent_period', 'target_value', 'actual_value', 'indicator__id',
+            'id', 'period_start', 'parent_period', 'target_value', 'actual_value', 'indicator__id',
             'indicator__type', 'indicator__measure', 'indicator__cumulative', 'indicator__target_value',
             'indicator__baseline_value', 'indicator__result__project__id',
             'indicator__result__project__title', 'indicator__result__project__subtitle',
@@ -240,8 +240,8 @@ def add_email_report_job(request, program_id):
 
 def handle_email_report(params, recipient):
     program = Project.objects.prefetch_related('results').get(pk=params['program_id'])
-    start_date = utils.parse_date(params.get('period_start', ''))
-    end_date = utils.parse_date(params.get('period_end', ''))
+    start_date = utils.parse_date(params.get('period_start', ''), datetime(1900, 1, 1))
+    end_date = utils.parse_date(params.get('period_end', ''), datetime(2999, 12, 31))
     wb = generate_workbok(program, start_date, end_date)
     filename = '{}-{}-program-overview-report.xlsx'.format(datetime.today().strftime('%Y%b%d'), program.id)
     utils.send_excel_report(wb, recipient, filename)
@@ -381,7 +381,7 @@ def render_period(ws, row, result, indicator, period, aggregate_targets=False, u
         ws.set_cell_value(row, col, indicator.target_value if use_indicator_target else ensure_decimal(period.target_value))
     col += 1
     ws.set_cell_value(row, col, period.aggregated_value)
-    if period.is_quantitative:
+    if period.is_quantitative and not period.is_cumulative_future:
         col += 3
         for category, types in disaggregations.items():
             for type in [t for t in types.keys()]:
@@ -423,8 +423,8 @@ def render_contributor(ws, row, result, indicator, period, contributor, aggregat
     col += 2
     ws.set_cell_value(row, col, contributor.actual_value)
     col += 1
-    if period.is_quantitative:
-        contribution = calculate_percentage(ensure_decimal(contributor.updates_value), ensure_decimal(period.aggregated_value))
+    if period.is_quantitative and not period.is_cumulative_future:
+        contribution = calculate_percentage(ensure_decimal(contributor.actual_value), ensure_decimal(period.aggregated_value))
         ws.set_cell_style(row, col, Style(alignment=Alignment(horizontal='right')))
         ws.set_cell_value(row, col, f"{contribution}%")
         col += 1
