@@ -123,21 +123,54 @@ class AggregationJobScheduling(AggregationJobBaseTests):
     def test_no_existing_job(self):
         """Without an existing job, a new one should be created"""
         self.job.delete()
-        new_job = usecases.schedule_aggregation_job(self.period)
+        new_jobs = usecases.schedule_aggregation_jobs(self.period)
 
         scheduled_jobs = usecases.get_scheduled_jobs()
         self.assertEqual(scheduled_jobs.count(), 1)
-        self.assertEqual(scheduled_jobs.first(), new_job)
+        self.assertEqual(scheduled_jobs.first(), new_jobs[0])
 
     def test_existing_period_job(self):
         """If a job is already scheduled, it should only be updated"""
-        job = usecases.schedule_aggregation_job(self.period)
+        jobs = usecases.schedule_aggregation_jobs(self.period)
 
         scheduled_jobs = usecases.get_scheduled_jobs()
         self.assertEqual(scheduled_jobs.count(), 1)
-        self.assertEqual(scheduled_jobs.first(), job)
-        self.assertEqual(self.job, job)
-        self.assertNotEqual(self.job.updated_at, job.updated_at)
+        self.assertEqual(scheduled_jobs.first(), jobs[0])
+        self.assertEqual(self.job, jobs[0])
+        self.assertNotEqual(self.job.updated_at, jobs[0].updated_at)
+
+
+class JobSchedullingOnCumulativeIndicator(AggregationJobBaseTests):
+    def setUp(self):
+        super().setUp()
+        self.indicator.cumulative = True
+        self.indicator.save()
+
+        self.period2 = IndicatorPeriod.objects.create(
+            indicator=self.indicator,
+            period_start=datetime.date.today() + datetime.timedelta(days=2),
+            period_end=datetime.date.today() + datetime.timedelta(days=3),
+            target_value=120
+        )
+
+    def test_no_existing_job(self):
+        """Should create jobs for the given period and subsequent periods"""
+        self.job.delete()
+        usecases.schedule_aggregation_jobs(self.period)
+
+        scheduled_jobs = usecases.get_scheduled_jobs()
+        self.assertEqual(scheduled_jobs.count(), 2)
+        self.assertEqual([j.period for j in scheduled_jobs], [self.period, self.period2])
+
+    def test_existing_period_job(self):
+        """Should only create jobs for periods that don't have it yet"""
+        usecases.schedule_aggregation_jobs(self.period)
+
+        scheduled_jobs = usecases.get_scheduled_jobs()
+        self.assertEqual(scheduled_jobs.count(), 2)
+        self.assertEqual([j.period for j in scheduled_jobs], [self.period, self.period2])
+        existing_job = next(j for j in scheduled_jobs if j == self.job)
+        self.assertNotEqual(self.job.updated_at, existing_job.updated_at)
 
 
 class FailDeadJobTest(AggregationJobBaseTests):
