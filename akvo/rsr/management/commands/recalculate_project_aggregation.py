@@ -3,7 +3,7 @@ from django.db.models import Count, Q
 
 from akvo.rsr.models import Project, IndicatorPeriod, IndicatorPeriodData
 from akvo.rsr.models.result.utils import QUANTITATIVE
-from akvo.rsr.usecases.jobs.aggregation import schedule_aggregation_job
+from akvo.rsr.usecases.jobs.aggregation import schedule_aggregation_jobs
 
 
 class Command(BaseCommand):
@@ -32,7 +32,7 @@ class Command(BaseCommand):
 
         jobs = set()
         for period in periods:
-            new_jobs = schedule_aggregation_job(period)
+            new_jobs = schedule_aggregation_jobs(period)
             jobs = jobs.union(set(new_jobs))
 
         print(f"Scheduled period aggregation jobs: {len(jobs)}, on root project: {project.title}")

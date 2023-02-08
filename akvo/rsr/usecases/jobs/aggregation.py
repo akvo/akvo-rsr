@@ -45,7 +45,7 @@ def base_get_jobs() -> QuerySet[IndicatorPeriodAggregationJob]:
     return IndicatorPeriodAggregationJob.objects.select_related("period__indicator").order_by("id")
 
 
-def schedule_aggregation_job(period: IndicatorPeriod) -> List[IndicatorPeriodAggregationJob]:
+def schedule_aggregation_jobs(period: IndicatorPeriod) -> List[IndicatorPeriodAggregationJob]:
     """
     Schedule a job for the period to be aggregated upwards if no job exists
     """
@@ -66,7 +66,7 @@ def schedule_aggregation_job(period: IndicatorPeriod) -> List[IndicatorPeriodAgg
 
 def _get_affected_periods(period: IndicatorPeriod) -> QuerySet[IndicatorPeriod]:
     """
-    For cumulative indicators, subsequent periods needs to be calculated in advance to reflect the carried-over values.
+    For cumulative indicators, subsequent periods need to be calculated in advance to reflect the carried-over values.
     This approach has the least amount of generated jobs compared to the other approaches we found. The compromise
     of this approach is that when visualizing data, it is necessary to add logic to hide values of future periods so
     as not to cause confusion to users.

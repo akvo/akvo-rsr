@@ -123,7 +123,7 @@ class AggregationJobScheduling(AggregationJobBaseTests):
     def test_no_existing_job(self):
         """Without an existing job, a new one should be created"""
         self.job.delete()
-        new_jobs = usecases.schedule_aggregation_job(self.period)
+        new_jobs = usecases.schedule_aggregation_jobs(self.period)
 
         scheduled_jobs = usecases.get_scheduled_jobs()
         self.assertEqual(scheduled_jobs.count(), 1)
@@ -131,7 +131,7 @@ class AggregationJobScheduling(AggregationJobBaseTests):
 
     def test_existing_period_job(self):
         """If a job is already scheduled, it should only be updated"""
-        jobs = usecases.schedule_aggregation_job(self.period)
+        jobs = usecases.schedule_aggregation_jobs(self.period)
 
         scheduled_jobs = usecases.get_scheduled_jobs()
         self.assertEqual(scheduled_jobs.count(), 1)
@@ -156,7 +156,7 @@ class JobSchedullingOnCumulativeIndicator(AggregationJobBaseTests):
     def test_no_existing_job(self):
         """Should create jobs for the given period and subsequent periods"""
         self.job.delete()
-        usecases.schedule_aggregation_job(self.period)
+        usecases.schedule_aggregation_jobs(self.period)
 
         scheduled_jobs = usecases.get_scheduled_jobs()
         self.assertEqual(scheduled_jobs.count(), 2)
@@ -164,7 +164,7 @@ class JobSchedullingOnCumulativeIndicator(AggregationJobBaseTests):
 
     def test_existing_period_job(self):
         """Should only create jobs for periods that don't have it yet"""
-        usecases.schedule_aggregation_job(self.period)
+        usecases.schedule_aggregation_jobs(self.period)
 
         scheduled_jobs = usecases.get_scheduled_jobs()
         self.assertEqual(scheduled_jobs.count(), 2)

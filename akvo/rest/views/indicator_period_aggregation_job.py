@@ -14,7 +14,7 @@ from ..filters import RSRGenericFilterBackend
 
 from ..serializers import IndicatorPeriodAggregationJobSerializer
 from ..viewsets import ReadOnlyPublicProjectViewSet, SafeMethodsPermissions
-from ...rsr.usecases.jobs.aggregation import schedule_aggregation_job
+from ...rsr.usecases.jobs.aggregation import schedule_aggregation_jobs
 
 
 class IndicatorPeriodAggregationJobViewSet(ReadOnlyPublicProjectViewSet):
@@ -41,7 +41,7 @@ class IndicatorPeriodAggregationJobViewSet(ReadOnlyPublicProjectViewSet):
         if job.status != IndicatorPeriodAggregationJob.Status.MAXXED:
             raise ValidationError("Maximum number of attempts not reached")
 
-        new_jobs = schedule_aggregation_job(job.period)
+        new_jobs = schedule_aggregation_jobs(job.period)
         serializer = self.get_serializer(new_jobs, many=True)
 
         return Response(serializer.data)

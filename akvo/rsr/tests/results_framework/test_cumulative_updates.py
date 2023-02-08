@@ -73,7 +73,7 @@ class SingleUserCumulativeUnitUpdatesTestCase(CumulativeTestMixin, BaseTestCase)
         })
 
         self.period3 = self.project.get_period(period_start=self.PERIOD_3_START)
-        # The execution order of the aggregate function doesn't matters
+        # The execution order of the aggregate function doesn't matter
         aggregate(self.period3.object)
         aggregate(self.period1.object)
         aggregate(self.period2.object)

@@ -14,7 +14,7 @@ from akvo.rsr.models import IndicatorPeriodAggregationJob
 from akvo.rsr.permissions import GROUP_NAME_ME_MANAGERS
 from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.tests.usecases.jobs.test_aggregation import AggregationJobBaseTests
-from akvo.rsr.usecases.jobs.aggregation import schedule_aggregation_job
+from akvo.rsr.usecases.jobs.aggregation import schedule_aggregation_jobs
 
 
 class AnonymousUserTestCase(BaseTestCase):
@@ -42,7 +42,7 @@ class EndpointTestCase(AggregationJobBaseTests):
         self.private_result = self.result.child_results.first()
         self.private_indicator = self.indicator.child_indicators.first()
         self.private_period = self.period.child_periods.first()
-        self.private_job = schedule_aggregation_job(self.private_period)[0]
+        self.private_job = schedule_aggregation_jobs(self.private_period)[0]
 
         # Create private project in another org
         self.other_private_user = self.create_user("other_private@akvo.org", "password", is_superuser=False)
@@ -51,7 +51,7 @@ class EndpointTestCase(AggregationJobBaseTests):
 
         self.other_private_result, self.other_private_indicator, self.other_private_period = \
             self._make_results_framework(self.other_private_project)
-        self.other_private_job = schedule_aggregation_job(self.other_private_period)[0]
+        self.other_private_job = schedule_aggregation_jobs(self.other_private_period)[0]
 
     def test_super_user(self):
         """Super users should be able to access all jobs"""
