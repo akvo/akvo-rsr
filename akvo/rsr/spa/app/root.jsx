@@ -63,12 +63,12 @@ const Root = ({ dispatch }) => {
           </Route>
           <Route path="/hierarchy/:projectId?" component={Hierarchy} />
           <Route path="/projects/:id" render={({ match }) => <ProjectView {...{ jwtView, match }} />} />
-          <Route path="/programs/:projectId" component={Program} />
           <Route path="/users" component={Users} />
           <Route path="/reports" component={Reports} />
           <Route path="/iati" component={IATI} />
           <Route path="/my-details" component={Profile} />
         </div>
+        <Route path="/programs/:projectId" component={Program} />
       </div>
       </LastLocationProvider>
     </Router>

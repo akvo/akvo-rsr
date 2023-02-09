@@ -6,7 +6,7 @@ import moment from 'moment'
 const ApprovedUpdates = ({ items }) => (
   <ul className="updates">
     {items.map(item => (
-      <li>
+      <li key={item?.id}>
         <div className="leftside">
           <i>{moment(item.createdAt).format('HH:mm, DD MMM YYYY')}</i>
           <i>{item.user.name}</i>
