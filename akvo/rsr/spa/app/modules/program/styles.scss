@@ -120,16 +120,8 @@
           &.stuck{
             z-index: 4;
             border-bottom: 1px solid #e7e7e7;
-            .expander{
-              opacity: 0;
-            }
             h1{
               padding-left: 20px;
-            }
-            h1+div{
-              transition: opacity .3s ease-out;
-              opacity: 0;
-              overflow: hidden;
             }
           }
         }
@@ -162,17 +154,10 @@
           top: 0;
         }
       }
-      &:nth-child(2n)>.ant-collapse-content>.ant-collapse-content-box>.ant-collapse>.ant-collapse-item>.ant-collapse-header{
-          &.stuck{
-            h3{
-              background-color: #f7f7f7;
-            }
-          }
-        }
       &>.ant-collapse-content > .ant-collapse-content-box{
         padding: 0;
       }
-      &>.ant-collapse-content>.ant-collapse-content-box>.ant-collapse{
+      &>.ant-collapse-content>.ant-collapse-content-box .ant-spin-nested-loading .ant-spin-container >.ant-collapse{
         background: transparent;
         border: none;
         &>.ant-collapse-item{
@@ -181,12 +166,17 @@
           &:not(:last-of-type){
             margin-bottom: 15px;
           }
+          &.hasAnyFilters > .ant-collapse-header {
+            top: 172px;
+          }
           &>.ant-collapse-header{
             padding-left: 16px;
             padding-right: 40px;
             position: sticky;
-            top: 37px;
+            top: 84px;
             z-index: 4;
+            background-color: #fff;
+            border-bottom: 1px solid #dedede;
             .expander{
               position: absolute;
               left: auto;
@@ -215,6 +205,9 @@
               &.periods{
                 margin-left: 15px;
                 opacity: 0.5;
+                &.color-periods {
+                  opacity: 1;
+                }
               }
             }
             &.stuck{
@@ -222,17 +215,10 @@
               h3{
                 padding-bottom: 10px;
                 margin-bottom: 0px;
-                background-color: #fff;
                 height: 42px;
                 overflow: hidden;
                 white-space: nowrap;
                 text-overflow: ellipsis;
-              }
-              h3+div{
-                opacity: 0;
-              }
-              .expander{
-                display: none;
               }
             }
           }
@@ -251,11 +237,17 @@
               .indicator>.ant-collapse{
                 background: transparent;
                 &>.ant-collapse-item{
+                  &.hasAnyFilters > .ant-collapse-header {
+                    top: 245px;
+                  }
+                  &.hasAChart > .ant-collapse-header {
+                    top: 198px;
+                  }
                   &>.ant-collapse-header{
                     display: flex;
                     padding-left: 12px;
                     position: sticky;
-                    top: 80px;
+                    top: 160px;
                     z-index: 3;
                     background-color: #fff;
                     color: #333;
@@ -271,7 +263,7 @@
                     .bar{
                       transition: height .3s;
                       position: absolute;
-                      bottom: -2px;
+                      bottom: -1rem;
                       width: 100%;
                       height: 5px;
                       left: 0;
@@ -279,7 +271,6 @@
 
                       width: 100%;
                       display: flex;
-                      margin-bottom: 1px;
                       li{
                         height: 100%;
                         margin-top: 0px;
@@ -379,7 +370,10 @@
                       z-index: 2;
                     }
                   }
-                  &.ant-collapse-item-active:not(.empty):not(.single):not(.qualitative)>.ant-collapse-header{
+                  &.ant-collapse-item-active.emptyBar > .ant-collapse-header{
+                    padding-bottom: 0;
+                  }
+                  &.ant-collapse-item-active:not(.empty):not(.single):not(.qualitative):not(.emptyBar) >.ant-collapse-header {
                     padding-bottom: 48px;
                     .bar{
                       height: 42px;
@@ -445,7 +439,7 @@
                     height: 70px;
                     .percent-label{
                       position: absolute;
-                      bottom: 0px;
+                      bottom: 0;
                       width: 100%;
                       text-align: center;
                       z-index: 2;
