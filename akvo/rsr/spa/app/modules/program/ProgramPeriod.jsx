@@ -5,7 +5,7 @@ import moment from 'moment'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
-import { uniq, uniqBy } from 'lodash'
+import { uniqBy, sumBy } from 'lodash'
 
 import countriesDict from '../../utils/countries-dict'
 import { getFlatten, setNumberFormat } from '../../utils/misc'
@@ -39,6 +39,7 @@ const ProjectHeader = ({
     ?.map((cb) => cb?.country)
     ?.filter((cb) => (cb?.isoCode))]
   const cl = uniqBy(cf, 'isoCode')
+    ?.filter((c) => (c?.isoCode))
     ?.filter((c) => filtering.countries.items.map((it) => it?.id).includes(c.isoCode))
   const cs = hasCountry
     ? cl?.map((c) => countriesDict[c.isoCode])?.join(', ')
@@ -104,6 +105,9 @@ const PeriodHeader = ({
   const cn = hasCountry
     ? filtering?.countries?.items?.filter((it) => countries?.map((ct) => ct?.isoCode)?.includes(it?.id))?.length
     : countries?.length
+  const _actualValue = hasAnyFilters
+    ? sumBy(getFlatten(filteredContributors), 'actualValue')
+    : actualValue
   return (
     <>
       <div>
@@ -146,7 +150,7 @@ const PeriodHeader = ({
                   periodId,
                   jobs,
                 }}
-                value={actualValue}
+                value={_actualValue}
                 total={filteredContributors?.length}
                 callback={callback}
               />
@@ -345,7 +349,13 @@ const ProgramPeriod = ({
                                 {indicatorType === 'quantitative' && (
                                   <>
                                     <ActualValue {...subproject} />
-                                    <small>{Math.round((subproject.actualValue / project.actualValue) * 100 * 10) / 10}%</small>
+                                    <small>
+                                      {
+                                        (subproject.actualValue && project.actualValue)
+                                          ? `${Math.round((subproject.actualValue / project.actualValue) * 100 * 10) / 10} %`
+                                          : ''
+                                      }
+                                    </small>
                                   </>
                                 )}
                                 {(indicatorType === 'qualitative' && scoreOptions != null) && (
