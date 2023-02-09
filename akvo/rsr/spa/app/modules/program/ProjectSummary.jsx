@@ -6,8 +6,7 @@ import ActualValue from './ActualValue'
 import { setNumberFormat } from '../../utils/misc'
 
 const getAggregatedUpdatesLength = (updates, contributors) => {
-  let total = 0
-  total += updates.filter(it => it.status && it.status.code === 'A').length
+  let total = updates?.filter(it => (it.status && it.status.code === 'A') || it.status === 'A')?.length || 0
   contributors?.forEach(contrib => {
     total += getAggregatedUpdatesLength(updates, contrib)
   })
@@ -33,7 +32,7 @@ const ProjectSummary = ({
         <div className="total">
           <i>total</i>
           <div>
-            <b>{String(actualValue).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b><br />
+            <b>{setNumberFormat(actualValue)}</b><br />
           </div>
         </div>
         {

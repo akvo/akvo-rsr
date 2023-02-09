@@ -20,10 +20,16 @@ const Disaggregations = ({ disaggTooltipRef: tooltipRef, disaggregationContribut
     tooltipRef.current.style.opacity = 0
   }
   const dsgGroups = {}
-  disaggregationContributions.forEach(item => {
-    if (!dsgGroups[item.category]) dsgGroups[item.category] = []
-    const target = disaggregationTargets.find(it => it.category === item.category && it.type === item.type)
-    dsgGroups[item.category].push({ ...item, target: target ? target.value : null })
+  disaggregationContributions?.sort((a, b) => a?.value - b?.value)?.forEach(item => {
+    if (!dsgGroups[item.category]) {
+      dsgGroups[item.category] = []
+    }
+
+    const target = disaggregationTargets?.find(it => it.category === item.category && it.type === item.type)
+    dsgGroups[item.category].push({
+      ...item,
+      target: target?.value || null
+    })
   })
   return (
     <div className="disaggregation-groups">
