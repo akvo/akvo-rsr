@@ -180,3 +180,79 @@ class IndicatorPeriodNestedDisaggregationTargetPatchTestCase(BaseTestCase):
         response = self.send_patch(period, data, username='test@akvo.org', password='password')
 
         self.assertEqual(response.status_code, 400)
+
+
+class IndicatorPeriodByIdsTestCase(BaseTestCase):
+
+    def _setup_admin(self):
+        admin = self.create_user("user@akvo.org", "password", is_admin=True)
+        self.c.login(username=admin.username, password="password")
+        return admin
+
+    def _setup_program(self):
+        org = self.create_organisation('Acme Org')
+        return ProjectFixtureBuilder()\
+            .with_title('Program #1')\
+            .with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)\
+            .with_disaggregations({'Gender': ['Male', 'Female']})\
+            .with_results([
+                {
+                    'title': 'Result #1',
+                    'indicators': [
+                        {
+                            'title': 'Indicator #1',
+                            'periods': [
+                                {
+                                    'period_start': '2010-1-1',
+                                    'period_end': '2010-12-31',
+                                    'target_value': 5,
+                                    'disaggregation_targets': {
+                                        'Gender': {'Male': 2, 'Female': 3},
+                                    }
+                                },
+                            ],
+                        },
+                    ]
+                },
+            ])\
+            .with_contributors([
+                {'title': 'Project #1'},
+                {'title': 'Project #2'},
+                {'title': 'Project #3'},
+            ])\
+            .build()
+
+    def setUp(self):
+        super().setUp()
+        self.admin = self._setup_admin()
+        self.program = self._setup_program()
+        self.project1 = self.program.get_contributor(title='Project #1')
+        self.project2 = self.program.get_contributor(title='Project #2')
+        self.project3 = self.program.get_contributor(title='Project #3')
+
+    def test_get_periods(self):
+        root_period = self.program.get_period(period_start='2010-1-1')
+        contributor_1_period = self.project1.get_period(period_start='2010-1-1')
+        contributor_2_period = self.project2.get_period(period_start='2010-1-1')
+        contributor_3_period = self.project3.get_period(period_start='2010-1-1')
+        contributor_1_period.add_update(self.admin, value=2, disaggregations={
+            'Gender': {
+                'Male': {'value': 1},
+                'Female': {'value': 1},
+            }
+        })
+        contributor_2_period.add_update(self.admin, value=3, disaggregations={
+            'Gender': {
+                'Male': {'value': 1},
+                'Female': {'value': 2},
+            }
+        })
+
+        period_ids = {root_period.id, contributor_1_period.id, contributor_2_period.id, contributor_3_period.id}
+        response = self.c.get(
+            f"/rest/v1/program/{self.program.id}/indicator_period_by_ids/?ids={','.join(str(id) for id in period_ids)}",
+            content_type='application/json'
+        )
+
+        data = response.data
+        self.assertEqual(period_ids, {p['id'] for p in data})
