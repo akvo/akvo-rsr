@@ -1,10 +1,8 @@
 /* global window, document */
 import React, { useState, useRef, useEffect } from 'react'
-import { Row, Col, Collapse } from 'antd'
+import { Collapse } from 'antd'
 import moment from 'moment'
 
-import { setNumberFormat } from '../../utils/misc'
-import TargetCharts from '../../utils/target-charts'
 import ExpandIcon from './ExpandIcon'
 import ProgramPeriod from './ProgramPeriod'
 import { sizes } from './config'
@@ -15,7 +13,6 @@ const Indicator = ({
   indicatorType,
   scoreOptions,
   targetsAt,
-  indicator,
   fetched,
 }) => {
   const [pinned, setPinned] = useState(-1)
@@ -30,8 +27,6 @@ const Indicator = ({
   const tooltipRef = useRef(null)
   const disaggTooltipRef = useRef(null)
 
-  const initActualValue = 0
-  const sumActualValue = periods.reduce((total, currentValue) => total + currentValue.actualValue, initActualValue)
   let scrollingTransition
   let tmid
 
@@ -70,22 +65,6 @@ const Indicator = ({
   }, [])
   return (
     <div className="indicator">
-      {((targetsAt && targetsAt === 'indicator') && (indicator?.targetValue > 0)) && (
-        <Row type="flex" justify="end" align="middle">
-          <Col span={4} className="stats-indicator text-right">
-            <div className="stat value">
-              <div className="label">Aggregate Actual</div>
-              <b>{setNumberFormat(sumActualValue)}</b><br />
-              <span>
-                of <b>{indicator.targetValue}</b> target
-              </span>
-            </div>
-          </Col>
-          <Col span={4}>
-            <TargetCharts targetValue={indicator?.targetValue} actualValue={sumActualValue} />
-          </Col>
-        </Row>
-      )}
       <Collapse defaultActiveKey={[0]} expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} />}>
         {
           periods
