@@ -60,11 +60,13 @@ export const getStatusFiltering = (filtering) => {
   const hasCountry = (allFilters.filter((t) => t.key === 'countries').length > 0)
   const hasContrib = (allFilters.filter((t) => t.key === 'contributors').length > 0)
   const hasPartner = (allFilters.filter((t) => t.key === 'partners').length > 0)
+  const hasAnyFilters = (allFilters?.length)
   return {
     allFilters,
     hasPeriod,
     hasCountry,
     hasContrib,
-    hasPartner
+    hasPartner,
+    hasAnyFilters,
   }
 }

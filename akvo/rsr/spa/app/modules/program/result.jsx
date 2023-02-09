@@ -61,6 +61,7 @@ const Result = ({
               {...{
                 targetsAt,
                 indicator,
+                fetched,
               }}
             />
           </Panel>

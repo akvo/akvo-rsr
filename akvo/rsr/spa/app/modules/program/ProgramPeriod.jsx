@@ -1,11 +1,11 @@
 /* global document */
 import React from 'react'
-import { Collapse } from 'antd'
+import { Collapse, Empty } from 'antd'
 import moment from 'moment'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
-import uniqBy from 'lodash/uniqBy'
+import { uniq, uniqBy } from 'lodash'
 
 import countriesDict from '../../utils/countries-dict'
 import { getFlatten, setNumberFormat } from '../../utils/misc'
@@ -35,13 +35,13 @@ const ProjectHeader = ({
 }) => {
   const { t } = useTranslation()
   const { hasCountry } = getStatusFiltering(filtering)
-  const cf = [country, ...getFlatten(contributors)?.map((cb) => cb?.country)?.filter((cb) => (cb?.isoCode))]
+  const cf = [country, ...getFlatten(contributors)
+    ?.map((cb) => cb?.country)
+    ?.filter((cb) => (cb?.isoCode))]
   const cl = uniqBy(cf, 'isoCode')
+    ?.filter((c) => filtering.countries.items.map((it) => it?.id).includes(c.isoCode))
   const cs = hasCountry
-    ? cl
-      ?.filter((c) => filtering.countries.items.map((it) => it?.id).includes(c.isoCode))
-      ?.map((c) => countriesDict[c.isoCode])
-      ?.join(', ')
+    ? cl?.map((c) => countriesDict[c.isoCode])?.join(', ')
     : country ? countriesDict[country.isoCode] : null
   const hasContrib = filtering?.contributors?.items?.filter((it) => it?.id === projectId).length
   const hasPartner = filtering?.partners?.items?.filter((it) => Object.keys(partners)?.includes(`${it?.id}`))?.length
@@ -100,7 +100,7 @@ const PeriodHeader = ({
   filtering,
 }) => {
   const { t } = useTranslation()
-  const { hasPeriod, hasCountry, hasContrib } = getStatusFiltering(filtering)
+  const { hasPeriod, hasCountry, hasContrib, hasAnyFilters } = getStatusFiltering(filtering)
   const cn = hasCountry
     ? filtering?.countries?.items?.filter((it) => countries?.map((ct) => ct?.isoCode)?.includes(it?.id))?.length
     : countries?.length
@@ -110,7 +110,7 @@ const PeriodHeader = ({
         <h5 className={classNames({ 'color-periods': (hasPeriod) })}>
           {printIndicatorPeriod(periodStart, periodEnd)}
         </h5>
-        <ul className="small-stats">
+        <ul className={classNames('small-stats', { hidden: (hasAnyFilters) })}>
           <li className={classNames({ 'color-contributors': (hasContrib) })}>
             <b className={classNames({ 'color-contributors': (hasContrib) })}>
               {filteredContributors?.length ? `${filteredContributors?.length} ` : ''}
@@ -185,6 +185,7 @@ const PeriodHeader = ({
 }
 
 const ProgramPeriod = ({
+  fetched,
   listRef,
   tooltipRef,
   disaggTooltipRef,
@@ -277,9 +278,7 @@ const ProgramPeriod = ({
       )}
     >
       <div ref={ref => { listRef.current = ref }}>
-        {period.contributors.length === 0 &&
-          <span>No data</span>
-        }
+        {(period.contributors.length === 0 && fetched) && <Empty />}
         <Collapse
           onChange={handleAccordionChange}
           defaultActiveKey={['0']}

@@ -146,6 +146,12 @@ span[class*="color-"].ant-tag {
     border-bottom: 1px solid #e8e8e8;
   }
 }
+.hidden {
+  display: none !important;
+}
+.contributors-list .ant-collapse-item-active .ant-collapse-header .title .single-country {
+  display: none;
+}
 
 @media (max-width: 767px) and (orientation: landscape) {
   .rsr-card-filter-container {

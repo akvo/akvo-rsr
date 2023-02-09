@@ -16,6 +16,7 @@ const Indicator = ({
   scoreOptions,
   targetsAt,
   indicator,
+  fetched,
 }) => {
   const [pinned, setPinned] = useState(-1)
   const [openedItem, setOpenedItem] = useState(null)
@@ -99,6 +100,7 @@ const Indicator = ({
                 <ProgramPeriod
                   key={index}
                   {...{
+                    fetched,
                     listRef,
                     tooltipRef,
                     disaggTooltipRef,
