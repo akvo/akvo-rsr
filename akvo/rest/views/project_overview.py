@@ -373,6 +373,7 @@ def project_result_overview(request, project_pk, result_pk):
                     'unit' if i.measure == '1' else 'percentage' if i.measure == '2' else None),
                 'periods': _drilldown_indicator_periods_contributions(i, aggregate_targets),
                 'disaggregation_targets': _transform_disaggregation_targets(i),
+                'cumulative': i.cumulative,
             }
             for i in result.indicators.all()
         ]
