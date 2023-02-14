@@ -28,7 +28,9 @@ const ActualValue = ({
       .post(`/jobs/indicator_period_aggregation/${jobID}/reschedule/?format=json`)
       .then(({ data }) => {
         setLoading(false)
-        updateJobStatus(jobID, data)
+        data?.forEach((d) => {
+          updateJobStatus(jobID, d)
+        })
       })
       .catch((err) => {
         setLoading(false)
