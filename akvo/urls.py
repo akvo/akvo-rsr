@@ -6,7 +6,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 
 from .rsr.feeds import ProjectUpdates, OrganisationUpdates, AllProjectUpdates
-from .rsr.forms import RSRSetPasswordForm
 from .utils import check_auth_groups
 from .rsr.views import widgets as widget_views
 
@@ -107,8 +106,7 @@ urlpatterns = i18n_patterns(
         account.sign_out, name='sign_out'),
 
     url(r'^reset_password/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,32})/$',
-        auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm',
-        kwargs={'set_password_form': RSRSetPasswordForm}),
+        auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
 
     url(r'^reset_password/complete/$',
         auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),

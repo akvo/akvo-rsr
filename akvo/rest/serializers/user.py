@@ -6,13 +6,10 @@
 
 
 from django.contrib.auth import get_user_model
+from django.contrib.auth.password_validation import validate_password
 from django.utils.translation import ugettext_lazy as _
-
 from rest_framework import serializers
 
-from akvo.rsr.forms import (check_password_minimum_length, check_password_has_number,
-                            check_password_has_upper, check_password_has_lower,
-                            check_password_has_symbol)
 from akvo.rsr.models import ProjectHierarchy
 
 from .employment import EmploymentSerializer
@@ -145,17 +142,14 @@ class UserPasswordSerializer(serializers.Serializer):
             raise serializers.ValidationError(_('Passwords do not match.'))
 
         password = data['new_password1']
-        check_password_minimum_length(password)
-        check_password_has_number(password)
-        check_password_has_upper(password)
-        check_password_has_lower(password)
-        check_password_has_symbol(password)
+        validate_password(password, self.instance)
 
         return data
 
-    def update(self, instance, validated_data):
-        instance.set_password(validated_data.get('new_password2', instance.password))
-        return instance
+    def save(self):
+        self.instance.set_password(self.validated_data['new_password1'])
+        self.instance.save()
+        return self.instance
 
 
 class UserDetailsSerializer(BaseRSRSerializer):
