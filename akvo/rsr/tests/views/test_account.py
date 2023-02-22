@@ -480,7 +480,8 @@ class JsonAuthRegisterTestCase(BaseTestCase, CsrfTokenRequestMixin):
         response = self.c.post('/auth/register/', json.dumps(data), content_type='application/json', HTTP_X_CSRFTOKEN=csrftoken)
 
         self.assertEqual(400, response.status_code)
-        self.assertTrue(response.content.decode('utf-8').find("The two password fields didn\\u2019t match") > 0)
+        data = response.json()
+        self.assertEqual(data['password2'][0]['message'], "The two password fields didn’t match.")
 
     def test_valid_json_data(self):
         csrftoken = self.get_csrf_token()

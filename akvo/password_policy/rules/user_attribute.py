@@ -24,4 +24,4 @@ class UserAttributeRule(ValidationRule):
         except ValidationError as e:
             context = {"attribute": e.params.get("verbose_name", "attribute")}
             return ValidationResult.error(self.ERROR_CODE, context)
-        return ValidationResult.valid()
+        return ValidationResult()

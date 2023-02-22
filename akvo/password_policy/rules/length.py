@@ -21,4 +21,4 @@ class LengthRule(ValidationRule):
             return ValidationResult.error(
                 self.ERROR_CODE_MAX, {"expected": self.max, "actual": password_length}
             )
-        return ValidationResult.valid()
+        return ValidationResult()
