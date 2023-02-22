@@ -8,7 +8,7 @@ class CompoundRule(ValidationRule):
         self.rules = rules
 
     def validate(self, password: str) -> ValidationResult:
-        result = ValidationResult.valid()
+        result = ValidationResult()
         for rule in self.rules:
             result = result.merge(rule.validate(password))
         return result

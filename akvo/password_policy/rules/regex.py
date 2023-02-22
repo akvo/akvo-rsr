@@ -3,7 +3,7 @@ import re
 from akvo.password_policy.core import ValidationResult, ValidationRule
 
 
-class RegexRule(ValidationRule):
+class IllegalRegexRule(ValidationRule):
     ERROR_CODE = "ILLEGAL_PATTERN_MATCH"
 
     def __init__(self, pattern: str):
@@ -11,7 +11,7 @@ class RegexRule(ValidationRule):
 
     def validate(self, password: str) -> ValidationResult:
         matches = self.pattern.findall(password)
-        result = ValidationResult.valid()
+        result = ValidationResult()
         if not matches:
             return result
         for match in matches:

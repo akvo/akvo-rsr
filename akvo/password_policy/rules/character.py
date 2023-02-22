@@ -4,11 +4,11 @@ from akvo.password_policy.core import ValidationResult, ValidationRule
 
 
 class CharacterRule(ValidationRule):
-    ERROR_CODE_LETTERS = "INSUFFICIENT_LETTER_CHARACTER"
-    ERROR_CODE_UPPERCASES = "INSUFFICIENT_UPPERCASE_CHARACTER"
-    ERROR_CODE_LOWERCASES = "INSUFFICIENT_LOWERCASE_CHARACTER"
-    ERROR_CODE_NUMBERS = "INSUFFICIENT_NUMBER_CHARACTER"
-    ERROR_CODE_SYMBOLS = "INSUFFICIENT_SYMBOL_CHARACTER"
+    ERROR_CODE_LETTERS = "INSUFFICIENT_LETTER_CHARACTERS"
+    ERROR_CODE_UPPERCASES = "INSUFFICIENT_UPPERCASE_CHARACTERS"
+    ERROR_CODE_LOWERCASES = "INSUFFICIENT_LOWERCASE_CHARACTERS"
+    ERROR_CODE_NUMBERS = "INSUFFICIENT_NUMBER_CHARACTERS"
+    ERROR_CODE_SYMBOLS = "INSUFFICIENT_SYMBOL_CHARACTERS"
 
     @classmethod
     def letters(cls, min_length: int = 1):
@@ -42,4 +42,4 @@ class CharacterRule(ValidationRule):
             return ValidationResult.error(
                 self.error_code, {"expected": self.min_length, "actual": match_length}
             )
-        return ValidationResult.valid()
+        return ValidationResult()

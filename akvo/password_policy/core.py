@@ -21,10 +21,6 @@ class ValidationResult:
     ) -> ValidationResult:
         return cls(errors=[ErrorItem(code=code, context=context or {})])
 
-    @classmethod
-    def valid(cls) -> ValidationResult:
-        return cls()
-
     def is_valid(self) -> bool:
         return len(self.errors) == 0
 
