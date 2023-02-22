@@ -260,15 +260,21 @@ class CurrentUserTestCase(BaseTestCase):
 class OrganisationPasswordPolicyTestCase(BaseTestCase):
     def setUp(self):
         super().setUp()
-        self.org = self.create_organisation('Akvo')
-        policy = PolicyConfig.objects.create(name='Test policy', min_length=4, uppercases=2, symbols=2)
-        self.org.password_policy = policy
-        self.org.save()
+        first_org = self.create_organisation('First org')
+        first_policy = PolicyConfig.objects.create(name='First policy', min_length=4, uppercases=2, symbols=2)
+        first_org.password_policy = first_policy
+        first_org.save()
+
+        second_org = self.create_organisation('Second org')
+        second_policy = PolicyConfig.objects.create(name='Second policy', min_length=1, uppercases=1, symbols=1)
+        second_org.password_policy = second_policy
+        second_org.save()
 
         email = 'foo@example.com'
         self.initial_password = 'password'
         self.user = self.create_user(email, self.initial_password)
-        self.make_employment(self.user, self.org, 'Users')
+        self.make_employment(self.user, first_org, 'Users')
+        self.make_employment(self.user, second_org, 'Admins')
 
         self.url = f"{reverse('user_change_password', args=(self.user.id,))}"
         self.c.login(username=email, password=self.initial_password)

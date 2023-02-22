@@ -8,7 +8,7 @@ from akvo.password_policy.rules.character import CharacterRule
 from akvo.password_policy.rules.common_password import CommonPasswordRule
 from akvo.password_policy.rules.compound import CompoundRule
 from akvo.password_policy.rules.length import LengthRule
-from akvo.password_policy.rules.regex import RegexRule
+from akvo.password_policy.rules.regex import IllegalRegexRule
 from akvo.password_policy.rules.user_attribute import UserAttributeRule
 
 RuleBuilder = Callable[[PolicyConfig, AbstractBaseUser], Optional[ValidationRule]]
@@ -62,7 +62,7 @@ def build_regex_rules(config: PolicyConfig, *_) -> Optional[ValidationRule]:
     if not config.regex_rules.count():
         return None
     return CompoundRule(
-        [RegexRule(pattern=r.pattern) for r in config.regex_rules.all()]
+        [IllegalRegexRule(pattern=r.pattern) for r in config.regex_rules.all()]
     )
 
 

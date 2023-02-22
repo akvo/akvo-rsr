@@ -9,7 +9,7 @@ from akvo.password_policy.rules.character import CharacterRule
 from akvo.password_policy.rules.common_password import CommonPasswordRule
 from akvo.password_policy.rules.compound import CompoundRule
 from akvo.password_policy.rules.length import LengthRule
-from akvo.password_policy.rules.regex import RegexRule
+from akvo.password_policy.rules.regex import IllegalRegexRule
 from akvo.password_policy.rules.user_attribute import UserAttributeRule
 
 User = get_user_model()
@@ -79,4 +79,4 @@ class RegexRulesBuilderTestCase(RuleBuilderTestMixin, DjangoTestCase):
         regex_validators = validator.rules[0]
         self.assertEqual(2, len(regex_validators.rules))
         for rule in regex_validators.rules:
-            self.assertIsInstance(rule, RegexRule)
+            self.assertIsInstance(rule, IllegalRegexRule)

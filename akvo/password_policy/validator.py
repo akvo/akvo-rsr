@@ -20,7 +20,31 @@ def import_or_noop(fn_name) -> Callable:
 
 
 class PasswordPolicyValidator:
+    """
+    Validate that password complies with the policy configured using the PolicyConfig model.
+
+    This is an implementation of Django's password validator for use with the
+    AUTH_PASSWORD_VALIDATORS setting.
+
+    See:
+    https://docs.djangoproject.com/en/3.2/topics/auth/passwords/#writing-your-own-validator
+    https://docs.djangoproject.com/en/3.2/ref/settings/#std-setting-AUTH_PASSWORD_VALIDATORS
+    """
+
     def __init__(self, resolver: str, fallback: Optional[str] = None):
+        """
+        Parameters
+        ----------
+        resolver: str
+            module path to a function that resolve user's password policy.
+            signature: Callable[[User], Optional[PolicyConfig]]
+        fallback: Optional[str]
+            module path to a fallback funtion when the user arg is None or
+            the resolver function doesn't return a PasswordPolicy object.
+            The function should accept password and return None if the password is valid,
+            or raise a ValidationError with an error message if the password is not valid.
+            signature: Callable[[User], None]
+        """
         self.resolve = import_or_noop(resolver)
         self.fallback = import_or_noop(fallback)
 

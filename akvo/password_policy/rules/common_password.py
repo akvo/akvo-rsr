@@ -12,4 +12,4 @@ class CommonPasswordRule(ValidationRule):
             CommonPasswordValidator().validate(password)
         except ValidationError:
             return ValidationResult.error(self.ERROR_CODE)
-        return ValidationResult.valid()
+        return ValidationResult()

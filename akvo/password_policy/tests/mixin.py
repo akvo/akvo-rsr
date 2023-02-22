@@ -3,18 +3,21 @@ from typing import Protocol
 from akvo.password_policy.core import ErrorItem
 
 
-class HasAssertEqualProtocol(Protocol):
+class HasAssertEqualAndAssertDictContainsSubsetProtocol(Protocol):
     def assertEqual(self, first, second, msg=None):
+        ...
+
+    def assertDictContainsSubset(self, subset, dictionary, msg=None):
         ...
 
 
 class ValidationResultMixin:
     def assertValidationError(
-        self: HasAssertEqualProtocol,
+        self: HasAssertEqualAndAssertDictContainsSubsetProtocol,
         error: ErrorItem,
         expected_code: str,
         **expected_context
     ):
         self.assertEqual(expected_code, error.code)
-        for key, value in expected_context.items():
-            self.assertEqual(value, error.context[key])
+        if expected_context:
+            self.assertDictContainsSubset(expected_context, error.context)

@@ -3,7 +3,7 @@ from django.utils.translation import gettext_lazy as _
 from akvo.password_policy.rules.character import CharacterRule
 from akvo.password_policy.rules.common_password import CommonPasswordRule
 from akvo.password_policy.rules.length import LengthRule
-from akvo.password_policy.rules.regex import RegexRule
+from akvo.password_policy.rules.regex import IllegalRegexRule
 from akvo.password_policy.rules.user_attribute import UserAttributeRule
 
 ERROR_MESSAGES = {
@@ -26,7 +26,7 @@ ERROR_MESSAGES = {
     LengthRule.ERROR_CODE_MIN: _(
         "Password must be %(expected)s or more characters in length."
     ),
-    RegexRule.ERROR_CODE: _("Password matches the illegal pattern '%(match)s'."),
+    IllegalRegexRule.ERROR_CODE: _("Password matches the illegal pattern '%(match)s'."),
     UserAttributeRule.ERROR_CODE: _("Password is too similar to the '%(attribute)s'."),
 }
 
