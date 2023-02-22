@@ -14,9 +14,8 @@ from django.conf import settings
 from django.contrib.auth.models import Group
 from django.core import mail
 from django.test import TestCase, Client
-from django.utils.html import escape
 
-from akvo.rsr.forms import PASSWORD_MINIMUM_LENGTH, REQUIRED_SYMBOLS
+from akvo.rsr.forms import PASSWORD_MINIMUM_LENGTH
 from akvo.rsr.models import Employment, Organisation, Partnership, Project, User
 from akvo.utils import check_auth_groups
 from akvo.rsr.tests.base import BaseTestCase
@@ -188,7 +187,7 @@ class AccountRegistrationTestCase(TestCase):
         # Then
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.content.decode('utf-8').find(
-            'Passwords must be at least {} characters long.'.format(PASSWORD_MINIMUM_LENGTH)) > 0)
+            'Password must be {} or more characters in length.'.format(PASSWORD_MINIMUM_LENGTH)) > 0)
 
     def test_registration_password_has_no_digit(self):
         # Given
@@ -200,7 +199,7 @@ class AccountRegistrationTestCase(TestCase):
         # Then
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.content.decode('utf-8').find(
-            'The password must contain at least one digit, 0-9.') > 0)
+            'Password must contain 1 or more numbers.') > 0)
 
     def test_registration_password_has_no_symbol(self):
         # Given
@@ -212,8 +211,7 @@ class AccountRegistrationTestCase(TestCase):
         # Then
         self.assertEqual(response.status_code, 200)
         str_content = response.content.decode('utf-8')
-        self.assertIn('The password must contain at least one symbol:', str_content)
-        self.assertIn(escape(REQUIRED_SYMBOLS), str_content)
+        self.assertIn('Password must contain 1 or more symbol characters', str_content)
 
     def test_registration_password_has_no_uppercase(self):
         # Given
@@ -225,7 +223,7 @@ class AccountRegistrationTestCase(TestCase):
         # Then
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.content.decode('utf-8').find(
-            'The password must contain at least one uppercase letter, A-Z.') > 0)
+            'Password must contain 1 or more uppercase characters') > 0)
 
     def test_registration_password_has_no_lowercase(self):
         # Given
@@ -237,7 +235,7 @@ class AccountRegistrationTestCase(TestCase):
         # Then
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.content.decode('utf-8').find(
-            'The password must contain at least one lowercase letter, a-z.') > 0)
+            'Password must contain 1 or more lowercase characters') > 0)
 
     def test_registration_with_honeypot_filled_in(self):
         # Given
@@ -287,7 +285,6 @@ class PasswordResetTestCase(BaseTestCase):
 
         data = {'email': self.email}
         response = self.c.post('/en/sign_in/', data=data, follow=True)
-
         self.assertEqual(200, response.status_code)
         self.assertEqual(1, len(mail.outbox))
 
@@ -483,7 +480,8 @@ class JsonAuthRegisterTestCase(BaseTestCase, CsrfTokenRequestMixin):
         response = self.c.post('/auth/register/', json.dumps(data), content_type='application/json', HTTP_X_CSRFTOKEN=csrftoken)
 
         self.assertEqual(400, response.status_code)
-        self.assertTrue(response.content.decode('utf-8').find('Passwords do not match') > 0)
+        errors = response.json()
+        self.assertEqual(errors['password2'][0]['message'], "The two password fields didn’t match.")
 
     def test_valid_json_data(self):
         csrftoken = self.get_csrf_token()
