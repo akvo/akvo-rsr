@@ -205,6 +205,21 @@ export const getMaxDisaggregation = (values, field) => {
 
 export const getProjectUuids = (path) => path?.split('.')?.map((value) => value?.replace(/_/g, '-'))
 
+/***
+ * Attempts to get the parent UUID from a project's path.
+ *
+ * @param path {String} A dot separated list of UUIDs representing the path in a tree to a project.
+ *                      The last element is the project preceded by its ancestors.
+ * @returns {null|String} A parent UUID if there is one
+ */
+export const getParentUuid = (path) => {
+  const uuids = getProjectUuids(path);
+  if(uuids === undefined || uuids.length === 1){
+    return null
+  }
+  return uuids[uuids.length - 2]
+}
+
 
 export const getPercentage = (numerator, denominator) => Math.round((numerator / denominator) * 100 * 10) / 10
 
