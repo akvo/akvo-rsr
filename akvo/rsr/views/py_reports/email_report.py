@@ -35,7 +35,7 @@ def run_job():
     try:
         handler = HANDLER.get(job.report, None)
         if handler:
-            logger.info("Handling job %s for report %s with %s", job.id, job.report)
+            logger.info("Handling job %s for report %s with %s", job.id, job.report, handler)
             handler(job.payload, job.recipient)
         job.mark_finished()
     except Exception:
