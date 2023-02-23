@@ -71,7 +71,8 @@ class SendReportViaEmailTestCase(BaseTestCase):
 
         # Emulate executing the task without going through django-q
         # There's currently no easy way to do so
-        handle_email_report(*task_args)
+        f = task_dict.get("func") 
+        f(*task_dict.get("args"), **task_dict.get("kwargs"))
 
         # Ensure an email was sent out
         msg = mail.outbox[0]
