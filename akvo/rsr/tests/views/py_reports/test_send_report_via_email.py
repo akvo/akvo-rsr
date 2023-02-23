@@ -1,12 +1,13 @@
 from django.core import management
 from django.core import mail
 from django.urls import reverse
+from django_q.models import OrmQ
+from django_q.signing import SignedPackage
 from parameterized import parameterized
 from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.models import EmailReportJob, Country
 from akvo.rsr.views.py_reports import (
     program_overview_pdf_report,
-    program_overview_excel_report,
     program_period_labels_overview_pdf_report,
     results_indicators_with_map_pdf_reports,
     nuffic_country_level_map_report,
@@ -32,7 +33,6 @@ class SendReportViaEmailTestCase(BaseTestCase):
 
     @parameterized.expand([
         ('py-reports-program-overview', '', program_overview_pdf_report.REPORT_NAME),
-        ('py-reports-program-overview-table', '', program_overview_excel_report.REPORT_NAME),
         ('py-reports-program-period-labels-overview', '', program_period_labels_overview_pdf_report.REPORT_NAME),
         ('py-reports-organisation-projects-results-indicators-map-overview', 'country=nl', results_indicators_with_map_pdf_reports.ORG_PROJECTS_REPORT_NAME),
         ('py-reports-nuffic-country-level-report', 'country=nl', nuffic_country_level_map_report.REPORT_NAME),
@@ -46,5 +46,34 @@ class SendReportViaEmailTestCase(BaseTestCase):
         management.call_command('send_report_via_email')
 
         self.assertEqual(0, EmailReportJob.objects.filter(finished_at__isnull=True).count())
+        msg = mail.outbox[0]
+        self.assertEqual([self.user.email], msg.to)
+
+    def test_send_report_via_djangoq_email(self):
+        from akvo.rsr.views.py_reports.program_overview_excel_report import handle_email_report
+        self.c.get(f"{reverse('py-reports-program-overview-table', args=(self.program.id,))}")
+
+        # We don't use the old job, so it shouldn't have been scheduled
+        job = EmailReportJob.objects.first()
+        self.assertIsNone(job)
+
+        # Check that the task was enqueued with django-q
+        enqueued_task = OrmQ.objects.first()
+        self.assertIsNotNone(enqueued_task)
+        task_dict = SignedPackage.loads(enqueued_task.payload)
+        self.assertEquals(task_dict.get("name"), "program_overview_excel_report")
+
+        # And with the correct program
+        task_args = task_dict.get("args")
+        params_arg = next(iter(task_args), {})
+        self.assertEquals(self.program.id, params_arg.get("program_id"),
+                          msg="The expected program ID isn't present in the task's first argument")
+
+        # Emulate executing the task without going through django-q
+        # There's currently no easy way to do so
+        f = task_dict.get("func") 
+        f(*task_dict.get("args"), **task_dict.get("kwargs"))
+
+        # Ensure an email was sent out
         msg = mail.outbox[0]
         self.assertEqual([self.user.email], msg.to)
