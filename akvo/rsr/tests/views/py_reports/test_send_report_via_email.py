@@ -50,7 +50,6 @@ class SendReportViaEmailTestCase(BaseTestCase):
         self.assertEqual([self.user.email], msg.to)
 
     def test_send_report_via_djangoq_email(self):
-        from akvo.rsr.views.py_reports.program_overview_excel_report import handle_email_report
         self.c.get(f"{reverse('py-reports-program-overview-table', args=(self.program.id,))}")
 
         # We don't use the old job, so it shouldn't have been scheduled
@@ -71,7 +70,8 @@ class SendReportViaEmailTestCase(BaseTestCase):
 
         # Emulate executing the task without going through django-q
         # There's currently no easy way to do so
-        handle_email_report(*task_args)
+        f = task_dict.get("func")
+        f(*task_dict.get("args"), **task_dict.get("kwargs"))
 
         # Ensure an email was sent out
         msg = mail.outbox[0]
