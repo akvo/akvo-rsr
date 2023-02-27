@@ -15,7 +15,7 @@ RF_MODELS_CONFIG = {
     'periods': (IndicatorPeriod, 'parent_period', 'indicator__result__project', 'indicator__result'),
     'dimension_names': (IndicatorDimensionName, 'parent_dimension_name', 'project', None),
     'dimension_values': (IndicatorDimensionValue, 'parent_dimension_value', 'name__project', None),
-    'default_periods': (DefaultPeriod, 'parent_id', 'project', None),
+    'default_periods': (DefaultPeriod, 'parent', 'project', None),
 }
 
 
