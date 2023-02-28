@@ -14,6 +14,7 @@ from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 
 from sorl.thumbnail.fields import ImageField
+from akvo.password_policy.models import PolicyConfig
 
 from akvo.utils import codelist_choices, codelist_name, rsr_image_path
 
@@ -169,6 +170,10 @@ class Organisation(TimestampsMixin):
                                               'shadow. Used by EUTF')
     public_iati_file = models.BooleanField(
         _('Show latest exported IATI file on organisation page.'), default=True
+    )
+    password_policy = models.ForeignKey(
+        PolicyConfig, null=True, blank=True, on_delete=models.SET_NULL,
+        help_text='Password policies config for employees of this organization.'
     )
     # TODO: Should be removed
     can_become_reporting = models.BooleanField(
