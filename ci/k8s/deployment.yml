@@ -207,11 +207,14 @@ spec:
         readinessProbe:
           exec:
             command: ["./manage.py", "probe_django_q"]
+          initialDelaySeconds: 15
+          timeoutSeconds: 10
         livenessProbe:
           exec:
             command: ["./manage.py", "probe_django_q"]
           initialDelaySeconds: 30
-          periodSeconds: 10
+          periodSeconds: 30
+          timeoutSeconds: 10
         resources:
           requests:
             cpu: "100m"
