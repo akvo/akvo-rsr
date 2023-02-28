@@ -4,7 +4,7 @@ set -eu
 
 ./scripts/docker/dev/wait-for-dependencies.sh
 
-if [ -z "${IS_REPORTS_CONTAINER:-}" ]; then
+if [ -z "${IS_REPORTS_CONTAINER:-}" ] && [[ -z "${IS_WORKER:-}" ]] ; then
   pushd akvo/rsr/front-end
     if [[ ! -d "node_modules" ]]; then
       npm install

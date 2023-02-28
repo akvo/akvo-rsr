@@ -17,12 +17,12 @@ if [ ! -z "${WAIT_FOR_DEPENDENCIES:-}" ]; then
     ./wait-for-dependencies.sh
 fi
 
-if [ -z "${IS_REPORTS_CONTAINER:-}" ]; then
+if [ -z "${IS_REPORTS_CONTAINER:-}" ] && [[ -z "${IS_WORKER:-}" ]] ; then
   log Migrating
   SKIP_REQUIRED_AUTH_GROUPS=true python manage.py migrate --noinput
 fi
 
-if [ -z "${IS_REPORTS_CONTAINER:-}" ]; then
+if [ -z "${IS_REPORTS_CONTAINER:-}" ] && [[ -z "${IS_WORKER:-}" ]] ; then
   log Adding to crontab
   python manage.py crontab add
   log Making all environment vars available to cron jobs
