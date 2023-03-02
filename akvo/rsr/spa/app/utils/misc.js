@@ -1,6 +1,7 @@
 /* globals FileReader, window */
 import { diff } from 'deep-object-diff'
 import sumBy from 'lodash/sumBy'
+import defaults from 'lodash/defaults'
 
 export const datePickerConfig = {
   format: 'DD/MM/YYYY',
@@ -213,7 +214,7 @@ export const getProjectUuids = (path) => path?.split('.')?.map((value) => value?
  * @returns {null|String} A parent UUID if there is one
  */
 export const getParentUuid = (path) => {
-  const uuids = getProjectUuids(path);
+  const uuids = getProjectUuids(path)
   if(uuids === undefined || uuids.length === 1){
     return null
   }
@@ -249,4 +250,35 @@ export const makeATree = (data, pid = null) => {
     }
     return r
   }, [])
+}
+
+export const getFirstLetter = (dataString) => {
+  const index = Array.from({ length: dataString.length }).findIndex((_, x) => (/^[a-zA-Z]+$/.test(dataString[x])))
+  return dataString[index] || dataString[0]
+}
+
+export const getAllContributors = data => {
+  let children = []
+  let flattened = data.map(m => {
+    if (m.contributors && m.contributors.length) {
+      children = [...children, ...m.contributors.map((cb) => ({ ...cb, parentId: m?.id || m?.projectId }))]
+    }
+    return m
+  })
+  flattened = flattened.concat(children.length ? getAllContributors(children) : children)
+  return flattened?.map((f) => {
+    const { contributors, ...item } = f
+    return (item?.parentId === undefined) ? ({ ...item, parentId: null }) : item
+  })
+}
+
+export const getShrinkContributors = items => {
+  const nodes = {}
+  return items.filter((obj) => {
+    const id = obj.projectId
+    const parentId = obj.parentId
+    nodes[id] = defaults(obj, nodes[id], { contributors: [] })
+    parentId && (nodes[parentId] = (nodes[parentId] || { contributors: [] })).contributors.push(obj)
+    return !parentId
+  })
 }
