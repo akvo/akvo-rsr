@@ -1,0 +1,100 @@
+from dataclasses import dataclass
+from typing import Dict, List, Set
+
+from django.conf import settings
+from django.db.models import QuerySet
+from django.db.transaction import atomic
+from django_q.models import Schedule
+from rest_framework.serializers import ModelSerializer
+
+
+@dataclass
+class SyncAction:
+    """
+    The operations to be done on the DB in order to sync the django-q schedules from the settings
+    with the existing django-q schedules in the DB
+    """
+    to_add: List[Schedule]
+    to_modify: List[Schedule]
+    to_delete: List[Schedule]
+
+
+class ScheduleSerializer(ModelSerializer):
+    class Meta:
+        model = Schedule
+        fields = [
+            "name",
+            "func",
+            "cron",
+        ]
+
+
+def sync_with_settings():
+    """
+    Synchronizes the django-q schedules in the DB with those defined in the app settings
+    """
+    schedules = get_setting_schedules()
+    sync_action = calc_sync(schedules, list(Schedule.objects.all()))
+    apply_sync(sync_action)
+
+
+def get_setting_schedules() -> List[Schedule]:
+    """
+    Converts the schedules configuration in the app settings to django-q schedule objects
+    """
+    serializer = ScheduleSerializer(data=[
+        {"name": key, **schedule_conf}
+        for key, schedule_conf in settings.AKVO_JOBS.items()
+    ], many=True)
+    serializer.is_valid(True)
+    return [Schedule(**item) for item in serializer.validated_data]
+
+
+def calc_sync(setting_schedules: List[Schedule], db_schedules: List[Schedule] = None) -> SyncAction:
+    """
+    Calculates the operations that have to be taken in order to sync the schedules in the settings
+     with the schedules in the db
+    """
+    if db_schedules is None:
+        db_schedules = list(Schedule.objects.all())
+
+    in_map: Dict[str, Schedule] = {schedule.name: schedule for schedule in setting_schedules}
+    db_map: Dict[str, Schedule] = {schedule.name: schedule for schedule in db_schedules}
+
+    in_set: Set[str] = set(in_map.keys())
+    db_set: Set[str] = set(db_map.keys())
+
+    def getter(_dict):
+        return lambda item: _dict.get(item)
+
+    to_add = list(map(getter(in_map), in_set - db_set))
+    to_delete = list(map(getter(db_map), db_set - in_set))
+
+    # Update the db loaded objects with the fields from the settings
+    to_modify = []
+    for name in in_set.intersection(db_set):
+        db_schedule = db_map[name]
+        settings_schedule = in_map[name]
+
+        db_schedule.func = settings_schedule.func
+        db_schedule.cron = settings_schedule.cron
+
+        to_modify.append(db_schedule)
+
+    return SyncAction(
+        to_add=to_add,
+        to_modify=to_modify,
+        to_delete=to_delete,
+    )
+
+
+@atomic
+def apply_sync(action: SyncAction) -> QuerySet[Schedule]:
+    """
+    Applies the operations required to sync the schedules in the settings with the schedules in the DB
+    """
+    Schedule.objects.bulk_create(action.to_add)
+    Schedule.objects.filter(id__in=[schedule.id for schedule in action.to_delete]).delete()
+    Schedule.objects.bulk_update(action.to_modify, fields=["cron", "func"])
+
+    return Schedule.objects.all()
