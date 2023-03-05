@@ -1,7 +1,6 @@
 /* globals FileReader, window */
 import { diff } from 'deep-object-diff'
-import sumBy from 'lodash/sumBy'
-import defaults from 'lodash/defaults'
+import { isEmpty, defaults, sumBy } from 'lodash'
 
 export const datePickerConfig = {
   format: 'DD/MM/YYYY',
@@ -261,7 +260,7 @@ export const getAllContributors = data => {
   let children = []
   let flattened = data.map(m => {
     if (m.contributors && m.contributors.length) {
-      children = [...children, ...m.contributors.map((cb) => ({ ...cb, parentId: m?.id || m?.projectId }))]
+      children = [...children, ...m.contributors.map((cb) => ({ ...cb, parentId: m?.projectId }))]
     }
     return m
   })
@@ -282,3 +281,5 @@ export const getShrinkContributors = items => {
     return !parentId
   })
 }
+
+export const setValueAsFloat = (value) => isEmpty(value) ? 0 : parseFloat(value)

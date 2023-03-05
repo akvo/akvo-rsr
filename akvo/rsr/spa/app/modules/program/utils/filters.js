@@ -55,12 +55,13 @@ export const onlyHasPartners = filtering => (
 )
 
 export const getStatusFiltering = (filtering) => {
-  const allFilters = Object.values(filtering).filter(({ apply }) => (apply))
+  const { data, ...props } = filtering
+  const allFilters = Object.values(props).filter(({ apply }) => (apply))
   const hasPeriod = (allFilters.filter((t) => t.key === 'periods').length > 0)
   const hasCountry = (allFilters.filter((t) => t.key === 'countries').length > 0)
   const hasContrib = (allFilters.filter((t) => t.key === 'contributors').length > 0)
   const hasPartner = (allFilters.filter((t) => t.key === 'partners').length > 0)
-  const hasAnyFilters = (allFilters?.length)
+  const hasAnyFilters = (allFilters?.length > 0)
   return {
     allFilters,
     hasPeriod,

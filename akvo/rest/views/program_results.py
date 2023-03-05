@@ -43,6 +43,7 @@ def get_program_results(request, program_pk):
                         'type': 'quantitative' if indicator.type == QUANTITATIVE else 'qualitative',
                         'target_value': _get_indicator_target(indicator, program.targets_at, aggregate_targets),
                         'score_options': indicator.scores,
+                        'cumulative': indicator.cumulative,
                         'periods': [
                             {
                                 'id': period.id,
