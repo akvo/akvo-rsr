@@ -41,7 +41,6 @@ const PanelHeader = ({ count, text }) => (
 
 const FilterBar = ({
   filterRdr: filtering,
-  programmeRdr,
   programID,
   totalMatches,
   search,
@@ -59,7 +58,6 @@ const FilterBar = ({
     setFilterItems,
     removeFilterItem,
     clearFilter,
-    // updateContributors,
   } = actionProps
 
   const handleOnUnique = (data, field) => {
@@ -98,8 +96,8 @@ const FilterBar = ({
   }
   const handleOnCloseTag = (fieldName, id) => removeFilterItem({ fieldName, id })
 
+  const { data: dataFilter } = filtering
   const { allFilters } = getStatusFiltering(filtering)
-
   const totalFilters = sum(allFilters.map((v) => v.items.length))
 
   useEffect(() => {
@@ -110,16 +108,16 @@ const FilterBar = ({
       setPreload(false)
       clearFilter()
     }
-    if (programmeRdr && !countryOpts.length && !contributors.length && !partners.length && !periods.length) {
-      setContributors(handleOnUnique(programmeRdr, 'contributors'))
-      setPartners(handleOnUnique(programmeRdr, 'partners'))
-      const _countries = uniq(programmeRdr?.flatMap((s) => s?.countries))
+    if (dataFilter && !countryOpts.length && !contributors.length && !partners.length && !periods.length) {
+      setContributors(handleOnUnique(dataFilter, 'contributors'))
+      setPartners(handleOnUnique(dataFilter, 'partners'))
+      const _countries = uniq(dataFilter?.flatMap((s) => s?.countries))
         ?.map((c) => ({
           id: c,
           value: countriesDict[c]
         }))
       setCountryOpts(_countries)
-      const pds = programmeRdr
+      const pds = dataFilter
         ?.flatMap((r) => r.periods)
         ?.filter((p) => {
           const { 0: periodStart, 1: periodEnd } = p
@@ -144,7 +142,7 @@ const FilterBar = ({
       handleOnClear()
     }
   }, [
-    programmeRdr,
+    dataFilter,
     preload,
     countryOpts,
     contributors,
@@ -296,5 +294,5 @@ const FilterBar = ({
 }
 
 export default connect(
-  ({ programmeRdr, filterRdr }) => ({ programmeRdr, filterRdr }), actions
+  ({ filterRdr }) => ({ filterRdr }), actions
 )(FilterBar)

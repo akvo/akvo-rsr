@@ -1,4 +1,4 @@
-@import "./styles.scss";
+@import "../program/styles.scss";
 
 .program-view > .ant-collapse > .ant-collapse-item > .ant-collapse-header .expander + div h1 span.ant-typography,
 .program-view > .ant-collapse > .ant-collapse-item > .ant-collapse-header .expander + div h1 span.ant-typography span {
@@ -13,6 +13,14 @@
   & + .ant-tabs {
     margin-bottom: 0 !important;
   }
+}
+#program-filter-bar {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  padding: 16px 0;
+  background: #fff;
+  box-shadow: 0 2px 2px #dcdcdc;
 }
 .color-periods {
   color: #eb874f !important;
@@ -76,34 +84,6 @@ span[class*="color-"] {
 .mt-30 {
   margin-top: 30px;
 }
-.ant-typography mark {
-  background-color: #e6f7ff;
-  border-bottom: 2px solid #1890ff;
-}
-h1 > .ant-typography > mark {
-  color: #1890ff;
-}
-.charts {
-  canvas.chartjs-render-monitor {
-    width: 160px !important;
-    height: 68px !important;
-  }
-  .percent-label {
-    max-width: 10rem;
-    text-align: center;
-    font-size: 12px;
-    font-weight: 600;
-    color: #68958f;
-  }
-}
-#program-filter-bar {
-  position: sticky;
-  top: 0;
-  z-index: 999;
-  padding: 16px 0;
-  background: #fff;
-  box-shadow: 0 2px 2px #dcdcdc;
-}
 .filter-more-items .ant-list-item {
   padding: 0;
 }
@@ -121,6 +101,13 @@ span[class*="color-"].ant-tag {
   white-space: nowrap;
   overflow: hidden;
   margin-bottom: 2px;
+}
+.ant-typography mark {
+  background-color: #e6f7ff;
+  border-bottom: 2px solid #1890ff;
+}
+h1 > .ant-typography > mark {
+  color: #1890ff;
 }
 .rsr-card-filter-container {
   z-index: 9999;
@@ -146,11 +133,28 @@ span[class*="color-"].ant-tag {
     border-bottom: 1px solid #e8e8e8;
   }
 }
-.hidden {
-  display: none !important;
+.charts {
+  canvas.chartjs-render-monitor {
+    width: 160px !important;
+    height: 68px !important;
+  }
+  .percent-label {
+    max-width: 150px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: #68958f;
+  }
 }
-.contributors-list .ant-collapse-item-active .ant-collapse-header .title .single-country {
-  display: none;
+.program-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 4rem;
+  .anticon {
+    font-size: 24px;
+    color: #1890ff;
+  }
 }
 
 @media (max-width: 767px) and (orientation: landscape) {

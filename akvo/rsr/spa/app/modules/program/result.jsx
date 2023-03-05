@@ -19,6 +19,7 @@ const Aux = node => node.children
 const Result = ({
   id,
   programId,
+  countryFilter,
   indicators,
   targetsAt,
   fetched,
@@ -56,7 +57,7 @@ const Result = ({
             </StickyClass>}
           destroyInactivePanel
         >
-          <Indicator {...indicator} {...{ targetsAt }} />
+          <Indicator {...indicator} {...{ countryFilter, targetsAt }} />
         </Panel>
       )}
       </Collapse>

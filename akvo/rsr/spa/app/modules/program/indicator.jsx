@@ -13,6 +13,7 @@ const Indicator = ({
   periods,
   type: indicatorType,
   targetValue: indicatorTarget,
+  countryFilter,
   scoreOptions,
   targetsAt,
   cumulative,
@@ -40,7 +41,10 @@ const Indicator = ({
   let tmid
 
   const filterProjects = it => {
-    if (countriesFilter.length === 0) return true
+    if (countriesFilter.length === 0 && countryFilter.length === 0) return true
+    if (countryFilter && countryFilter.length > 0) {
+      return countryFilter.findIndex(_it => it.country && it.country.isoCode === _it) !== -1
+    }
     return countriesFilter.findIndex(_it => it.country && it.country.isoCode === _it) !== -1
   }
   const _setPinned = (to) => {
@@ -99,11 +103,11 @@ const Indicator = ({
           ?.sort((a, b) => moment(a.periodEnd, 'DD/MM/YYYY').format('YYYY') - moment(b.periodEnd, 'DD/MM/YYYY').format('YYYY'))
           ?.map((period, index) => {
             const filteredContributors = period.contributors.filter(filterProjects)
-            const filteredCountries = period.countries
+            const filteredCountries = countryFilter.length > 0 ? countryFilter : period.countries
             const aggFilteredTotal = filteredContributors.reduce((prev, value) => prev + value.actualValue, 0)
             const aggFilteredTotalTarget = filteredContributors.reduce((prev, value) => prev + (value.targetValue ? value.targetValue : 0), 0)
-            const actualValue = period.actualValue
-            const targetValue = period.targetValue
+            const actualValue = countryFilter.length > 0 ? aggFilteredTotal : period.actualValue
+            const targetValue = countryFilter.length > 0 ? aggFilteredTotalTarget : period.targetValue
             return (
               <ProgramPeriod
                 key={index}
@@ -115,6 +119,7 @@ const Indicator = ({
                   targetsAt,
                   indicatorType,
                   scoreOptions,
+                  countryFilter,
                   filteredContributors,
                   filteredCountries,
                   actualValue,

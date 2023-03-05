@@ -1,6 +1,6 @@
 /* global document */
-import React from 'react'
-import { Collapse, Empty } from 'antd'
+import React, { useState } from 'react'
+import { Collapse, Select } from 'antd'
 import moment from 'moment'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
@@ -19,6 +19,7 @@ import AggregatedActual from './AggregatedActual'
 import { printIndicatorPeriod } from '../../utils/dates'
 
 const { Panel } = Collapse
+const { Option } = Select
 
 const ProjectHeader = ({
   country,
@@ -54,6 +55,8 @@ const PeriodHeader = ({
   actualValue,
   targetValue,
   targetsAt,
+  countryFilter,
+  aggFilteredTotalTarget,
   hasDisaggregations,
   clickBar,
   mouseEnterBar,
@@ -69,7 +72,7 @@ const PeriodHeader = ({
   const { t } = useTranslation()
   return (
     <>
-      <div data-id={periodId}>
+      <div>
         <h5>{printIndicatorPeriod(periodStart, periodEnd)}</h5>
         <ul className="small-stats">
           <li><b>{filteredContributors.length}</b> {t('contributor_s', { count: filteredContributors.length })}</li>
@@ -103,7 +106,7 @@ const PeriodHeader = ({
               />
               {targetsAt && targetsAt === 'period' && targetValue > 0 && (
                 <span>
-                  of <b>{setNumberFormat(targetValue)}</b> target
+                  of <b>{setNumberFormat(countryFilter.length > 0 ? aggFilteredTotalTarget : targetValue)}</b> target
                 </span>
               )}
             </div>
@@ -145,6 +148,7 @@ const ProgramPeriod = ({
   targetsAt,
   indicatorType,
   scoreOptions,
+  countryFilter,
   filteredContributors,
   filteredCountries,
   actualValue,
@@ -159,6 +163,7 @@ const ProgramPeriod = ({
   handleAccordionChange,
   ...props
 }) => {
+  const [popUp, setPopUp] = useState(false)
   const mouseEnterBar = (index, value, ev) => {
     if (pinned === index || !listRef.current) return
     listRef.current.children[0].children[index].classList.add('active')
@@ -215,6 +220,7 @@ const ProgramPeriod = ({
             actualValue,
             targetValue,
             targetsAt,
+            countryFilter,
             aggFilteredTotalTarget,
             hasDisaggregations,
             clickBar,
@@ -225,8 +231,31 @@ const ProgramPeriod = ({
         />
       )}
     >
+      {(period.contributors.length > 1 && !countryFilter) &&
+        <div className="filters">
+          <Select
+            className="country-filter"
+            mode="multiple"
+            allowClear
+            placeholder={<span><Icon type="filter" /> Filter countries</span>}
+            onChange={handleCountryFilter}
+            value={countriesFilter}
+          >
+            {period.countries.map(it => <Option value={it.isoCode}>{countriesDict[it.isoCode]} ({period.contributors.filter(_it => _it.country && _it.country.isoCode === it.isoCode).length})</Option>)}
+          </Select>
+          {countriesFilter.length > 0 && [
+            <span className="filtered-project-count label">{period.contributors.filter(it => { if (countriesFilter.length === 0) return true; return countriesFilter.findIndex(_it => it.country && it.country.isoCode === _it) !== -1 }).length} projects</span>,
+            <div className="total">
+              <span className="label">Filtered {Math.round((aggFilteredTotal / period.actualValue) * 100 * 10) / 10}% of total</span>
+              <b>{String(aggFilteredTotal).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+            </div>
+          ]}
+        </div>
+      }
       <div ref={ref => { listRef.current = ref }}>
-        {period.contributors.length === 0 && <Empty />}
+        {period.contributors.length === 0 &&
+          <span>No data</span>
+        }
         <Collapse
           onChange={handleAccordionChange}
           defaultActiveKey={period.contributors.length === 1 ? '0' : null}

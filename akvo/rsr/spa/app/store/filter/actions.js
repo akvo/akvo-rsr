@@ -15,3 +15,7 @@ export const applyFilter = (payload) => (dispatch) => {
 export const clearFilter = () => (dispatch) => {
   dispatch({ type: actionTypes.CLEAR_FILTER })
 }
+
+export const setDataFilter = (payload) => (dispatch) => {
+  dispatch({ type: actionTypes.SET_DATA_FILTER, payload })
+}
