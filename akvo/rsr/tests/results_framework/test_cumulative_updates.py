@@ -42,16 +42,16 @@ class SingleUserCumulativeUnitUpdatesTestCase(CumulativeTestMixin, BaseTestCase)
 
     def setUp(self):
         super().setUp()
-        user = self.create_user('test@akvo.org', 'password', is_admin=True)
+        self.user = self.create_user('test@akvo.org', 'password', is_admin=True)
         self.project = self.setup_project()
 
         self.period1 = self.project.get_period(period_start=self.PERIOD_1_START)
-        self.period1.add_update(user=user, value=1, disaggregations={
+        self.period1.add_update(user=self.user, value=1, disaggregations={
             self.DISAGGREGATION_CATEGORY: {
                 self.DISAGGREGATION_TYPE_1: {'value': 1},
             }
         })
-        self.period1.add_update(user=user, value=2, disaggregations={
+        self.period1.add_update(user=self.user, value=2, disaggregations={
             self.DISAGGREGATION_CATEGORY: {
                 self.DISAGGREGATION_TYPE_1: {'value': 1},
                 self.DISAGGREGATION_TYPE_2: {'value': 1},
@@ -59,13 +59,13 @@ class SingleUserCumulativeUnitUpdatesTestCase(CumulativeTestMixin, BaseTestCase)
         })
 
         self.period2 = self.project.get_period(period_start=self.PERIOD_2_START)
-        self.period2.add_update(user=user, value=3, disaggregations={
+        self.period2.add_update(user=self.user, value=3, disaggregations={
             self.DISAGGREGATION_CATEGORY: {
                 self.DISAGGREGATION_TYPE_1: {'value': 2},
                 self.DISAGGREGATION_TYPE_2: {'value': 1},
             }
         })
-        self.period2.add_update(user=user, value=5, disaggregations={
+        self.period2.add_update(user=self.user, value=5, disaggregations={
             self.DISAGGREGATION_CATEGORY: {
                 self.DISAGGREGATION_TYPE_1: {'value': 3},
                 self.DISAGGREGATION_TYPE_2: {'value': 2},
@@ -96,6 +96,33 @@ class SingleUserCumulativeUnitUpdatesTestCase(CumulativeTestMixin, BaseTestCase)
         """
         period3 = self.project.periods.get(id=self.period3.id)
         self.assertEqual(5, Decimal(period3.actual_value))
+
+    def test_late_previous_period_update(self):
+        self.period1.add_update(user=self.user, value=3, disaggregations={
+            self.DISAGGREGATION_CATEGORY: {
+                self.DISAGGREGATION_TYPE_1: {'value': 2},
+                self.DISAGGREGATION_TYPE_2: {'value': 1},
+            }
+        })
+        # aggregation task for all periods of an indicator will be generated automatically for cumulative type
+        aggregate(self.period1.object)
+        aggregate(self.period2.object)
+        aggregate(self.period3.object)
+
+        period1 = self.project.periods.get(id=self.period1.id)
+        self.assertEqual(3, Decimal(period1.actual_value))
+        self.assertEqual(2, period1.disaggregations.get(dimension_value__value=self.DISAGGREGATION_TYPE_1).value)
+        self.assertEqual(1, period1.disaggregations.get(dimension_value__value=self.DISAGGREGATION_TYPE_2).value)
+
+        period2 = self.project.periods.get(id=self.period2.id)
+        self.assertEqual(5, Decimal(period2.actual_value))
+        self.assertEqual(3, period2.disaggregations.get(dimension_value__value=self.DISAGGREGATION_TYPE_1).value)
+        self.assertEqual(2, period2.disaggregations.get(dimension_value__value=self.DISAGGREGATION_TYPE_2).value)
+
+        period3 = self.project.periods.get(id=self.period3.id)
+        self.assertEqual(5, Decimal(period3.actual_value))
+        self.assertEqual(3, period3.disaggregations.get(dimension_value__value=self.DISAGGREGATION_TYPE_1).value)
+        self.assertEqual(2, period3.disaggregations.get(dimension_value__value=self.DISAGGREGATION_TYPE_2).value)
 
 
 class MultiUserCumulativeUnitUpdatesTestCase(CumulativeTestMixin, BaseTestCase):
