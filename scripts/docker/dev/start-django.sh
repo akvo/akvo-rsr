@@ -19,6 +19,10 @@ if [ -z "${IS_REPORTS_CONTAINER:-}" ] && [[ -z "${IS_WORKER:-}" ]] ; then
 
   python manage.py populate_local_db
   python manage.py loaddata --app rsr project_validations
+
+  # Sync re-occurring tasks to be run by django-q from the 90-finish.conf
+  echo "Updating django-q schedules"
+  python manage.py sync_django_q_schedules
 fi
 
 if [[ -z "${IS_WORKER:-}" ]] ; then
