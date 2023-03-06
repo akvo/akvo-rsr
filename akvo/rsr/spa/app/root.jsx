@@ -13,6 +13,7 @@ import Hierarchy from './modules/hierarchy/hierarchy'
 import TopBar from './top-bar'
 import { useFetch } from './utils/hooks'
 import Program from './modules/program/program'
+import ProgramOverview from './modules/program-overview/ProgramOverview'
 import Users from './modules/users/users'
 import Reports from './modules/reports/reports'
 import IATI from './modules/iati/iati'
@@ -52,24 +53,24 @@ const Root = ({ dispatch }) => {
   return (
     <Router basename="/my-rsr">
       <LastLocationProvider>
-      <div id="root">
-        {!jwtView && <TopBar />}
-        {jwtView && <div className="top-bar"><div className="ui container"><a href="/my-rsr/"><img className="logo" src="/logo" /></a></div></div>}
-        <div className="ui container">
-          <Route path="/" exact component={Projects} />
-          <Route path="/projects" exact component={Projects}>
-            {/* Added to not break URLs in browser history */}
-            <Redirect to="/" />
-          </Route>
-          <Route path="/hierarchy/:projectId?" component={Hierarchy} />
-          <Route path="/projects/:id" render={({ match }) => <ProjectView {...{ jwtView, match }} />} />
-          <Route path="/programs/:projectId" component={Program} />
-          <Route path="/users" component={Users} />
-          <Route path="/reports" component={Reports} />
-          <Route path="/iati" component={IATI} />
-          <Route path="/my-details" component={Profile} />
+        <div id="root">
+          {!jwtView && <TopBar />}
+          {jwtView && <div className="top-bar"><div className="ui container"><a href="/my-rsr/"><img className="logo" src="/logo" /></a></div></div>}
+          <div className="ui container">
+            <Route path="/" exact component={Projects} />
+            <Route path="/projects" exact component={Projects}>
+              {/* Added to not break URLs in browser history */}
+              <Redirect to="/" />
+            </Route>
+            <Route path="/hierarchy/:projectId?" component={Hierarchy} />
+            <Route path="/projects/:id" render={({ match }) => <ProjectView {...{ jwtView, match }} />} />
+            <Route path="/users" component={Users} />
+            <Route path="/reports" component={Reports} />
+            <Route path="/iati" component={IATI} />
+            <Route path="/my-details" component={Profile} />
+          </div>
+          <Route path="/programs/:projectId" component={ProgramOverview} />
         </div>
-      </div>
       </LastLocationProvider>
     </Router>
   )
