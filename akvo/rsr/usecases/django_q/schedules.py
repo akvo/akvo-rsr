@@ -35,6 +35,8 @@ class ScheduleSerializer(ModelSerializer):
         fields = [
             "name",
             "func",
+            "args",
+            "kwargs",
             "cron",
         ]
 
@@ -55,10 +57,23 @@ def get_setting_schedules() -> List[Schedule]:
     """
     Converts the schedules configuration in the app settings to django-q schedule objects
     """
-    serializer = ScheduleSerializer(data=[
-        {"name": key, **schedule_conf}
-        for key, schedule_conf in settings.AKVO_JOBS.items()
-    ], many=True)
+    data = []
+    for key, schedule_conf in settings.AKVO_JOBS.items():
+        args = schedule_conf.get("args")
+        if args is None:
+            args = tuple()
+        # Being explicit here as django-q does this implicitly before calling the func
+        elif not isinstance(args, tuple):
+            args = (args, )
+        conf = {
+            **schedule_conf,
+            "name": key,
+            # stored as strings in DB
+            "args": str(args),
+            "kwargs": str(schedule_conf.get("kwargs") or {}),
+        }
+        data.append(conf)
+    serializer = ScheduleSerializer(data=data, many=True)
     serializer.is_valid(True)
     return [Schedule(schedule_type=Schedule.CRON, **item) for item in serializer.validated_data]
 
@@ -89,8 +104,8 @@ def calc_sync(setting_schedules: List[Schedule], db_schedules: List[Schedule] = 
         db_schedule = db_map[name]
         settings_schedule = in_map[name]
 
-        db_schedule.func = settings_schedule.func
-        db_schedule.cron = settings_schedule.cron
+        for field in ScheduleSerializer.Meta.fields:
+            setattr(db_schedule, field, getattr(settings_schedule, field))
 
         to_modify.append(db_schedule)
 
@@ -108,6 +123,6 @@ def apply_sync(action: SyncAction) -> QuerySet[Schedule]:
     """
     Schedule.objects.bulk_create(action.to_add)
     Schedule.objects.filter(id__in=[schedule.id for schedule in action.to_delete]).delete()
-    Schedule.objects.bulk_update(action.to_modify, fields=["cron", "func"])
+    Schedule.objects.bulk_update(action.to_modify, fields=ScheduleSerializer.Meta.fields)
 
     return Schedule.objects.all()

@@ -1,3 +1,5 @@
+from typing import Dict
+
 from django.test import override_settings
 from django_q.models import Schedule
 
@@ -114,3 +116,78 @@ class ModifyDBSchedulesTestCase(BaseTestCase):
             "addition2": dict(name="addition2", func="noop", cron="*/10 * * * *", args='()', kwargs='{}'),
             "addition3": dict(name="addition3", func="noop", cron="*/15 * * * *", args='()', kwargs='{}'),
         })
+
+
+class GetSettingsSchedulesTest(BaseTestCase):
+    """
+    Specifically test get_setting_schedules
+    """
+
+    def _get_with(self, akvo_jobs: dict) -> Dict[str, Schedule]:
+        with self.settings(AKVO_JOBS=akvo_jobs):
+            return {schedule.name: schedule for schedule in get_setting_schedules()}
+
+    def _test_schedule_arg_param(self, schedule_name, arg_value, expected_args=None, arg_type="args"):
+        """
+        Ensure passing "arg" or "kwargs", when constructing a Schedule, is converted to the right type and value
+
+        :param schedule_name: resulting Schedule.name
+        :param arg_value:
+        :param expected_args: Optional override of the expected args (by default a stringified version of arg_value)
+        :param arg_type: Either "args" or "kwargs (Schedule.args, Schedule.kwargs)
+        """
+        if expected_args is None:
+            expected_args = str(arg_value)
+
+        schedules = self._get_with({
+            schedule_name: {
+                "func": "print",
+                "cron": "* * * * *",
+                arg_type: arg_value,
+            }
+        })
+        schedule = schedules[schedule_name]
+        self.assertEqual(getattr(schedule, arg_type), expected_args, f"Schedule.{arg_type} != {expected_args}")
+
+    def test_no_args(self):
+        """args=tuple with primitives"""
+        self._test_schedule_arg_param("primitives", None, expected_args="()")
+
+    def test_tuple_args_primitives(self):
+        """args=tuple with primitives"""
+        self._test_schedule_arg_param("primitives", ("a", "b", "c", 1, 2, 3))
+
+    def test_tuple_args_lists(self):
+        """args=tuple with lists"""
+        self._test_schedule_arg_param("lists", (["a"], ["b"], ["c"]))
+
+    def test_tuple_args_dicts(self):
+        """args=tuple with dicts"""
+        self._test_schedule_arg_param("dicts", ({"a": 1}, {"b": 2}, {"c": 3}))
+
+    def test_tuple_args_mixed(self):
+        """args=tuple with mixed types"""
+        self._test_schedule_arg_param("mixed", ("a", ["b"], {"c": 3}))
+
+    def test_single_arg_primitive(self):
+        """args=primitive type"""
+        args = "hello"
+        self._test_schedule_arg_param("primitive", args, expected_args=str((args,)))
+
+    def test_single_arg_list(self):
+        """args=list type"""
+        args = ["a", "b", "c"]
+        self._test_schedule_arg_param("list", args, expected_args=str((args,)))
+
+    def test_single_arg_dict(self):
+        """args=dict type"""
+        args = dict(a=1, b=2, c=3)
+        self._test_schedule_arg_param("dict", args, expected_args=str((args,)))
+
+    def test_kwargs(self):
+        """kwargs are passed"""
+        self._test_schedule_arg_param("kwargs", dict(a=1, b=2, c=3), arg_type="kwargs")
+
+    def test_no_kwargs(self):
+        """args=tuple with primitives"""
+        self._test_schedule_arg_param("no_kwargs", None, expected_args="{}", arg_type="kwargs")
