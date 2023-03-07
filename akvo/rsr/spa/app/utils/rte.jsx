@@ -57,12 +57,12 @@ class RTE extends React.Component {
     const { disabled, placeholder } = this.props
     return (
       <RichTextEditor className="rte" onChange={this.handleChange} {
-      ...{
-        value: this.state?.plainText === '' ? RichTextEditor.createValueFromString(this.props?.value, 'markdown') : this.state.value,
-        toolbarConfig,
-        disabled,
-        placeholder
-      }
+        ...{
+          value: this.state?.plainText === '' ? RichTextEditor.createValueFromString(this.props?.value, 'markdown') : this.state.value,
+          toolbarConfig,
+          disabled,
+          placeholder
+        }
       }
       />
     )

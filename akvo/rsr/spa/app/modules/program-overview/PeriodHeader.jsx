@@ -27,7 +27,7 @@ const PeriodHeader = ({
   targetValue,
   actualValue,
   disaggregations,
-  dsgItems,
+  disaggregationTargets,
   disaggTooltipRef,
   callback
 }) => {
@@ -98,7 +98,7 @@ const PeriodHeader = ({
           <>
             <div className={classNames('stats', { extended: targetValue > 0 })}>
               {/* start dsg */}
-              {(disaggregations.length > 0) && <DisaggregationsBar dsgItems={dsgItems} tooltipRef={disaggTooltipRef} />}
+              {(disaggregations.length > 0) && <DisaggregationsBar {...{ disaggregations, disaggregationTargets }} tooltipRef={disaggTooltipRef} />}
               {/* end dsg */}
               <div className="stat value">
                 <div className="label">aggregated actual</div>

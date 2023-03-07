@@ -1,6 +1,6 @@
 /* globals FileReader, window */
 import { diff } from 'deep-object-diff'
-import { isEmpty, defaults, sumBy } from 'lodash'
+import { isEmpty, defaults, sumBy, isNaN } from 'lodash'
 
 export const datePickerConfig = {
   format: 'DD/MM/YYYY',
@@ -221,7 +221,10 @@ export const getParentUuid = (path) => {
 }
 
 
-export const getPercentage = (numerator, denominator) => Math.round((numerator / denominator) * 100 * 10) / 10
+export const getPercentage = (numerator, denominator) => {
+  const percentage = Math.round((numerator / denominator) * 100 * 10) / 10
+  return isNaN(percentage) ? 0 : percentage
+}
 
 export const getUserFullName = user => (user?.firstName?.length || user?.lastName?.length)
   ? `${user.firstName} ${user.lastName}`

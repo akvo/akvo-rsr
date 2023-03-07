@@ -15,7 +15,7 @@ const { Panel } = Collapse
 const InitialView = ({ filterRdr, search, targetsAt, loading = false }) => {
   const { t } = useTranslation()
   const { data: results } = filterRdr || {}
-  if (loading) {
+  if (loading && !results?.length) {
     return (
       <List
         itemLayout="vertical"

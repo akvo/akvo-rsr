@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import moment from 'moment'
 
-import { setNumberFormat } from '../../utils/misc'
+import { getPercentage, setNumberFormat } from '../../utils/misc'
 import countriesDict from '../../utils/countries-dict'
 import ExpandIcon from '../../components/ExpandIcon'
 import ApprovedUpdates from '../program/ApprovedUpdates'
@@ -63,7 +63,7 @@ const ProgramContributor = ({
             className={classNames(type, { pinned: pinned === _index })}
             header={(
               <>
-                <div className="title">
+                <div className="title" data-id={cb.id}>
                   <h4 className={classNames({ 'color-contributors': activeContributor })}>{cb.projectTitle}</h4>
                   <p>
                     {cb.projectSubtitle && <span className={classNames({ 'color-partners': activePartner })}>{cb.projectSubtitle}</span>}
@@ -94,7 +94,7 @@ const ProgramContributor = ({
             {(type === 'qualitative' && scoreOptions == null) && <ApprovedUpdates items={cb.updates} />}
             <ul className="sub-contributors">
               {cb?.contributors?.map(subproject => (
-                <li key={subproject.id}>
+                <li key={subproject.id} data-id={subproject.projectId}>
                   <div style={{ maxWidth: '95%' }}>
                     <h5 className={classNames({ 'color-contributors': (hasContrib) })}>{subproject.projectTitle}</h5>
                     <p>
@@ -113,7 +113,9 @@ const ProgramContributor = ({
                     {type === 'quantitative' && (
                       <>
                         <ActualValue {...subproject} />
-                        <small>{cb.actualValue ? Math.round((subproject.actualValue / cb.actualValue) * 100 * 10) / 10 : 0}%</small>
+                        <small>
+                          {cb.actualValue ? getPercentage(subproject.actualValue, cb.actualValue) : 0}%
+                        </small>
                       </>
                     )}
                     {(type === 'qualitative' && scoreOptions != null) && (
