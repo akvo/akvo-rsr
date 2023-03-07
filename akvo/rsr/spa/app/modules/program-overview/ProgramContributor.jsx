@@ -15,6 +15,7 @@ import { findCountries, findPartners, findProjects, getStatusFiltering } from '.
 import { getAllCountries } from '../program/utils/query'
 import ActualValueApi from './ActualValueApi'
 import ActualValue from '../program/ActualValue'
+import ContribUpdatesApi from './ContribUpdatesApi'
 
 const { Panel } = Collapse
 
@@ -91,10 +92,11 @@ const ProgramContributor = ({
             )}
           >
             <ActualValueApi periodID={periodID} contributors={cb?.contributors} />
+            {(cb?.updates === undefined) && <ContribUpdatesApi {...cb} />}
             {(type === 'qualitative' && scoreOptions == null) && <ApprovedUpdates items={cb.updates} />}
             <ul className="sub-contributors">
               {cb?.contributors?.map(subproject => (
-                <li key={subproject.id} data-id={subproject.projectId}>
+                <li key={subproject.id} data-id={subproject.id}>
                   <div style={{ maxWidth: '95%' }}>
                     <h5 className={classNames({ 'color-contributors': (hasContrib) })}>{subproject.projectTitle}</h5>
                     <p>

@@ -23,3 +23,7 @@ export const setContributors = (payload) => (dispatch) => {
 export const updateReportingPeriod = (period, contributors) => (dispatch) => {
   dispatch({ type: actionTypes.UPDATE_CONTRIB_PERIOD, payload: { period, contributors } })
 }
+
+export const setContributorUpdates = (updates, ids) => (dispatch) => {
+  dispatch({ type: actionTypes.UPDATE_CONTRIB_UPDATES, payload: { updates, ids } })
+}

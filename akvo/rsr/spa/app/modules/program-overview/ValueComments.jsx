@@ -2,10 +2,12 @@
 import React from 'react'
 import ShowMoreText from 'react-show-more-text'
 import moment from 'moment'
+import { Skeleton } from 'antd'
 
 const ValueComments = ({ items }) => (
   <div className="comments">
     <ul>
+      {(items === undefined) && <li><Skeleton paragraph={{ rows: 1 }} active /></li>}
       {items?.map((item, key) =>
         <li key={key}>
           <b>{`${item?.userDetails?.firstName} ${item?.userDetails?.lastName}`}</b>

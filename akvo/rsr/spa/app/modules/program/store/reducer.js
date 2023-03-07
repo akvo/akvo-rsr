@@ -1,4 +1,4 @@
-import orderBy from 'lodash/orderBy'
+import { groupBy, orderBy } from 'lodash'
 import actionTypes from './action-types'
 import { createContribWithJob } from '../services'
 import { getAllContributors, getShrinkContributors, setValueAsFloat } from '../../../utils/misc'
@@ -96,6 +96,32 @@ export default (state = [], action) => {
             })
           }
           return p
+        })
+      }))
+    }))
+  case actionTypes.UPDATE_CONTRIB_UPDATES:
+    const { updates, ids: contribIds } = action.payload
+    return state?.map((s) => ({
+      ...s,
+      indicators: s?.indicators?.map((i) => ({
+        ...i,
+        periods: i?.periods?.map((p) => {
+          const allContributors = getAllContributors(p?.contributors)
+            ?.map(cb => {
+              if (contribIds?.includes(cb?.id)) {
+                const fu = updates?.filter((it) => it?.period === cb?.id)
+                return ({
+                  ...cb,
+                  updates: fu
+                })
+              }
+              return cb
+            })
+          const _contributors = getShrinkContributors(allContributors)
+          return ({
+            ...p,
+            contributors: _contributors,
+          })
         })
       }))
     }))
