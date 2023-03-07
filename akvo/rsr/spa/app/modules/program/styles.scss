@@ -185,8 +185,10 @@
             padding-left: 16px;
             padding-right: 40px;
             position: sticky;
-            top: 37px;
+            top: 5rem;
             z-index: 4;
+            background-color: #ffffff;
+            border-bottom: 1px solid #dedede;
             .expander{
               position: absolute;
               left: auto;
@@ -255,7 +257,7 @@
                     display: flex;
                     padding-left: 12px;
                     position: sticky;
-                    top: 80px;
+                    top: 9.5rem;
                     z-index: 3;
                     background-color: #fff;
                     color: #333;
@@ -378,7 +380,10 @@
                       z-index: 2;
                     }
                   }
-                  &.ant-collapse-item-active:not(.empty):not(.single):not(.qualitative)>.ant-collapse-header{
+                  &.ant-collapse-item-active.emptyBar > .ant-collapse-header{
+                    padding-bottom: 0;
+                  }
+                  &.ant-collapse-item-active:not(.empty):not(.single):not(.qualitative):not(.emptyBar) >.ant-collapse-header {
                     padding-bottom: 48px;
                     .bar{
                       height: 42px;
@@ -969,6 +974,11 @@
                       border-width: 1px;
                       border-color: #d9d9d9;
                     }
+                  }
+                }
+                &>.ant-collapse-item.hasAChart{
+                  &>.ant-collapse-header{
+                    top: 12rem;
                   }
                 }
               }
