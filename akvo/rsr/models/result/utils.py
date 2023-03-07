@@ -7,7 +7,7 @@
 from decimal import Decimal
 
 from django.apps import apps
-from django.db.models import Max, Q
+from django.db.models import Q
 from akvo.utils import rsr_image_path
 
 PERCENTAGE_MEASURE = '2'
@@ -89,4 +89,6 @@ def get_per_user_latest_indicator_update_ids(period):
         period__indicator=period.indicator,
     ).filter(
         Q(period=period) | Q(period__period_end__lt=period.period_end)
-    ).values('user').annotate(id=Max('id')).values('id')
+    ).order_by(
+        'user_id', '-period__period_end', '-created_at'
+    ).distinct('user_id').values('id')

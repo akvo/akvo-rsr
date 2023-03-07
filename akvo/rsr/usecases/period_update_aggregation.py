@@ -68,9 +68,6 @@ def sum_updates(period: IndicatorPeriod) -> Tuple[Optional[Decimal], Optional[De
 
 
 def sum_cumulative_updates(period: IndicatorPeriod) -> Tuple[Optional[Decimal], Optional[Decimal], Optional[Decimal]]:
-    '''
-    This method assumes the user will submit cumulative updates in chronological order as it should.
-    '''
     IndicatorPeriodData = apps.get_model('rsr', 'IndicatorPeriodData')
     latest_per_users = get_per_user_latest_indicator_update_ids(period)
     value = IndicatorPeriodData.objects.filter(id__in=latest_per_users)\
