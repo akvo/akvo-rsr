@@ -23,12 +23,16 @@ if [ -z "${IS_REPORTS_CONTAINER:-}" ] && [[ -z "${IS_WORKER:-}" ]] ; then
 fi
 
 if [ -z "${IS_REPORTS_CONTAINER:-}" ] && [[ -z "${IS_WORKER:-}" ]] ; then
+  # Legacy crontab tasks - being replaced by django-q schedules
   log Adding to crontab
   python manage.py crontab add
   log Making all environment vars available to cron jobs
   env >> /etc/environment
   log Starting cron
   /usr/sbin/cron
+
+  # Sync re-occurring tasks to be run by django-q from the 90-finish.conf
+  python manage.py sync_django_q_schedules
 fi
 
 if [[ -z "${IS_WORKER:-}" ]] ; then
