@@ -31,7 +31,7 @@ const { Panel } = Collapse
 const ProgramView = ({
   targetsAt,
   search,
-  programmeRdr: results,
+  results,
   filterRdr: filtering,
 }) => {
   const { t } = useTranslation()
@@ -48,8 +48,8 @@ const ProgramView = ({
   const disaggTooltipRef = useRef(null)
   let scrollingTransition
   let tmid
-  const { hasPeriod, allFilters } = getStatusFiltering(filtering)
-  const hasAnyFilters = (allFilters.length > 0)
+  const { hasPeriod, hasAnyFilters: hasAnyCriteria } = getStatusFiltering(filtering)
+  const hasAnyFilters = (hasAnyCriteria || search)
 
   const _setPinned = (to) => {
     setPinned(to)
@@ -89,8 +89,8 @@ const ProgramView = ({
   useEffect(() => {
     tooltipRef.current = document.getElementById('bar-tooltip')
     disaggTooltipRef.current = document.getElementById('disagg-bar-tooltip')
-    document.addEventListener('scroll', handleScroll)
-    return () => document.removeEventListener('scroll', handleScroll)
+    // document.addEventListener('scroll', handleScroll)
+    // return () => document.removeEventListener('scroll', handleScroll)
   }, [])
 
   return (
@@ -104,10 +104,10 @@ const ProgramView = ({
           <Panel
             key={rx}
             header={(
-              <StickyClass offset={20}>
+              <div className="stuck">
                 <h1><Highlighted text={result.title} highlight={search} /></h1>
                 <div><i>{result.type}</i><span>{t('nindicators', { count: result.indicators.length })}</span></div>
-              </StickyClass>
+              </div>
             )}
           >
             <Collapse
@@ -123,24 +123,24 @@ const ProgramView = ({
                     const pKeys = i?.periods.map((_, px) => `${px}`)
                     const defaultPeriodKey = (targetsAt === 'indicator') ? pKeys : []
                     const hasAChart = (
-                      (targetsAt && targetsAt === 'indicator') && (i?.targetValue) &&
-                (indicatorKeys.includes(`${index}`))
+                      (targetsAt && targetsAt === 'indicator') && (i?.targetValue > 0) &&
+                      (indicatorKeys.includes(`${index}`))
                     )
                     const colTitle = hasAChart
                       ? { xl: 18, lg: 14, md: 12, sm: 24, xs: 24 }
                       : { span: 24 }
                     const indicatorActualValue = i?.periods
-                ?.filter((p) => i?.cumulative
-                  ? (moment().isBetween(moment(p?.periodStart, 'DD/MM/YYYY'), moment(p?.periodEnd, 'DD/MM/YYYY')))
-                  : p
-                )
-                ?.reduce((total, currentValue) => parseFloat(total) + parseFloat(currentValue.actualValue), 0)
+                    ?.filter((p) => i?.cumulative
+                      ? (moment().isBetween(moment(p?.periodStart, 'DD/MM/YYYY'), moment(p?.periodEnd, 'DD/MM/YYYY')))
+                      : p
+                    )
+                    ?.reduce((total, currentValue) => parseFloat(total) + parseFloat(currentValue.actualValue), 0)
                     return (
                       <Panel
                         key={index}
                         className={classNames({ hasAnyFilters })}
                         header={(
-                          <StickyClass top={40}>
+                          <div className="stuck">
                             <Row gutter={[8, { sm: 32, xs: 32 }]}>
                               <Col {...colTitle}>
                                 <h3><Highlighted text={i.title} highlight={search} /></h3>
@@ -178,7 +178,7 @@ const ProgramView = ({
                                 </Col>
                               )}
                             </Row>
-                          </StickyClass>
+                          </div>
                         )}
                       >
                         <div className="indicator">
@@ -217,7 +217,7 @@ const ProgramView = ({
                               >
                                 <Spin spinning={false} indicator={<Icon type="loading" style={{ fontSize: 36 }} />}>
                                   <div ref={ref => { listRef.current = ref }}>
-                                    <ActualValueApi periodID={p?.id} contributors={p?.contributors} />
+                                    <ActualValueApi {...p} />
                                     <ProgramContributor
                                       type={i.type}
                                       scoreOptions={i.scoreOptions}
@@ -258,5 +258,5 @@ const ProgramView = ({
 }
 
 export default connect(
-  ({ programmeRdr, filterRdr }) => ({ programmeRdr, filterRdr }), null
+  ({ filterRdr }) => ({ filterRdr }), null
 )(ProgramView)

@@ -185,7 +185,7 @@
             padding-left: 16px;
             padding-right: 40px;
             position: sticky;
-            top: 5rem;
+            top: 4.5rem;
             z-index: 4;
             background-color: #ffffff;
             border-bottom: 1px solid #dedede;
@@ -257,7 +257,7 @@
                     display: flex;
                     padding-left: 12px;
                     position: sticky;
-                    top: 9.5rem;
+                    top: 9rem;
                     z-index: 3;
                     background-color: #fff;
                     color: #333;
@@ -974,11 +974,6 @@
                       border-width: 1px;
                       border-color: #d9d9d9;
                     }
-                  }
-                }
-                &>.ant-collapse-item.hasAChart{
-                  &>.ant-collapse-header{
-                    top: 12rem;
                   }
                 }
               }

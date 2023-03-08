@@ -91,7 +91,7 @@ const ProgramContributor = ({
               </>
             )}
           >
-            <ActualValueApi periodID={periodID} contributors={cb?.contributors} />
+            {(cb?.contributors?.length > 0) && <ActualValueApi {...{...cb, id: periodID }} />}
             {(cb?.updates === undefined) && <ContribUpdatesApi {...cb} />}
             {(type === 'qualitative' && scoreOptions == null) && <ApprovedUpdates items={cb.updates} />}
             <ul className="sub-contributors">

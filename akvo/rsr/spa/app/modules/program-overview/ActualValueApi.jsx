@@ -8,7 +8,7 @@ import { getAllContributors } from '../../utils/misc'
 import * as actions from '../program/store/actions'
 
 const ActualValueApi = ({
-  periodID,
+  id: periodID,
   contributors,
   updateReportingPeriod,
   match: { params },
@@ -23,8 +23,11 @@ const ActualValueApi = ({
     url => api.get(url).then(res => res.data)
   )
   useEffect(() => {
-    if (preload && apiData && !apiError) {
-      const [period, ..._contributors] = apiData
+    if (preload && (apiData !== undefined) && !apiError) {
+      const dataSorted = ids
+        ?.map((d) => apiData?.find((a) => a?.id === d))
+        ?.filter((d) => d)
+      const [period, ..._contributors] = dataSorted
       updateReportingPeriod(period, _contributors)
       setPreload(false)
     }

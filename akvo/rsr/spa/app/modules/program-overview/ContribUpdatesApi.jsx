@@ -19,14 +19,14 @@ const ContribUpdatesApi = ({
     url => api.get(url).then(res => res.data)
   )
   useEffect(() => {
-    if (preload && apiData && !apiError) {
+    if (preload && (apiData !== undefined) && !apiError) {
       setContributorUpdates(apiData, ids)
       setPreload(false)
     }
     if (preload && apiError) {
       setPreload(false)
     }
-  }, [preload, apiData, ids])
+  }, [preload, apiData, apiError])
   return (
     <>
     </>

@@ -22,7 +22,7 @@ import { connect } from 'react-redux'
 import Filter from '../../components/filter'
 import countriesDict from '../../utils/countries-dict'
 import { setNumberFormat } from '../../utils/misc'
-import { getStatusFiltering } from './utils/filters'
+import { getStatusFiltering } from '../program/utils/filters'
 import * as actions from '../../store/filter/actions'
 
 const { Panel } = Collapse
@@ -45,14 +45,10 @@ const FilterBar = ({
   totalMatches,
   search,
   setSearch,
+  handleOnSearch,
   ...actionProps
 }) => {
-  const [countryOpts, setCountryOpts] = useState([])
-  const [contributors, setContributors] = useState([])
-  const [periods, setPeriods] = useState([])
-  const [partners, setPartners] = useState([])
   const [toggle, setToggle] = useState(false)
-  const [preload, setPreload] = useState(true)
   const {
     applyFilter,
     setFilterItems,
@@ -96,59 +92,42 @@ const FilterBar = ({
   }
   const handleOnCloseTag = (fieldName, id) => removeFilterItem({ fieldName, id })
 
-  const { data: dataFilter } = filtering
+  const { data: dataFilter } = filtering || {}
   const { allFilters } = getStatusFiltering(filtering)
   const totalFilters = sum(allFilters.map((v) => v.items.length))
+  const contributors = handleOnUnique(dataFilter, 'contributors')
+  const partners = handleOnUnique(dataFilter, 'partners')
+  const countryOpts = uniq(dataFilter?.flatMap((s) => s?.countries))
+    ?.map((c) => ({
+      id: c,
+      value: countriesDict[c]
+    }))
+  const pds = dataFilter
+    ?.flatMap((r) => r.periods)
+    ?.filter((p) => {
+      const { 0: periodStart, 1: periodEnd } = p
+      return (periodStart && periodEnd)
+    })
+    ?.sort((a, b) => {
+      const { 1: periodEndA } = a
+      const { 1: periondEndB } = b
+      return moment(periodEndA, 'YYYY-MM-DD').format('YYYY') - moment(periondEndB, 'YYYY-MM-DD').format('YYYY')
+    })
+    ?.map((p, px) => {
+      const { 0: periodStart, 1: periodEnd } = p
+      const _period = `${moment(periodStart, 'YYYY-MM-DD').format('DD/MM/YYYY')} - ${moment(periodEnd, 'YYYY-MM-DD').format('DD/MM/YYYY')}`
+      return {
+        id: px,
+        value: _period
+      }
+    })
+  const periods = uniqBy(pds, 'value')
 
   useEffect(() => {
-    if (preload) {
-      /**
-       * run only once
-       */
-      setPreload(false)
-      clearFilter()
-    }
-    if (dataFilter && !countryOpts.length && !contributors.length && !partners.length && !periods.length) {
-      setContributors(handleOnUnique(dataFilter, 'contributors'))
-      setPartners(handleOnUnique(dataFilter, 'partners'))
-      const _countries = uniq(dataFilter?.flatMap((s) => s?.countries))
-        ?.map((c) => ({
-          id: c,
-          value: countriesDict[c]
-        }))
-      setCountryOpts(_countries)
-      const pds = dataFilter
-        ?.flatMap((r) => r.periods)
-        ?.filter((p) => {
-          const { 0: periodStart, 1: periodEnd } = p
-          return (periodStart && periodEnd)
-        })
-        ?.sort((a, b) => {
-          const { 1: periodEndA } = a
-          const { 1: periondEndB } = b
-          return moment(periodEndA, 'YYYY-MM-DD').format('YYYY') - moment(periondEndB, 'YYYY-MM-DD').format('YYYY')
-        })
-        ?.map((p, px) => {
-          const { 0: periodStart, 1: periodEnd } = p
-          const _period = `${moment(periodStart, 'YYYY-MM-DD').format('DD/MM/YYYY')} - ${moment(periodEnd, 'YYYY-MM-DD').format('DD/MM/YYYY')}`
-          return {
-            id: px,
-            value: _period
-          }
-        })
-      setPeriods(uniqBy(pds, 'value'))
-    }
     if (totalFilters === 0 && allFilters.length) {
       handleOnClear()
     }
-  }, [
-    dataFilter,
-    preload,
-    countryOpts,
-    contributors,
-    periods,
-    partners,
-  ])
+  }, [totalFilters, allFilters, filtering])
 
   return (
     <>
@@ -158,8 +137,7 @@ const FilterBar = ({
           visible={toggle}
           count={totalFilters}
           onPopOver={() => setToggle(!toggle)}
-          value={search}
-          onChange={e => setSearch(e.target.value)}
+          onChange={e => handleOnSearch(e.target.value)}
         />
         {((allFilters.length > 0) || search) && (
           <div className="filter-selected-bar flex-between">

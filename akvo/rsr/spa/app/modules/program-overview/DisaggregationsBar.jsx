@@ -21,15 +21,17 @@ const DisaggregationsBar = ({ disaggregations, disaggregationTargets, tooltipRef
   const mouseLeaveBar = () => {
     tooltipRef.current.style.opacity = 0
   }
-  const _disaggregations = disaggregations?.map((d) => {
-    const target = disaggregationTargets?.find((dt) => dt?.dimentionValue === d?.dimentionValue?.id)
-    return ({
-      ...d,
-      target: target?.value,
-      category: d?.dimensionName?.name,
-      type: d?.dimensionValue?.value
+  const _disaggregations = disaggregations
+    ?.filter((d) => (d?.value))
+    ?.map((d) => {
+      const target = disaggregationTargets?.find((dt) => dt?.dimentionValue === d?.dimentionValue?.id)
+      return ({
+        ...d,
+        target: target?.value,
+        category: d?.dimensionName?.name,
+        type: d?.dimensionValue?.value
+      })
     })
-  })
   const dsgGrouped = groupBy(_disaggregations, 'category')
   return (
     <div className="disaggregation-groups">

@@ -156,7 +156,12 @@ h1 > .ant-typography > mark {
     color: #1890ff;
   }
 }
-
+.program-view > .ant-collapse > .ant-collapse-item > .ant-collapse-content > .ant-collapse-content-box > .ant-collapse > .ant-collapse-item.hasAnyFilters > .ant-collapse-header {
+  top: 10.8rem;
+}
+.program-view > .ant-collapse > .ant-collapse-item > .ant-collapse-content > .ant-collapse-content-box > .ant-collapse > .ant-collapse-item > .ant-collapse-content > .ant-collapse-content-box .indicator > .ant-collapse > .ant-collapse-item.hasAnyFilters:not(.emptyBar) > .ant-collapse-header {
+  top: 18rem;
+}
 @media (max-width: 767px) and (orientation: landscape) {
   .rsr-card-filter-container {
     max-height: 350px;

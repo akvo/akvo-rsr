@@ -1,4 +1,4 @@
-import { groupBy, orderBy } from 'lodash'
+import orderBy from 'lodash/orderBy'
 import actionTypes from './action-types'
 import { createContribWithJob } from '../services'
 import { getAllContributors, getShrinkContributors, setValueAsFloat } from '../../../utils/misc'
@@ -80,7 +80,8 @@ export default (state = [], action) => {
                   return ({
                     ...cb,
                     ...fc,
-                    actualValue
+                    actualValue,
+                    fetched: true
                   })
                 }
                 return cb
@@ -108,8 +109,9 @@ export default (state = [], action) => {
         periods: i?.periods?.map((p) => {
           const allContributors = getAllContributors(p?.contributors)
             ?.map(cb => {
-              if (contribIds?.includes(cb?.id)) {
-                const fu = updates?.filter((it) => it?.period === cb?.id)
+              const fc = contribIds?.find((v) => v === cb?.id)
+              if (fc) {
+                const fu = updates?.filter((u) => u?.period === cb?.id)
                 return ({
                   ...cb,
                   updates: fu

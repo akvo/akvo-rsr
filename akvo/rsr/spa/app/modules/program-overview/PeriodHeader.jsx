@@ -2,10 +2,11 @@
 import React from 'react'
 import classNames from 'classnames'
 import moment from 'moment'
+import uniq from 'lodash/uniq'
 import { useTranslation } from 'react-i18next'
 
 import { getStatusFiltering } from '../program/utils/filters'
-import { setNumberFormat } from '../../utils/misc'
+import { getAllContributors, setNumberFormat } from '../../utils/misc'
 import DisaggregationsBar from './DisaggregationsBar'
 import TargetCharts from '../../utils/target-charts'
 import AggregatedActual from '../program/AggregatedActual'
@@ -20,7 +21,6 @@ const PeriodHeader = ({
   targetsAt,
   periodStart,
   periodEnd,
-  countries,
   contributors,
   indicatorType,
   fetched,
@@ -32,7 +32,12 @@ const PeriodHeader = ({
   callback
 }) => {
   const { t } = useTranslation()
-  const { hasPeriod, hasCountry, hasContrib, hasAnyFilters } = getStatusFiltering(filtering)
+  const { hasPeriod, hasAnyFilters } = getStatusFiltering(filtering)
+  const countries = uniq(
+    getAllContributors(contributors)
+      .filter((cb) => (cb?.country))
+      .map((cb) => cb.country.isoCode)
+  )
 
   const mouseEnterBar = (index, value, ev) => {
     if (pinned === index || !listRef.current) return
@@ -67,22 +72,22 @@ const PeriodHeader = ({
   }
   return (
     <>
-      <div>
+      <div data-id={periodId}>
         <h5 className={classNames({ 'color-periods': (hasPeriod) })}>
           {`${moment(periodStart, 'DD/MM/YYYY').format('DD MMM YYYY')} - ${moment(periodEnd, 'DD/MM/YYYY').format('DD MMM YYYY')}`}
         </h5>
         <ul className="small-stats">
           {((contributors?.length > 0 && !hasAnyFilters) || (hasAnyFilters && contributors?.flatMap((c) => c?.contributors)?.length === 0)) && (
-            <li className={classNames({ 'color-contributors': (hasContrib) })}>
-              <b className={classNames({ 'color-contributors': (hasContrib) })}>
+            <li>
+              <b>
                 {contributors?.length}
               </b>{' '}
               {t('contributor_s', { count: contributors?.length })}
             </li>
           )}
-          {(countries?.length > 1) && (
-            <li className={classNames({ 'color-countries': (hasCountry) })}>
-              <b className={classNames({ 'color-countries': (hasCountry) })}>
+          {(countries?.length > 1 && !hasAnyFilters) && (
+            <li>
+              <b>
                 {countries?.length}
               </b>
               {` ${t('country_s', { count: countries?.length })}`}
