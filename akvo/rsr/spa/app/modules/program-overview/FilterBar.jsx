@@ -74,14 +74,8 @@ const FilterBar = ({
     applyFilter({ fieldName })
     setToggle(false)
   }
-  const handleOnSetItems = (fieldName, items = []) => {
-    const fields = {
-      partners,
-      contributors,
-      periods,
-      countries: countryOpts,
-    }
-    const data = items.map(it => Object.values(fields[fieldName]).find((d) => d.id === it))
+  const handleOnSetItems = (dataSource, fieldName, items = []) => {
+    const data = items.map(it => Object.values(dataSource).find((d) => d.id === it))
     setFilterItems({ fieldName, data })
   }
   const handleOnClear = () => {
@@ -230,7 +224,7 @@ const FilterBar = ({
                   picked={filtering.countries.items}
                   title="Select project Location(s)"
                   onApply={() => handleOnApply('countries')}
-                  onSetItems={(items) => handleOnSetItems('countries', items)}
+                  onSetItems={(items) => handleOnSetItems(countryOpts, 'countries', items)}
                   isGrouped
                 />
               </Panel>
@@ -240,7 +234,7 @@ const FilterBar = ({
                   picked={filtering.periods.items}
                   title="Select project period(s)"
                   onApply={() => handleOnApply('periods')}
-                  onSetItems={(items) => handleOnSetItems('periods', items)}
+                  onSetItems={(items) => handleOnSetItems(periods, 'periods', items)}
                 />
               </Panel>
               <Panel header={<PanelHeader count={filtering.contributors.items.length} text="Contribution Projects" />} key="3">
@@ -249,7 +243,7 @@ const FilterBar = ({
                   picked={filtering.contributors.items}
                   title="Select contributing project(s)"
                   onApply={() => handleOnApply('contributors')}
-                  onSetItems={(items) => handleOnSetItems('contributors', items)}
+                  onSetItems={(items) => handleOnSetItems(contributors, 'contributors', items)}
                   isGrouped
                 />
               </Panel>
@@ -259,7 +253,7 @@ const FilterBar = ({
                   picked={filtering.partners.items}
                   title="Select partner(s)"
                   onApply={() => handleOnApply('partners')}
-                  onSetItems={(items) => handleOnSetItems('partners', items)}
+                  onSetItems={(items) => handleOnSetItems(partners, 'partners', items)}
                   isGrouped
                 />
               </Panel>
