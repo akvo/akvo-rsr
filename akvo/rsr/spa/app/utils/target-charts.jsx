@@ -4,6 +4,7 @@ import Chart from 'chart.js'
 
 const TargetCharts = ({ actualValue, targetValue }) => {
   const [preload, setPreload] = useState(true)
+  const [currentValue, setCurrentValue] = useState(null)
   const canvasRef = useRef(null)
   let percent = (actualValue / targetValue) * 100
   if (percent > 100) percent = 100
@@ -20,6 +21,7 @@ const TargetCharts = ({ actualValue, targetValue }) => {
   useEffect(() => {
     if (canvasRef && preload) {
       setPreload(false)
+      setCurrentValue(actualValue)
       const _chart = new Chart(canvasRef.current, {
         type: 'doughnut',
         data: { datasets, labels },
@@ -36,7 +38,10 @@ const TargetCharts = ({ actualValue, targetValue }) => {
         }
       })
     }
-  })
+    if ((currentValue !== actualValue) && !preload) {
+      setPreload(true)
+    }
+  }, [canvasRef, preload, currentValue, actualValue])
   return (
     <div className="charts">
       <canvas width={150} height={68} ref={ref => { canvasRef.current = ref }} />
