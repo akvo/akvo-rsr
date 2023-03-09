@@ -1,6 +1,6 @@
 /* globals FileReader, window */
 import { diff } from 'deep-object-diff'
-import sumBy from 'lodash/sumBy'
+import { isEmpty, defaults, sumBy, isNaN } from 'lodash'
 
 export const datePickerConfig = {
   format: 'DD/MM/YYYY',
@@ -208,12 +208,12 @@ export const getProjectUuids = (path) => path?.split('.')?.map((value) => value?
 /**
  * Attempts to get the parent UUID from a project's path.
  *
- * @param path {String} A dot separated list of UUIDs representing the path in a tree to a project.
+ * @param path {string} A dot separated list of UUIDs representing the path in a tree to a project.
  *                      The last element is the project preceded by its ancestors.
  * @returns {null|String} A parent UUID if there is one
  */
 export const getParentUuid = (path) => {
-  const uuids = getProjectUuids(path);
+  const uuids = getProjectUuids(path)
   if(uuids === undefined || uuids.length === 1){
     return null
   }
@@ -221,7 +221,10 @@ export const getParentUuid = (path) => {
 }
 
 
-export const getPercentage = (numerator, denominator) => Math.round((numerator / denominator) * 100 * 10) / 10
+export const getPercentage = (numerator, denominator) => {
+  const percentage = Math.round((numerator / denominator) * 100 * 10) / 10
+  return isNaN(percentage) ? 0 : percentage
+}
 
 export const getUserFullName = user => (user?.firstName?.length || user?.lastName?.length)
   ? `${user.firstName} ${user.lastName}`
@@ -250,3 +253,36 @@ export const makeATree = (data, pid = null) => {
     return r
   }, [])
 }
+
+export const getFirstLetter = (dataString) => {
+  const index = Array.from({ length: dataString.length }).findIndex((_, x) => (/^[a-zA-Z]+$/.test(dataString[x])))
+  return dataString[index] || dataString[0]
+}
+
+export const getAllContributors = data => {
+  let children = []
+  let flattened = data.map(m => {
+    if (m.contributors && m.contributors.length) {
+      children = [...children, ...m.contributors.map((cb) => ({ ...cb, parentId: m?.projectId }))]
+    }
+    return m
+  })
+  flattened = flattened.concat(children.length ? getAllContributors(children) : children)
+  return flattened?.map((f) => {
+    const { contributors, ...item } = f
+    return (item?.parentId === undefined) ? ({ ...item, parentId: null }) : item
+  })
+}
+
+export const getShrinkContributors = items => {
+  const nodes = {}
+  return items.filter((obj) => {
+    const id = obj.projectId
+    const parentId = obj.parentId
+    nodes[id] = defaults(obj, nodes[id], { contributors: [] })
+    parentId && (nodes[parentId] = (nodes[parentId] || { contributors: [] })).contributors.push(obj)
+    return !parentId
+  })
+}
+
+export const setValueAsFloat = (value) => isEmpty(value) ? 0 : parseFloat(value)
