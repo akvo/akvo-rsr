@@ -22,7 +22,7 @@ import { connect } from 'react-redux'
 import Filter from '../../components/filter'
 import countriesDict from '../../utils/countries-dict'
 import { setNumberFormat } from '../../utils/misc'
-import { getStatusFiltering } from '../program/utils/filters'
+import { getStatusFiltering } from './utils/filters'
 import * as actions from '../../store/filter/actions'
 
 const { Panel } = Collapse

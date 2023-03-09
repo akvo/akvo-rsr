@@ -1,5 +1,5 @@
 /* eslint-disable no-restricted-globals */
-/* global window, document */
+/* global document */
 import React, { useEffect, useState, useRef } from 'react'
 import {
   Collapse,
@@ -14,15 +14,13 @@ import { connect } from 'react-redux'
 import moment from 'moment'
 import isNaN from 'lodash/isNaN'
 
-import StickyClass from '../program/sticky-class'
 import ExpandIcon from '../../components/ExpandIcon'
 import Highlighted from '../../components/Highlighted'
 import PeriodHeader from './PeriodHeader'
-import { sizes } from '../program/config'
 import { setNumberFormat } from '../../utils/misc'
 import TargetCharts from '../../utils/target-charts'
 import ProgramContributor from './ProgramContributor'
-import { getStatusFiltering } from '../program/utils/filters'
+import { getStatusFiltering } from './utils/filters'
 import ActualValueApi from './ActualValueApi'
 import AggregationModal from '../program/AggregationModal'
 
@@ -46,7 +44,6 @@ const ProgramView = ({
   const pinnedRef = useRef(-1)
   const tooltipRef = useRef(null)
   const disaggTooltipRef = useRef(null)
-  let scrollingTransition
   let tmid
   const { hasPeriod, hasAnyFilters: hasAnyCriteria } = getStatusFiltering(filtering)
   const hasAnyFilters = (hasAnyCriteria || search)
@@ -62,20 +59,9 @@ const ProgramView = ({
     if (index != null) {
       // const offset = 63 + (index * 75) + listRef.current.children[0].children[index].offsetParent.offsetTop
       clearTimeout(tmid)
-      scrollingTransition = true
       // window.scroll({ top: offset - sizes.stickyHeader.height, behavior: 'smooth' })
       tmid = setTimeout(() => {
-        scrollingTransition = false
       }, 1000)
-    }
-  }
-
-  const handleScroll = () => {
-    if (pinnedRef.current !== -1 && !scrollingTransition && listRef.current.children[0].children[pinnedRef.current]) {
-      const diff = (window.scrollY + sizes.stickyHeader.height) - (listRef.current.children[0].children[pinnedRef.current].offsetParent.offsetTop + 63 + (pinnedRef.current * 75))
-      if (diff < -20 || diff > listRef.current.children[0].children[pinnedRef.current].clientHeight) {
-        _setPinned(-1)
-      }
     }
   }
 
@@ -89,8 +75,6 @@ const ProgramView = ({
   useEffect(() => {
     tooltipRef.current = document.getElementById('bar-tooltip')
     disaggTooltipRef.current = document.getElementById('disagg-bar-tooltip')
-    // document.addEventListener('scroll', handleScroll)
-    // return () => document.removeEventListener('scroll', handleScroll)
   }, [])
 
   return (
@@ -134,6 +118,7 @@ const ProgramView = ({
                       ? (moment().isBetween(moment(p?.periodStart, 'DD/MM/YYYY'), moment(p?.periodEnd, 'DD/MM/YYYY')))
                       : p
                     )
+                    ?.filter((p) => (p?.actualValue))
                     ?.reduce((total, currentValue) => parseFloat(total) + parseFloat(currentValue.actualValue), 0)
                     return (
                       <Panel
@@ -217,7 +202,7 @@ const ProgramView = ({
                               >
                                 <Spin spinning={false} indicator={<Icon type="loading" style={{ fontSize: 36 }} />}>
                                   <div ref={ref => { listRef.current = ref }}>
-                                    <ActualValueApi {...p} />
+                                    <ActualValueApi {...p} periodID={p?.id} />
                                     <ProgramContributor
                                       type={i.type}
                                       scoreOptions={i.scoreOptions}

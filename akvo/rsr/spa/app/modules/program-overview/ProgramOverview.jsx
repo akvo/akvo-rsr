@@ -20,17 +20,36 @@ const { TabPane } = Tabs
 const ProgramOverview = ({ userRdr, setDataFilter }) => {
   const { t } = useTranslation()
   const [loading, setLoading] = useState(true)
-  const { path, url, params: rootParams } = useRouteMatch()
+  const { path, url: rootUrl, params: rootParams } = useRouteMatch()
   const location = useLocation()
   const currentView = location?.pathname?.split('/')
-
-  const { data: apiData, error: apiError } = useSWR(`/project/${rootParams.projectId}/results`, url => api.get(url).then(res => res.data))
+  /**
+   * Get initial results to get entire:
+   * - countries,
+   * - contributors,
+   * - partners and
+   * - periods
+   */
+  const { data: apiData, error: apiError } = useSWR(
+    `/project/${rootParams.projectId}/results`,
+    url => api.get(url).then(res => res.data)
+  )
   const { results, title } = apiData || {}
-  const canEdit = userRdr.programs && userRdr.programs.find(program => program.id === parseInt(rootParams.projectId, 10))?.canEditProgram
+  /**
+   * Get canEdit status by passing parameter projectID
+   */
+  const canEdit = (
+    userRdr.programs &&
+    userRdr.programs.find(program => program.id === parseInt(rootParams.projectId, 10))
+      ?.canEditProgram
+  )
 
   useEffect(() => {
     if (loading && (title || apiError)) {
       document.title = `${title} | Akvo RSR`
+      /**
+       * Dispatch initial results as filter options
+       */
       setDataFilter(results)
       setLoading(false)
     }
@@ -45,8 +64,8 @@ const ProgramOverview = ({ userRdr, setDataFilter }) => {
         <Tabs size="large" activeKey={currentView[3] || 'overview'}>
           {(results && results.length > 0) && <TabPane tab={<Link to={`/programs/${rootParams.projectId}`}>Overview</Link>} key="overview" />}
           {canEdit && <TabPane tab={<Link to={`/programs/${rootParams.projectId}/editor`}>Editor</Link>} key="editor" />}
-          <TabPane tab={<Link to={`${url}/hierarchy`}>Hierarchy</Link>} key="hierarchy" />
-          <TabPane tab={<Link to={`${url}/reports`}>Reports</Link>} key="reports" />
+          <TabPane tab={<Link to={`${rootUrl}/hierarchy`}>Hierarchy</Link>} key="hierarchy" />
+          <TabPane tab={<Link to={`${rootUrl}/reports`}>Reports</Link>} key="reports" />
         </Tabs>
       </div>
       <Route

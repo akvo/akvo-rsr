@@ -15,7 +15,13 @@ import {
   onlyHasCountries,
   onlyHasPartners,
 } from './filters'
-
+/**
+ * Get all countries based on selected countries
+ *
+ * @param {Array.<object>} contributors - Contributors of reporting period
+ * @param {Object} filtering - Filter criteria - Filter types
+ * @returns {Array}
+ */
 export const getAllCountries = (contributors, filtering) => {
   const { hasCountry } = getStatusFiltering(filtering)
   const countries = contributors
@@ -25,7 +31,12 @@ export const getAllCountries = (contributors, filtering) => {
         ?.filter((c) => c)
   return uniq(countries)
 }
-
+/**
+ * Get disaggregations on each contributor and order by value asc
+ *
+ * @param {Array.<object>} contributors
+ * @returns {Array}
+ */
 const getDisaggregations = (contributors) =>
     contributors
         ?.map((c) => ({ ...c, updates: c?.updates || [] }))
@@ -33,10 +44,24 @@ const getDisaggregations = (contributors) =>
         ?.filter((u) => u?.disaggregations)
         ?.flatMap((u) => u?.disaggregations)
         ?.sort((a, b) => a.value - b.value)
-
+/**
+ * Get sum from data source based on field name
+ *
+ * @param {Array.<object>} data - Data source
+ * @param {string} field - Key or field name
+ * @param {number} decimalPlaces - Length of decimal places
+ * @returns {number} - Sum result
+ */
 const getTheSumResult = (data, field, decimalPlaces = 3) =>
   Number(parseFloat(sumBy(data, field), 10).toFixed(decimalPlaces))
 
+/**
+ * Get ancestor of reporting periods contributors
+ *
+ * @param {Array.<object>} contributors
+ * @param {number} id
+ * @returns
+ */
 const getTopParent = (contributors, id) => {
   const obj = contributors?.find((c) => c.projectId === id)
   if (obj) {
@@ -44,7 +69,12 @@ const getTopParent = (contributors, id) => {
   }
   return obj
 }
-
+/**
+ *
+ * @param {Array.<object>} contributors
+ * @param {Array.<object>} allItems
+ * @returns
+ */
 const handleOnParentConcat = (contributors, allItems) => {
   const items = contributors?.flatMap((a) => {
     const parent = getTopParent(allItems, a.parentId)
@@ -58,7 +88,13 @@ const handleOnParentConcat = (contributors, allItems) => {
   })
   return uniqBy(items, 'projectId')?.filter((item) => item)
 }
-
+/**
+ * Filter specific contributors based on active/selected criteria
+ *
+ * @param {Object} filtering - Filter criteria
+ * @param {Array.<object>} contributors
+ * @returns
+ */
 const handleOnFilteringContributors = (filtering, contributors) => {
   let allContributors = contributors?.sort((a, b) =>
         a?.projectTitle?.localeCompare(b?.projectTitle)
@@ -113,6 +149,13 @@ const handleOnFilteringContributors = (filtering, contributors) => {
   return allContributors
 }
 
+/**
+ * Filter specific disaggregations based on active/selected criteria
+ *
+ * @param {Object} filtering - Filter criteria
+ * @param {Array.<object>} disaggregations
+ * @returns
+ */
 const handleOnFilteringDisaggregations = (filtering, disaggregations) => {
   const dsg = disaggregations?.filter((dg) => {
     if (
@@ -147,6 +190,13 @@ const handleOnFilteringDisaggregations = (filtering, disaggregations) => {
         ?.flatMap((dg) => dg)
 }
 
+/**
+ * Set selected Partner from filter criteria as the project's subtitle
+ *
+ * @param {Object} filtering - Filter criteria
+ * @param {Object} cb - Selected contributor
+ * @returns
+ */
 export const setProjectSubtitle = (filtering, cb) => {
   const { hasPartner } = getStatusFiltering(filtering)
 
@@ -161,6 +211,14 @@ export const setProjectSubtitle = (filtering, cb) => {
   return cb
 }
 
+
+/**
+ * Map each result based on search keywords
+ *
+ * @param {Object} r - Result
+ * @param {string} search - Keyword
+ * @returns
+ */
 export const handleOnMapSearching = (r, search) => {
   if (search) {
     const keyword = search?.toLowerCase()
@@ -180,6 +238,14 @@ export const handleOnMapSearching = (r, search) => {
   return r
 }
 
+/**
+ * Map each result to apply active filter criteria and search keywords
+ *
+ * @param {Object} r - Result
+ * @param {Object} filtering - Filter criteria
+ * @param {string} search
+ * @returns
+ */
 export const handleOnMapFiltering = (r, filtering, search) => {
   const { hasAnyFilters } = getStatusFiltering(filtering)
   if (hasAnyFilters || search) {
@@ -208,14 +274,14 @@ export const handleOnMapFiltering = (r, filtering, search) => {
                           fcb = handleOnParentConcat(fcb, allContributors)
                           fcb = fcb?.map((cb) => setProjectSubtitle(filtering, cb))
                           const cs = getShrinkContributors(fcb)
-                          const cb = cs?.length ? cs : fcb
-                          const disaggregations = r?.fetched ? getDisaggregations(cb) : []
+                          const _contributors = cs?.length ? cs : fcb
+                          const disaggregations = r?.fetched ? getDisaggregations(_contributors) : []
                           const disaggregationContributions = r?.fetched
                             ? handleOnFilteringDisaggregations(filtering, disaggregations)
                             : []
                           return {
                             ...p,
-                            contributors: cb,
+                            contributors: _contributors,
                             disaggregations,
                             disaggregationContributions,
                           }
@@ -237,6 +303,14 @@ export const handleOnMapFiltering = (r, filtering, search) => {
   return r
 }
 
+/**
+ * Filter based on the filter criteria that have been applied to each result along with the indicators and reporting period.
+ *
+ * @param {Object} r - Result
+ * @param {Object} filtering - Filter criteria
+ * @param {string} search
+ * @returns
+ */
 export const handleOnFilterResult = (r, filtering, search) => {
   const { hasAnyFilters } = getStatusFiltering(filtering)
   if (hasAnyFilters || search) {
@@ -244,7 +318,14 @@ export const handleOnFilterResult = (r, filtering, search) => {
   }
   return r
 }
-
+/**
+ * Count thoroughly the filters that have been applied
+ *
+ * @param {Array.<object>} results - Filtered data results
+ * @param {Object} filtering - Filter criteria
+ * @param {string} search - Keyword
+ * @returns
+ */
 export const handleOnCountFiltering = (results, filtering, search) => {
   const { hasAnyFilters, hasPeriod, hasCountry, hasContrib, hasPartner } = getStatusFiltering(filtering)
   if (search && !hasAnyFilters) {
@@ -266,37 +347,3 @@ export const handleOnCountFiltering = (results, filtering, search) => {
   }
   return results?.length
 }
-
-export const handleOnSetPartners = (fs, i) => {
-  const fi = fs?.indicators?.find((it) => it?.id === i.id)
-  return {
-    ...i,
-    periods: i?.periods?.map((p) => {
-      const fp = fi?.periods?.find((it) => it?.id === p?.periodId)
-      if (fp) {
-        const contribA = getAllContributors(fp?.contributors)
-        const contribB = getAllContributors(p?.contributors)?.map((cb) => {
-          if (cb?.partners === undefined) {
-            const fca = contribA?.find((it) => it?.projectId === cb?.projectId)
-            return {
-              ...cb,
-              partners: fca?.partners,
-            }
-          }
-          return cb
-        })
-        const _contributors = getShrinkContributors(contribB)
-        return {
-          ...p,
-          contributors: _contributors,
-        }
-      }
-      return p
-    }),
-  }
-}
-
-export const setActualContributor = (item) => ({
-  ...item,
-  actualValue: item?.actualValue ? parseFloat(item.actualValue, 10) : null,
-})

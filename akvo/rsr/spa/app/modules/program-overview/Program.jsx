@@ -12,10 +12,10 @@ import {
   handleOnFilterResult,
   handleOnMapFiltering,
   handleOnMapSearching,
-} from '../program/utils/query'
+} from './utils/query'
 import * as actions from '../program/store/actions'
 import FilterBar from './FilterBar'
-import { getStatusFiltering } from '../program/utils/filters'
+import { getStatusFiltering } from './utils/filters'
 
 const Program = ({
   params,
@@ -28,7 +28,15 @@ const Program = ({
   const [timer, setTimer] = useState(null)
   const [loader, setLoader] = useState(false)
   const [programID, setProgramID] = useState(null)
-  const { data: apiData, error: apiError } = useSWR(`/program/${params.projectId}/results/?format=json`, url => api.get(url).then(res => res.data))
+  /**
+   * Get results without actual value in each periods and contributors
+   * to show all basic information before user expand the collapsible component.
+   */
+  const { data: apiData, error: apiError } = useSWR(
+    `/program/${params.projectId}/results/?format=json`,
+    url => api.get(url).then(res => res.data)
+  )
+
   const { results: apiResults, targetsAt } = apiData || {}
 
   const handleOnSearch = (keyword) => {
@@ -46,19 +54,25 @@ const Program = ({
   }
 
   useEffect(() => {
-    if (preload && (!results?.length && apiResults) && !programID) {
+    if (preload && (apiResults !== undefined) && !programID) {
+      /**
+       * Set programmeResults state and programID to store current program overview
+       */
       setProgramID(params.projectId)
       setProgrammeResults(apiResults)
       setPreload(false)
     }
-    if (preload && results?.length) {
+    if (preload && apiError) {
       setPreload(false)
     }
+    /**
+     * Set empty results when switching / move to another program.
+     */
     if ((programID !== params.projectId) && !preload) {
       setProgrammeResults([])
       setPreload(true)
     }
-  }, [programID, preload, results, apiResults, params])
+  }, [programID, preload, results, apiResults, apiError, params])
 
 
   const _results = results
@@ -81,9 +95,19 @@ const Program = ({
         <div className="ui container">
           <div className="program-view">
             {((apiResults && apiResults.length === 0) || apiError) && <Redirect to={`/programs/${params.projectId}/editor`} />}
-            {(!apiData) && <InitialView {...{ search, targetsAt }} loading={!(apiResults)} />}
+            {
+              /**
+               * Render initial results instead of loading indicator in entire page
+               */
+              (!apiData) && <InitialView {...{ search, targetsAt }} loading={!(apiResults)} />
+            }
             {(apiData) && <ProgramView results={_results} {...{ search, targetsAt }} />}
-            {((hasAnyFilters || search) && !_results?.length) && <Empty />}
+            {
+              /**
+               * Show empty indicator / no data when search or filter results return no results
+               */
+              ((hasAnyFilters || search) && !_results?.length) && <Empty />
+            }
           </div>
         </div>
       </Spin>

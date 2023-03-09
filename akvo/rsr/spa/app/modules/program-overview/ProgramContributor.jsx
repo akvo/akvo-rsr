@@ -11,8 +11,8 @@ import ExpandIcon from '../../components/ExpandIcon'
 import ApprovedUpdates from '../program/ApprovedUpdates'
 import ValueComments from './ValueComments'
 import ProjectSummary from '../program/ProjectSummary'
-import { findCountries, findPartners, findProjects, getStatusFiltering } from '../program/utils/filters'
-import { getAllCountries } from '../program/utils/query'
+import { findCountries, findPartners, findProjects, getStatusFiltering } from './utils/filters'
+import { getAllCountries } from './utils/query'
 import ActualValueApi from './ActualValueApi'
 import ActualValue from '../program/ActualValue'
 import ContribUpdatesApi from './ContribUpdatesApi'
@@ -91,8 +91,19 @@ const ProgramContributor = ({
               </>
             )}
           >
-            {(cb?.contributors?.length > 0) && <ActualValueApi {...{...cb, id: periodID }} />}
-            {(cb?.updates === undefined) && <ContribUpdatesApi {...cb} />}
+            {
+              /**
+               * Call indicator_period_by_ids endpoint when contributor has sub-contributors
+               * to get actual value on each sub-contributors
+               */
+              (cb?.contributors?.length > 0) && <ActualValueApi {...cb} periodID={periodID} />
+            }
+            {
+              /**
+               * Call indicator_updates_by_period_id endpoint to get contributor updates.
+               */
+              (cb?.updates === undefined) && <ContribUpdatesApi {...cb} />
+            }
             {(type === 'qualitative' && scoreOptions == null) && <ApprovedUpdates items={cb.updates} />}
             <ul className="sub-contributors">
               {cb?.contributors?.map(subproject => (

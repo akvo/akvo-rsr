@@ -9,11 +9,17 @@ const DisaggregationsBar = ({ disaggregations, disaggregationTargets, tooltipRef
   const barRef = useRef(null)
   const mouseEnterBar = (disagg, ev) => {
     if (tooltipRef.current) {
-      tooltipRef.current.innerHTML = `<div><b>${disagg.type}</b><br />${setNumberFormat(disagg.value)}${(disagg.target > 0) ? t(' of {{target}}', { target: setNumberFormat(disagg.target) }) : ''}</div>`
+      let txtHtml = `<div><b>${disagg.type}</b><br />${setNumberFormat(disagg.value)}`
+      if (disagg.target > 0) txtHtml += t(' of {{target}}', { target: setNumberFormat(disagg.target) })
+      txtHtml += '</div>'
+
+      tooltipRef.current.innerHTML = txtHtml
       tooltipRef.current.style.opacity = 1
+
       const rect = ev.target.getBoundingClientRect()
       const barRect = barRef.current.getBoundingClientRect()
       const bodyRect = document.body.getBoundingClientRect()
+
       tooltipRef.current.style.top = `${(barRect.top - bodyRect.top) + 50}px`
       tooltipRef.current.style.left = `${rect.left + (rect.right - rect.left) / 2 - 2}px`
     }

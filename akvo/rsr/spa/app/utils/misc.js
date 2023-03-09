@@ -208,7 +208,7 @@ export const getProjectUuids = (path) => path?.split('.')?.map((value) => value?
 /**
  * Attempts to get the parent UUID from a project's path.
  *
- * @param path {String} A dot separated list of UUIDs representing the path in a tree to a project.
+ * @param path {string} A dot separated list of UUIDs representing the path in a tree to a project.
  *                      The last element is the project preceded by its ancestors.
  * @returns {null|String} A parent UUID if there is one
  */

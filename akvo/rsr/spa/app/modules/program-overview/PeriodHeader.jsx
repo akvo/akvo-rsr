@@ -5,7 +5,7 @@ import moment from 'moment'
 import uniq from 'lodash/uniq'
 import { useTranslation } from 'react-i18next'
 
-import { getStatusFiltering } from '../program/utils/filters'
+import { getStatusFiltering } from './utils/filters'
 import { getAllContributors, setNumberFormat } from '../../utils/misc'
 import DisaggregationsBar from './DisaggregationsBar'
 import TargetCharts from '../../utils/target-charts'
