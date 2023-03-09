@@ -8,10 +8,16 @@ import statusPending from '../images/status-pending.svg'
 import statusApproved from '../images/status-approved.svg'
 import statusRevision from '../images/status-revision.svg'
 
-export const AllSubmissionsModal = ({ visible, onCancel, period }) => {
-  let width = 460
-  if (period.disaggregations) {
-    width += period.disaggregations.length * 100
+export const AllSubmissionsModal = ({
+  visible,
+  onCancel,
+  updates,
+  disaggregations,
+  disaggregationTargets,
+  width = 460,
+}) => {
+  if (disaggregations) {
+    width += disaggregations.length * 100
   }
   if (width > document.body.clientWidth - 100) {
     width = document.body.clientWidth - 100
@@ -19,20 +25,21 @@ export const AllSubmissionsModal = ({ visible, onCancel, period }) => {
   return (
     <Modal {...{ visible, onCancel, width }} title="Period latest submissions" footer={null} className="all-submissions-modal">
       <div>
-        {period.updates.map(update => {
+        {updates.map(update => {
           const dsgGroups = {}
           update.disaggregations.forEach(item => {
             if (!dsgGroups[item.category]) dsgGroups[item.category] = []
             dsgGroups[item.category].push(item)
-            if (period.disaggregationTargets.length > 0) {
-              const target = period.disaggregationTargets.find(it => it.typeId === item.typeId)
+            if (disaggregationTargets.length > 0) {
+              const target = disaggregationTargets.find(it => it.typeId === item.typeId)
               if (target != null) dsgGroups[item.category][dsgGroups[item.category].length - 1].targetValue = target.value
             }
           })
           const dsgKeys = Object.keys(dsgGroups)
+          const colSize = dsgKeys?.length ? 5 : 8
           return (
             <Row type="flex" justify="space-between" align="middle" key={update.id}>
-              <Col lg={8} md={8} sm={24} xs={24}>
+              <Col lg={7} md={12} sm={24} xs={24}>
                 <div className="svg-text">
                   <SVGInline svg={update.status === 'A' ? statusApproved : update.status === 'P' ? statusPending : statusRevision} />
                   <div className="text">
@@ -61,7 +68,7 @@ export const AllSubmissionsModal = ({ visible, onCancel, period }) => {
                   </div>
                 </Col>
               ])}
-              <Col lg={4} md={4} sm={24} xs={24}>
+              <Col lg={colSize} md={24} sm={24} xs={24}>
                 <div className="value">{nicenum(update.value)}</div>
               </Col>
             </Row>
