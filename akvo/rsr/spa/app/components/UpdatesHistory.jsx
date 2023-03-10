@@ -9,6 +9,7 @@ import {
   Icon,
 } from 'antd'
 import classNames from 'classnames'
+import isEqual from 'lodash/isEqual'
 
 import ExpandIcon from './ExpandIcon'
 import { toCapitalize } from '../utils/string'
@@ -86,10 +87,12 @@ const UpdatesHistory = ({
           {...{
             visible,
             updates,
+            activeKeys,
             disaggregations,
             disaggregationTargets,
           }}
           onCancel={() => setVisible(false)}
+          dsgOnly={!(isEqual(activeKeys, DEFAULT_ACTIVE_KEYS))}
         />
       </Col>
       <Col className="table-history-md">
