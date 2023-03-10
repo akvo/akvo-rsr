@@ -382,7 +382,7 @@
             color: #009B8F;
           }
           &.pending{
-            color: #e36f3c;
+            color: #F79009;
           }
           &.returned{
             color: #961417;
@@ -537,12 +537,36 @@
 .all-submissions-modal{
   .ant-modal-body {
     overflow-x: auto;
+    padding: 1rem;
   }
-  .ant-modal-body>table{
+  .ant-modal-body>div{
     width: 100%;
-    &>tr{
+    &>.ant-row-flex{
+      .ant-col {
+        line-height: 1.5rem;
+        &.dsg-tags .ant-tag {
+          width: 100%;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 8px;
+          margin: 8px 0;
+        }
+        &.dsg-tags .ant-tag .badge.D .ant-badge-count,
+        &.dsg-tags .ant-tag .badge.P .ant-badge-count {
+          background-color: #F79009;
+        }
+        &.dsg-tags .ant-tag .badge.R .ant-badge-count {
+          background-color: #D92D20;
+
+        }
+        &.dsg-tags .ant-tag .badge.A .ant-badge-count {
+          background-color: #42998e;
+        }
+      }
       &:not(:last-child){
         border-bottom: 1px solid #d8d8d8;
+        padding: .5rem 0 2.5rem;
       }
       svg{
         width: 24px;
@@ -561,9 +585,6 @@
         margin-left: 10px;
         font-size: 13px;
         white-space: nowrap;
-      }
-      td{
-
       }
       td.spacer{
         width: 100%;
@@ -588,13 +609,15 @@
           margin-left: 10px;
           color: rgb(49, 49, 49);
         }
-        .h-holder{
-          position: absolute;
-          top: -10px;
-          display: flex;
+        .h-holder {
+          margin: 8px 0;
         }
         ul{
+          border: 1px solid #b6b6b6;
+          padding: 8px;
+          border-radius: 4px;
           display: flex;
+          overflow-x: scroll;
           li{
             margin-left: 15px;
             white-space: nowrap;
@@ -615,8 +638,13 @@
         color: #42998e;
         font-weight: 600;
         font-size: 30px;
-        text-align: right;
         margin-right: 24px;
+        &.D, &.P {
+          color: #F79009;
+        }
+        &.R {
+          color: #D92D20;
+        }
       }
     }
   }
