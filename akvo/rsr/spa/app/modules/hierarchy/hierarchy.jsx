@@ -165,6 +165,10 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
       ])
       setLoading(false)
     }
+    if (loading && projects && programs?.length === 0 && children?.length === 0) {
+      setPrograms(projects)
+      setLoading(false)
+    }
   }, [preload, programs, children, projects, selected])
 
   const filterCountry = (item) => countryFilter
