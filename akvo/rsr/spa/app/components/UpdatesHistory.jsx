@@ -1,15 +1,19 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   Row,
   Col,
   Collapse,
   Table,
   Tooltip,
+  Button,
+  Icon,
 } from 'antd'
 import classNames from 'classnames'
+import isEqual from 'lodash/isEqual'
 
 import ExpandIcon from './ExpandIcon'
 import { toCapitalize } from '../utils/string'
+import { AllSubmissionsModal } from './AllSubmissionsModal'
 
 const { Panel } = Collapse
 const { Column } = Table
@@ -30,9 +34,14 @@ const setColumns = (value, key) => ({
 const UpdatesHistory = ({
   columns,
   tables,
+  updates,
+  disaggregations,
+  disaggregationTargets,
   activeKeys = DEFAULT_ACTIVE_KEYS,
   mneView = false,
 }) => {
+  const [visible, setVisible] = useState(false)
+
   const getActiveKeys = (value) => activeKeys?.length
     ? [...activeKeys, ...DEFAULT_ACTIVE_KEYS]?.includes(value)
     : value
@@ -68,11 +77,33 @@ const UpdatesHistory = ({
   const tableProps = mneView ? { pagination: false, scroll: { x: 500 } } : { pagination: false }
   return (
     <Row>
-      <Col>
+      <Col className="table-history-sm">
+        <Tooltip title="Updates history">
+          <Button type="link" onClick={() => setVisible(true)}>
+            <Icon type="unordered-list" />
+          </Button>
+        </Tooltip>
+        <AllSubmissionsModal
+          {...{
+            visible,
+            updates,
+            activeKeys,
+            disaggregations,
+            disaggregationTargets,
+          }}
+          onCancel={() => setVisible(false)}
+          dsgOnly={!(isEqual(activeKeys, DEFAULT_ACTIVE_KEYS))}
+        />
+      </Col>
+      <Col className="table-history-md">
         <Collapse
           bordered={false}
           expandIconPosition="right"
-          expandIcon={({ isActive }) => <ExpandIcon isActive={isActive} open="close" close="unordered-list" />}
+          expandIcon={({ isActive }) => (
+            <Tooltip title="Updates history">
+              <ExpandIcon isActive={isActive} open="close" close="unordered-list" />
+            </Tooltip>
+          )}
           className="collapse-history"
         >
           <Panel>

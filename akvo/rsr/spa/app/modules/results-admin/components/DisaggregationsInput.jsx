@@ -32,7 +32,7 @@ const DisaggregationsInput = ({
             />
           ) : (
             <div>
-              <div style={{ paddingLeft: '1em' }}>{dsg.value}</div>
+              <h6>{dsg.value}</h6>
               <FinalField
                 name={`disaggregations[${disaggregations.findIndex(it => it.typeId === dsg.id && group.id === it.groupId)}].numerator`}
                 control="input-number"

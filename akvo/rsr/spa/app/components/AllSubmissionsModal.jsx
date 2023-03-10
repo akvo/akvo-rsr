@@ -1,75 +1,90 @@
-/* global document */
 import React from 'react'
-import { Modal } from 'antd'
+import { Modal, Row, Col, Tag, Badge } from 'antd'
 import moment from 'moment'
 import SVGInline from 'react-svg-inline'
+import { groupBy, isEmpty } from 'lodash'
+import classNames from 'classnames'
 import { nicenum } from '../utils/misc'
 import statusPending from '../images/status-pending.svg'
 import statusApproved from '../images/status-approved.svg'
 import statusRevision from '../images/status-revision.svg'
 
-export const AllSubmissionsModal = ({ visible, onCancel, period }) => {
-  let width = 460
-  if (period.disaggregations) {
-    width += period.disaggregations.length * 100
+const StatusIcon = ({ status }) => {
+  if (status === 'A') {
+    return <SVGInline svg={statusApproved} />
   }
-  if (width > document.body.clientWidth - 100) {
-    width = document.body.clientWidth - 100
+  if (['D', 'P'].includes(status)) {
+    return <SVGInline svg={statusPending} />
   }
+  if (status === 'R') {
+    return <SVGInline svg={statusRevision} />
+  }
+  return null
+}
+
+export const AllSubmissionsModal = ({
+  visible,
+  onCancel,
+  updates,
+  width = 520,
+  activeKeys = [],
+  dsgOnly = false,
+}) => {
+  const _updates = updates?.filter((u) => (
+    (dsgOnly && u?.disaggregations?.length) ||
+    (!dsgOnly)
+  ))
   return (
     <Modal {...{ visible, onCancel, width }} title="Period latest submissions" footer={null} className="all-submissions-modal">
-      <table>
-        {period.updates.map(update => {
-          const dsgGroups = {}
-          update.disaggregations.forEach(item => {
-            if (!dsgGroups[item.category]) dsgGroups[item.category] = []
-            dsgGroups[item.category].push(item)
-            if (period.disaggregationTargets.length > 0) {
-              const target = period.disaggregationTargets.find(it => it.typeId === item.typeId)
-              if (target != null) dsgGroups[item.category][dsgGroups[item.category].length - 1].targetValue = target.value
-            }
-          })
-          const dsgKeys = Object.keys(dsgGroups)
+      <div>
+        {_updates?.map(update => {
+          const _disaggregations = update?.disaggregations?.filter((dg) => activeKeys?.includes(dg?.type))
+          const dsgGroups = groupBy(_disaggregations, 'category')
+          const userName = (
+            isEmpty(update?.userDetails?.firstName) &&
+            isEmpty(update?.userDetails?.lastName)
+          )
+            ? update?.userDetails?.email
+            : `${update.userDetails.firstName} ${update.userDetails.lastName}`
           return (
-            <tr>
-              <td>
+            <Row type="flex" justify="space-between" align="middle" key={update.id}>
+              <Col xs={24}>
                 <div className="svg-text">
-                  <SVGInline svg={update.status === 'A' ? statusApproved : update.status === 'P' ? statusPending : statusRevision} />
+                  <StatusIcon status={update?.status} />
                   <div className="text">
-                    {update.userDetails.firstName} {update.userDetails.lastName}
+                    {userName}
                     <span className="date">{moment(update.createdAt).format('DD MMM YYYY')}</span>
                   </div>
                 </div>
-              </td>
-              <td className="spacer">&nbsp;</td>
-              {dsgKeys.map(dsgKey => [
-                <td>
-                  <div className="dsg-group">
-                    <div className="h-holder">
-                      <h5>{dsgKey}</h5>
-                    </div>
-                    <ul>
-                      {dsgGroups[dsgKey].map((dsg) => [
-                        <li>
-                          <div className="label">{dsg.type}</div>
+              </Col>
+              <Col xs={24} className="dsg-tags">
+                {
+                  Object.keys(dsgGroups).map((dsgKey, dx) => (
+                    <div key={dx}>
+                      <h6>{dsgKey}</h6>
+                      {dsgGroups[dsgKey]?.map((dsg, ix) => (
+                        <Tag key={ix}>
                           <div>
-                            <b>{nicenum(dsg.value)}</b>
-                            {dsg.targetValue && <b> ({Math.round(((dsg.value / dsg.targetValue) * 100 * 10) / 10)}%)</b>}
+                            {dsg?.type}
                           </div>
-                        </li>
-                      ])}
-                    </ul>
-                  </div>
-                </td>
-              ])}
-              <td>
-                <div className="value">{nicenum(update.value)}</div>
-              </td>
-            </tr>
+                          <div>
+                            <Badge count={dsg?.value} className={classNames('badge', { [update?.status]: true })} showZero />
+                          </div>
+                        </Tag>
+                      ))}
+                    </div>
+                  ))
+                }
+              </Col>
+              <Col xs={24}>
+                <h6>Value</h6>
+                <div className={classNames('value', { [update?.status]: true })}>{nicenum(update.value)}</div>
+              </Col>
+            </Row>
           )
         }
         )}
-      </table>
+      </div>
     </Modal>
   )
 }
