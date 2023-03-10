@@ -1,13 +1,9 @@
 import api from '../../utils/api'
 import { getProjectUuids } from '../../utils/misc'
 
-export const getChildrenApi = async (id, page = 1) => {
-  const response = await api.get(`/project/${id}/children/?format=json&page=${page}`)
-  const { results, next } = response.data
-  if (next) {
-    return results?.concat(await getChildrenApi(id, page + 1))
-  }
-  return results
+export const getChildrenApi = async (id) => {
+  const response = await api.get(`/project/${id}/children/?format=json`)
+  return response.data
 }
 
 export const getProgramApi = (id, successCallback, errorCallback) => {

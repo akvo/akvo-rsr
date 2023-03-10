@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-
+import functools
 # Akvo RSR is covered by the GNU Affero General Public License.
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from datetime import timedelta
 import logging
-from typing import List
+from typing import List, Optional
 
 from django.conf import settings
 from django.utils.timezone import now
@@ -358,26 +358,44 @@ class ProjectMetadataSerializer(BaseRSRSerializer):
     children_count = serializers.SerializerMethodField()
 
     def get_children_count(self, obj):
-        return obj.children().count()
+        if parents_to_children := self.context.get("parents_to_children"):
+            return len(parents_to_children.get(obj.uuid, []))
+        else:
+            return obj.children().count()
 
     def get_locations(self, obj):
-        countries = {location.country for location in obj.locations.all() if location.country}
-        return [
-            {'country': c.name, 'iso_code': c.iso_code}
-            for c
-            in countries
-        ]
+        countries = set()
+        results = []
+        for location in obj.locations.all():
+            country = location.country
+            if not country or country in countries:
+                continue
+            countries.add(country)
+            results.append({
+                "country": country.name,
+                "iso_code": country.iso_code,
+            })
+        return results
 
     def get_parent(self, obj):
-        p = obj.parent()
-        user = self.context['request'].user
-        if not user.can_view_project(p):
-            return None
-        return (
-            {'id': p.id, 'title': p.title, 'is_lead': p.is_hierarchy_root()}
-            if p is not None
-            else None
-        )
+        if "parent" in self.context:
+            p = self.context.get("parent")
+        else:
+            p = obj.parent()
+            user = self.context['request'].user
+            if not user.can_view_project(p):
+                return None
+        return self._parent_to_dict(p)
+
+    @staticmethod
+    @functools.lru_cache
+    def _parent_to_dict(parent: Project) -> Optional[dict]:
+        if parent is not None:
+            return {
+                'id': parent.id,
+                'title': parent.title,
+                'is_lead': parent.is_hierarchy_root()
+            }
 
     def get_editable(self, obj):
         """Method used by the editable SerializerMethodField"""
