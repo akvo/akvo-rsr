@@ -238,7 +238,18 @@ const ReportedForm = ({
                       disaggregations = dgs.map((dg, dgx) => ({ ...dg, typeId: disaggregations[dgx]?.typeId }))
                     }
                     const valueUpdates = periodUpdates.map(it => ({ value: it.value, status: it.status }))
-                    return <DsgOverview {...{ disaggregations, targets: period.disaggregationTargets, period, editPeriod: (props) => { editPeriod(props, indicator) }, values: valueUpdates }} />
+                    return (
+                      <DsgOverview
+                        {...{
+                          disaggregations,
+                          period,
+                          cumulative: indicator?.isCumulative,
+                          targets: period.disaggregationTargets,
+                          editPeriod: (props) => { editPeriod(props, indicator) },
+                          values: valueUpdates,
+                        }}
+                      />
+                    )
                   }}
                 </FormSpy>
               ) :

@@ -34,7 +34,15 @@ const TargetValue = ({ targetValue, size = 'default', onUpdate }) => {
   ]
 }
 
-const DsgOverview = ({ disaggregations, targets, period, values = [], updatesListRef, editPeriod}) => {
+const DsgOverview = ({
+  disaggregations,
+  targets,
+  period,
+  updatesListRef,
+  editPeriod,
+  cumulative = false,
+  values = [],
+}) => {
   const { t } = useTranslation()
   const dsgGroups = {}
   disaggregations.filter(it => it.value > 0).forEach(item => {
@@ -63,7 +71,12 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
   return (
     <div className="dsg-overview">
       <header>
-        <ProgressBar period={period} values={values} valueRef={updatesListRef} />
+        <ProgressBar
+          cumulative={cumulative}
+          period={period}
+          values={values}
+          valueRef={updatesListRef}
+        />
       </header>
       <div className="groups">
       {Object.keys(dsgGroups).map(dsgKey => {
@@ -93,7 +106,7 @@ const DsgOverview = ({ disaggregations, targets, period, values = [], updatesLis
                           )}
                       </div>
                       <div className="bar">
-                        {item.vals.sort((a, b) => { if(b.status === 'D' && a.status !== 'D') return -1; return 0; }).filter(it => it.status !== 'P').map(({ val, status }, index) => {
+                        {item.vals.sort((a, b) => { if(b.status === 'D' && a.status !== 'D') return -1; return 0 }).filter(it => it.status !== 'P').map(({ val, status }, index) => {
                           return (
                             <Tooltip title={String(val).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}>
                             <div

@@ -65,15 +65,18 @@ const UpdateItems = ({
   const updatesListRef = useRef()
   const isPeriod = (targetsAt === 'period' && indicator.type === 1)
   const colSpan = isPeriod ? { left: 8, right: 16 } : { left: 24, right: 24 }
-  const approved = period?.updates?.filter((u) => u.status === 'A')
-  let data = orderBy(approved?.map(u => ({
-    label: u.createdAt ? moment(u.createdAt, 'YYYY-MM-DD').format('DD-MM-YYYY') : null,
-    unix: u.createdAt ? moment(u.createdAt, 'YYYY-MM-DD').unix() : null,
-    y: u.value
-  })), ['unix'], ['asc'])
-  data = approved.length === 1
-    ? [{ y: 0, label: null }, ...data].map((u, index) => ({ ...u, x: index }))
-    : data.map((u, index) => ({ ...u, x: index }))
+  const approved = period
+    ?.updates
+    ?.filter((u) => u.status === 'A')
+    ?.map((u) => ({
+      ...u,
+      label: u.createdAt ? moment(u.createdAt, 'YYYY-MM-DD').format('DD-MM-YYYY') : null,
+      y: u.value,
+    }))
+    ?.sort((a, b) => a?.id - b?.id)
+  const data = approved.length === 1
+    ? [{ y: 0, label: null }, ...approved].map((u, index) => ({ ...u, x: index }))
+    : approved.map((u, index) => ({ ...u, x: index }))
   return (
     <Row type="flex" align="top">
       <Col lg={colSpan.left} xs={24}>
@@ -81,7 +84,12 @@ const UpdateItems = ({
           (isPeriod && period.updates.length > 0) && (
             <Card bordered={false} className="periodCard">
               <Card.Grid hoverable={false} style={{ width: '100%' }}>
-                <ProgressBar period={period} values={period.updates} onlyApproved />
+                <ProgressBar
+                  period={period}
+                  values={period.updates}
+                  cumulative={indicator?.isCumulative}
+                  onlyApproved
+                />
               </Card.Grid>
               {
                 (data.length > 0 && indicator?.measure === measureType.UNIT) && (
