@@ -79,5 +79,8 @@
       position: absolute;
       right: 5px;
     }
+    &.cumulative {
+      display: none;
+    }
   }
 }

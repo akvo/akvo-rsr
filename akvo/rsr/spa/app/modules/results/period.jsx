@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import moment from 'moment'
 import { Collapse, Button, Checkbox, Icon, Popconfirm, Row, Col, Divider, Alert } from 'antd'
 import classNames from 'classnames'
-import { cloneDeep, orderBy } from 'lodash'
+import { cloneDeep } from 'lodash'
 import axios from 'axios'
 import humps from 'humps'
 import { useTranslation } from 'react-i18next'
@@ -245,14 +245,14 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
   const canAddUpdate = measure === measureType.PERCENTAGE ? updates.filter(it => !it.isNew).length === 0 : true
   const mdParse = SimpleMarkdown.defaultBlockParse
   const mdOutput = SimpleMarkdown.defaultOutput
-  let data = updates
-  ?.filter((u) => u?.status === 'A')
-  ?.map(u => ({
-    label: u.createdAt ? moment(u.createdAt, 'YYYY-MM-DD').format('DD-MM-YYYY') : null,
-    unix: u.createdAt ? moment(u.createdAt, 'YYYY-MM-DD').unix() : null,
-    y: u.value
-  }))
-  data = orderBy(data, ['unix'], ['asc']).map((u, index) => ({ ...u, x: index }))
+  const data = updates
+    ?.filter((u) => u?.status === 'A')
+    ?.map((u, index) => ({
+      label: u.createdAt ? moment(u.createdAt, 'YYYY-MM-DD').format('DD-MM-YYYY') : null,
+      y: u.value,
+      x: index,
+    }))
+    ?.sort((a, b) => a?.id - b?.id)
   return (
     <Panel
       {...props}
@@ -291,7 +291,20 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
         {targetsAt === 'period' && indicator.type === 1 &&
           <div className="graph">
             <div className="sticky">
-              {disaggregations.length > 0 && <DsgOverview {...{ disaggregations, targets: period.disaggregationTargets, period, editPeriod, values: updates.map(it => ({ value: it.value, status: it.status })), updatesListRef, setHover }} />}
+              {disaggregations.length > 0 && (
+                <DsgOverview
+                  {...{
+                    disaggregations,
+                    period,
+                    editPeriod,
+                    updatesListRef,
+                    setHover,
+                    cumulative: indicator?.isCumulative,
+                    targets: period.disaggregationTargets,
+                    values: updates.map(it => ({ value: it.value, status: it.status })),
+                  }}
+                />
+              )}
               {disaggregations.length === 0 && (
                 <LineChart
                   width={480}
