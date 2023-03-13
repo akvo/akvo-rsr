@@ -8,15 +8,19 @@ see < http://www.gnu.org/licenses/agpl.html >.
 """
 
 import io
+
 from collections import OrderedDict
 from datetime import date
 from dateutil.parser import parse, ParserError
+from functools import cached_property
 from http import HTTPStatus
+
 from django.conf import settings
 from django.http import HttpResponse
-from functools import cached_property
+from django_q.tasks import async_task
 from weasyprint import HTML
 from weasyprint.fonts import FontConfiguration
+
 from akvo.rsr.models import Partnership, EmailReportJob
 from akvo.rsr.project_overview import DisaggregationTarget, IndicatorType
 from akvo.rsr.models.result.utils import QUANTITATIVE, QUALITATIVE, PERCENTAGE_MEASURE, calculate_percentage
@@ -30,6 +34,14 @@ def add_email_report_job(report, payload, recipient):
         recipient=recipient
     )
     return HttpResponse('Your report is being prepared. It will be sent to your email in a few moments.', status=HTTPStatus.ACCEPTED)
+
+
+def make_async_email_report_task(report_handler, payload, recipient, task_name):
+    async_task(report_handler, payload, recipient, task_name=task_name)
+    return HttpResponse(
+        'Your report is being prepared. It will be sent to your email in a few moments.',
+        status=HTTPStatus.ACCEPTED,
+    )
 
 
 def send_pdf_report(html, recipient, filename='reports.pdf'):
