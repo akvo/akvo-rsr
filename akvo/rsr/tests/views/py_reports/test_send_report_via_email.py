@@ -4,7 +4,7 @@ from django_q.models import OrmQ
 from django_q.signing import SignedPackage
 from parameterized import parameterized
 from akvo.rsr.tests.base import BaseTestCase
-from akvo.rsr.models import EmailReportJob, Country
+from akvo.rsr.models import Country
 from akvo.rsr.views.py_reports import (
     program_overview_pdf_report,
     program_overview_excel_report,
@@ -53,10 +53,6 @@ class SendReportViaEmailTestCase(BaseTestCase):
     ])
     def test_send_report_via_djangoq_email(self, url_name, query_params, report_name, email_handler):
         self.c.get(f"{reverse(url_name, args=(self.program.id,))}?{query_params}")
-
-        # We don't use the old job, so it shouldn't have been scheduled
-        job = EmailReportJob.objects.first()
-        self.assertIsNone(job)
 
         # Check that the task was enqueued with django-q
         enqueued_task = OrmQ.objects.first()
