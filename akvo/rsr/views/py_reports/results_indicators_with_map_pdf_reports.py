@@ -32,16 +32,20 @@ def add_org_projects_email_report_job(request, program_id):
     show_comment = request.GET.get('comment', '').strip()
     start_date = request.GET.get('period_start', '').strip()
     end_date = request.GET.get('period_end', '').strip()
-    return utils.add_email_report_job(
-        report=ORG_PROJECTS_REPORT_NAME,
-        payload={
-            'program_id': program.id,
-            'country': country,
-            'show_comment': show_comment,
-            'start_date': start_date,
-            'end_date': end_date,
-        },
-        recipient=request.user.email
+    payload = {
+        'program_id': program.id,
+        'country': country,
+        'show_comment': show_comment,
+        'start_date': start_date,
+        'end_date': end_date,
+    }
+    recipient = request.user.email
+
+    return utils.make_async_email_report_task(
+        handle_org_projects_email_report,
+        payload,
+        recipient,
+        ORG_PROJECTS_REPORT_NAME
     )
 
 

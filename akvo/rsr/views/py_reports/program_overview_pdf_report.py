@@ -25,15 +25,14 @@ REPORT_NAME = 'program_overview_pdf_report'
 @login_required
 def add_email_report_job(request, program_id):
     program = get_object_or_404(Project, pk=program_id)
-    return utils.add_email_report_job(
-        report=REPORT_NAME,
-        payload={
-            'program_id': program.id,
-            'period_start': request.GET.get('period_start', '').strip(),
-            'period_end': request.GET.get('period_end', '').strip(),
-        },
-        recipient=request.user.email
-    )
+    payload = {
+        'program_id': program.id,
+        'period_start': request.GET.get('period_start', '').strip(),
+        'period_end': request.GET.get('period_end', '').strip(),
+    }
+    recipient = request.user.email
+
+    return utils.make_async_email_report_task(handle_email_report, payload, recipient, REPORT_NAME)
 
 
 def handle_email_report(params, recipient):

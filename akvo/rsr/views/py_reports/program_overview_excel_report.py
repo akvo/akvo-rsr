@@ -8,10 +8,6 @@ see < http://www.gnu.org/licenses/agpl.html >.
 """
 
 from datetime import datetime
-from http import HTTPStatus
-
-from django.http import HttpResponse
-from django_q.tasks import async_task
 
 from akvo.rsr.dataclasses import (
     ResultData, IndicatorData, PeriodData, PeriodUpdateData, DisaggregationData,
@@ -237,15 +233,8 @@ def add_email_report_job(request, program_id):
         'period_end': request.GET.get('period_end', '').strip(),
     }
     recipient = request.user.email
-    async_task(
-        handle_email_report, payload, recipient,
-        task_name=REPORT_NAME
-    )
 
-    return HttpResponse(
-        'Your report is being prepared. It will be sent to your email in a few moments.',
-        status=HTTPStatus.ACCEPTED,
-    )
+    return utils.make_async_email_report_task(handle_email_report, payload, recipient, REPORT_NAME)
 
 
 def handle_email_report(params, recipient):
