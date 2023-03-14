@@ -26,7 +26,6 @@ from .custom_field import OrganisationCustomField, ProjectCustomField
 from .crs_add import CrsAdd, CrsAddOtherFlag
 from .category import Category
 from .employment import Employment
-from .email_report_job import EmailReportJob
 from .focus_area import FocusArea
 from .fss import Fss, FssForecast
 from .goal import Goal
@@ -102,7 +101,6 @@ __all__ = [
     'CrsAddOtherFlag',
     'DefaultPeriod',
     'Employment',
-    'EmailReportJob',
     'ExternalProject',
     'FocusArea',
     'Fss',

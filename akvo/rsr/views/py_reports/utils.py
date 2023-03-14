@@ -21,19 +21,10 @@ from django_q.tasks import async_task
 from weasyprint import HTML
 from weasyprint.fonts import FontConfiguration
 
-from akvo.rsr.models import Partnership, EmailReportJob
+from akvo.rsr.models import Partnership
 from akvo.rsr.project_overview import DisaggregationTarget, IndicatorType
 from akvo.rsr.models.result.utils import QUANTITATIVE, QUALITATIVE, PERCENTAGE_MEASURE, calculate_percentage
 from akvo.utils import ObjectReaderProxy, ensure_decimal, rsr_send_mail
-
-
-def add_email_report_job(report, payload, recipient):
-    EmailReportJob.objects.create(
-        report=report,
-        payload=payload,
-        recipient=recipient
-    )
-    return HttpResponse('Your report is being prepared. It will be sent to your email in a few moments.', status=HTTPStatus.ACCEPTED)
 
 
 def make_async_email_report_task(report_handler, payload, recipient, task_name):
