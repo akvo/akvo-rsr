@@ -22,16 +22,20 @@ export const getProjectsApi = (id, successCallback, errorCallback) => {
     .then(({ data }) => {
       let _uuid = getProjectUuids(data?.path)
       _uuid = _uuid.slice(0, _uuid.length - 1)
-      const endpoints = _uuid?.map((uuid) => api.get(`/project/?uuid=${uuid}&format=json`))
-      Promise
-        .all(endpoints)
-        .then((res) => {
-          const _projects = res?.flatMap(({ data: { results } }) => results || [])
-          successCallback(_projects)
-        })
-        .catch((err) => {
-          errorCallback(err)
-        })
+      if (_uuid?.length) {
+        const endpoints = _uuid?.map((uuid) => api.get(`/project/?uuid=${uuid}&format=json`))
+        Promise
+          .all(endpoints)
+          .then((res) => {
+            const _projects = res?.flatMap(({ data: { results } }) => results || [])
+            successCallback(_projects)
+          })
+          .catch((err) => {
+            errorCallback(err)
+          })
+      } else {
+        successCallback([data])
+      }
     })
     .catch((err) => {
       errorCallback(err)
