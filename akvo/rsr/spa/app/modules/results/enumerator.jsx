@@ -591,7 +591,7 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
                                 precision={2}
                                 verticalGuides={1}
                                 {...period}
-                              />
+                            />
                             )
                           }}
                         </FormSpy>
@@ -732,7 +732,7 @@ const PrevUpdate = ({ update, period, indicator }) => {
           <Button type="link" onClick={() => setShowSubmissionsModal(true)}>See all submissions</Button>
         </div>
       }
-      <AllSubmissionsModal period={period} visible={showSubmissionsModal} onCancel={() => setShowSubmissionsModal(false)} />
+      <AllSubmissionsModal {...period} visible={showSubmissionsModal} onCancel={() => setShowSubmissionsModal(false)} />
     </div>
   )
 }

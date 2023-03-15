@@ -100,4 +100,40 @@
       white-space: nowrap;
     }
   }
+  .table-history-sm {
+    display: none;
+    text-align: right;
+    .ant-btn-link {
+      color: rgba(0, 0, 0, 0.85);
+    }
+  }
+  .table-history-md {
+    display: block;
+  }
+}
+
+/*
+* Device = Low Resolution Tablets, Mobiles (Landscape)
+* Screen = B/w 481px to 767px
+*/
+@media (min-width: 481px) and (max-width: 767px) {
+  #rsr-form-container .table-history-sm {
+    display: block;
+  }
+  #rsr-form-container .table-history-md {
+    display: none;
+  }
+}
+
+/**
+* Device = Most of the Smartphones Mobiles (Portrait)
+* Screen = B/w 320px to 479px
+*/
+@media (min-width: 280px) and (max-width: 480px) {
+  #rsr-form-container .table-history-sm {
+    display: block;
+  }
+  #rsr-form-container .table-history-md {
+    display: none;
+  }
 }
