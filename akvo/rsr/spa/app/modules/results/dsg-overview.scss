@@ -20,6 +20,8 @@
             }
         }
         &>header{
+          border-bottom: 1px solid #ccc;
+          margin-bottom: 1rem;
           .labels{
             display: flex;
             text-transform: uppercase;
