@@ -7,20 +7,49 @@
 
 import json
 
+from django_q.conf import Conf
 from akvo.rsr.models import IatiExport, Partnership
 from akvo.rsr.tests.base import BaseTestCase
 
 
-class IatiTestCase(BaseTestCase):
+class BaseIatiTestCase(BaseTestCase):
 
     def setUp(self):
-        super(IatiTestCase, self).setUp()
+        super().setUp()
         email = password = 'foo@example.com'
         self.user = self.create_user(email, password, is_superuser=True)
         self.c.login(username=email, password=password)
         self.project = self.create_project('Test Project')
         self.org = self.create_organisation('Org')
         self.make_partner(self.project, self.org, Partnership.IATI_REPORTING_ORGANISATION)
+
+
+class IatiExportTaskTestCase(BaseIatiTestCase):
+
+    def setUp(self):
+        super().setUp()
+        Conf.SYNC = True
+
+    def tearDown(self):
+        Conf.SYNC = False
+
+    def test_create_file_task(self):
+        url = '/rest/v1/iati_export/?format=json'
+        data = {
+            "reporting_organisation": self.org.id,
+            "user": self.user.id,
+            "version": "2",
+            "projects": [self.project.id]
+        }
+
+        response = self.c.post(url, json.dumps(data), content_type='application/json')
+
+        obj = IatiExport.objects.get(id=response.data['id'])
+        self.assertEqual(obj.status, IatiExport.STATUS_COMPLETED)
+        self.assertNotEqual(obj.iati_file.name, '')
+
+
+class IatiExportTestCase(BaseIatiTestCase):
 
     def test_iati_export(self):
         url = '/rest/v1/iati_export/?format=json'
