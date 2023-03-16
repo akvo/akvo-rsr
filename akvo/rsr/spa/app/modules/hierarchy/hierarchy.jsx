@@ -67,15 +67,24 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
       handleOnChildren([_children], (data) => {
         setPrograms(data)
         const flatten = getFlatten(data)
-        const _project = flatten?.find((f) => f?.id === item.id)
         const _existing = flatten?.filter((f) => selected[colIndex] && colIndex === 0
           ? selected[colIndex]?.id === f?.id
           : selected?.map((s) => s?.id)?.includes(f?.id)
         )
-        const _selected = [
-          ..._existing,
-          { ..._project, children: _project?.children || [] }
-        ]
+        let _project = flatten?.find((f) => f?.id === item.id)
+        _project = { ..._project, children: _project?.children || [] }
+        const lastItem = _existing[_existing?.length - 1]
+        const _selected = (
+            lastItem?.parent?.id === item?.parent?.id
+          ) // Check if the current item is on the same level as the last item that existed
+          ? [
+            ..._existing?.slice(0, -1),
+            _project
+          ]
+          : [
+            ..._existing,
+            _project
+          ]
         setSelected(_selected)
         setLoading(false)
       })
