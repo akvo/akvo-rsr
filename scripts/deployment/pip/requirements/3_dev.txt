@@ -1116,9 +1116,9 @@ rsa==4.9 \
 rules==2.2 \
     --hash=sha256:9bae429f9d4f91a375402990da1541f9e093b0ac077221d57124d06eeeca4405
     # via -r scripts/deployment/pip/requirements/production.in
-sentry-sdk==0.19.2 \
-    --hash=sha256:17b725df2258354ccb39618ae4ead29651aa92c01a92acf72f98efe06ee2e45a \
-    --hash=sha256:9040539485226708b5cad0401d76628fba4eed9154bf301c50579767afe344fd
+sentry-sdk==1.14.0 \
+    --hash=sha256:273fe05adf052b40fd19f6d4b9a5556316807246bd817e5e3482930730726bb0 \
+    --hash=sha256:72c00322217d813cf493fe76590b23a757e063ff62fec59299f4af7201dd4448
     # via -r scripts/deployment/pip/requirements/production.in
 simplejson==3.18.1 \
     --hash=sha256:039b27f5a02b0919bea8af92bef1929ffd84ec98381f4fd72b6d29dd4742f7ee \
