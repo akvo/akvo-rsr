@@ -28,5 +28,11 @@ fi
 if [[ -z "${IS_WORKER:-}" ]] ; then
   python manage.py runserver 0.0.0.0:${DJANGO_PORT:-8000}
 else
-  ./manage.py qcluster
+  echo Starting probe server
+  ./manage.py django_q_probettp &
+  trap "echo 'Killing probe server'; kill $!" SIGINT
+
+  echo Starting worker process in background
+  ./manage.py qcluster &
+  wait $!
 fi
