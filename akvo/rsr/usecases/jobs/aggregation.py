@@ -6,6 +6,7 @@ from typing import List, TYPE_CHECKING
 from django.db.models import QuerySet
 from django.db.transaction import atomic
 
+from akvo.rsr.usecases.django_q.decorators import unique_task
 from akvo.utils import rsr_send_mail_to_users
 
 if TYPE_CHECKING:
@@ -82,6 +83,7 @@ def _create_aggregation_job(period: IndicatorPeriod) -> IndicatorPeriodAggregati
     return IndicatorPeriodAggregationJob.objects.create(period=period, root_period=root_period)
 
 
+@unique_task("execute_aggregation_jobs")
 def execute_aggregation_jobs():
     """
     Call the aggregation function for each aggregation job
