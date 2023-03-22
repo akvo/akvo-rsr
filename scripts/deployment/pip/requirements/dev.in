@@ -13,6 +13,10 @@ parameterized
 # Debug perf
 django-debug-toolbar
 
+# Documentation
+mkdocs
+mkdocstrings[python]
+
 # Better shell
 ipython
 
