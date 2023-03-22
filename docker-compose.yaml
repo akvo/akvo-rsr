@@ -13,10 +13,10 @@ services:
       - GOOGLE_APPLICATION_CREDENTIALS=/var/akvo/rsr/code/akvo/akvo-lumen-service-account-credentials.json
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8000" ]
-      interval: 1m30s
+      interval: 5s
       timeout: 10s
       retries: 3
-      start_period: 30s
+      start_period: 2m30s
   rsrdbhost:
     image: akvo/akvo-rsr-dev-postgres:20200226.151639.3782188
     environment:

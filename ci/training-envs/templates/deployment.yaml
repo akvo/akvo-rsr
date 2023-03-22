@@ -184,6 +184,28 @@ spec:
         - <<: *db-host
         - <<: *rsr-domain-name
         - <<: *mapbox-key
+      - <<: *backend
+        name: worker
+        readinessProbe:
+          exec:
+            command: [ "./scripts/probes/worker.sh" ]
+          initialDelaySeconds: 15
+          timeoutSeconds: 10
+        livenessProbe:
+          exec:
+            command: [ "./scripts/probes/worker.sh" ]
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          timeoutSeconds: 10
+        resources:
+          requests:
+            cpu: "50m"
+          limits:
+            cpu: "1000m"
+        env:
+          - name: IS_WORKER
+            value: "yes"
+          - <<: *django-secret-key
       - name: rsr-memcached
         image: memcached:1.6.1-alpine
         resources:
