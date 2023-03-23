@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 
 class PolicyConfig(models.Model):
@@ -28,3 +29,9 @@ class RegexRuleConfig(models.Model):
         PolicyConfig, on_delete=models.CASCADE, related_name="regex_rules"
     )
     pattern = models.CharField(max_length=255)
+
+
+class PasswordHistory(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    password = models.CharField(max_length=128)
+    created_at = models.DateTimeField(auto_now_add=True)

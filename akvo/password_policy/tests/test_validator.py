@@ -3,27 +3,22 @@ from unittest.mock import Mock
 
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
+from django.test import TestCase as DjangoTestCase
 
-from akvo.password_policy.models import PolicyConfig
+from akvo.password_policy.models import PolicyConfig, PasswordHistory
 from akvo.password_policy.validator import PasswordPolicyValidator
 
 User = get_user_model()
 
-
-def make_policy(*_):
-    return PolicyConfig(min_length=4, uppercases=2)
-
-
 fallback_mock = Mock()
 
-resolver_mock = Mock(side_effect=make_policy)
+resolver_mock = Mock()
 
 
 class ValidatorTestMixin:
     def make_user(self):
         return User(
             username="test",
-            password="password",
             email="test@example.com",
             first_name="Test",
             last_name="User",
@@ -51,6 +46,7 @@ class ValidatorFallbackTestCase(ValidatorTestMixin, TestCase):
 class ValidateUserPolicyTestCase(ValidatorTestMixin, TestCase):
     def setUp(self):
         resolver_mock.reset_mock()
+        resolver_mock.side_effect = lambda _: PolicyConfig(min_length=4, uppercases=2)
         fallback_mock.reset_mock()
         self.validator = PasswordPolicyValidator(
             resolver="akvo.password_policy.tests.test_validator.resolver_mock",
@@ -68,3 +64,26 @@ class ValidateUserPolicyTestCase(ValidatorTestMixin, TestCase):
         self.validator.validate("TesT", self.user)
         resolver_mock.assert_called_once_with(self.user)
         fallback_mock.assert_not_called()
+
+
+class PasswordChangedTestCase(ValidatorTestMixin, DjangoTestCase):
+    def setUp(self):
+        super().setUp()
+        self.reuse_limit = 2
+        resolver_mock.reset_mock()
+        resolver_mock.side_effect = lambda *_: PolicyConfig(reuse=self.reuse_limit)
+        self.validator = PasswordPolicyValidator("akvo.password_policy.tests.test_validator.resolver_mock")
+        self.user = self.make_user()
+        self.user.save()
+
+    def test_initial_state(self):
+        self.assertEqual(0, PasswordHistory.objects.count())
+
+    def test_log_new_password(self):
+        self.validator.password_changed('test', self.user)
+        self.assertEqual(1, PasswordHistory.objects.filter(user=self.user).count())
+
+    def test_no_config(self):
+        resolver_mock.side_effect = lambda *_: None
+        self.validator.password_changed('test', self.user)
+        self.assertEqual(0, PasswordHistory.objects.filter(user=self.user).count())
