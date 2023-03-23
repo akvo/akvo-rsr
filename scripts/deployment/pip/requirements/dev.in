@@ -14,8 +14,9 @@ parameterized
 django-debug-toolbar
 
 # Documentation
-mkdocs
-mkdocstrings[python]
+pdoc3
+Sphinx
+portray
 
 # Better shell
 ipython
