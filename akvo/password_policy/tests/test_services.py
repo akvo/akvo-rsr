@@ -5,30 +5,20 @@ from akvo.password_policy.models import PasswordHistory, PolicyConfig
 from akvo.password_policy.tests.helper import PasswordHistoryServiceTestBuilder
 
 
-class PasswordHistoryTestCase(TestCase):
+class PasswordHistoryPushTestCase(TestCase):
     def setUp(self):
         super().setUp()
         self.ctx = PasswordHistoryServiceTestBuilder()
 
-    def test_create_history(self):
+    def test_push_password(self):
         service = self.ctx.build()
         service.push('password')
         self.assertEqual(1, PasswordHistory.objects.filter(user=self.ctx.user).count())
 
-    def test_no_expiration(self):
-        service = self.ctx.with_config(PolicyConfig(reuse=1)).build()
+    def test_no_config(self):
+        service = self.ctx.with_no_config().build()
         service.push('password')
         self.assertEqual(1, PasswordHistory.objects.filter(user=self.ctx.user).count())
-
-    def test_no_reuse_limit(self):
-        service = self.ctx.with_config(PolicyConfig(expiration=1)).build()
-        service.push('password')
-        self.assertEqual(1, PasswordHistory.objects.filter(user=self.ctx.user).count())
-
-    def test_no_expiration_and_reuse_limit(self):
-        service = self.ctx.with_config(PolicyConfig()).build()
-        service.push('password')
-        self.assertEqual(0, PasswordHistory.objects.filter(user=self.ctx.user).count())
 
     def test_cleanup_excess_history(self):
         reuse_limit = 2
@@ -42,3 +32,38 @@ class PasswordHistoryTestCase(TestCase):
         self.assertEqual(reuse_limit, PasswordHistory.objects.filter(user=self.ctx.user).count())
         for history in PasswordHistory.objects.filter(user=self.ctx.user):
             self.assertNotIn(history.password, ['password 1', 'password 2'])
+
+
+class PasswordHistoryContainsTestCase(TestCase):
+    def setUp(self):
+        super().setUp()
+        self.ctx = PasswordHistoryServiceTestBuilder()
+
+    def test_empty_history(self):
+        service = self.ctx.build()
+        self.assertFalse(service.contains('password'))
+
+    def test_with_expiration_and_reuse_limit_config(self):
+        service = self.ctx.with_config(PolicyConfig(expiration=1, reuse=2)).build()
+        service.push('password')
+        self.assertTrue(service.contains('password'))
+
+    def test_no_reuse_limit(self):
+        service = self.ctx.with_config(PolicyConfig(expiration=1)).build()
+        service.push('password')
+        self.assertFalse(service.contains('password'))
+
+    def test_no_config(self):
+        service = self.ctx.with_no_config().build()
+        service.push('password')
+        self.assertFalse(service.contains('password'))
+
+    def test_out_password(self):
+        """
+        Reuse old password that have exceeded the reuse limit
+        """
+        service = self.ctx.with_config(PolicyConfig(reuse=2)).build()
+        service.push('password 1')
+        service.push('password 2')
+        service.push('password 3')
+        self.assertFalse(service.contains('password 1'))

@@ -68,13 +68,11 @@ class PasswordPolicyValidator:
 
     def password_changed(self, password, user=None):
         """
-        Log password changes for use in handling password reuse limits and expiration.
+        Log password changes for use in handling reuse limits and expiration.
         """
         if not user:
             return
         config = self.resolve(user)
-        if not config:
-            return
         history = PasswordHistoryService(user, config)
         history.push(password)
 

@@ -86,4 +86,4 @@ class PasswordChangedTestCase(ValidatorTestMixin, DjangoTestCase):
     def test_no_config(self):
         resolver_mock.side_effect = lambda *_: None
         self.validator.password_changed('test', self.user)
-        self.assertEqual(0, PasswordHistory.objects.filter(user=self.user).count())
+        self.assertEqual(1, PasswordHistory.objects.filter(user=self.user).count())

@@ -1,30 +1,39 @@
-from django.contrib.auth.hashers import make_password
+from typing import Optional
+from django.contrib.auth.hashers import check_password, make_password
 from django.contrib.auth.models import AbstractUser
 from akvo.password_policy.models import PasswordHistory, PolicyConfig
 
 
 class PasswordHistoryService:
-    def __init__(self, user: AbstractUser, config: PolicyConfig):
+    def __init__(self, user: AbstractUser, config: Optional[PolicyConfig] = None):
         self.user = user
         self.config = config
 
     @property
-    def limit(self):
-        if self.config.reuse:
-            return self.config.reuse
-        if self.config.expiration:
-            return 1
-        return 0
+    def reuse_limit(self) -> int:
+        return self.config.reuse if self.config else 0
 
-    def push(self, password):
-        if not self.limit:
-            return
+    def contains(self, password: str) -> bool:
+        if not self.reuse_limit:
+            return False
+        entries = self._queryset()
+        for entry in entries[:self.reuse_limit]:
+            if check_password(password, entry.password):
+                return True
+        return False
+
+    def push(self, password: str):
         PasswordHistory.objects.create(user=self.user, password=make_password(password))
         self._remove_excess()
 
+    def _queryset(self):
+        return PasswordHistory.objects.filter(user=self.user)
+
     def _remove_excess(self):
-        entries = PasswordHistory.objects.filter(user=self.user)
-        if entries.count() <= self.limit:
+        entries = self._queryset()
+        # Keep at least 1 for the newly added password
+        offset = self.reuse_limit if self.reuse_limit else 1
+        if entries.count() <= offset:
             return
-        cursor = entries[self.limit:self.limit + 1].get()
+        cursor = entries[offset:offset + 1].get()
         entries.filter(created_at__lte=cursor.created_at).delete()
