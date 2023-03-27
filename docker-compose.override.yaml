@@ -9,13 +9,6 @@ x-web-common: &web-common
 
 services:
 
-  mkdocs:
-    <<: *web-common
-    command: ["mkdocs", "serve"]
-    ports:
-      - "8000:8000"
-    volumes:
-      - .:/var/akvo/rsr/code:delegated
   web:
     <<: *web-common
     expose:

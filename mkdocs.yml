@@ -1,4 +1,0 @@
-site_name: Akvo RSR Dcoumentation
-dev_addr: 0.0.0.0:8000
-plugins:
-  - mkdocstrings
