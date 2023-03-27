@@ -32,6 +32,20 @@ following command:
 docker-compose exec -u akvo web ./scripts/devhelpers/lint.sh
 ```
 
+### Generating documentation
+
+We use sphinx for documentation.
+This also allows us to generate reference documentation.
+
+```shell
+docker-compose run --rm web make api html
+```
+
+The reference documentation is generated with the `api` target, while the `html` target converts it all into HTML.
+You can then open it with your favorite browser from `public/html/index.html`.
+
+`xdg-open public/html/index.html` will open it with your default browser on linux.
+
 ### Tests
 
 When the local server is running, you can run the following command in a
