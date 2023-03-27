@@ -24,8 +24,8 @@ services:
       DJANGO_SECRET_KEY: secretkey
       DEFAULT_FILE_STORAGE: django.core.files.storage.FileSystemStorage
     healthcheck:
-      test: [ "CMD", "./manage.py", "probe_django_q" ]
-      interval: 1m30s
+      test: [ "CMD", "./scripts/probes/worker.sh" ]
+      interval: 5s
       timeout: 10s
       retries: 3
       start_period: 30s
