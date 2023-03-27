@@ -13,6 +13,10 @@ parameterized
 # Debug perf
 django-debug-toolbar
 
+# Documentation
+Sphinx
+cloud-sptheme
+
 # Better shell
 ipython
 
