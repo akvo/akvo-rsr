@@ -16,6 +16,9 @@ django-debug-toolbar
 # Documentation
 Sphinx
 cloud-sptheme
+# Sphinx markdown support
+# https://www.sphinx-doc.org/en/master/usage/markdown.html
+myst-parser
 
 # Better shell
 ipython
