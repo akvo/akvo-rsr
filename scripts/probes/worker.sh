@@ -4,4 +4,4 @@
 
 status=$(curl -s localhost:8080)
 echo "returned status ${status}"
-[[ $status == "Started" ]] || [[ $status == "Idle" ]]
+[[ $status == "Working" ]] || [[ $status == "Idle" ]]
