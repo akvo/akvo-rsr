@@ -136,3 +136,6 @@ scripts/data/config/
 scripts/data/dumps/
 /notify.team.sh
 /promote.sh
+
+public/
+doc/modules/
