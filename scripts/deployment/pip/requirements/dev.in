@@ -14,9 +14,8 @@ parameterized
 django-debug-toolbar
 
 # Documentation
-pdoc3
 Sphinx
-portray
+cloud-sptheme
 
 # Better shell
 ipython

@@ -7,10 +7,9 @@ Welcome to Akvo RSR's reference documentation!
 ====================================
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: 3
 
-   modules/index.rst
+   modules/modules.rst
 
 
 Indices and tables
