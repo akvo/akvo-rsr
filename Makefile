@@ -26,7 +26,6 @@ api: Makefile
 		--force \
 			akvo \
 			'*/migrations/*' \
-			'*/commands/*' \
 			'*/tests/*' \
 			'*_test.py' \
 

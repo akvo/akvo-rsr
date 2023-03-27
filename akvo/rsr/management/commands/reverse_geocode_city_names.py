@@ -17,7 +17,6 @@ import atexit
 import json
 import os
 import tempfile
-import sys
 
 from django.core.management.base import BaseCommand, CommandError
 from django.db.models import Q
@@ -29,6 +28,7 @@ CACHE_PATH = os.path.join(tempfile.gettempdir(), 'reverse-geocode-data.json')
 RAPIDAPI_KEY = os.environ.get('RAPIDAPI_KEY', None)
 if not RAPIDAPI_KEY:
     print('Please set the RAPIDAPI_KEY environment variable')
+    # Raise an error instead of exiting the entire process so that other tools can import the file
     raise ValueError()
 
 session = requests.Session()
