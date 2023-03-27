@@ -29,7 +29,7 @@ CACHE_PATH = os.path.join(tempfile.gettempdir(), 'reverse-geocode-data.json')
 RAPIDAPI_KEY = os.environ.get('RAPIDAPI_KEY', None)
 if not RAPIDAPI_KEY:
     print('Please set the RAPIDAPI_KEY environment variable')
-    sys.exit(1)
+    raise ValueError()
 
 session = requests.Session()
 
