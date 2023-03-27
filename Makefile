@@ -16,7 +16,19 @@ help:
 
 
 api: Makefile
-	sphinx-apidoc -o doc/modules -H akvo-rsr --force akvo
+	rm -rf doc/modules
+	sphinx-apidoc \
+		--maxdepth 2 \
+		--module-first \
+		--separate \
+		-o doc/modules \
+		-H akvo-rsr \
+		--force \
+			akvo \
+			'*/migrations/*' \
+			'*/commands/*' \
+			'*/tests/*' \
+			'*_test.py' \
 
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
