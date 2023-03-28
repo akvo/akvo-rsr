@@ -29,10 +29,10 @@ A [Result] has [Indicator]s, Indicators have [Period]s and those contain [data][
     - Period: 2022-01-01 -- 2023-01-01
 
 [How to build a results monitoring framework]: https://datajourney.akvo.org/blog/how-to-design-a-results-monitoring-framework
-[Enumerator]: enumerator.md
+[Enumerator]: ../enumerator.md
 [Indicator]: indicator.md
 [Indicator Period Data]: indicator_period_data.md
-[Period]: periods.md
+[Period]: period.md
 [Result]: result.md
 [User documentation]: https://kb.akvo.org/rsr/results_framework/
 
