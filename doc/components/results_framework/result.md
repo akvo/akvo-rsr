@@ -20,7 +20,7 @@ Outcomes are in our sphere of influence.
 ### Impact
 
 A change at the level of end-users, communities, or constituents.
-Impact is in our sphre of interest, but we can only contribute to it.
+Impact is in our sphere of interest, but we can only contribute to it.
 
 ### Other
 
