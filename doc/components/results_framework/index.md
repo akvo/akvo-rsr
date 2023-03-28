@@ -11,7 +11,7 @@ The basic components of the results framework are:
  - [Result]s
  - [Indicator]s
  - [Period]s
- - [Indicator Period Data](indicator_period_data.md)
+ - [Indicator Period Data]
 
 A [Result] has [Indicator]s, Indicators have [Period]s and those contain [data][Indicator Period Data],
  which is submitted by [Enumerator]s or staff.
