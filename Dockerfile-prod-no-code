@@ -1,4 +1,4 @@
-FROM python:3.8.1-buster
+FROM python:3.8.16-bullseye
 
 RUN set -ex; apt-get update && \
     apt-get install -y --no-install-recommends --no-install-suggests \
