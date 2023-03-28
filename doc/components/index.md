@@ -7,5 +7,6 @@ These are built on top of [django](https://djangoproject.com)
 
  - [Results Framework](results_framework/index.md)
  - [Reports](reports/index.md)
+ - [Projects & Programs](projects.md)
  - [Task Management](task_management/index.md)
 
