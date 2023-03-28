@@ -206,12 +206,12 @@ spec:
         name: worker
         readinessProbe:
           exec:
-            command: ["./scripts/probes/worker.sh"]
+            command: ["/var/akvo/rsr/code/scripts/probe/worker.sh"]
           initialDelaySeconds: 15
           timeoutSeconds: 10
         livenessProbe:
           exec:
-            command: ["./scripts/probes/worker.sh"]
+            command: ["/var/akvo/rsr/code/scripts/probe/worker.sh"]
           initialDelaySeconds: 30
           periodSeconds: 30
           timeoutSeconds: 10
