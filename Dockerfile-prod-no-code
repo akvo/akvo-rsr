@@ -21,6 +21,6 @@ RUN mkdir -p /var/akvo/rsr/code/data
 COPY manage.py /var/akvo/rsr/code/
 COPY scripts/docker/prod/start-django.sh /var/akvo/rsr/code/
 COPY scripts/docker/dev/wait-for-dependencies.sh /var/akvo/rsr/code/
-COPY scripts/probes/worker.sh /var/akvo/rsr/code/scripts/probe/
+COPY scripts/probes/worker.sh /var/akvo/rsr/code/scripts/probes/
 
 CMD ["./start-django.sh"]
