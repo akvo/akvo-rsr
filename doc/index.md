@@ -20,10 +20,10 @@ Table of Contents
 ```{toctree}
 :maxdepth: 3
 
-dev.md
-deploying.md
 components/index.md
 modules/modules.rst
+dev.md
+deploying.md
 ```
 
 Indices and tables
