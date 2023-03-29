@@ -16,6 +16,7 @@ django-debug-toolbar
 # Documentation
 Sphinx
 cloud-sptheme
+sphinxcontrib-plantuml
 # Sphinx markdown support
 # https://www.sphinx-doc.org/en/master/usage/markdown.html
 myst-parser

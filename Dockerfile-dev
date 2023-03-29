@@ -1,13 +1,30 @@
-FROM python:3.8.1-buster
+FROM python:3.8.16-bullseye
 
-RUN set -ex; apt-get update && \
-    apt-get install -y --no-install-recommends --no-install-suggests \
-    curl git postgresql-client runit cron \
-    libjpeg-dev libfreetype6-dev \
-    libffi-dev libssl-dev gettext \
-    libfontenc1 xfonts-encodings xfonts-utils xfonts-75dpi xfonts-base \
-    libxml2-dev libxslt1-dev zlib1g-dev python3-dev gosu && \
-    rm -rf /var/lib/apt/lists/*
+RUN set -ex; apt-get update \
+    && apt-get install -y --no-install-recommends --no-install-suggests \
+        cron \
+        curl  \
+        gettext \
+        git  \
+        gosu  \
+        graphviz \
+        libffi-dev \
+        libfontenc1  \
+        libfreetype6-dev \
+        libjpeg-dev \
+        libssl-dev \
+        libxml2-dev \
+        libxslt1-dev \
+        plantuml \
+        postgresql-client  \
+        python3-dev \
+        runit  \
+        xfonts-75dpi \
+        xfonts-base \
+        xfonts-encodings \
+        xfonts-utils \
+        zlib1g-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
     python get-pip.py && \

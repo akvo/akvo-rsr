@@ -1,6 +1,6 @@
 # System architecture
 
-![setup](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/akvo/akvo-rsr/master/doc/architecture.puml)
+```{uml} diagrams/architecture.puml```
 
 # RSR Docker Development Environment
 
