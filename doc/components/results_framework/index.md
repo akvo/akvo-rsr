@@ -6,12 +6,17 @@ The results framework allows users to collect results.
 It is based upon the blog post: [How to build a results monitoring framework],
  which is recommended reading to understand the concepts and architecture described in this section.
 
-The basic components of the results framework are:
+The basic topics of the results framework are:
 
- - [Result]s
- - [Indicator]s
- - [Period]s
- - [Indicator Period Data]
+:::{toctree}
+:maxdepth: 1
+
+./result.md
+./indicator.md
+./period.md
+./indicator_period_data.md
+./aggregation.md
+:::
 
 A [Result] has [Indicator]s, Indicators have [Period]s and those contain [data][Indicator Period Data],
  which is submitted by [Enumerator]s or staff.
