@@ -11,6 +11,7 @@ Welcome to Akvo RSR's documentation!
 
    dev.md
    deploying.md
+   components/index.md
    modules/modules.rst
 
 
