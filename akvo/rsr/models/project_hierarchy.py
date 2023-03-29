@@ -9,10 +9,22 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class ProjectHierarchy(models.Model):
+    """
+    The actual "Program" with a project hierarchy.
+    """
     project_relation = 'projecthierarchy__in'
+
     root_project = models.OneToOneField('Project', on_delete=models.CASCADE, db_index=True)
+    """
+    The root of the program
+    It can be used to create subprograms / a program tree
+    """
+
     max_depth = models.PositiveSmallIntegerField()
+    """TODO: It is unclear why this field currently exists"""
+
     is_master = models.BooleanField(_('is master program'), default=False)
+    """Used when an organisation has one program under which they would like to create subprograms"""
 
     class Meta:
         app_label = 'rsr'
@@ -22,10 +34,15 @@ class ProjectHierarchy(models.Model):
 
     @property
     def descendants(self):
+        """
+        The entire tree in a list.
+        No order is guaranteed
+        """
         return self.root_project.descendants(max_depth=self.max_depth)
 
     @property
     def project_count(self):
+        """The number of children without counting the root project"""
         return self.descendants.count() - 1  # remove root_project from count
 
     @property
@@ -34,6 +51,7 @@ class ProjectHierarchy(models.Model):
 
     @property
     def organisation(self):
+        """The reporting organisation of the tree"""
         return self.root_project.reporting_org
 
     def __str__(self):
