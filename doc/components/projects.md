@@ -43,7 +43,26 @@ A root project is thus a project with a path containing no dots.
 The presence of a [ProjectHierarchy] allows the frontend to query the backend for the models 
  and retrieve a list of "Programs".
 
+### Result Framework within a hierarchy
+
+The [results framework][Results Framework] of a parent project is inherited by its children.
+This is done by creating a copy of the parent's results framework and assigning it to the child,
+ an action that is done automatically when creating a child project using the frontend.
+The important method is [`akvo.rsr.models.project.Project.import_results`](#akvo.rsr.models.project.Project.import_results).
+
+For the specificities you can check out the [wiki][framework inheritance].
+
+:::{note}
+It should be noted that inheritance is currently done using a `parent_` field in the results framework models.
+This forces making multiple requests in order to traverse the hierarchy.
+A move to [`ltree`][lree] would be preferred.
+:::
+
+An important aspect that then comes into play is [results aggregation][aggregation]
+
+[aggregation]: results_framework/aggregation.md
 [AkvoTreeModel]: #AkvoTreeModel
+[framework inheritance]: https://github.com/akvo/akvo-rsr/wiki/Details-on-inheriting-results-frameworks
 [ltree]: https://www.postgresql.org/docs/current/ltree.html
 [Report generation]: ../report_generation.md
 [Results Framework]: results_framework/index.md
