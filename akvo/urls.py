@@ -226,11 +226,11 @@ urlpatterns += (
     url(r'^project/(?P<project_id>\d+)/iati/$',
         project.iati, name='project-iati'),
 
-    url(r'^organisation/(?P<organisation_id>\d+)/iati/$',
+    url(r'^organisation/(?P<organisation_id>\d+)/iati(/|(/?\.xml)?)$',
         organisation.iati, name='projects-iati'),
 
     # IATI organisation file
-    url(r'^organisation/(?P<organisation_id>\d+)/iati-org/$',
+    url(r'^organisation/(?P<organisation_id>\d+)/iati-org(/|(/?\.xml)?)$',
         organisation.iati_org, name='org-iati'),
 
     # Legacy TastyPie API emulation
