@@ -1,13 +1,14 @@
-# System architecture
-
-```{uml} diagrams/architecture.puml
-```
 
 # RSR Docker Development Environment
 
 Additionally supported IDEs:
 
  - [PyCharm](doc/pycharm.md)
+
+## System architecture
+
+```{uml} diagrams/architecture.puml
+```
 
 ## System setup
 
