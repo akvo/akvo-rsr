@@ -32,4 +32,5 @@ ci/promote-test-to-prod.sh
 ### Sequence diagram
 
 <!-- Edit with https://mermaid.live/ -->
-```{uml} diagrams/deploying_sequence.puml```
+```{uml} diagrams/deploying_sequence.puml
+```
