@@ -13,6 +13,9 @@ rectangle google as "Google Cloud" {
             }
 
             node backend as "Backend"
+            node cloudsql_proxy as "cloudsql proxy"
+
+            node worker as "Task Worker"
 
             node reportserver as "Report Server"
 
@@ -35,8 +38,11 @@ rectangle google as "Google Cloud" {
     nginx --> reportserver
     nginx --> backend
     backend --> bucket
-    backend --> db
+    backend --> cloudsql_proxy
+    cloudsql_proxy --> db
     backend -[dashed]> memcached
+    worker --> cloudsql_proxy
+    worker -[dashed]> memcached
     reportserver -[dashed]> memcached
     reportserver --> db
 
