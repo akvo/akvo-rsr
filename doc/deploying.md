@@ -2,12 +2,12 @@
 
 We use SemaphoreCI to deploy to test and production
 
-# Test
+## Test
 
 Deploying to https://rsr.akvotest.org is done automatically once a PR is merged to master.
 
 
-# Production
+## Production
 
 Currently, we use the `master` branch to promote changes to production.
 This a **manual** operation.
@@ -17,7 +17,7 @@ At the moment, this is all tied to Akvo's private, docker registry on Google Clo
 
 The docker image is created during the deployment to the test environment or simply by merging into `production`.
 
-## Commands
+### Commands
 
 **Requirements**
 
@@ -29,7 +29,8 @@ export ZULIP_TOKEN="YOURTOKENHERE"
 ci/promote-test-to-prod.sh
 ```
 
-## Sequence diagram
+### Sequence diagram
 
 <!-- Edit with https://mermaid.live/ -->
-```{uml} diagrams/deploying_sequence.puml```
+```{uml} diagrams/deploying_sequence.puml
+```

@@ -1,12 +1,14 @@
-# System architecture
-
-```{uml} diagrams/architecture.puml```
 
 # RSR Docker Development Environment
 
 Additionally supported IDEs:
 
  - [PyCharm](doc/pycharm.md)
+
+## System architecture
+
+```{uml} diagrams/architecture.puml
+```
 
 ## System setup
 
@@ -38,8 +40,15 @@ We use sphinx for documentation.
 This also allows us to generate reference documentation.
 
 ```shell
-docker-compose run --rm web make api html
+# Generate doc with reference documentation
+make full-doc
+# Generate API reference RSTs
+make api
+# Generate HTML from RSTs and Markdown in doc/
+make html
 ```
+
+Should you have everything installed locally, you can use `make USE_DOCKER= $target` and docker will not be used.
 
 The reference documentation is generated with the `api` target, while the `html` target converts it all into HTML.
 You can then open it with your favorite browser from `public/html/index.html`.
