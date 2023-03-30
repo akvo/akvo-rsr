@@ -8,7 +8,7 @@ SPHINXBUILD   ?= sphinx-build
 SOURCEDIR     = doc
 BUILDDIR      = public
 DOCKER        ?=
-USE_DOCKER    = 1  # Calls parts of make in docker
+USE_DOCKER    ?=  # Calls parts of make in docker
 
 dc_run = docker-compose run --rm --no-deps web
 # Function to optionally run a target in docker

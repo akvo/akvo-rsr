@@ -35,7 +35,7 @@ jobs:
       - name: Build web service
         run: docker-compose build web
       - name: Generate sphinx documentation
-        run: docker-compose run web make api html
+        run: make USE_DOCKER=1 full-doc
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Upload artifact

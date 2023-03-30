@@ -41,14 +41,14 @@ This also allows us to generate reference documentation.
 
 ```shell
 # Generate doc with reference documentation
-make full-doc
+make USE_DOCKER=1 full-doc
 # Generate API reference RSTs
-make api
+make USE_DOCKER=1 api
 # Generate HTML from RSTs and Markdown in doc/
-make html
+make USE_DOCKER=1 html
 ```
 
-Should you have everything installed locally, you can use `make USE_DOCKER= $target` and docker will not be used.
+Should you have everything installed locally, you can use `make $target` and docker will not be used.
 
 The reference documentation is generated with the `api` target, while the `html` target converts it all into HTML.
 You can then open it with your favorite browser from `public/html/index.html`.
