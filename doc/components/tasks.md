@@ -39,6 +39,16 @@ It's started with [`akvo.rsr.management.commands.django_q_probettp`](#django_q_p
 
 The server is probed by docker and k8s using the [`worker.sh` probe][worker probe]
 
+## Unique tasks
+
+Recurring tasks (that were earlier cronjobs) that shouldn't be run in parallel aren't natively supported by django-q.
+A custom solution was built within RSR that uses a cache heartbeat.
+
+[`CacheHeartbeat`](#CacheHeartbeat) is the relevant class
+ which is used by a decorator [`unique_task`](#unique_task).
+
+In principle all it does is check if the heartbeat key exists in the cache to exit the wrapped function.
+
 [41-django-q.conf]: https://github.com/akvo/akvo-rsr/blob/master/akvo/settings/41-django-q.conf
 [deployment.yaml]: https://github.com/akvo/akvo-rsr/blob/66eaa83ccd769a576c5d167547ae21fe8f85a006/ci/k8s/deployment.yml#L206-L226
 [dc-override]: https://github.com/akvo/akvo-rsr/blob/master/docker-compose.override.yml

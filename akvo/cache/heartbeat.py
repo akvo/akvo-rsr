@@ -8,7 +8,7 @@ from django.core.cache import cache
 
 class CacheHeartbeat(Thread):
     """
-    Thread to update set a cache key with a max life and refresh it as long as the thread is alive
+    Thread to set a cache key with a max life and refresh it as long as the thread is alive
 
     The thread can be ended by setting the `event_end` flag
     """
@@ -38,7 +38,13 @@ class CacheHeartbeat(Thread):
         logger.info("Ended cache heartbeat for '%s'", self.cache_key)
 
     def set_cache_value(self):
-        cache.set(self.cache_key, self.get_calc_value(), self.key_timeout)
+        """
+        Set the cache key and its value
+        """
+        cache.set(self.cache_key, self.calc_cache_value(), self.key_timeout)
 
-    def get_calc_value(self) -> Union[str, int, float]:
+    def calc_cache_value(self) -> Union[str, int, float]:
+        """
+        Calculate a value to be used when setting the cache key
+        """
         return datetime.datetime.utcnow().timestamp()
