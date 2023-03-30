@@ -11,4 +11,5 @@ These are built on top of [django](https://djangoproject.com)
 results_framework/index.md
 reports/index.md
 projects.md
+tasks.md
 :::
