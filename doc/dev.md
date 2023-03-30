@@ -1,6 +1,7 @@
 # System architecture
 
-```{uml} diagrams/architecture.puml```
+```{uml} diagrams/architecture.puml
+```
 
 # RSR Docker Development Environment
 
