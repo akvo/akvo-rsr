@@ -7,29 +7,36 @@ SPHINXOPTS    ?=
 SPHINXBUILD   ?= sphinx-build
 SOURCEDIR     = doc
 BUILDDIR      = public
+DOCKER        ?=
+USE_DOCKER    = 1  # Calls parts of make in docker
+
+dc_run = docker-compose run --rm --no-deps web
+# Function to optionally run a target in docker
+docker = $(if $(USE_DOCKER) , $(dc_run) make $@ , $(1))
 
 # Put it first so that "make" without argument is like "make help".
 help:
-	@$(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+	@$(call docker, $(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O))
 
-.PHONY: help Makefile
-
+.PHONY: help Makefile full-doc
 
 api: Makefile
 	rm -rf doc/modules
-	sphinx-apidoc \
+	$(call docker, sphinx-apidoc \
 		--maxdepth 2 \
 		--module-first \
 		--separate \
 		-o doc/modules \
-		-H akvo-rsr \
+		-H "Reference documentation" \
 		--force \
 			akvo \
 			'*/migrations/*' \
 			'*/tests/*' \
-			'*_test.py' \
+			'*_test.py' )
 
+# Run all targets to generate HTML
+full-doc: api html
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
 %: Makefile
-	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+	@$(call docker, $(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O))
