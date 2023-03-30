@@ -38,8 +38,14 @@ class Command(BaseCommand):
 
 
 class DjangoQRequestHandler(BaseHTTPRequestHandler):
+    """
+    A handler to be used with HTTPServer to get the status of the local django-q cluster
+    """
 
     def do_GET(self):
+        """
+        Handle GET requests to return a simple string indicating the status of the django-q cluster
+        """
         hostname = socket.gethostname()
 
         # Find local cluster
