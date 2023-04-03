@@ -133,14 +133,17 @@ spec:
             - name: "rsr-staticroot-disk"
               mountPath: "/var/akvo/rsr/staticroot"
         env:
-        - name: GOOGLE_APPLICATION_CREDENTIALS
+        - &google-application-credentials
+          name: GOOGLE_APPLICATION_CREDENTIALS
           value: "/var/akvo/rsr/code/akvo/akvo-lumen-service-account-credentials.json"
-        - name: DEFAULT_FILE_STORAGE
+        - &default-file-storage
+          name: DEFAULT_FILE_STORAGE
           valueFrom:
               configMapKeyRef:
                 name: akvo-rsr
                 key: default-file-storage
-        - name: GOOGLE_STORAGE_BUCKET
+        - &google-storage-bucket
+          name: GOOGLE_STORAGE_BUCKET
           valueFrom:
               configMapKeyRef:
                 name: akvo-rsr
@@ -224,6 +227,9 @@ spec:
         - name: IS_WORKER
           value: "yes"
         - <<: *django-secret-key
+        - <<: *google-application-credentials
+        - <<: *default-file-storage
+        - <<: *google-storage-bucket
       - name: rsr-statsd-to-prometheus
         image: eu.gcr.io/akvo-lumen/rsr-statsd-to-prometheus:${TRAVIS_COMMIT}
         ports:

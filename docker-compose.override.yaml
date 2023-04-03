@@ -17,6 +17,8 @@ services:
       - "8082:8082" # snakeviz
     depends_on:
       - rsrdbhost
+    volumes:
+      - rsr-mediaroot:/var/akvo/rsr/mediaroot
   worker:
     <<: *web-common
     environment:
@@ -36,6 +38,7 @@ services:
       - .:/var/akvo/rsr/code:delegated
       - /var/akvo/rsr/code/src/
       - ./scripts/docker/dev/50-docker-local-dev.conf:/config_overrides/50-docker-local-dev.conf
+      - rsr-mediaroot:/var/akvo/rsr/mediaroot
 
   web-dir:
     <<: *web-common
@@ -93,3 +96,6 @@ services:
     image: mailhog/mailhog:v1.0.0
     ports:
       - 8025:8025
+
+volumes:
+  rsr-mediaroot: {}
