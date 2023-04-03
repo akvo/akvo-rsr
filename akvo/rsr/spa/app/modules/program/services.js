@@ -1,4 +1,6 @@
+import uniq from 'lodash/uniq'
 import api from '../../utils/api'
+import { getShrinkContributors } from '../../utils/misc'
 import { jobStatus } from './config'
 
 /**
@@ -53,7 +55,19 @@ export const getProjectByPeriodID = (_periods, ID) => {
     ..._contrib,
     ..._contrib?.flatMap((cb) => cb?.contributors)
   ]
-  return _contributors?.find((cb) => cb?.periodId === ID)
+  return _contributors?.find((cb) => {
+    const contribID = cb?.id || cb?.periodId
+    return contribID === ID
+  })
 }
 
 export const getIndicatorByPeriodID = (_periods, ID) => _periods?.find((p) => p?.periodId === ID)
+
+export const createContribWithJob = all => getShrinkContributors(all).map((cb) => {
+  const sts = uniq(cb?.contributors?.map((sc) => sc?.job?.status))?.filter((status) => status)
+  const _job = getSummaryStatus(sts)
+  return ({
+    ...cb,
+    job: _job
+  })
+})

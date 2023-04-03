@@ -7,7 +7,7 @@ import { setNumberFormat } from '../../utils/misc'
 
 const getAggregatedUpdatesLength = (updates, contributors) => {
   let total = 0
-  total += updates.filter(it => it.status && it.status.code === 'A').length
+  total += updates.filter(it => it.status === 'A' || (it.status && it.status.code === 'A')).length
   contributors?.forEach(contrib => {
     total += getAggregatedUpdatesLength(updates, contrib)
   })
@@ -89,7 +89,7 @@ const ProjectSummary = ({
       </ul>
     )
   }
-  return contributors
+  return (contributors && updates)
     ? (
       <div className="updates">
         <Icon type="align-left" /> {getAggregatedUpdatesLength(updates, contributors)} Updates
