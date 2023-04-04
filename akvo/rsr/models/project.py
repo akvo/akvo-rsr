@@ -6,7 +6,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 import dataclasses
 import logging
-from decimal import Decimal
 from typing import Dict, Generic, Hashable, Optional, TypeVar
 import urllib.parse
 
@@ -39,7 +38,7 @@ from akvo.codelists.store.default_codelists import (
 )
 from akvo.utils import (
     codelist_choices, codelist_value, codelist_name, get_thumbnail, rsr_image_path,
-    rsr_show_keywords, single_period_dates,
+    rsr_show_keywords, single_period_dates, ensure_decimal
 )
 from .related_project import ParentChangeDisallowed
 from .tree.model import AkvoTreeModel
@@ -671,7 +670,7 @@ class Project(TimestampsMixin, AkvoTreeModel):
 
     def get_funds_needed_project_currency(self):
         "Funds need in project currency, only used if budget items have multiple currencies"
-        funds_needed = Decimal(self.get_budget_project_currency()) - self.get_funds()
+        funds_needed = ensure_decimal(self.get_budget_project_currency()) - self.get_funds()
         return funds_needed if funds_needed >= 1 else 0.0
 
     def update_funds_needed(self):

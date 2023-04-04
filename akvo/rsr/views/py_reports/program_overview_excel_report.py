@@ -423,7 +423,7 @@ def render_contributor(ws, row, result, indicator, period, contributor, aggregat
     ws.set_cell_value(row, col, contributor.actual_value)
     col += 1
     if period.is_quantitative and not period.is_cumulative_future:
-        contribution = calculate_percentage(ensure_decimal(contributor.actual_value), ensure_decimal(period.aggregated_value))
+        contribution = calculate_percentage(contributor.actual_value, period.aggregated_value)
         ws.set_cell_style(row, col, Style(alignment=Alignment(horizontal='right')))
         ws.set_cell_value(row, col, f"{contribution}%")
         col += 1

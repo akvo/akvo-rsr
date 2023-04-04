@@ -4,11 +4,9 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from decimal import Decimal
-
 from django.apps import apps
 from django.db.models import Q
-from akvo.utils import rsr_image_path
+from akvo.utils import rsr_image_path, ensure_decimal
 
 PERCENTAGE_MEASURE = '2'
 QUANTITATIVE = 1
@@ -16,10 +14,10 @@ QUALITATIVE = 2
 
 
 def calculate_percentage(numerator, denominator):
-    denominator = Decimal(denominator)
+    denominator = ensure_decimal(denominator)
     if denominator == 0:
         return 0
-    return round(Decimal(numerator) * 100 / Decimal(denominator), 2)
+    return round(ensure_decimal(numerator) * 100 / denominator, 2)
 
 
 def image_path(instance, file_name):

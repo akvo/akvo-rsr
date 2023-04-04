@@ -209,7 +209,7 @@ class ProjectProxy(ObjectReaderProxy):
             {
                 'organisation': p.organisation.long_name,
                 'amount': ensure_decimal(p.funding_amount),
-                'percentage': calculate_percentage(ensure_decimal(p.funding_amount), ensure_decimal(self.funds))
+                'percentage': calculate_percentage(p.funding_amount, self.funds)
             }
             for p in self.partnerships.filter(iati_organisation_role=Partnership.IATI_FUNDING_PARTNER)
         ], key=lambda x: x['percentage'], reverse=True)

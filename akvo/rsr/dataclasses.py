@@ -283,7 +283,7 @@ class ReportingPeriodMixin(ABC):
         if not item:
             return None
         if self.is_percentage:
-            return calculate_percentage(ensure_decimal(item.numerator), ensure_decimal(item.denominator))
+            return calculate_percentage(item.numerator, item.denominator)
         return item.value
 
     def get_aggregated_disaggregation_value(self, category, type):
@@ -293,7 +293,7 @@ class ReportingPeriodMixin(ABC):
         if not item:
             return None
         if self.is_percentage:
-            return calculate_percentage(ensure_decimal(item.numerator), ensure_decimal(item.denominator))
+            return calculate_percentage(item.numerator, item.denominator)
         return item.value
 
     def _select_disaggregation(self, disaggregations, category, type):

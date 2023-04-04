@@ -13,7 +13,7 @@ from akvo.rsr.models.result.utils import QUANTITATIVE, QUALITATIVE, PERCENTAGE_M
 from akvo.utils import ensure_decimal
 from dataclasses import dataclass, field
 from datetime import date
-from decimal import Decimal, InvalidOperation
+from decimal import Decimal
 from django.conf import settings
 from django.db.models import Count, Sum
 from django.shortcuts import get_object_or_404
@@ -522,7 +522,7 @@ def _transform_period_contributions_node(node, aggregate_targets=False):
             actual_denominator += aggregated_denominator
         actual_value = calculate_percentage(actual_numerator, actual_denominator)
     else:
-        actual_value = _force_decimal(period.actual_value)
+        actual_value = ensure_decimal(period.actual_value)
         updates_value = _calculate_update_values(updates)
 
     if is_qualitative:
@@ -530,7 +530,7 @@ def _transform_period_contributions_node(node, aggregate_targets=False):
     elif aggregate_targets and not is_percentage:
         target = _aggregate_targets(node)
     else:
-        target = _force_decimal(period.target_value)
+        target = ensure_decimal(period.target_value)
 
     result = {
         'period_id': period.id,
@@ -559,7 +559,7 @@ def _transform_period_contributions_node(node, aggregate_targets=False):
 
 
 def _aggregate_targets(node):
-    aggregate = _force_decimal(node['item'].target_value)
+    aggregate = ensure_decimal(node['item'].target_value)
     for child in node['children']:
         aggregate += _aggregate_targets(child)
 
@@ -668,7 +668,7 @@ def _calculate_update_values(updates):
 
 
 def _transform_contributor(period, is_percentage, root_has_aggregation_job):
-    value = _force_decimal(period.actual_value)
+    value = ensure_decimal(period.actual_value)
 
     is_qualitative = period.indicator.type == QUALITATIVE
     # FIXME: Not sure why the value < 1 check is being used, if it is a float
@@ -693,7 +693,7 @@ def _transform_contributor(period, is_percentage, root_has_aggregation_job):
     if is_qualitative:
         target = period.target_value
     else:
-        target = _force_decimal(period.target_value)
+        target = ensure_decimal(period.target_value)
 
     contributor = {
         'project_id': project.id,
@@ -790,13 +790,6 @@ def _transform_disaggregation_targets(obj):
         for t
         in obj.disaggregation_targets.all()
     ]
-
-
-def _force_decimal(value):
-    try:
-        return Decimal(value)
-    except (InvalidOperation, TypeError):
-        return Decimal(0)
 
 
 def _merge_unique(l1, l2):
