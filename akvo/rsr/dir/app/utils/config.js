@@ -30,15 +30,15 @@ export const images = {
 export const footerUrl = {
   home: [
     {
-      url: 'https://rsrsupport.akvo.org/content',
+      url: 'https://kb.akvo.org/rsr/',
       text: 'Help centre'
     },
     {
-      url: 'https://rsrsupport.akvo.org/article/show/152434-user-guides',
+      url: 'https://kb.akvo.org/rsr/guides/',
       text: 'Quick start guide'
     },
     {
-      url: 'https://rsrsupport.akvo.org/container/show/akvo-rsr',
+      url: 'https://kb.akvo.org/rsr/',
       text: 'Knowledge base'
     },
     {
