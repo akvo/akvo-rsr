@@ -11,6 +11,7 @@ from akvo.rsr.views.py_reports import (
     program_period_labels_overview_pdf_report,
     results_indicators_with_map_pdf_reports,
     nuffic_country_level_map_report,
+    eutf_org_results_table_excel_report,
 )
 
 
@@ -49,6 +50,11 @@ class SendReportViaEmailTestCase(BaseTestCase):
             'py-reports-nuffic-country-level-report', 'country=nl',
             nuffic_country_level_map_report.REPORT_NAME,
             nuffic_country_level_map_report.handle_email_report,
+        ),
+        (
+            'py-reports-organisation-eutf-results-indicators-table', '',
+            eutf_org_results_table_excel_report.REPORT_NAME,
+            eutf_org_results_table_excel_report.handle_email_report,
         ),
     ])
     def test_send_report_via_djangoq_email(self, url_name, query_params, report_name, email_handler):

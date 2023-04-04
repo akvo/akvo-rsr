@@ -7,9 +7,8 @@ Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from akvo.rsr.models import IndicatorPeriod, ProjectHierarchy, Result
+from akvo.rsr.models import Project, IndicatorPeriod, ProjectHierarchy, Result
 from akvo.rsr.models.result.utils import PERCENTAGE_MEASURE
-from akvo.rsr.decorators import with_download_indicator
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 from django.shortcuts import get_object_or_404
@@ -19,6 +18,8 @@ from pyexcelerate.Borders import Borders
 from pyexcelerate.Border import Border
 
 from . import utils
+
+REPORT_NAME = 'eutf-results-indicators-table'
 
 
 def build_view_object(organisation, result_id=None):
@@ -42,12 +43,28 @@ def build_view_object(organisation, result_id=None):
 
 
 @login_required
-@with_download_indicator
-def render_report(request, program_id, result_id=None):
-    project_hierarchy = get_object_or_404(ProjectHierarchy, root_project=program_id)
-    organisation = project_hierarchy.organisation
-    projects = build_view_object(organisation, result_id=result_id)
+def add_email_report_job(request, program_id, result_id=None):
+    program = get_object_or_404(Project, pk=program_id)
+    payload = {
+        'program_id': program.id,
+        'result_id': result_id,
+    }
+    recipient = request.user.email
 
+    return utils.make_async_email_report_task(handle_email_report, payload, recipient, REPORT_NAME)
+
+
+def handle_email_report(params, recipient):
+    project_hierarchy = get_object_or_404(ProjectHierarchy, root_project=params['program_id'])
+    organisation = project_hierarchy.organisation
+    projects = build_view_object(organisation, result_id=params['result_id'])
+    wb = generate_workbook(projects)
+    filename = '{}-{}-eutf-results-and-indicators-simple-table.xlsx'.format(
+        timezone.now().strftime('%Y%m%d'), organisation.id)
+    utils.send_excel_report(wb, recipient, filename)
+
+
+def generate_workbook(projects):
     wb = Workbook()
     ws = wb.new_sheet('ProjectList')
     ws.set_col_style(1, Style(size=81.5))
@@ -173,8 +190,4 @@ def render_report(request, program_id, result_id=None):
                     ws.set_cell_value(row, 30, period.id)
                     row += 1
                     highlight = False
-
-    filename = '{}-{}-eutf-results-and-indicators-simple-table.xlsx'.format(
-        timezone.now().strftime('%Y%m%d'), organisation.id)
-
-    return utils.make_excel_response(wb, filename)
+    return wb
