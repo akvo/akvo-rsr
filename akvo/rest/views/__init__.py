@@ -31,7 +31,7 @@ from .indicator_custom_field import IndicatorCustomFieldViewSet, IndicatorCustom
 from .indicator_dimension_name import IndicatorDimensionNameViewSet
 from .indicator_dimension_value import IndicatorDimensionValueViewSet
 from .indicator_label import IndicatorLabelViewSet
-from .indicator_period_aggregation_job import IndicatorPeriodAggregationJobViewSet
+from .indicator_period_aggregation_job import IndicatorPeriodAggregationJobViewSet, recalculate_project_aggregation
 from .indicator_period_label import IndicatorPeriodLabelViewSet, project_period_labels
 from .indicator_period import (IndicatorPeriodViewSet, IndicatorPeriodFrameworkViewSet,
                                set_periods_locked, bulk_add_periods, bulk_remove_periods)
@@ -257,4 +257,5 @@ __all__ = [
     'RawProjectHierarchyViewSet',
     'managed_employments',
     'demo_request',
+    'recalculate_project_aggregation',
 ]

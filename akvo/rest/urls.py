@@ -352,6 +352,9 @@ urlpatterns += (
     url(r'v1/members/$',
         views.organisations_members,
         name='organisations_members'),
+    url(r'v1/recalculate_project_aggregation/$',
+        views.recalculate_project_aggregation,
+        name='recalculate_project_aggregation'),
 )
 
 # My reports
