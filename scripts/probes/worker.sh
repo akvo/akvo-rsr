@@ -4,4 +4,4 @@
 
 status=$(curl -s -o /dev/null -w %{http_code} localhost:8080)
 echo "status code: ${status}"
-[[ $status == "400" ]]
+[[ $status == "200" ]]
