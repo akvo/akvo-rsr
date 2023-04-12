@@ -11,10 +11,12 @@ Provides a localhost HTTP server to query the local status of the django-q clust
 import logging
 import signal
 import socket
+from datetime import timedelta
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 from django.core.management.base import BaseCommand
-from django_q.conf import Conf
+from django.utils import timezone
+from django_q.models import Success
 from django_q.status import Stat
 
 logger = logging.getLogger(__name__)
@@ -44,20 +46,34 @@ class DjangoQRequestHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         """
-        Handle GET requests to return a simple string indicating the status of the django-q cluster
+        Handle GET requests to return response with the status code indicating django-q cluster is still running
         """
+        if self.is_worker_running():
+            self.send_response(200)
+        else:
+            self.send_response(500)
+        self.end_headers()
+        self.wfile.write(b'')
+
+    def is_worker_running(self):
         hostname = socket.gethostname()
 
         # Find local cluster
         local_stat = next(iter(stat for stat in Stat.get_all() if stat.host == hostname), None)
         if local_stat:
-            message = local_stat.status
-        else:
-            message = Conf.STOPPED
-        logger.info(f"Probe response {message}")
-        self.send_response(200)
-        self.end_headers()
-        self.wfile.write(message.encode())
+            logger.info(f"Cluster status: {local_stat.status}")
+            return True
+
+        # Sometimes Stat.get_all() returns [] even though the cluster is still running.
+        # Since we have tasks that runs every minute, we can use it to make sure.
+        # Check to see if we have any successful result within the last 10 minutes.
+        now = timezone.now()
+        past = now - timedelta(minutes=10)
+        results = Success.objects.filter(started__gte=past)
+        logger.info(f"successful tasks within 10 minutes: {results.count()}")
+
+        # If any results are returned, then the background worker is running!
+        return results.exists()
 
     def log_message(self, format: str, *args) -> None:
         logger.debug(format, *args)
