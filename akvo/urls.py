@@ -145,7 +145,7 @@ urlpatterns = i18n_patterns(
 # Non-internationalisation URLs                                                #
 ################################################################################
 
-urlpatterns += (
+urlpatterns += [
     # Python generated reports
     url(r'^py-reports/checkz/$',
         py_reports.check, name='py-reports-check'),
@@ -297,13 +297,13 @@ urlpatterns += (
     url(r'^widgets/project-small/random/$',
         widget_views.RandomProjectSmallView.as_view(),
         name="widget_random_project_small"),
-)
+]
 
 handler500 = 'akvo.rsr.views.error.server_error'
 
-urlpatterns += (
+urlpatterns += [
     url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
-)
+]
 
 if settings.DEBUG:
     urlpatterns += staticfiles_urlpatterns()

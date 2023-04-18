@@ -16,6 +16,7 @@
       {% endif %}
     </header>
 
+
     {% if program.project_plan_summary and program.project_plan_summary.strip %}
     <section class="summary">
       <div class="title">Summary</div>
@@ -41,14 +42,10 @@
 
     <section class="contributors">
       <div class="title">Contributing projects</div>
-      {% if program.level1_contributors|length %}
-      <div>{{ program.level1_contributors|length }} level 1 projects</div>
-      {% endif %}
-      {% if program.level2_contributors|length %}
-      <div>{{ program.level2_contributors|length }} level 2 projects</div>
-      {% endif %}
+      {% for level, contributors in contributor_level_map.items %}
+      <div>{{ contributors|length }} level {{ level }} projects</div>
+      {% endfor %}
     </section>
-    <p />
 
     <section class="staticmap">
       <img src="{{ staticmap }}" alt="Location map">
@@ -56,7 +53,7 @@
     <div class="page-break"></div>
 
     <section class="results">
-      {% for result in program.results %}
+      {% for result in quantitative_results %}
       <div class="result">
         <div class="pre-title">Result {{ forloop.counter|stringformat:'02d' }} {{ result.iati_type_name }}</div>
         <h2>{{ result.title }}</h2>
@@ -66,7 +63,7 @@
             <div class="tablike">
               <div class="tablike-wrapper">
                 <div class="tablike-content">
-                  Indicator {{ foorloop.counter|stringformat:'02d' }} {% if indicator.is_qualitative %}Qualitative{% else %}Quantitative{% endif %}
+                  Indicator {{ forloop.counter|stringformat:'02d' }} Quantitative
                 </div>
               </div>
             </div>
@@ -86,23 +83,22 @@
               </tr>
               <tr class="summary">
                 <td>{{ period.contributors|length }}</td>
-                <td class="text-center">{{ period.countries|length }}</td>
+                <td class="text-center">{{ period.countries_count }}</td>
                 <td class="text-center">{{ period.actual_value|floatformat|intcomma }}</td>
                 <td class="text-center">100%</td>
               </tr>
-
-              {% if period.disaggregation_contributions.values %}
+              {% if period.disaggregations %}
               <tr>
                 <td colspan="4">
                   <div class="disagregations">
                     <div class="disagregations-container">
-                      {% for category, type in period.disaggregation_contributions_view.items %}
+                      {% for category, types in period.disaggregations.items %}
                       <div class="disagregations-container--elem">
                         <p class="disagregations-title">{{ category }}</p>
                         <dl>
-                          {% for key, val in type.items %}
-                          <dt>{{ key }}</dt>
-                          <dd>{{ val.value|floatformat|intcomma|default:"‐" }}</dd>
+                          {% for type, value in types.items %}
+                          <dt>{{ type }}</dt>
+                          <dd>{{ value|floatformat|intcomma|default:"‐" }}</dd>
                           {% endfor %}
                         </dl>
                       </div>
@@ -110,34 +106,32 @@
                     </div>
                   </div>
                 </td>
-              </tr>
               {% endif %}
 
               {% for contrib in period.contributors %}
               <tr class="level-header level-one">
                 <td colspan="4">
-                  Level 1 contributor:
+                  Level {{ contrib.level }} contributor:
                 </td>
               </tr>
               <tr class="level level-one">
-                <td>{{ contrib.project.title }}</td>
-                <td class="text-center">{{ contrib.country.name }}</td>
-                <td class="text-center">{{ contrib.actual_value|floatformat|intcomma }}</td>
-                <td class="text-center">{{ contrib.actual_value|percent_of:period.actual_value|floatformat }}%</td>
+                <td>{{ contrib.project }}</td>
+                <td class="text-center">{{ contrib.country }}</td>
+                <td class="text-center">{{ contrib.value|floatformat|intcomma }}</td>
+                <td class="text-center">{{ contrib.percentage|floatformat }}%</td>
               </tr>
-
-              {% if contrib.updates.disaggregations %}
+              {% if contrib.disaggregations %}
               <tr>
                 <td colspan="4">
                   <div class="disagregations">
                     <div class="disagregations-container">
-                      {% for category, type in contrib.disaggregations_view.items %}
+                      {% for category, types in contrib.disaggregations.items %}
                       <div class="disagregations-container--elem">
                         <p class="disagregations-title">{{ category }}</p>
                         <dl>
-                          {% for key, val in type.items %}
-                          <dt>{{ key }}</dt>
-                          <dd>{{ val.value|floatformat|intcomma|default:"‐" }}</dd>
+                          {% for type, value in types.items %}
+                          <dt>{{ type }}</dt>
+                          <dd>{{ value|floatformat|intcomma|default:"‐" }}</dd>
                           {% endfor %}
                         </dl>
                       </div>
@@ -147,47 +141,42 @@
                 </td>
               </tr>
               {% endif %}
-
-              {% if contrib.contributors %}
-              <tr class="level-header level-two">
-                <td colspan="4">
-                  Level 2 contributors:
-                </td>
-              </tr>
-              {% endif %}
-              {% for subcontrib in contrib.contributors %}
-              <tr class="level level-two">
-                <td>{{ subcontrib.project.title }}</td>
-                <td class="text-center">{{ subcontrib.country.name }}</td>
-                <td class="text-center">{{ subcontrib.actual_value|floatformat|intcomma }}</td>
-                <td class="text-center">{{ subcontrib.actual_value|percent_of:period.actual_value|floatformat }}%</td>
-              </tr>
-
-              {% if subcontrib.updates.disaggregations %}
-              <tr>
-                <td colspan="4">
-                  <div class="disagregations">
-                    <div class="disagregations-container">
-                      {% for category, type in subcontrib.disaggregations_view.items %}
-                      <div class="disagregations-container--elem">
-                        <p class="disagregations-title">{{ category }}</p>
-                        <dl>
-                          {% for key, val in type.items %}
-                          <dt>{{ key }}</dt>
-                          <dd>{{ val.value|floatformat|intcomma|default:"‐" }}</dd>
-                          {% endfor %}
-                        </dl>
-                      </div>
-                      {% endfor %}
-                    </div>
-                  </div>
-                </td>
-              </tr>
-              {% endif %}
-
-              {% endfor %}
               {% endfor %}
             </table>
+          </div>
+          {% endfor %}
+        </div>
+        {% endfor %}
+      </div>
+      {% endfor %}
+    </section>
+
+    <section class="qualitative-results">
+      {% for result in qualitative_results %}
+      <div class="qualtitative-result">
+        <h2>Result: {{ result.title }}</h2>
+        {% for indicator in result.indicators %}
+        <div class="qualitative-indicator">
+          <h3>Indicator: {{ indicator.title }}</h3>
+          {% for period in indicator.periods %}
+          <div class="qualitative-period">
+            <h4>Period: {{ period.period_start|date:"j M Y" }} - {{ period.period_end|date:"j M Y" }}</h4>
+            {% for contributor in period.contributors %}
+            <div class="qualitative-contributor">
+              <div class="contributor-title">
+                <h5>{{ contributor.project }}</h5>
+                <p>Level {{ contributor.level }} <em>({{ contributor.country }})</em></p>
+              </div>
+              {% for update in contributor.updates %}
+              <div class="qualitative-update">
+                <div class="qualitative-update-info">{{ update.created_at|date:"j M Y" }}, {{ update.user.first_name }} {{ update.user.last_name }} <em>({{ update.user.email }})</em></div>
+                <div class="narrative">
+                  {{ update.narrative|apply_markup:"markdown" }}
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+            {% endfor %}
           </div>
           {% endfor %}
         </div>
