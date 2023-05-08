@@ -10,11 +10,10 @@ from akvo.rsr.views.py_reports import (
     results_indicators_excel_report,
     kickstart_word_report,
     eutf_org_results_table_excel_report,
-    program_overview_pdf_report,
     program_period_labels_overview_pdf_report,
     project_results_indicators_excel_report,
-    program_overview_excel_report,
     utils,
+    program_utils,
 )
 
 
@@ -165,11 +164,6 @@ class EutfOrgResultsTableExcelReportTestCase(ObjectReaderCumulativeUpdateBaseTes
         return eutf_org_results_table_excel_report.build_view_object(project.reporting_org)[0]
 
 
-class ProgramOverviewPdfReportTestBase(ObjectReaderCumulativeUpdateBaseTestCase, BaseTestCase):
-    def make_project_view(self, project: Project) -> utils.ProjectProxy:
-        return program_overview_pdf_report.build_view_object(project, self.PERIOD_2_START, self.PERIOD_3_END)
-
-
 class ProgramPeriodLabelsOverviewPdfReportTestCase(ObjectReaderCumulativeUpdateBaseTestCase, BaseTestCase):
     def make_project_view(self, project: Project) -> utils.ProjectProxy:
         return program_period_labels_overview_pdf_report.build_view_object(project)
@@ -254,7 +248,7 @@ class ProgramOverviewExcelReportTestCase(ResultsFrameworkDataclassesTestMixin, B
             }
         })
         aggregate(contrib2_period2.object)
-        self.result = program_overview_excel_report.get_results_framework(self.lead_project.object)[0]
+        self.result = program_utils.get_results_framework(self.lead_project.object)[0]
 
     def get_period_contributor(self, period, project_title):
         contribs = [c for c in period.contributors if c.project.title == project_title]

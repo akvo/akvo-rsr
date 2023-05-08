@@ -6,8 +6,9 @@
 
 from abc import ABC
 from dataclasses import dataclass, field
-from datetime import date
+from datetime import date, datetime
 from decimal import Decimal
+from enum import Enum
 from functools import cached_property, lru_cache
 from typing import Optional, List, Set
 
@@ -58,21 +59,43 @@ class DisaggregationData(object):
 
 
 @dataclass(frozen=True)
+class UserData(object):
+    email: str = ''
+    first_name: str = ''
+    last_name: str = ''
+
+    @classmethod
+    def make(cls, data, prefix=''):
+        return cls(
+            email=data.get(f"{prefix}email", ''),
+            first_name=data.get(f"{prefix}first_name", ''),
+            last_name=data.get(f"{prefix}last_name", ''),
+        )
+
+    @property
+    def full_name(self):
+        fullname = f"{self.first_name} {self.last_name}".strip()
+        return f"{fullname} ({self.email})" if fullname else self.email
+
+
+@dataclass(frozen=True)
 class PeriodUpdateData(object):
     id: int
+    user: Optional[UserData] = None
     status: str = IndicatorPeriodData.STATUS_DRAFT_CODE
     value: Optional[Decimal] = None
     numerator: Optional[Decimal] = None
     denominator: Optional[Decimal] = None
     narrative: str = ''
-    created_at: Optional[date] = None
-    last_modified_at: Optional[date] = None
+    created_at: Optional[datetime] = None
+    last_modified_at: Optional[datetime] = None
     disaggregations: List[DisaggregationData] = field(default_factory=list)
 
     @classmethod
     def make(cls, data, prefix=''):
         return cls(
             id=data[f"{prefix}id"],
+            user=UserData.make(data, f"{prefix}user__"),
             status=data.get(f"{prefix}status", IndicatorPeriodData.STATUS_DRAFT_CODE),
             value=data.get(f"{prefix}value", None),
             numerator=data.get(f"{prefix}numerator", None),
@@ -92,11 +115,46 @@ class PeriodUpdateData(object):
 
 
 @dataclass(frozen=True)
+class CountryData(object):
+    iso_code: str = ''
+    name: str = ''
+
+    @classmethod
+    def make(cls, data, prefix=''):
+        return cls(
+            iso_code=data.get(f"{prefix}iso_code", ''),
+            name=data.get(f"{prefix}name", ''),
+        )
+
+    def __hash__(self):
+        return hash((self.iso_code, self.name))
+
+
+@dataclass(frozen=True)
+class LocationData(object):
+    latitude: float = 0
+    longitude: float = 0
+    country: Optional[CountryData] = None
+
+    @classmethod
+    def make(cls, data, prefix=''):
+        return cls(
+            latitude=data.get(f"{prefix}latitude", 0),
+            longitude=data.get(f"{prefix}longitude", 0),
+            country=CountryData.make(data, f"{prefix}country__"),
+        )
+
+    def __hash__(self):
+        return hash((self.latitude, self.longitude, self.country))
+
+
+@dataclass(frozen=True)
 class ContributorProjectData(object):
     id: Optional[int] = None
     title: str = ''
     subtitle: str = ''
     country: Optional[str] = None
+    location: Optional[LocationData] = None
     aggregate_children: bool = True
     aggregate_to_parent: bool = True
     sectors: Set[str] = field(default_factory=set)
@@ -108,9 +166,22 @@ class ContributorProjectData(object):
             title=data.get(f"{prefix}title", ''),
             subtitle=data.get(f"{prefix}subtitle", ''),
             country=data.get(f"{prefix}primary_location__country__name", None),
+            location=LocationData.make(data, f"{prefix}primary_location__"),
             aggregate_children=data.get(f"{prefix}aggregate_children", True),
             aggregate_to_parent=data.get(f"{prefix}aggregate_to_parent", True),
         )
+
+    def __hash__(self):
+        return hash((
+            self.id,
+            self.title,
+            self.subtitle,
+            self.country,
+            self.location,
+            self.aggregate_children,
+            self.aggregate_to_parent,
+            tuple(self.sectors),
+        ))
 
 
 class ReportingPeriodMixin(ABC):
@@ -123,6 +194,7 @@ class ReportingPeriodMixin(ABC):
     disaggregation_targets: List[DisaggregationTargetData] = field(default_factory=list)
     contributors: List['ContributorData'] = field(default_factory=list)
     period_disaggregations: List[DisaggregationData] = field(default_factory=list)
+    period_actual_value: Optional[Decimal] = None
 
     @property
     def is_qualitative(self):
@@ -215,6 +287,16 @@ class ReportingPeriodMixin(ABC):
         for contributor in self.contributors:
             value += ensure_decimal(contributor.indicator_target_value)
         return value if value else None
+
+    @cached_property
+    def actual_value(self):
+        if self.is_qualitative:
+            return None
+        if self.is_percentage:
+            return calculate_percentage(self.aggregated_numerator, self.aggregated_denominator)
+        # if self.is_cumulative_future:
+        #     return 0
+        return self.period_actual_value
 
     @cached_property
     def disaggregations(self):
@@ -355,16 +437,22 @@ class ContributorData(ReportingPeriodMixin):
         return False
 
     @cached_property
-    def actual_value(self):
-        if self.is_qualitative:
-            return None
-        if self.is_cumulative_future:
-            return 0
-        if self.is_cumulative:
-            return self.period_actual_value
-        if self.is_percentage:
-            return calculate_percentage(self.updates_numerator, self.updates_denominator)
-        return self.updates_value
+    def locations(self) -> Set[LocationData]:
+        result = set()
+        if self.project and self.project.location:
+            result.add(self.project.location)
+        for contributor in self.contributors:
+            result.update(contributor.locations)
+        return result
+
+    @cached_property
+    def countries(self) -> Set[CountryData]:
+        result = set()
+        for location in self.locations:
+            if not location.country:
+                continue
+            result.add(location.country)
+        return result
 
 
 @dataclass(frozen=True)
@@ -417,16 +505,6 @@ class PeriodData(ReportingPeriodMixin):
         return value
 
     @cached_property
-    def actual_value(self):
-        if self.is_qualitative:
-            return None
-        if self.is_percentage:
-            return calculate_percentage(self.updates_numerator, self.updates_denominator)
-        if self.is_cumulative_future:
-            return 0
-        return self.period_actual_value
-
-    @cached_property
     def pending_updates(self):
         return [u for u in self.updates if u.is_pending]
 
@@ -470,6 +548,20 @@ class PeriodData(ReportingPeriodMixin):
     def get_pending_disaggregation_value(self, category, type):
         item = self._select_disaggregation(self.pending_disaggregations, category, type)
         return item.value if item else None
+
+    @cached_property
+    def locations(self) -> Set[LocationData]:
+        result = set()
+        for contributor in self.contributors:
+            result.update(contributor.locations)
+        return result
+
+    @cached_property
+    def countries(self) -> Set[CountryData]:
+        result = set()
+        for contributor in self.contributors:
+            result.update(contributor.countries)
+        return result
 
 
 @dataclass(frozen=True)
@@ -569,6 +661,34 @@ class ResultData(object):
             return type.name
         except ResultType.DoesNotExist:
             return ''
+
+
+class IndicatorType(Enum):
+    Quantitative = QUANTITATIVE
+    Qualitative = QUALITATIVE
+
+
+@dataclass(frozen=True)
+class ResultWithIndicatorType:
+    type: IndicatorType
+    result: ResultData
+
+    @cached_property
+    def indicators(self):
+        return [it for it in self.result.indicators if self._check_type(it)]
+
+    def __getattr__(self, attr):
+        return getattr(self.result, attr)
+
+    def _check_type(self, indicator: IndicatorData):
+        return indicator.is_qualitative \
+            if self.type == IndicatorType.Qualitative \
+            else indicator.is_quantitative
+
+
+def filter_results_by_indicator_type(type: IndicatorType, results: List[ResultData]):
+    wrapped = [ResultWithIndicatorType(type=type, result=it) for it in results]
+    return [it for it in wrapped if it.indicators]
 
 
 def group_results_by_types(results):
