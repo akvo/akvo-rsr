@@ -230,6 +230,25 @@ section .title,
     overflow: hidden;
     font-weight: 700;
 }
+.qualitative-results {
+    margin-top: 15mm;
+}
+.qualitative-results .contributor-title h5 {
+    font-size: 15pt;
+    margin-top: 8mm;
+    margin-bottom: 0;
+}
+.qualitative-results .contributor-title p {
+    font-size: 11pt;
+}
+.qualitative-results .qualitative-update-info {
+    font-size: 14pt;
+    font-weight: 700;
+    margin-bottom: 3mm;
+}
+.qualitative-results .narrative {
+    margin-bottom: 8mm;
+}
 @media screen {
     html {
         background: gray;
