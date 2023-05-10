@@ -61,11 +61,11 @@ When the local server is running, you can run the following command in a
 separate terminal to run the tests.
 
 ```sh
-docker-compose exec web ./manage.py test -k -v 3 akvo.rsr.tests.test_templatetags
+docker-compose exec web ./manage.py test --keepdb -v 3 akvo.rsr.tests.test_templatetags
 ```
 
 - `-v` makes the output of the tests verbose
-- `-k` keeps the database between consecutive test runs, so that migrations
+- `--keepdb` keeps the database between consecutive test runs, so that migrations
   needn't be run each time (which take a long time!)
 
 #### Coverage
