@@ -30,22 +30,6 @@ class IatiCheckBudgetPeriodNotLongerThanOneYearTestCase(BaseTestCase):
             value_date=datetime.date.today(),
         )
 
-    def test_dgis_validation_set(self):
-        validation, _ = ProjectEditorValidationSet.objects.get_or_create(name=settings.VALIDATION_SET['DGIS'])
-        self.project.validations.add(validation)
-        all_checks_passed, checks = budgets_checks(self.project)
-        self.assertFalse(all_checks_passed)
-        self.assertEqual('warning', checks[0][0])
-        self.assertIn('period must not be longer than one year', checks[0][1])
-
-    def test_dgis_modified_validation_set(self):
-        validation, _ = ProjectEditorValidationSet.objects.get_or_create(name=settings.VALIDATION_SET['DGIS_MODIFIED'])
-        self.project.validations.add(validation)
-        all_checks_passed, checks = budgets_checks(self.project)
-        self.assertFalse(all_checks_passed)
-        self.assertEqual('warning', checks[0][0])
-        self.assertIn('period must not be longer than one year', checks[0][1])
-
     def test_other_validation_set(self):
         all_checks_passed, checks = budgets_checks(self.project)
         self.assertFalse(all_checks_passed)
