@@ -34,7 +34,7 @@ def sector(project):
             if sec.percentage:
                 element.attrib['percentage'] = str(sec.percentage)
 
-            if sec.text:
+            if sec.text or str(sec.vocabulary) in ['98', '99']:
                 narrative_element = etree.SubElement(element, "narrative")
                 narrative_element.text = sec.text
 
