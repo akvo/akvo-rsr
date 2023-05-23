@@ -347,6 +347,14 @@ def codelist_value(model, instance, field, version=settings.IATI_VERSION):
         return result
 
 
+def codelist_has_value(model, value, version=settings.IATI_VERSION):
+    """
+    Check if value exists
+    """
+    objects = getattr(model, 'objects')
+    return objects.filter(code=value, version__code=version).exists()
+
+
 def codelist_name(model, instance, field, version=settings.IATI_VERSION):
     """
     Looks up the name of a codelist, returns the field value if the lookup fails
