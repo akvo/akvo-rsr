@@ -181,7 +181,7 @@ class IatiChecksTestCase(TestCase):
         Sector.objects.create(
             project=project,
             sector_code="140",
-            vocabulary="1",
+            vocabulary="3",
             vocabulary_uri="http://akvo.org",
             percentage=50,
             text="WASH",
@@ -189,7 +189,7 @@ class IatiChecksTestCase(TestCase):
         Sector.objects.create(
             project=project,
             sector_code="150",
-            vocabulary="1",
+            vocabulary="3",
             vocabulary_uri="http://akvo.org",
             percentage=50,
             text="WASH",

@@ -5,6 +5,23 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from decimal import Decimal
+from akvo.utils import codelist_has_value
+from akvo.codelists import models
+
+VOCABULARY_CODE_MODEL_MAP = {
+    '1': models.Sector,
+    '2': models.SectorCategory,
+    '7': models.UNSDGGoals,
+    '8': models.UNSDGTargets,
+}
+
+
+def has_invalid_vocabulary_code(sector):
+    return (
+        sector.sector_code
+        and sector.vocabulary in VOCABULARY_CODE_MODEL_MAP.keys()
+        and not codelist_has_value(VOCABULARY_CODE_MODEL_MAP[sector.vocabulary], sector.sector_code)
+    )
 
 
 def sectors(project):
@@ -60,6 +77,10 @@ def sectors(project):
                 all_checks_passed = False
                 checks.append(('error', 'sector (id: %s) is missing sector code' %
                                str(sector.pk)))
+
+            if has_invalid_vocabulary_code(sector):
+                all_checks_passed = False
+                checks.append(('error', 'sector (id: %s) has invalid sector code' % str(sector.pk)))
 
             if sector.vocabulary in ['98', '99'] and not sector.vocabulary_uri:
                 checks.append(('warning', 'sector (id: %s) with vocabulary 98 or 99 (reporting '
