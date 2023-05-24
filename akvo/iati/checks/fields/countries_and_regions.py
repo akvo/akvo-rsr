@@ -82,6 +82,12 @@ def countries_and_regions(project):
                 message = f'{message}. {extra_message}'
             checks.append(('error', message))
 
+    if no_recipient_countries == 1 and no_recipient_regions == 0:
+        country = project.recipient_countries.first()
+        if country.percentage and 0 < country.percentage < 100:
+            all_checks_passed = False
+            checks.append(('error', 'when a single recipient country is declared, the percentage must either be omitted or set to 100'))
+
     for country in project.recipient_countries.all():
         if not country.country:
             all_checks_passed = False
