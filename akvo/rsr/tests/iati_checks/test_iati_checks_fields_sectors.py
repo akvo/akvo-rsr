@@ -54,3 +54,77 @@ class IatiCheckSectorVocabularyCodeTestCase(BaseTestCase):
         all_checks_passed, _ = sectors_checks(self.project)
 
         self.assertTrue(all_checks_passed)
+
+
+class SingleSectorPercentageTestCase(BaseTestCase):
+
+    def setUp(self):
+        super().setUp()
+        self.project = self.create_project("Test project")
+        Sector.objects.create(
+            project=self.project,
+            vocabulary='3',
+            sector_code=random_string(),
+            percentage=50
+        )
+
+    def test_single_sector(self):
+        all_checks_passed, checks = sectors_checks(self.project)
+
+        self.assertFalse(all_checks_passed)
+        self.assertEqual(1, len(checks))
+        self.assertEqual('error', checks[0][0])
+        self.assertIn('the percentage must either be omitted or set to 100', checks[0][1])
+
+    def test_same_vocabulary_sectors(self):
+        Sector.objects.create(
+            project=self.project,
+            vocabulary='3',
+            sector_code=random_string(),
+            percentage=50
+        )
+
+        all_checks_passed, _ = sectors_checks(self.project)
+
+        self.assertTrue(all_checks_passed)
+
+    def test_different_vocabulary_sectors(self):
+        Sector.objects.create(
+            project=self.project,
+            vocabulary='4',
+            sector_code=random_string(),
+            percentage=50
+        )
+
+        all_checks_passed, checks = sectors_checks(self.project)
+
+        self.assertFalse(all_checks_passed)
+        self.assertEqual(2, len(checks))
+        self.assertEqual('error', checks[0][0])
+        self.assertIn('the percentage must either be omitted or set to 100', checks[0][1])
+        self.assertEqual('error', checks[1][0])
+        self.assertIn('the percentage must either be omitted or set to 100', checks[1][1])
+
+    def test_valid_case(self):
+        Sector.objects.create(
+            project=self.project,
+            vocabulary='3',
+            sector_code=random_string(),
+            percentage=50
+        )
+        Sector.objects.create(
+            project=self.project,
+            vocabulary='4',
+            sector_code=random_string(),
+            percentage=100
+        )
+        Sector.objects.create(
+            project=self.project,
+            vocabulary='5',
+            sector_code=random_string(),
+            percentage=0
+        )
+
+        all_checks_passed, _ = sectors_checks(self.project)
+
+        self.assertTrue(all_checks_passed)

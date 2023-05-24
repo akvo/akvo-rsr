@@ -72,7 +72,10 @@ def sectors(project):
                         checks.append(('error', 'sector percentages for vocabulary \'%s\' '
                                        'do not add up to 100' % str(voc_key)))
 
+        sectors_by_vocabulary = dict()
+
         for sector in project.sectors.all():
+            sectors_by_vocabulary.setdefault(sector.vocabulary, []).append(sector)
             if not sector.sector_code:
                 all_checks_passed = False
                 checks.append(('error', 'sector (id: %s) is missing sector code' %
@@ -86,6 +89,16 @@ def sectors(project):
                 checks.append(('warning', 'sector (id: %s) with vocabulary 98 or 99 (reporting '
                                'organisation) has no vocabulary URI specified' %
                                str(sector.pk)))
+
+        for grouped_sectors in sectors_by_vocabulary.values():
+            if len(grouped_sectors) > 1:
+                continue
+            single_sector_in_vocabulary = grouped_sectors[0]
+            if not single_sector_in_vocabulary.percentage or single_sector_in_vocabulary.percentage == 100:
+                continue
+            all_checks_passed = False
+            checks.append(('error', 'sector "%s" declared only once, the percentage must either be omitted or set to 100'
+                           % single_sector_in_vocabulary.iati_vocabulary().name))
 
     elif not project.transactions.all():
         all_checks_passed = False
