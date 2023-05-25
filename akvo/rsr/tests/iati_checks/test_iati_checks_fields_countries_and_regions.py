@@ -43,3 +43,27 @@ class IatiCheckFieldsTransactionRecipientsTestCase(BaseTestCase):
         RecipientRegion.objects.create(project=self.project, region="89", percentage=100)
         all_checks_passed, _ = geo_checks(self.project)
         self.assertTrue(all_checks_passed)
+
+
+class SingleRecipientCountryPercentage(BaseTestCase):
+
+    def setUp(self):
+        super().setUp()
+        self.project = self.create_project("Test project")
+
+    def test_invalid(self):
+        RecipientCountry.objects.create(project=self.project, country="NL", percentage=50)
+        all_checks_passed, checks = geo_checks(self.project)
+        self.assertFalse(all_checks_passed)
+        self.assertEqual('error', checks[0][0])
+        self.assertIn('when a single recipient country is declared, the percentage must either be omitted or set to 100', checks[0][1])
+
+    def test_percentage_zero(self):
+        RecipientCountry.objects.create(project=self.project, country="NL", percentage=0)
+        all_checks_passed, _ = geo_checks(self.project)
+        self.assertTrue(all_checks_passed)
+
+    def test_percentage_100(self):
+        RecipientCountry.objects.create(project=self.project, country="NL", percentage=100)
+        all_checks_passed, _ = geo_checks(self.project)
+        self.assertTrue(all_checks_passed)

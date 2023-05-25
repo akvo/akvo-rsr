@@ -124,15 +124,21 @@ const Sectors = ({ validations, formPush, primaryOrganisation }) => {
                   withLabel
                   label={<InputLabel optional={isOptional('percentage')} tooltip={t('Percentages should add up to 100% of the activity being reported if they are shown for each sector. Fill in 100% if there\'s one sector.Use a period to denote decimals.')}>{t('Percentage')}</InputLabel>}
                 />
-                {fieldExists('text') && (
-                  <FinalField
-                    control="textarea"
-                    rows={2}
-                    name={`${name}.text`}
-                    withLabel
-                    label={<InputLabel optional={isOptional('text')}>{t('description')}</InputLabel>}
-                  />
-                )}
+                <Field
+                  name={`${name}.vocabulary`}
+                  render={({input}) => {
+                    if (fieldExists('text') || ['98', '99'].includes(input.value)) {
+                      return <FinalField
+                        control="textarea"
+                        rows={2}
+                        name={`${name}.text`}
+                        withLabel
+                        label={<InputLabel optional={isOptional('text')}>{t('description')}</InputLabel>}
+                      />
+                    }
+                    return null
+                  }}
+                />
               </div>
             </div>
           )}
