@@ -619,7 +619,7 @@ class ProjectContributeTestCase(BaseTestCase):
         # external parent should have been removed
         self.assertIsNone(self.project.external_parent_iati_activity_id)
         # internal parent should have been set
-        self.assertEqual(self.project.contributes_to_project_id, self.parent_project.id)
+        self.assertEqual(self.project.parent().id, self.parent_project.id)
 
     def test_set_external_parent_contributing_project(self):
         # Set a pre-existing internal parent
