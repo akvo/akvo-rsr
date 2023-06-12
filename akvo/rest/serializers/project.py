@@ -138,11 +138,17 @@ class ProjectSerializer(BaseRSRSerializer):
         return str(project.path)
 
     def update(self, project: Project, validated_data: dict):
-        # mutual exclusion: contributes_to_project and external_parent_iati_activity_id
         if "contributes_to_project" in validated_data:
+            parent = validated_data['contributes_to_project']
+            if parent:
+                project.set_parent(validated_data['contributes_to_project'])
+            else:
+                project.delete_parent()
             validated_data["external_parent_iati_activity_id"] = None
-        elif "external_parent_iati_activity_id" in validated_data:
-            validated_data["contributes_to_project"] = None
+        elif "external_parent_iati_activity_id" in validated_data and validated_data['external_parent_iati_activity_id']:
+            project.delete_parent()
+
+        validated_data["contributes_to_project"] = None
 
         return super().update(project, validated_data)
 
