@@ -22,7 +22,7 @@ from akvo.utils import ensure_decimal, maybe_decimal
 from . import utils, program_utils
 
 
-AGGREGATED_TARGET_VALUE_COLUMN = 11
+AGGREGATED_TARGET_VALUE_COLUMN = 12
 
 
 def get_dynamic_column_start(aggregate_targets):
@@ -62,7 +62,7 @@ def generate_workbok(program, start_date=None, end_date=None):
     aggregate_targets = is_aggregating_targets(program)
     use_indicator_target = utils.is_using_indicator_target(program)
     disaggregations = get_disaggregations(program)
-    disaggregations_column_start = 16 if aggregate_targets else 15
+    disaggregations_column_start = 17 if aggregate_targets else 16
     disaggregation_types_length = 0
     for types in disaggregations.values():
         disaggregation_types_length += len(types.keys())
@@ -95,6 +95,7 @@ def generate_workbok(program, start_date=None, end_date=None):
         ws.set_col_style(8, Style(size=25))
         ws.set_col_style(9, Style(size=25))
         ws.set_col_style(10, Style(size=25))
+        ws.set_col_style(11, Style(size=30))
         if aggregate_targets:
             ws.set_col_style(AGGREGATED_TARGET_VALUE_COLUMN, Style(size=25))
         col = get_dynamic_column_start(aggregate_targets)
@@ -119,6 +120,7 @@ def generate_workbok(program, start_date=None, end_date=None):
         ws.set_cell_value(1, 8, 'Countries')
         ws.set_cell_value(1, 9, 'Sector')
         ws.set_cell_value(1, 10, 'Baseline value')
+        ws.set_cell_value(1, 11, 'Narrative')
         if aggregate_targets:
             ws.set_cell_value(1, AGGREGATED_TARGET_VALUE_COLUMN, 'Aggregated target value')
         col = get_dynamic_column_start(aggregate_targets)
@@ -129,6 +131,7 @@ def generate_workbok(program, start_date=None, end_date=None):
         ws.set_cell_value(1, col, 'Actual value')
         col += 1
         ws.set_cell_value(1, col, '% of contribution')
+        # col += 1
         if disaggregation_types_length:
             col = disaggregations_column_start
             for category, types in disaggregations.items():
@@ -225,6 +228,9 @@ def render_contributor(ws, row, result, indicator, period, contributor, aggregat
     ws.set_cell_style(row, 9, long_text_style)
     ws.set_cell_value(row, 9, ', '.join(contributor.project.sectors) if contributor.project.sectors else '')
     ws.set_cell_value(row, 10, maybe_decimal(contributor.indicator_baseline_value))
+    if period.is_qualitative:
+        ws.set_cell_style(row, 11, long_text_style)
+        ws.set_cell_value(row, 11, contributor.period_narrative)
     col = get_dynamic_column_start(aggregate_targets)
     ws.set_cell_value(row, col, contributor.indicator_target_value if use_indicator_target else ensure_decimal(contributor.target_value))
     col += 2
