@@ -13,15 +13,16 @@ logger = logging.getLogger(__name__)
 
 
 def schedule_iati_activity_validation(project: Project, schedule_at: Optional[datetime] = None):
-    logger.info("Scheduling IATI validation for project %s", project.id)
-    scheduled_at = schedule_at if schedule_at else now() + DEFAULT_SCHEDULE_DELAY_TIME
-    pending_jobs = IatiActivityValidationJob.objects.filter(project=project, started_at=None)
-    if pending_jobs.exists():
-        job = pending_jobs.first()
-        job.scheduled_at = scheduled_at
-        job.save(update_fields=['scheduled_at'])
-    else:
-        IatiActivityValidationJob.objects.create(project=project, scheduled_at=scheduled_at)
+    if project.is_published():
+        logger.info("Scheduling IATI validation for project %s", project.id)
+        scheduled_at = schedule_at if schedule_at else now() + DEFAULT_SCHEDULE_DELAY_TIME
+        pending_jobs = IatiActivityValidationJob.objects.filter(project=project, started_at=None)
+        if pending_jobs.exists():
+            job = pending_jobs.first()
+            job.scheduled_at = scheduled_at
+            job.save(update_fields=['scheduled_at'])
+        else:
+            IatiActivityValidationJob.objects.create(project=project, scheduled_at=scheduled_at)
 
     # Ensure that even if the job for the external check doesn't run, that the internal one will
     project.run_iati_checks = True

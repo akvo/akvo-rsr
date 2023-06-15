@@ -15,6 +15,12 @@ class ScheduleIatiActivityValidationTestCase(BaseTestCase):
     def setUp(self):
         self.project = self.create_project('Test project')
 
+    def test_no_job_for_unpublished_project(self):
+        schedule_at = now() + timedelta(minutes=1)
+        self.project.unpublish()
+        schedule_iati_activity_validation(self.project, schedule_at)
+        self.assertEqual(0, IatiActivityValidationJob.objects.filter(project=self.project).count())
+
     def test_add_new_job(self):
         schedule_at = now() + timedelta(minutes=1)
         schedule_iati_activity_validation(self.project, schedule_at)
