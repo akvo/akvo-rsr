@@ -49,3 +49,14 @@ export const statusUpdate = {
   R: 'Declined',
   A: 'Approved'
 }
+
+export const ACTIVE_PERIOD = 'active-period'
+
+export const statusDescription = {
+  [ACTIVE_PERIOD]: 'Active',
+  D: 'Draft update created',
+  P: 'Update submitted',
+  R: 'Update declined',
+  A: 'Approved update reported',
+  NO_STATUS: 'No status yet'
+}
