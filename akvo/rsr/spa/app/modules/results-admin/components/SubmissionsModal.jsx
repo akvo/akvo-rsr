@@ -64,7 +64,7 @@ const SubmissionsTable = ({ data, scores }) => {
     id: it.id,
     user: it.user,
     date: it.createdAt ? moment(it.createdAt).format('DD MMM YYYY HH:mm') : '',
-    details: it.createdAt ? <DetailsValue {...{ data: it, scores }} /> : null
+    details: it.createdAt ? <DetailsValue {...{ data: it, scores }} /> : <Text type="secondary">No submissions yet</Text>
   }))
   const columns = [
     { title: 'USER', dataIndex: 'user', width: '25%' },
