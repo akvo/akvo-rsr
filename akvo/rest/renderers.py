@@ -24,10 +24,8 @@ class AkvoCSVRenderer(PaginatedCSVRenderer):
         else:
             response = CSVRenderer.render(self, data, *args, **kwargs)
         request = args[1]['request']
-        headers = args[1]['response']._headers
-        headers['content-disposition'] = (
-            'Content-Disposition', 'attachment; filename="{}.csv"'.format(get_name(request))
-        )
+        headers = args[1]['response']
+        headers['Content-Disposition'] = 'attachment; filename="{}.csv"'.format(get_name(request))
         return response
 
 
