@@ -77,14 +77,11 @@ class UserSerializer(BaseRSRSerializer):
         )
 
     def __init__(self, *args, **kwargs):
-        """ Delete the 'absolute_url' field added in BaseRSRSerializer.__init__().
-        It's neither correct nor do we want this data to be visible.
-
+        """
         Remove the fields "legacy_org" and "username" that are only present to support older
         versions of Up calling the Tastypie API endpoints that we now emulate using DRF
         """
         super(UserSerializer, self).__init__(*args, **kwargs)
-        del self.fields['absolute_url']
 
         # Remove the fields unless we're called via Tastypie URLs
         request = kwargs.get("context", {}).get("request", None)
@@ -166,10 +163,3 @@ class UserDetailsSerializer(BaseRSRSerializer):
             'last_name',
             'approved_organisations',
         )
-
-    def __init__(self, *args, **kwargs):
-        """ Delete the 'absolute_url' field added in BaseRSRSerializer.__init__().
-        It's neither correct nor do we want this data to be visible.
-        """
-        super(UserDetailsSerializer, self).__init__(*args, **kwargs)
-        del self.fields['absolute_url']

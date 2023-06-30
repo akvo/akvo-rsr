@@ -97,13 +97,8 @@ class ProjectUpdateDirectorySerializer(BaseRSRSerializer):
     longitude = serializers.SerializerMethodField()
     image = serializers.ReadOnlyField(source='photo')
     image = serializers.SerializerMethodField()
-    url = serializers.ReadOnlyField(source='get_absolute_url')
     project = serializers.ReadOnlyField(source='project.title')
-    project_url = serializers.ReadOnlyField(source='project.get_absolute_url')
     organisation = serializers.ReadOnlyField(source='project.primary_organisation.name')
-    organisation_url = serializers.ReadOnlyField(
-        source='project.primary_organisation.get_absolute_url'
-    )
     user_fullname = serializers.ReadOnlyField(source='user.get_full_name')
     event_date = serializers.DateField(format='%d-%b-%Y')
 
@@ -115,11 +110,8 @@ class ProjectUpdateDirectorySerializer(BaseRSRSerializer):
             'latitude',
             'longitude',
             'image',
-            'url',
             'project',
-            'project_url',
             'organisation',
-            'organisation_url',
             'user_fullname',
             'event_date',
         )

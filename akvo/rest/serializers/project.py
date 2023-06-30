@@ -163,9 +163,7 @@ class ProjectDirectorySerializer(serializers.ModelSerializer):
     longitude = serializers.ReadOnlyField(source='primary_location.longitude', default=None)
     image = serializers.SerializerMethodField()
     countries = serializers.SerializerMethodField()
-    url = serializers.ReadOnlyField(source='cacheable_url')
     organisation = serializers.ReadOnlyField(source='primary_organisation.name')
-    organisation_url = serializers.ReadOnlyField(source='primary_organisation.get_absolute_url')
     organisations = serializers.SerializerMethodField()
     sectors = serializers.SerializerMethodField()
     dropdown_custom_fields = serializers.SerializerMethodField()
@@ -182,9 +180,7 @@ class ProjectDirectorySerializer(serializers.ModelSerializer):
             'longitude',
             'image',
             'countries',
-            'url',
             'organisation',
-            'organisation_url',
             'organisations',
             'sectors',
             'dropdown_custom_fields',

@@ -38,7 +38,6 @@ class MyProjectsViewSetTestCase(BaseTestCase):
             "name": org.name,
             "long_name": ANY,
             "logo": ANY,
-            "absolute_url": ANY,
         })
 
     def test_my_projects_with_unicode_sector(self):

@@ -75,7 +75,6 @@ class MapProjectSerializer(serializers.Serializer):
 
     id = serializers.IntegerField()
     title = serializers.CharField()
-    url = serializers.URLField(source='get_absolute_url')
     current_image = Base64ImageField(required=False, allow_empty_file=True, allow_null=True)
 
 

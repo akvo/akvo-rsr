@@ -30,7 +30,6 @@ class MapOrganisationSerializer(serializers.Serializer):
 
     id = serializers.IntegerField()
     name = serializers.CharField()
-    url = serializers.URLField(source='get_absolute_url')
     logo = Base64ImageField(required=False, allow_empty_file=True, allow_null=True)
 
     class Meta:
