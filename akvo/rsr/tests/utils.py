@@ -8,7 +8,11 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 from akvo.rsr.models import (
     Project, Result, Indicator, IndicatorPeriod, IndicatorPeriodData, Disaggregation, DisaggregationTarget,
     IndicatorDimensionName, IndicatorDimensionValue, IndicatorPeriodLabel, IndicatorPeriodDataComment,
+    Partnership,
 )
+from akvo.rsr.models.project_hierarchy import ProjectHierarchy
+from akvo.rsr.models.result.default_period import DefaultPeriod
+from akvo.rsr.models.result.indicator_reference import IndicatorReference
 from akvo.rsr.tests.base import BaseTestCase
 from datetime import date, timedelta
 import random
@@ -32,9 +36,12 @@ class ProjectFixtureBuilder(object):
     """
     def __init__(self):
         self.title = random_string()
+        self.validations = []
+        self.is_program = False
         self.results = []
         self.disaggregations = {}
         self.period_labels = []
+        self.default_periods = []
         self.partners = []
         self.contributors = []
         self._disaggregations_map = {}
@@ -43,8 +50,16 @@ class ProjectFixtureBuilder(object):
         self.title = title
         return self
 
+    def with_validations(self, validations):
+        self.validations = validations
+        return self
+
     def with_period_labels(self, labels):
         self.period_labels = labels
+        return self
+
+    def with_default_periods(self, default_periods):
+        self.default_periods = default_periods
         return self
 
     def with_disaggregations(self, disaggregations):
@@ -59,16 +74,27 @@ class ProjectFixtureBuilder(object):
         self.partners.append((org, role))
         return self
 
+    def as_program_of(self, org):
+        self.is_program = True
+        self.with_partner(org, Partnership.IATI_REPORTING_ORGANISATION)
+        return self
+
     def with_contributors(self, contributors):
         self.contributors = contributors
         return self
 
     def build(self):
         project = BaseTestCase.create_project(self.title)
+        for validation in self.validations:
+            project.add_validation_set(validation)
+        for default_period in self.default_periods:
+            DefaultPeriod.objects.create(project=project, period_start=default_period['period_start'], period_end=default_period['period_end'])
         for label in self.period_labels:
             IndicatorPeriodLabel.objects.create(label=label, project=project)
         for partner, role in self.partners:
             BaseTestCase.make_partner(project, partner, role)
+        if self.is_program:
+            ProjectHierarchy.objects.create(root_project=project, max_depth=5)
         self._build_disaggregations(project)
         for params in self.results:
             self._build_result(project, params)
@@ -87,9 +113,12 @@ class ProjectFixtureBuilder(object):
 
     def _build_indicator(self, project, result, params):
         periods = params.get('periods', [{'period_start': date.today(), 'period_end': date.today() + timedelta(days=30)}])
+        references = params.get('references', [])
         kwargs = params.copy()
         if 'periods' in kwargs:
             del kwargs['periods']
+        if 'references' in kwargs:
+            del kwargs['references']
         enumerators = kwargs.pop('enumerators', [])
         kwargs['result'] = result
         indicator = Indicator.objects.create(**kwargs)
@@ -97,6 +126,8 @@ class ProjectFixtureBuilder(object):
             indicator.dimension_names.add(dimension_name)
         for params in periods:
             self._build_period(project, indicator, params)
+        for reference in references:
+            IndicatorReference.objects.create(indicator=indicator, **reference)
         for enumerator in enumerators:
             indicator.enumerators.add(enumerator)
 
