@@ -41,6 +41,7 @@ from akvo.rest.serializers import (
 )
 from akvo.rsr.models import ExternalProject, IndicatorPeriodData, OrganisationCustomField, Project, ProjectRole
 from akvo.rsr.usecases.iati_validation import schedule_iati_activity_validation
+from akvo.rsr.usecases.add_project_to_program import add_project_to_program as set_project_program
 from akvo.rsr.views.my_rsr import user_viewable_projects
 from akvo.utils import codelist_choices, get_thumbnail, single_period_dates
 from ..viewsets import PublicProjectViewSet
@@ -488,7 +489,7 @@ def add_project_to_program(request, program_pk):
     project = Project.objects.create()
     Project.new_project_created(project.id, request.user)   # Log creation
     schedule_iati_activity_validation(project)
-    project.add_to_program(program)
+    set_project_program(project, program)
     # Set user's primary org as accountable partner
     org = request.user.first_organisation()
     if org is not None and org != program.reporting_org:
