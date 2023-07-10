@@ -7,13 +7,14 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-import datetime
+from datetime import datetime
 import json
 
 from django.conf import settings
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.models import Group
 from django.test import TestCase, Client
+from akvo.iati.exports.utils import make_datetime_aware
 
 from akvo.codelists.store import default_codelists as codelists
 from akvo.rsr.factories.external_project import ExternalProjectFactory
@@ -21,8 +22,10 @@ from akvo.rsr.models import (
     ExternalProject, Project, Organisation, Partnership, User,
     Employment, ProjectLocation, ProjectEditorValidationSet,
     OrganisationCustomField, ProjectCustomField, Result,
-    Sector
+    Sector, IndicatorDimensionValue, Indicator, IndicatorPeriod, IndicatorReference
 )
+from akvo.rsr.usecases.add_project_to_program import add_new_project_to_program
+from akvo.rsr.tests.utils import ProjectFixtureBuilder
 from akvo.utils import check_auth_groups
 from akvo.rsr.tests.base import BaseTestCase
 
@@ -69,8 +72,8 @@ class RestProjectTestCase(BaseTestCase):
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content)
         self.assertEqual(
-            datetime.datetime.strptime(content['date_start_actual'], '%Y-%m-%d'),
-            datetime.datetime.strptime(data['date_start_actual'], '%d-%m-%Y'),
+            datetime.strptime(content['date_start_actual'], '%Y-%m-%d'),
+            datetime.strptime(data['date_start_actual'], '%d-%m-%Y'),
         )
         self.assertEqual(content['date_start_planned'], data['date_start_planned'])
 
@@ -464,58 +467,116 @@ class AddProjectToProgramTestCase(BaseTestCase):
         email = 'foo@bar.com'
         self.user = self.create_user(email, 'password', is_superuser=True)
         self.c.login(username=email, password='password')
+        org = self.create_organisation('Organisation')
+        program_fixture = ProjectFixtureBuilder()\
+            .as_program_of(org)\
+            .with_validations([v for v in ProjectEditorValidationSet.objects.all()])\
+            .with_disaggregations({
+                'Gender': ['Male', 'Female'],
+            })\
+            .with_default_periods([{
+                'period_start': make_datetime_aware(datetime(2010, 1, 1)),
+                'period_end': make_datetime_aware(datetime(2010, 12, 31)),
+            }])\
+            .with_results([
+                {
+                    'title': 'Result #1',
+                    'indicators': [{
+                        'title': 'Indicator #1.1',
+                        'references': [{'reference': 'test'}],
+                        'periods': [{
+                            'period_start': make_datetime_aware(datetime(2011, 1, 1)),
+                            'period_end': make_datetime_aware(datetime(2011, 12, 31)),
+                        }]
+                    }]
+                },
+                {
+                    'title': 'Result #2',
+                    'indicators': [
+                        {'title': 'Indicator #2.1'},
+                        {'title': 'Indicator #2.2'}
+                    ]
+                },
+            ])\
+            .build()
+        self.program = program_fixture.object
 
     def test_add_project_to_program(self):
-        org = self.create_organisation('Organisation')
-        program = self.create_project('Program')
-        self.make_partner(program, org, Partnership.IATI_REPORTING_ORGANISATION)
-        self.create_project_hierarchy(org, program, 2)
-        Result.objects.create(project=program)
-        for validation_set in ProjectEditorValidationSet.objects.all():
-            program.add_validation_set(validation_set)
         org2 = self.create_organisation('Delegation')
         self.make_employment(self.user, org2, 'Admins')
 
         data = {
-            'parent': program.pk
+            'parent': self.program.pk
         }
-        response = self.c.post('/rest/v1/program/{}/add-project/?format=json'.format(program.id), data=data)
+        response = self.c.post('/rest/v1/program/{}/add-project/?format=json'.format(self.program.id), data=data)
 
         self.assertEqual(response.status_code, 201)
         child_project = Project.objects.get(id=response.data['id'])
-        self.assertEqual(child_project.reporting_org, program.reporting_org)
-        self.assertEqual(child_project.parent(), program)
-        self.assertEqual(child_project.results.count(), program.results.count())
-        self.assertEqual(child_project.validations.count(), program.validations.count())
+        self.assertEqual(child_project.parent(), self.program)
+        self.assertEqual(child_project.reporting_org, self.program.reporting_org)
         partnership = child_project.partnerships.get(organisation=org2)
         self.assertIsNotNone(partnership.iati_organisation_role, Partnership.IATI_ACCOUNTABLE_PARTNER)
 
+        self.assertEqual(child_project.validations.count(), self.program.validations.count())
+
+        self.assertEqual(child_project.default_periods.count(), self.program.default_periods.count())
+        self.assertEqual(child_project.default_periods.first().parent.project, self.program)
+
+        self.assertEqual(child_project.dimension_names.count(), self.program.dimension_names.count())
+        self.assertEqual(child_project.dimension_names.first().parent_dimension_name.project, self.program)
+        self.assertEqual(
+            IndicatorDimensionValue.objects.filter(name__project=child_project).count(),
+            IndicatorDimensionValue.objects.filter(name__project=self.program).count()
+        )
+        self.assertEqual(
+            IndicatorDimensionValue.objects.filter(name__project=child_project).first().parent_dimension_value.name.project,
+            self.program
+        )
+
+        self.assertEqual(child_project.results.count(), self.program.results.count())
+        self.assertEqual(child_project.results.first().parent_result.project, self.program)
+
+        self.assertEqual(
+            Indicator.objects.filter(result__project=child_project).count(),
+            Indicator.objects.filter(result__project=self.program).count()
+        )
+        first_child_indicator = Indicator.objects.filter(result__project=child_project).first()
+        self.assertEqual(first_child_indicator.parent_indicator.result.project, self.program)
+        self.assertEqual(first_child_indicator.dimension_names.count(), first_child_indicator.parent_indicator.dimension_names.count())
+
+        self.assertEqual(
+            IndicatorReference.objects.filter(indicator__result__project=child_project).count(),
+            IndicatorReference.objects.filter(indicator__result__project=self.program).count()
+        )
+
+        self.assertEqual(
+            IndicatorPeriod.objects.filter(indicator__result__project=child_project).count(),
+            IndicatorPeriod.objects.filter(indicator__result__project=self.program).count()
+        )
+        self.assertEqual(
+            IndicatorPeriod.objects.filter(indicator__result__project=child_project).first().parent_period.indicator.result.project,
+            self.program
+        )
+
     def test_add_project_to_sub_program(self):
-        org = self.create_organisation('Organisation')
-        program = self.create_project('Program')
-        self.make_partner(program, org, Partnership.IATI_REPORTING_ORGANISATION)
-        self.create_project_hierarchy(org, program, 2)
-        Result.objects.create(project=program)
-        for validation_set in ProjectEditorValidationSet.objects.all():
-            program.add_validation_set(validation_set)
         org2 = self.create_organisation('Delegation')
         self.make_employment(self.user, org2, 'Admins')
         sub_program = self.create_project('Sub-Program')
-        sub_program.add_to_program(program)
+        add_new_project_to_program(sub_program, self.program)
         # Add an extra result at the sub program level
         Result.objects.create(project=sub_program)
 
         data = {
             'parent': sub_program.pk
         }
-        response = self.c.post('/rest/v1/program/{}/add-project/?format=json'.format(program.id), data=data)
+        response = self.c.post('/rest/v1/program/{}/add-project/?format=json'.format(self.program.id), data=data)
 
         self.assertEqual(response.status_code, 201)
         child_project = Project.objects.get(id=response.data['id'])
-        self.assertEqual(child_project.reporting_org, program.reporting_org)
+        self.assertEqual(child_project.reporting_org, self.program.reporting_org)
         self.assertEqual(child_project.parent(), sub_program)
         self.assertEqual(child_project.results.count(), sub_program.results.count())
-        self.assertEqual(child_project.validations.count(), program.validations.count())
+        self.assertEqual(child_project.validations.count(), self.program.validations.count())
         partnership = child_project.partnerships.get(organisation=org2)
         self.assertIsNotNone(partnership.iati_organisation_role, Partnership.IATI_ACCOUNTABLE_PARTNER)
 
