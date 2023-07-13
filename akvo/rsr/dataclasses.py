@@ -403,6 +403,7 @@ class ContributorData(ReportingPeriodMixin):
     indicator_cumulative: bool = False
     target_value: Optional[Decimal] = None
     period_actual_value: Optional[Decimal] = None
+    period_actual_comment: str = ''
     period_narrative: str = ''
     indicator_baseline_value: Optional[Decimal] = None
     indicator_target_value: Optional[Decimal] = None
@@ -423,6 +424,7 @@ class ContributorData(ReportingPeriodMixin):
             indicator_cumulative=data.get(f"{prefix}indicator__cumulative", False),
             target_value=maybe_decimal(data.get(f"{prefix}target_value", None)),
             period_actual_value=ensure_decimal(data.get(f"{prefix}actual_value", None)),
+            period_actual_comment=data.get(f"{prefix}actual_comment", ''),
             period_narrative=data.get(f"{prefix}narrative", ''),
             indicator_baseline_value=data.get(f"{prefix}indicator__baseline_value", None),
             indicator_target_value=data.get(f"{prefix}indicator__target_value", None),
