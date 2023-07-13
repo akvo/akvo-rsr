@@ -143,9 +143,9 @@ def fetch_contributors(root_period_ids):
         )\
         .filter(id__in=contributor_ids)\
         .values(
-            'id', 'period_start', 'parent_period', 'target_value', 'actual_value', 'narrative', 'indicator__id',
-            'indicator__type', 'indicator__measure', 'indicator__cumulative', 'indicator__target_value',
-            'indicator__baseline_value', 'indicator__result__project__id',
+            'id', 'period_start', 'parent_period', 'target_value', 'actual_value', 'actual_comment', 'narrative',
+            'indicator__id', 'indicator__type', 'indicator__measure', 'indicator__cumulative',
+            'indicator__target_value', 'indicator__baseline_value', 'indicator__result__project__id',
             'indicator__result__project__title', 'indicator__result__project__subtitle',
             'indicator__result__project__aggregate_children', 'indicator__result__project__aggregate_to_parent',
             'indicator__result__project__primary_location__latitude',

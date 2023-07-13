@@ -62,7 +62,7 @@ def generate_workbok(program, start_date=None, end_date=None):
     aggregate_targets = is_aggregating_targets(program)
     use_indicator_target = utils.is_using_indicator_target(program)
     disaggregations = get_disaggregations(program)
-    disaggregations_column_start = 17 if aggregate_targets else 16
+    disaggregations_column_start = 18 if aggregate_targets else 17
     disaggregation_types_length = 0
     for types in disaggregations.values():
         disaggregation_types_length += len(types.keys())
@@ -106,6 +106,8 @@ def generate_workbok(program, start_date=None, end_date=None):
         ws.set_col_style(col, Style(size=25))
         col += 1
         ws.set_col_style(col, Style(size=25))
+        col += 1
+        ws.set_col_style(col, Style(size=25))
         # r1
         ws.set_row_style(1, Style(size=36))
         for i in range(1, disaggregations_column_start):
@@ -129,6 +131,8 @@ def generate_workbok(program, start_date=None, end_date=None):
         ws.set_cell_value(1, col, 'Aggregated actual value')
         col += 1
         ws.set_cell_value(1, col, 'Actual value')
+        col += 1
+        ws.set_cell_value(1, col, 'Actual comment')
         col += 1
         ws.set_cell_value(1, col, '% of contribution')
         # col += 1
@@ -235,6 +239,9 @@ def render_contributor(ws, row, result, indicator, period, contributor, aggregat
     ws.set_cell_value(row, col, contributor.indicator_target_value if use_indicator_target else ensure_decimal(contributor.target_value))
     col += 2
     ws.set_cell_value(row, col, contributor.actual_value)
+    col += 1
+    ws.set_cell_style(row, col, long_text_style)
+    ws.set_cell_value(row, col, contributor.period_actual_comment)
     col += 1
     if period.is_quantitative and not period.is_cumulative_future:
         contribution = calculate_percentage(contributor.actual_value, period.aggregated_value)
