@@ -92,8 +92,8 @@ services:
     ports:
       - "5432:5432"
 
-  mailhog:
-    image: mailhog/mailhog:v1.0.0
+  mailpit:
+    image: axllent/mailpit:v1.7
     ports:
       - 8025:8025
 
