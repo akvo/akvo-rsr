@@ -261,13 +261,14 @@ class PasswordResetTestCase(BaseTestCase):
 
     email = 'foo@example.com'
     password = 'passwdpasswdA1$'
+    url = '/auth/reset-password/'
 
     def test_normal_user_gets_password_reset_email(self):
         user = self.create_user(self.email, self.password)
         self.assertTrue(user.has_usable_password())
         data = {'email': self.email}
 
-        response = self.c.post('/en/sign_in/', data=data, follow=True)
+        response = self.c.post(self.url, data=data, follow=True)
 
         self.assertEqual(200, response.status_code)
         self.assertEqual(1, len(mail.outbox))
@@ -284,7 +285,7 @@ class PasswordResetTestCase(BaseTestCase):
         mail.outbox = []
 
         data = {'email': self.email}
-        response = self.c.post('/en/sign_in/', data=data, follow=True)
+        response = self.c.post(self.url, data=data, follow=True)
         self.assertEqual(200, response.status_code)
         self.assertEqual(1, len(mail.outbox))
 
@@ -308,7 +309,7 @@ class PasswordResetTestCase(BaseTestCase):
         mail.outbox = []
 
         data = {'email': self.email}
-        response = self.c.post('/en/sign_in/', data=data, follow=True)
+        response = self.c.post(self.url, data=data, follow=True)
 
         self.assertEqual(200, response.status_code)
         self.assertEqual(1, len(mail.outbox))
@@ -326,7 +327,7 @@ class PasswordResetTestCase(BaseTestCase):
         user.is_active = False
         user.save(update_fields=['is_active'])
 
-        response = self.c.post('/en/sign_in/', data=data, follow=True)
+        response = self.c.post(self.url, data=data, follow=True)
 
         self.assertEqual(200, response.status_code)
         self.assertEqual(0, len(mail.outbox))

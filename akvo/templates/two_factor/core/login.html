@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% load i18n bootstrap3 %}
+{% load render_bundle from webpack_loader %}
+{% load two_factor_tags %}
+
+{% block title %}{% trans 'Sign in to your Akvo RSR account' %}{% endblock %}
+
+{% block maincontent %}
+<div class="container-fluid alignFooter">
+  <h2 class="text-center verticalPadding">{% trans 'Sign in' %}</h2>
+  <div class="row">
+    <div class="col-md-6 col-md-offset-3">
+      {% if wizard.steps.current == 'token' %}
+      <p>{{ device|as_verbose_action }}</p>
+      {% elif wizard.steps.current == 'backup' %}
+      <p>{% blocktrans trimmed %}Use this form for entering backup tokens for logging in.
+        These tokens have been generated for you to print and keep safe. Please
+        enter one of these backup tokens to login to your account.{% endblocktrans %}</p>
+      {% endif %}
+
+      <form action="" method="post">
+        {% csrf_token %}
+        {% bootstrap_form_errors form type='non_fields' %}
+        {{ wizard.management_form }}
+        {% for field in wizard.form %}
+          {% if field.name == 'username' %}
+            {% bootstrap_field field label='Email' %}
+          {% else %}
+            {% bootstrap_field field %}
+          {% endif %}
+        {% endfor %}
+        {# hidden submit button to enable [enter] key #}
+        <input type="submit" value="" hidden />
+        {% if cancel_url %}
+        <a href="{{ cancel_url }}" class="float-right btn btn-link">{% trans "Cancel" %}</a>
+        {% endif %}
+        {% if wizard.steps.prev %}
+        <button name="wizard_goto_step" type="submit"
+          value="{{ wizard.steps.prev }}"
+          class="btn btn-secondary">{% trans "Back" %}</button>
+        {% endif %}
+        {% if wizard.steps.current == 'auth' %}
+        <button type="submit" class="btn btn-primary center-block">
+          <i class="fa fa-sign-in"></i> {% trans 'Login' %}
+        </button>
+        <div id="reset-pw" class="text-center topMargin"></div>
+        {% else %}
+        <button type="submit" class="btn btn-primary">
+          <i class="fa fa-sign-in"></i> {% trans "Submit" %}
+        </button>
+        {% endif %}
+      </form>
+
+      {% if backup_tokens %}
+      <hr>
+      <div class="backup_tokens_form">
+        <form action="" method="post">
+          {% csrf_token %}
+          <p>{% trans "As a last resort, you can use a backup token:" %}</p>
+          <p>
+            <button name="wizard_goto_step" type="submit" value="backup"
+              class="btn btn-sm btn-secondary btn-block">{% trans "Use Backup Token" %}</button>
+          </p>
+        </form>
+      </div>
+      {% endif %}
+
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+{# Translation strings #}
+<script type="application/json" id="reset-password-text">
+{
+  "reset_your_password_text": "{% trans 'Reset your password'|escapejs %}",
+  "fill_email_text": "{% trans 'Fill in your email address in the field below. We will send you instructions on how to reset your password.'|escapejs %}",
+  "email_text": "{% trans 'Email'|escapejs %}",
+  "reset_password_text": "{% trans 'Reset password'|escapejs %}",
+  "forgot_password_text": "{% trans 'I forgot my password'|escapejs %}",
+  "close_text": "{% trans 'Close'|escapejs %}"
+}
+</script>
+{% render_bundle 'passwordReset' %}
+{% endblock %}

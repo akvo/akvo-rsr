@@ -34,11 +34,12 @@ function initReact() {
             var thisModal = this;
 
             form_data = this.getFormData();
-            url = "/" + AKVO_RSR.language + "/sign_in/";
+            url = "/auth/reset-password/";
             $.ajax({
                 type: "POST",
-                url: this.url,
-                data: form_data,
+                url: url,
+                data: JSON.stringify(form_data),
+                contentType: 'application/json',
                 success: function(data) {
                     thisModal.close();
                 }.bind(this),
