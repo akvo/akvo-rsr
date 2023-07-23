@@ -17,24 +17,16 @@ router = routers.DefaultRouter()
 # parameter. Example: {% url 'project_extra-detail' 'v1' project.id 'json' %}
 
 router.register(r'(?P<version>(v1))/administrative_location', views.AdministrativeLocationViewSet)
-router.register(r'(?P<version>(v1))/benchmark', views.BenchmarkViewSet)
-router.register(r'(?P<version>(v1))/benchmark_name', views.BenchmarknameViewSet)
 router.register(r'(?P<version>(v1))/budget_item', views.BudgetItemViewSet)
-router.register(r'(?P<version>(v1))/budget_item_label', views.BudgetItemLabelViewSet)
-router.register(r'(?P<version>(v1))/category', views.CategoryViewSet)
 router.register(r'(?P<version>(v1))/country', views.CountryViewSet)
 router.register(r'(?P<version>(v1))/country_budget_item', views.CountryBudgetItemViewSet)
 router.register(r'(?P<version>(v1))/crs_add', views.CrsAddViewSet)
 router.register(r'(?P<version>(v1))/crs_add_other_flag', views.CrsAddOtherFlagViewSet)
 router.register(r'(?P<version>(v1))/default_period', views.DefaultPeriodViewSet)
 router.register(r'(?P<version>(v1))/employment', views.EmploymentViewSet)
-router.register(r'(?P<version>(v1))/focus_area', views.FocusAreaViewSet)
 router.register(r'(?P<version>(v1))/fss', views.FssViewSet)
 router.register(r'(?P<version>(v1))/fss_forecast', views.FssForecastViewSet)
-router.register(r'(?P<version>(v1))/goal', views.GoalViewSet)
 router.register(r'(?P<version>(v1))/humanitarian_scope', views.HumanitarianScopeViewSet)
-router.register(r'(?P<version>(v1))/iati_activity_export', views.IatiActivityExportViewSet)
-router.register(r'(?P<version>(v1))/iati_check', views.IatiCheckViewSet)
 router.register(r'(?P<version>(v1))/iati_export', views.IatiExportViewSet)
 router.register(r'(?P<version>(v1))/indicator', views.IndicatorViewSet)
 router.register(r'(?P<version>(v1))/jobs/indicator_period_aggregation', views.IndicatorPeriodAggregationJobViewSet)
@@ -43,40 +35,20 @@ router.register(r'(?P<version>(v1))/dimension_value', views.IndicatorDimensionVa
 router.register(r'(?P<version>(v1))/indicator_custom_field', views.IndicatorCustomFieldViewSet)
 router.register(r'(?P<version>(v1))/indicator_custom_value', views.IndicatorCustomValueViewSet)
 router.register(r'(?P<version>(v1))/indicator_framework', views.IndicatorFrameworkViewSet)
-router.register(r'(?P<version>(v1))/indicator_label', views.IndicatorLabelViewSet)
 router.register(r'(?P<version>(v1))/indicator_period', views.IndicatorPeriodViewSet)
-router.register(r'(?P<version>(v1))/indicator_period_framework', views.IndicatorPeriodFrameworkViewSet)
-router.register(r'(?P<version>(v1))/indicator_period_actual_location', views.IndicatorPeriodActualLocationViewSet)
 router.register(r'(?P<version>(v1))/indicator_period_data', views.IndicatorPeriodDataViewSet)
 router.register(r'(?P<version>(v1))/indicator_period_data_framework', views.IndicatorPeriodDataFrameworkViewSet)
 router.register(r'(?P<version>(v1))/indicator_period_data_comment', views.IndicatorPeriodDataCommentViewSet)
-router.register(r'(?P<version>(v1))/indicator_period_disaggregation', views.IndicatorPeriodDisaggregationViewSet)
 router.register(r'(?P<version>(v1))/disaggregation', views.DisaggregationViewSet)
 router.register(r'(?P<version>(v1))/disaggregation_target', views.DisaggregationTargetViewSet)
 router.register(r'(?P<version>(v1))/indicator_disaggregation_target', views.IndicatorDisaggregationTargetViewSet)
-router.register(r'(?P<version>(v1))/indicator_period_target_location', views.IndicatorPeriodTargetLocationViewSet)
 router.register(r'(?P<version>(v1))/indicator_reference', views.IndicatorReferenceViewSet)
 router.register(r'(?P<version>(v1))/indicator_period_label', views.IndicatorPeriodLabelViewSet)
-router.register(r'(?P<version>(v1))/internal_organisation_id',
-                views.InternalOrganisationIDViewSet)
 router.register(r'(?P<version>(v1))/keyword', views.KeywordViewSet)
 router.register(r'(?P<version>(v1))/legacy_data', views.LegacyDataViewSet)
 router.register(r'(?P<version>(v1))/link', views.LinkViewSet)
-router.register(r'(?P<version>(v1))/narrative_report', views.NarrativeReportViewSet)
 router.register(r'(?P<version>(v1))/organisation', views.OrganisationViewSet)
-router.register(r'(?P<version>(v1))/organisation_country_budget', views.OrganisationCountryBudgetViewSet)
-router.register(r'(?P<version>(v1))/organisation_country_budget_line', views.OrganisationCountryBudgetLineViewSet)
-router.register(r'(?P<version>(v1))/organisation_custom_field', views.OrganisationCustomFieldViewSet)
-router.register(r'(?P<version>(v1))/organisation_expense_line', views.OrganisationExpenseLineViewSet)
 router.register(r'(?P<version>(v1))/organisation_indicator_label', views.OrganisationIndicatorLabelViewSet)
-router.register(r'(?P<version>(v1))/organisation_location', views.OrganisationLocationViewSet)
-router.register(r'(?P<version>(v1))/organisation_map_location', views.MapOrganisationLocationViewSet)
-router.register(r'(?P<version>(v1))/organisation_region_budget', views.OrganisationRegionBudgetViewSet)
-router.register(r'(?P<version>(v1))/organisation_region_budget_line', views.OrganisationRegionBudgetLineViewSet)
-router.register(r'(?P<version>(v1))/organisation_total_budget', views.OrganisationTotalBudgetViewSet)
-router.register(r'(?P<version>(v1))/organisation_total_budget_line', views.OrganisationTotalBudgetLineViewSet)
-router.register(r'(?P<version>(v1))/organisation_total_expenditure', views.OrganisationTotalExpenditureViewSet)
-router.register(r'(?P<version>(v1))/partner_site', views.PartnerSiteViewSet)
 router.register(r'(?P<version>(v1))/partnership', views.PartnershipViewSet)
 router.register(r'(?P<version>(v1))/partnership_more_link', views.PartnershipMoreLinkViewSet)
 router.register(r'(?P<version>(v1))/planned_disbursement', views.PlannedDisbursementViewSet)
@@ -84,36 +56,23 @@ router.register(r'(?P<version>(v1))/policy_marker', views.PolicyMarkerViewSet)
 router.register(r'(?P<version>(v1))/project', views.ProjectViewSet)
 router.register(r'(?P<version>(v1))/raw_project_hierarchy', views.RawProjectHierarchyViewSet)
 router.register(r'(?P<version>(v1))/program', views.ProgramViewSet)
-router.register(r'(?P<version>(v1))/project_by_uuid', views.ProjectByUuidViewSet)
 router.register(r'(?P<version>(v1))/my_projects', views.MyProjectsViewSet)
 router.register(r'(?P<version>(v1))/project_iati_export', views.ProjectIatiExportViewSet,
                 basename='project_iati_export')
 router.register(r'(?P<version>(v1))/project_extra', views.ProjectExtraViewSet,
                 basename='project_extra')
-router.register(r'(?P<version>(v1))/project_extra_deep', views.ProjectExtraDeepViewSet,
-                basename='project_extra_deep')
 router.register(r'(?P<version>(v1))/project_up', views.ProjectUpViewSet,
                 basename='project_up')
-router.register(r'(?P<version>(v1))/project_condition', views.ProjectConditionViewSet)
 router.register(r'(?P<version>(v1))/project_contact', views.ProjectContactViewSet)
 router.register(r'(?P<version>(v1))/project_custom_field', views.ProjectCustomFieldViewSet)
 router.register(r'(?P<version>(v1))/project_document', views.ProjectDocumentViewSet)
-router.register(r'(?P<version>(v1))/project_document_category', views.ProjectDocumentCategoryViewSet)
 router.register(r'(?P<version>(v1))/project_location', views.ProjectLocationViewSet)
-router.register(r'(?P<version>(v1))/project_map_location', views.MapProjectLocationViewSet)
 
-router.register(r'(?P<version>(v1))/project_update_extra', views.ProjectUpdateExtraViewSet,
-                basename='project_update_extra')
 router.register(r'(?P<version>(v1))/project_update', views.ProjectUpdateViewSet,
                 basename='project_update')
-router.register(r'(?P<version>(v1))/project_update_location', views.ProjectUpdateLocationViewSet)
-router.register(r'(?P<version>(v1))/project_update_map_location', views.MapProjectUpdateLocationViewSet)
 
 router.register(r'(?P<version>(v1))/publishing_status', views.PublishingStatusViewSet)
 router.register(r'(?P<version>(v1))/recipient_country', views.RecipientCountryViewSet)
-router.register(r'(?P<version>(v1))/recipient_organisation_budget', views.OrganisationRecipientOrgBudgetViewSet)
-router.register(r'(?P<version>(v1))/recipient_organisation_budget_line',
-                views.OrganisationRecipientOrgBudgetLineViewSet)
 router.register(r'(?P<version>(v1))/recipient_region', views.RecipientRegionViewSet)
 router.register(r'(?P<version>(v1))/reports', views.ReportViewSet, basename='reports_api')
 router.register(r'(?P<version>(v1|v2))/result', views.ResultsViewSet)
@@ -256,12 +215,6 @@ urlpatterns += (
     url(r'v1/project-directory$',
         views.project_directory,
         name='project_directory'),
-    url(r'v1/update_directory$',
-        views.update_directory,
-        name='update_directory'),
-    url(r'v1/organisation_directory$',
-        views.organisation_directory,
-        name='organisation_directory'),
     url(r'v1/sector_codes$',
         views.sector_codes,
         name="sector_code_list"),

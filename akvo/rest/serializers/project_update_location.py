@@ -6,7 +6,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 from rest_framework import serializers
 from akvo.rsr.models import ProjectUpdateLocation
-from ..fields import Base64ImageField
 from .rsr_serializer import BaseRSRSerializer
 
 
@@ -33,26 +32,3 @@ class ProjectUpdateLocationExtraSerializer(ProjectUpdateLocationSerializer):
 
     class Meta(ProjectUpdateLocationSerializer.Meta):
         depth = 2
-
-
-class MapProjectUpdateSerializer(serializers.Serializer):
-
-    """To serialize the update field of the update map resource."""
-
-    id = serializers.IntegerField()
-    title = serializers.CharField()
-    photo = Base64ImageField(required=False, allow_empty_file=True, allow_null=True)
-    video = serializers.CharField(required=False)
-
-
-class MapProjectUpdateLocationSerializer(serializers.Serializer):
-
-    """To serialize the update map resource."""
-
-    id = serializers.IntegerField()
-    latitude = serializers.FloatField()
-    longitude = serializers.FloatField()
-    update = MapProjectUpdateSerializer(source='location_target')
-
-    class Meta:
-        fields = '__all__'

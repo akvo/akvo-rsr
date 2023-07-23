@@ -7,11 +7,8 @@ see < http://www.gnu.org/licenses/agpl.html >.
 """
 
 
-from .benchmark import BenchmarkSerializer
-from .benchmark_name import BenchmarknameSerializer
 from .budget_item import BudgetItemRawSerializer, BudgetItemSerializer, CountryBudgetItemSerializer
 from .budget_item_label import BudgetItemLabelSerializer
-from .category import CategorySerializer
 from .country import CountrySerializer
 from .crs_add import CrsAddSerializer, CrsAddOtherFlagSerializer
 from .custom_field import OrganisationCustomFieldSerializer, ProjectCustomFieldSerializer
@@ -21,34 +18,25 @@ from .disaggregation_target import DisaggregationTargetSerializer
 from .external_project import ExternalProjectSerializer
 from .indicator_disaggregation_target import IndicatorDisaggregationTargetSerializer
 from .employment import EmploymentSerializer
-from .focus_area import FocusAreaSerializer
 from .fss import FssSerializer, FssForecastSerializer
-from .goal import GoalSerializer
 from .humanitarian_scope import HumanitarianScopeSerializer
-from .iati_check import IatiCheckSerializer
-from .iati_export import IatiActivityExportSerializer, IatiExportSerializer
+from .iati_export import IatiExportSerializer
 from .indicator import (IndicatorSerializer, IndicatorFrameworkSerializer, IndicatorFrameworkLiteSerializer,
                         IndicatorFrameworkNotSoLiteSerializer)
-from .indicator_label import IndicatorLabelSerializer
 from .indicator_period import IndicatorPeriodSerializer, IndicatorPeriodFrameworkSerializer
 from .indicator_period_aggregation_job import IndicatorPeriodAggregationJobSerializer
 from .indicator_period_data import (IndicatorPeriodDataSerializer,
                                     IndicatorPeriodDataFrameworkSerializer,
                                     IndicatorPeriodDataCommentSerializer)
-from .indicator_period_disaggregation import IndicatorPeriodDisaggregationSerializer
 from .indicator_period_label import IndicatorPeriodLabelSerializer
-from .indicator_period_location import (IndicatorPeriodActualLocationSerializer,
-                                        IndicatorPeriodTargetLocationSerializer)
 from .indicator_custom_field import IndicatorCustomFieldSerializer, IndicatorCustomValueSerializer
 from .indicator_dimension_name import IndicatorDimensionNameSerializer
 from .indicator_dimension_value import IndicatorDimensionValueSerializer
 from .indicator_reference import IndicatorReferenceSerializer
-from .internal_organisation_id import InternalOrganisationIDSerializer
 from .keyword import KeywordSerializer
 from .legacy_data import LegacyDataSerializer
 from .link import LinkSerializer
-from .narrative_report import NarrativeReportSerializer
-from .organisation import OrganisationSerializer, OrganisationBasicSerializer, OrganisationDirectorySerializer
+from .organisation import OrganisationSerializer, OrganisationBasicSerializer
 from .organisation_budget import (OrganisationCountryBudgetSerializer,
                                   OrganisationCountryBudgetLineSerializer,
                                   OrganisationExpenseLineSerializer,
@@ -63,9 +51,7 @@ from .organisation_document import (OrganisationDocumentCategorySerializer,
                                     OrganisationDocumentCountrySerializer,
                                     OrganisationDocumentSerializer)
 from .organisation_indicator_label import OrganisationIndicatorLabelSerializer
-from .organisation_location import (OrganisationLocationSerializer,
-                                    MapOrganisationLocationSerializer)
-from .partner_site import PartnerSiteSerializer
+from .organisation_location import OrganisationLocationSerializer
 from .partnership import (PartnershipSerializer,
                           PartnershipBasicSerializer,
                           PartnershipRawSerializer,
@@ -74,28 +60,24 @@ from .planned_disbursement import (PlannedDisbursementSerializer,
                                    PlannedDisbursementRawDeepSerializer,
                                    PlannedDisbursementRawSerializer)
 from .policy_marker import PolicyMarkerSerializer, PolicyMarkerRawSerializer
-from .project import (ProjectSerializer, ProjectExtraSerializer, ProjectExtraDeepSerializer,
+from .project import (ProjectSerializer, ProjectExtraSerializer,
                       ProjectIatiExportSerializer, ProjectDirectorySerializer, ProjectUpSerializer,
                       ProjectMetadataSerializer, ProjectDirectoryDynamicFieldsSerializer)
-from .project_condition import ProjectConditionSerializer, ProjectConditionRawSerializer
+from .project_condition import ProjectConditionRawSerializer
 from .project_contact import (ProjectContactSerializer,
                               ProjectContactRawSerializer,
                               ProjectContactRawDeepSerializer)
-from .project_document import (ProjectDocumentSerializer, ProjectDocumentCategorySerializer,
-                               ProjectDocumentRawSerializer)
+from .project_document import ProjectDocumentSerializer, ProjectDocumentRawSerializer
 from .project_hierarchy import ProjectHierarchySerializer
 from .project_location import (ProjectLocationSerializer, AdministrativeLocationSerializer,
-                               MapProjectLocationSerializer, ProjectLocationRawSerializer,
+                               ProjectLocationRawSerializer,
                                ProjectLocationCountryNameSerializer)
 from .project_role import ProjectRoleSerializer
 from .project_update import (ProjectUpdateSerializer,
                              ProjectUpdateDeepSerializer,
-                             ProjectUpdateDirectorySerializer,
                              ProjectUpdatePhotoSerializer,
                              ProjectUpdateExtraSerializer,)
-from .project_update_location import (ProjectUpdateLocationSerializer,
-                                      ProjectUpdateLocationNestedSerializer,
-                                      MapProjectUpdateLocationSerializer)
+from .project_update_location import ProjectUpdateLocationSerializer, ProjectUpdateLocationNestedSerializer
 from .publishing_status import PublishingStatusSerializer
 from .recipient_country import RecipientCountrySerializer, RecipientCountryRawSerializer
 from .region import RecipientRegionSerializer, RecipientRegionRawSerializer
@@ -115,12 +97,9 @@ from .user import UserSerializer, UserDetailsSerializer, UserPasswordSerializer,
 
 __all__ = [
     'AdministrativeLocationSerializer',
-    'BenchmarknameSerializer',
-    'BenchmarkSerializer',
     'BudgetItemLabelSerializer',
     'BudgetItemRawSerializer',
     'BudgetItemSerializer',
-    'CategorySerializer',
     'CountrySerializer',
     'CountryBudgetItemSerializer',
     'CrsAddSerializer',
@@ -131,20 +110,14 @@ __all__ = [
     'ExternalProjectSerializer',
     'IndicatorDisaggregationTargetSerializer',
     'EmploymentSerializer',
-    'FocusAreaSerializer',
     'FssSerializer',
     'FssForecastSerializer',
-    'GoalSerializer',
     'HumanitarianScopeSerializer',
-    'IatiActivityExportSerializer',
-    'IatiCheckSerializer',
     'IatiExportSerializer',
     'IndicatorCustomFieldSerializer',
     'IndicatorCustomValueSerializer',
     'IndicatorSerializer',
     'IndicatorFrameworkSerializer',
-    'IndicatorLabelSerializer',
-    'IndicatorPeriodActualLocationSerializer',
     'IndicatorPeriodAggregationJobSerializer',
     'IndicatorPeriodDataCommentSerializer',
     'IndicatorPeriodDataFrameworkSerializer',
@@ -152,17 +125,10 @@ __all__ = [
     'IndicatorPeriodFrameworkSerializer',
     'IndicatorPeriodLabelSerializer',
     'IndicatorPeriodSerializer',
-    'IndicatorPeriodDisaggregationSerializer',
-    'IndicatorPeriodTargetLocationSerializer',
     'IndicatorReferenceSerializer',
-    'InternalOrganisationIDSerializer',
     'KeywordSerializer',
     'LegacyDataSerializer',
     'LinkSerializer',
-    'MapOrganisationLocationSerializer',
-    'MapProjectLocationSerializer',
-    'MapProjectUpdateLocationSerializer',
-    'NarrativeReportSerializer',
     'OrganisationSerializer',
     'OrganisationBasicSerializer',
     'OrganisationCountryBudgetLineSerializer',
@@ -185,13 +151,11 @@ __all__ = [
     'PartnershipRawSerializer',
     'PartnershipBasicSerializer',
     'PartnershipRawDeepSerializer',
-    'PartnerSiteSerializer',
     'PlannedDisbursementSerializer',
     'PlannedDisbursementRawSerializer',
     'PlannedDisbursementRawDeepSerializer',
     'PolicyMarkerSerializer',
     'PolicyMarkerRawSerializer',
-    'ProjectConditionSerializer',
     'ProjectConditionRawSerializer',
     'ProjectContactSerializer',
     'ProjectContactRawSerializer',
@@ -199,9 +163,7 @@ __all__ = [
     'ProjectCustomFieldSerializer',
     'ProjectDocumentSerializer',
     'ProjectDocumentRawSerializer',
-    'ProjectDocumentCategorySerializer',
     'ProjectExtraSerializer',
-    'ProjectExtraDeepSerializer',
     'ProjectIatiExportSerializer',
     'ProjectDirectorySerializer',
     'ProjectDirectoryDynamicFieldsSerializer',
@@ -212,7 +174,6 @@ __all__ = [
     'ProjectMetadataSerializer',
     'ProjectSerializer',
     'ProjectRoleSerializer',
-    'ProjectUpdateDirectorySerializer',
     'ProjectUpdatePhotoSerializer',
     'ProjectUpdateExtraSerializer',
     'ProjectUpdateLocationSerializer',

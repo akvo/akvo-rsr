@@ -4,7 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-from ..serializers import IndicatorPeriodSerializer, IndicatorPeriodFrameworkSerializer
+from ..serializers import IndicatorPeriodSerializer
 from ..viewsets import PublicProjectViewSet
 
 from akvo.rsr.models import Project, Indicator, IndicatorPeriod
@@ -24,15 +24,6 @@ class IndicatorPeriodViewSet(PublicProjectViewSet):
     queryset = IndicatorPeriod.objects.all().select_related('parent_period').prefetch_related(
         'disaggregation_targets')
     serializer_class = IndicatorPeriodSerializer
-    project_relation = 'indicator__result__project__'
-
-
-class IndicatorPeriodFrameworkViewSet(PublicProjectViewSet):
-    """
-    """
-    queryset = IndicatorPeriod.objects.prefetch_related(
-        'disaggregation_targets')
-    serializer_class = IndicatorPeriodFrameworkSerializer
     project_relation = 'indicator__result__project__'
 
 

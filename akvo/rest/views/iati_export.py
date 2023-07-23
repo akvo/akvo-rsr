@@ -5,9 +5,9 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from django_q.tasks import async_task
-from akvo.rest.serializers import IatiActivityExportSerializer, IatiExportSerializer
+from akvo.rest.serializers import IatiExportSerializer
 from akvo.rest.viewsets import BaseRSRViewSet
-from akvo.rsr.models import IatiActivityExport, IatiExport
+from akvo.rsr.models import IatiExport
 
 
 def create_iati_file(obj_id):
@@ -29,10 +29,3 @@ class IatiExportViewSet(BaseRSRViewSet):
         serializer.save()
         instance = serializer.instance
         async_task(create_iati_file, instance.id)
-
-
-class IatiActivityExportViewSet(BaseRSRViewSet):
-    """
-    """
-    queryset = IatiActivityExport.objects.all()
-    serializer_class = IatiActivityExportSerializer

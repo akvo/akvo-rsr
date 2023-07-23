@@ -7,7 +7,6 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 from rest_framework import serializers
 from akvo.rsr.models import OrganisationLocation
 from ..fields import Base64ImageField
-from .country import CountrySerializer
 from .rsr_serializer import BaseRSRSerializer
 
 
@@ -31,20 +30,6 @@ class MapOrganisationSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     name = serializers.CharField()
     logo = Base64ImageField(required=False, allow_empty_file=True, allow_null=True)
-
-    class Meta:
-        fields = '__all__'
-
-
-class MapOrganisationLocationSerializer(serializers.Serializer):
-
-    """To serialize the organisation map resource."""
-
-    id = serializers.IntegerField()
-    latitude = serializers.FloatField()
-    longitude = serializers.FloatField()
-    organisation = MapOrganisationSerializer(source='location_target')
-    country = CountrySerializer()
 
     class Meta:
         fields = '__all__'

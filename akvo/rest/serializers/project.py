@@ -21,26 +21,25 @@ from . import OrganisationBasicSerializer
 
 from ..fields import Base64ImageField
 
-from .budget_item import BudgetItemRawSerializer, BudgetItemRawDeepSerializer
+from .budget_item import BudgetItemRawSerializer
 from .custom_field import ProjectDirectoryProjectCustomFieldSerializer
 from .legacy_data import LegacyDataSerializer
 from .link import LinkSerializer
-from .partnership import PartnershipRawSerializer, PartnershipRawDeepSerializer
-from .planned_disbursement import (PlannedDisbursementRawSerializer,
-                                   PlannedDisbursementRawDeepSerializer)
+from .partnership import PartnershipRawSerializer
+from .planned_disbursement import PlannedDisbursementRawSerializer
 from .policy_marker import PolicyMarkerRawSerializer
 from .project_document import ProjectDocumentRawSerializer
-from .project_location import (ProjectLocationExtraSerializer, ProjectLocationSerializer)
+from .project_location import ProjectLocationExtraSerializer, ProjectLocationSerializer
 from .project_condition import ProjectConditionRawSerializer
-from .project_contact import ProjectContactRawSerializer, ProjectContactRawDeepSerializer
+from .project_contact import ProjectContactRawSerializer
 from .project_role import ProjectRoleSerializer
-from .project_update import ProjectUpdateSerializer, ProjectUpdateDeepSerializer
+from .project_update import ProjectUpdateSerializer
 from .recipient_country import RecipientCountryRawSerializer
 from .region import RecipientRegionRawSerializer
 from .related_project import RelatedProjectRawSerializer
 from .result import ResultRawSerializer
 from .sector import SectorRawSerializer, SectorSerializer
-from .transaction import TransactionRawSerializer, TransactionRawDeepSerializer
+from .transaction import TransactionRawSerializer
 from .rsr_serializer import BaseRSRSerializer
 
 
@@ -307,30 +306,6 @@ class ProjectExtraSerializer(ProjectSerializer):
     sectors = SectorRawSerializer(many=True, required=False)
     transactions = TransactionRawSerializer(many=True, required=False)
     partnerships = PartnershipRawSerializer(many=True)
-
-    class Meta(ProjectSerializer.Meta):
-        pass
-
-
-class ProjectExtraDeepSerializer(ProjectSerializer):
-
-    budget_items = BudgetItemRawDeepSerializer(many=True, required=False)
-    legacy_data = LegacyDataSerializer(many=True, required=False)
-    links = LinkSerializer(many=True, required=False)
-    locations = ProjectLocationExtraSerializer(many=True, required=False)
-    planned_disbursements = PlannedDisbursementRawDeepSerializer(many=True, required=False)
-    policy_markers = PolicyMarkerRawSerializer(many=True, required=False)
-    documents = ProjectDocumentRawSerializer(many=True, required=False)
-    conditions = ProjectConditionRawSerializer(many=True, required=False)
-    contacts = ProjectContactRawDeepSerializer(many=True, required=False)
-    project_updates = ProjectUpdateDeepSerializer(many=True, required=False)
-    recipient_countries = RecipientCountryRawSerializer(many=True, required=False)
-    recipient_regions = RecipientRegionRawSerializer(many=True, required=False)
-    related_projects = RelatedProjectRawSerializer(many=True, required=False)
-    results = ResultRawSerializer(many=True, required=False)
-    sectors = SectorRawSerializer(many=True, required=False)
-    transactions = TransactionRawDeepSerializer(many=True, required=False)
-    partnerships = PartnershipRawDeepSerializer(many=True)
 
     class Meta(ProjectSerializer.Meta):
         pass

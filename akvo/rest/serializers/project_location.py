@@ -78,20 +78,6 @@ class MapProjectSerializer(serializers.Serializer):
     current_image = Base64ImageField(required=False, allow_empty_file=True, allow_null=True)
 
 
-class MapProjectLocationSerializer(serializers.Serializer):
-
-    """To serialize the project map resource."""
-
-    id = serializers.IntegerField()
-    latitude = serializers.FloatField()
-    longitude = serializers.FloatField()
-    project = MapProjectSerializer(source='location_target')
-    country = CountrySerializer()
-
-    class Meta:
-        fields = '__all__'
-
-
 class ProjectLocationCountryNameSerializer(serializers.Serializer):
 
     country = serializers.StringRelatedField(read_only=True)

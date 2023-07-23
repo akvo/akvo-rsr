@@ -6,20 +6,14 @@
 import six
 
 from django.conf import settings
-from django.db.models import Q
-from rest_framework.decorators import api_view
 from rest_framework.exceptions import ParseError
-from rest_framework.response import Response
 from rest_framework.settings import api_settings
 from rest_framework_xml.parsers import XMLParser
 from rest_framework_xml.compat import etree
 
-from akvo.rest.views.utils import int_or_none, get_qs_elements_for_page
-from akvo.rsr.filters import location_choices, get_m49_filter
 from akvo.rsr.models import Organisation
-from ..serializers import OrganisationSerializer, OrganisationDirectorySerializer
+from ..serializers import OrganisationSerializer
 from ..viewsets import BaseRSRViewSet
-from functools import reduce
 
 
 class AkvoOrganisationParser(XMLParser):
@@ -62,60 +56,3 @@ class OrganisationViewSet(BaseRSRViewSet):
     queryset = Organisation.objects.all()
     serializer_class = OrganisationSerializer
     parser_classes = [AkvoOrganisationParser] + api_settings.DEFAULT_PARSER_CLASSES
-
-
-@api_view(['GET'])
-def organisation_directory(request):
-    """REST view for the update directory."""
-
-    page = request.rsr_page
-    all_organisations = Organisation.objects.all() if not page else page.partners()
-
-    # Filter updates based on query parameters
-    filter_, text_filter = _create_filters_query(request)
-    organisations = (
-        all_organisations.filter(filter_).distinct() if filter_ is not None else all_organisations
-    )
-    organisations_text_filtered = (
-        organisations.filter(text_filter) if text_filter is not None else organisations
-    )
-    if organisations_text_filtered.exists():
-        organisations = organisations_text_filtered
-
-    # Get the relevant data for typeaheads based on filtered organisations (minus
-    # text filtering, if no organisations were found)
-    locations = [
-        {'id': choice[0], 'name': choice[1]}
-        for choice in location_choices(organisations)
-    ]
-
-    count = organisations_text_filtered.count()
-    display_organisations = get_qs_elements_for_page(organisations_text_filtered, request, count)
-
-    # Get related objects of page at once
-    response = {
-        'project_count': organisations_text_filtered.count(),
-        'projects': OrganisationDirectorySerializer(display_organisations, many=True).data,
-        'location': locations,
-        'page_size_default': settings.PROJECT_DIRECTORY_PAGE_SIZES[0],
-    }
-    return Response(response)
-
-
-def _create_filters_query(request):
-    """Returns a Q object expression based on query parameters."""
-    location_param = int_or_none(request.GET.get('location'))
-    title_or_subtitle_param = request.GET.get('title_or_subtitle')
-
-    location_filter = (
-        get_m49_filter(location_param, use_recipient_country=False) if location_param else None
-    )
-    title_filter = (
-        Q(name__icontains=title_or_subtitle_param)
-        | Q(long_name__icontains=title_or_subtitle_param)
-    ) if title_or_subtitle_param else None
-    all_filters = [
-        location_filter,
-    ]
-    filters = [_f for _f in all_filters if _f]
-    return reduce(lambda x, y: x & y, filters) if filters else None, title_filter

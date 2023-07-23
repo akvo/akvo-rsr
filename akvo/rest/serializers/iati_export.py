@@ -5,7 +5,7 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 from akvo.rest.serializers.rsr_serializer import BaseRSRSerializer
-from akvo.rsr.models import IatiActivityExport, IatiExport
+from akvo.rsr.models import IatiExport
 
 from rest_framework import serializers
 
@@ -19,11 +19,4 @@ class IatiExportSerializer(BaseRSRSerializer):
 
     class Meta:
         model = IatiExport
-        fields = '__all__'
-
-
-class IatiActivityExportSerializer(BaseRSRSerializer):
-
-    class Meta:
-        model = IatiActivityExport
         fields = '__all__'
