@@ -62,13 +62,3 @@ class ProjectDocumentSerializer(ProjectDocumentRawSerializer):
             category__in=deleted_categories, document=document).delete()
 
         return document
-
-
-class ProjectDocumentCategorySerializer(BaseRSRSerializer):
-
-    document_unicode = serializers.ReadOnlyField(source='document.__str__')
-    category_label = serializers.ReadOnlyField(source='iati_category_unicode')
-
-    class Meta:
-        fields = '__all__'
-        model = ProjectDocumentCategory

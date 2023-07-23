@@ -15,7 +15,6 @@ from .project_update_location import (ProjectUpdateLocationNestedSerializer,
                                       ProjectUpdateLocationExtraSerializer)
 from .rsr_serializer import BaseRSRSerializer
 from .user import UserSerializer, UserRawSerializer
-from akvo.utils import get_thumbnail
 from akvo.rest.serializers.user import UserDetailsSerializer
 
 logger = logging.getLogger(__name__)
@@ -88,51 +87,6 @@ class ProjectUpdateSerializer(BaseRSRSerializer):
         """Method used by the deletable SerializerMethodField"""
         user = self.context['request'].user
         return user.has_perm('rsr.delete_projectupdate', obj)
-
-
-class ProjectUpdateDirectorySerializer(BaseRSRSerializer):
-    """Serializer for project updates."""
-
-    latitude = serializers.SerializerMethodField()
-    longitude = serializers.SerializerMethodField()
-    image = serializers.ReadOnlyField(source='photo')
-    image = serializers.SerializerMethodField()
-    project = serializers.ReadOnlyField(source='project.title')
-    organisation = serializers.ReadOnlyField(source='project.primary_organisation.name')
-    user_fullname = serializers.ReadOnlyField(source='user.get_full_name')
-    event_date = serializers.DateField(format='%d-%b-%Y')
-
-    class Meta:
-        model = ProjectUpdate
-        fields = (
-            'id',
-            'title',
-            'latitude',
-            'longitude',
-            'image',
-            'project',
-            'organisation',
-            'user_fullname',
-            'event_date',
-        )
-
-    def get_latitude(self, update):
-        return None if update.locations.count() == 0 else update.locations.all()[0].latitude
-
-    def get_longitude(self, update):
-        return None if update.locations.count() == 0 else update.locations.all()[0].longitude
-
-    def get_image(self, update):
-        width = '350'
-        try:
-            image = get_thumbnail(update.photo, width, crop='smart', quality=99)
-            url = image.url
-        except Exception as e:
-            logger.error(
-                'Failed to get thumbnail for image %s with error: %s', update.photo, e
-            )
-            url = update.photo.url if update.photo.name else ''
-        return url
 
 
 class ProjectUpdateDeepSerializer(ProjectUpdateSerializer):

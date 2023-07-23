@@ -5,9 +5,9 @@
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
 
-from akvo.rsr.models import ProjectDocument, ProjectDocumentCategory
+from akvo.rsr.models import ProjectDocument
 
-from ..serializers import ProjectDocumentSerializer, ProjectDocumentCategorySerializer
+from ..serializers import ProjectDocumentSerializer
 from ..viewsets import PublicProjectViewSet
 
 
@@ -16,12 +16,3 @@ class ProjectDocumentViewSet(PublicProjectViewSet):
     """
     queryset = ProjectDocument.objects.all()
     serializer_class = ProjectDocumentSerializer
-
-
-class ProjectDocumentCategoryViewSet(PublicProjectViewSet):
-    """
-    """
-    queryset = ProjectDocumentCategory.objects.all()
-    serializer_class = ProjectDocumentCategorySerializer
-    filter_fields = ('document__project', 'document', 'category', )
-    project_relation = 'document__project__'
