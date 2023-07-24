@@ -121,3 +121,6 @@ matplotlib==3.5.1
 # For profiling on Google cloud Platform
 # Don't install this if you aren't on GCP
 google-cloud-profiler
+
+phonenumbers
+django-two-factor-auth
