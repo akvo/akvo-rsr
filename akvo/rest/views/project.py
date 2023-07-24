@@ -31,7 +31,6 @@ from akvo.rest.serializers import (
     ExternalProjectSerializer,
     OrganisationCustomFieldSerializer,
     ProjectDirectoryDynamicFieldsSerializer,
-    ProjectExtraDeepSerializer,
     ProjectExtraSerializer,
     ProjectIatiExportSerializer,
     ProjectMetadataSerializer,
@@ -157,10 +156,6 @@ class ProjectViewSet(PublicProjectViewSet):
         return Response(status=status.HTTP_200_OK)
 
 
-class ProjectByUuidViewSet(ProjectViewSet):
-    lookup_field = "uuid"
-
-
 class MyProjectsViewSet(PublicProjectViewSet):
     """Viewset providing listing of projects a user can edit."""
     queryset = Project.objects.all().select_related('publishingstatus')\
@@ -264,44 +259,6 @@ class ProjectExtraViewSet(ProjectViewSet):
     paginate_by_param = 'limit'
     paginate_by = 10
     max_paginate_by = 30
-
-
-class ProjectExtraDeepViewSet(ProjectViewSet):
-    r"""
-    Viewset providing extra deep (depth=2 or bigger) Project data.
-
-    Allowed parameters are:
-    __limit__ (default 5, max 10),
-    __partnerships\__organisation__ (filter on organisation ID), and
-    __publishingstatus\__status__ (filter on publishing status)
-    """
-
-    queryset = Project.objects.prefetch_related(
-        'publishingstatus',
-        'sectors',
-        'partnerships',
-        'budget_items',
-        'legacy_data',
-        'links',
-        'locations',
-        'locations__country',
-        'planned_disbursements',
-        'policy_markers',
-        'documents',
-        'conditions',
-        'contacts',
-        'project_updates',
-        'recipient_countries',
-        'recipient_regions',
-        'related_projects',
-        'results',
-        'sectors',
-        'transactions',
-    )
-    serializer_class = ProjectExtraDeepSerializer
-    paginate_by_param = 'limit'
-    paginate_by = 5
-    max_paginate_by = 10
 
 
 class ProjectUpViewSet(ProjectViewSet):

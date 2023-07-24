@@ -9,16 +9,9 @@ from akvo.rsr.models import ProjectCondition
 
 from .rsr_serializer import BaseRSRSerializer
 
-from rest_framework import serializers
-
 
 class ProjectConditionRawSerializer(BaseRSRSerializer):
 
     class Meta:
         fields = '__all__'
         model = ProjectCondition
-
-
-class ProjectConditionSerializer(ProjectConditionRawSerializer):
-
-    type_label = serializers.ReadOnlyField(source='iati_type_unicode')

@@ -6,34 +6,8 @@
 
 from rest_framework import serializers
 from akvo.rest.serializers.rsr_serializer import BaseRSRSerializer
-from akvo.rest.serializers.disaggregation_contribution import DisaggregationContributionSerializer
 from akvo.rsr.models import IndicatorPeriodDisaggregation
 from akvo.utils import ensure_decimal, maybe_decimal
-
-
-class IndicatorPeriodDisaggregationSerializer(BaseRSRSerializer):
-
-    dimension_name = serializers.SerializerMethodField()
-    dimension_value = serializers.SerializerMethodField()
-    contributors = DisaggregationContributionSerializer(many=True, required=False, read_only=True)
-
-    def get_dimension_name(self, obj):
-        return {'id': obj.dimension_value.name.pk, 'name': obj.dimension_value.name.name}
-
-    def get_dimension_value(self, obj):
-        return {'id': obj.dimension_value.pk, 'value': obj.dimension_value.value}
-
-    class Meta:
-        model = IndicatorPeriodDisaggregation
-        fields = (
-            'id',
-            'dimension_name',
-            'dimension_value',
-            'value',
-            'numerator',
-            'denominator',
-            'contributors',
-        )
 
 
 class IndicatorPeriodDisaggregationLiteSerializer(BaseRSRSerializer):

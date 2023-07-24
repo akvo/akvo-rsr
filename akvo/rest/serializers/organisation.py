@@ -6,7 +6,6 @@
 
 import logging
 
-from django.conf import settings
 from rest_framework import serializers
 
 from akvo.rsr.models import Organisation
@@ -22,7 +21,6 @@ from .organisation_document import OrganisationDocumentSerializer
 from .organisation_location import (OrganisationLocationSerializer,
                                     OrganisationLocationExtraSerializer)
 from .rsr_serializer import BaseRSRSerializer
-from akvo.utils import get_thumbnail
 
 logger = logging.getLogger(__name__)
 
@@ -154,34 +152,3 @@ class UserManagementOrgSerializer(BaseRSRSerializer):
         # used only for organisations which already known to be from a list of
         # organisations the user can edit.
         return True
-
-
-class OrganisationDirectorySerializer(BaseRSRSerializer):
-
-    image = serializers.SerializerMethodField()
-    organisation_type = serializers.ReadOnlyField(source='iati_org_type')
-    project_count = serializers.ReadOnlyField(source='published_projects.count')
-
-    class Meta:
-        model = Organisation
-        fields = (
-            'id',
-            'name',
-            'long_name',
-            'image',
-            'organisation_type',
-            'project_count',
-        )
-
-    def get_image(self, organisation):
-        width = '191'
-        try:
-            image = get_thumbnail(organisation.logo, width, crop='smart', quality=99)
-            url = image.url
-        except Exception as e:
-            logger.error(
-                'Failed to get thumbnail for image %s with error: %s', organisation.logo, e
-            )
-            default_logo = '{}{}'.format(settings.STATIC_URL, 'rsr/images/default-org-logo.jpg')
-            url = organisation.logo.url if organisation.logo.name else default_logo
-        return url
