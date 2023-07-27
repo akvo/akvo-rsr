@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load i18n bootstrap3 %}
+
+{% block maincontent %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-6 col-md-offset-3">
+      <h2 class="text-center verticalPadding">{% block title %}{% trans "Disable Two-factor Authentication" %}{% endblock %}</h1>
+
+      <p>{% blocktrans trimmed %}You are about to disable two-factor authentication. This
+        weakens your account security, are you sure?{% endblocktrans %}</p>
+
+      <form method="post">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        <a href="/my-rsr/my-details/" class="pull-right btn btn-link">{% trans "Cancel" %}</a>
+        <button class="btn btn-danger" type="submit">{% trans "Disable" %}</button>
+      </form>
+
+    </div>
+  </div>
+<div>
+{% endblock %}

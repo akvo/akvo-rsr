@@ -8,8 +8,11 @@ see < http://www.gnu.org/licenses/agpl.html >.
 """
 
 import json
+import qrcode
 
+from qrcode.image.svg import SvgPathImage
 from lxml import etree
+from base64 import b32encode
 
 from akvo.rsr.forms import RegisterForm, InvitedUserForm, PasswordResetForm
 from akvo.rsr.models import Employment
@@ -18,16 +21,21 @@ from akvo.rsr.registration import activate_user
 
 from django.conf import settings
 from django.contrib.auth import login, logout, authenticate, get_user_model
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.signing import TimestampSigner, BadSignature
 from django.http import (HttpResponse, HttpResponseRedirect,
                          HttpResponseForbidden, HttpResponseNotAllowed,
-                         HttpResponseBadRequest)
+                         HttpResponseBadRequest, HttpResponseNotFound)
 from django.shortcuts import redirect, render
 
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from django.views.decorators.http import require_POST
+
+from two_factor.utils import get_otpauth_url, totp_digits
+from two_factor.views.profile import DisableView
 
 
 def register(request):
@@ -344,3 +352,28 @@ def json_register(request):
         return HttpResponseBadRequest(form.errors.as_json(), content_type='application/json')
     form.save(request)
     return HttpResponse('', status=201)
+
+
+@login_required
+def totp_qrcode(request):
+    user = request.user
+    if user.is_anonymous:
+        return HttpResponseForbidden()
+    if not user.totpdevice_set.exists():
+        return HttpResponseNotFound()
+
+    otpauth_url = get_otpauth_url(
+        accountname=user.get_username(),
+        issuer=get_current_site(request).name,
+        secret=b32encode(user.totpdevice_set.first().bin_key).decode('utf-8'),
+        digits=totp_digits()
+    )
+    img = qrcode.make(otpauth_url, image_factory=SvgPathImage)
+    resp = HttpResponse(content_type='image/svg+xml; charset=utf-8')
+    img.save(resp)
+    return resp
+
+
+class DisableTwoFactorView(DisableView):
+    # override the redirect url
+    success_url = '/my-rsr/my-details/'
