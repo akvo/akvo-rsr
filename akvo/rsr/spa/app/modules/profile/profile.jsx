@@ -135,6 +135,37 @@ const Profile = ({userRdr}) => {
         </ul>
       </section>
       <Divider />
+      <section className="two_factor">
+        <h2>Two-factor authentication</h2>
+        {userRdr.otpKeys?.totp ? (
+          <>
+            <p>Two-factor authentication is enabled for your account.</p>
+            <p>In case you need to add it to another device, below is the QR code (or key) required by your authenticator app.</p>
+            <p>
+              <img src="/account/totp_qrcode/" alt="QR Code" />
+              <br />
+              <span style={{color: '#e83e8c'}}>{userRdr.otpKeys.totp}</span>
+            </p>
+
+            <h3>Backup Tokens</h3>
+            <p>
+              If you don&apos;t have any device with you, you can access your account using backup tokens.
+              You have {userRdr.otpKeys.backupCount} backup tokens remaining.
+            </p>
+            <p><Button href="/account/two_factor/backup/tokens/">Show Codes</Button></p>
+
+            <h3>Disable Two-Factor Authentication</h3>
+            <p>However we strongly discourage you to do so, you can also disable two-factor authentication for your account.</p>
+            <p><Button href="/account/two_factor/disable/">Disable Two-Factor Authentication</Button></p>
+          </>
+        ) : (
+          <>
+            <p>Two-factor authentication is not enabled for your account. Enable two-factor authentication for enhanced account security</p>
+            <p><Button type="primary" href="/account/two_factor/setup/">Enable Two-Factor Authentication</Button></p>
+          </>
+        )}
+      </section>
+      <Divider />
       <section className="api">
         <h2>API key</h2>
         <div className="key">
@@ -142,7 +173,7 @@ const Profile = ({userRdr}) => {
           <Button icon={copied ? 'check' : 'copy'} shape="circle" size="large" onClick={handleCopyClick} />
           {copied && <div className="copied-caption">Copied to clipboard</div>}
         </div>
-        <small>For more information on how to use the RSR API, visit <a href="https://akvorsr.supporthero.io/container/show/api">the support page</a>.</small>
+        <small>For more information on how to use the RSR API, visit <a href="https://kb.akvo.org/rsr/apis/">the support page</a>.</small>
       </section>
     </div>
   )

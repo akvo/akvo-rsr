@@ -18,6 +18,8 @@ from django.conf.urls.i18n import i18n_patterns
 from django.views.static import serve
 from django.views.generic import RedirectView
 from rest_framework_swagger.views import get_swagger_view
+from two_factor import views as tf_views
+from two_factor.urls import urlpatterns as two_factor_urls
 
 from akvo.rsr import views
 from akvo.rsr.views import account
@@ -100,7 +102,12 @@ urlpatterns = i18n_patterns(
         account.invite_activate, name='invite_activate'),
 
     url(r'^sign_in/$',
-        account.sign_in, name='sign_in'),
+        tf_views.LoginView.as_view(), name='sign_in'),
+
+    url('^account/two_factor/disable/$',
+        account.DisableTwoFactorView.as_view(), name='two_factor_disable'),
+
+    url('', include(two_factor_urls)),
 
     url(r'^sign_out/$',
         account.sign_out, name='sign_out'),
@@ -146,6 +153,9 @@ urlpatterns = i18n_patterns(
 ################################################################################
 
 urlpatterns += [
+
+    url(r'^account/totp_qrcode/$', account.totp_qrcode, name='totp_qrcode'),
+
     # Python generated reports
     url(r'^py-reports/checkz/$',
         py_reports.check, name='py-reports-check'),

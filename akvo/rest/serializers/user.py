@@ -4,7 +4,7 @@
 # See more details in the license.txt file located at the root folder of the Akvo RSR module.
 # For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 
-
+from base64 import b32encode
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.utils.translation import ugettext_lazy as _
@@ -46,6 +46,7 @@ class UserSerializer(BaseRSRSerializer):
     user_management_organisations = UserManagementOrgSerializer(many=True, required=False)
     approved_employments = EmploymentSerializer(many=True, required=False,)
     api_key = serializers.ReadOnlyField(source='get_api_key')
+    otp_keys = serializers.SerializerMethodField()
     # Legacy fields to support Tastypie API emulation
     legacy_org = serializers.SerializerMethodField()
     username = serializers.SerializerMethodField()
@@ -70,6 +71,7 @@ class UserSerializer(BaseRSRSerializer):
             'organisations',
             'approved_employments',
             'api_key',
+            'otp_keys',
             'legacy_org',
             'programs',
             'user_management_organisations',
@@ -88,6 +90,12 @@ class UserSerializer(BaseRSRSerializer):
         if request and "/api/v1/" not in request.path:
             del self.fields['legacy_org']
             del self.fields['username']
+
+    def get_otp_keys(self, obj):
+        return {
+            'totp': b32encode(obj.totpdevice_set.first().bin_key).decode('utf-8') if obj.totpdevice_set.exists() else None,
+            'backup_count': obj.staticdevice_set.first().token_set.count() if obj.staticdevice_set.exists() else 0,
+        }
 
     def get_legacy_org(self, obj):
         """ Up needs the last tag to be the user's org, it only needs the org ID
