@@ -53,7 +53,11 @@ const Result = ({
           header={
             <StickyClass top={40}>
               <h3>{indicator.title}</h3>
-              <div><span className="type">{indicator.type}</span> <span className="periods">{t('nperiods', { count: indicator.periodCount })}</span></div>
+              <div>
+                <span className="type">{indicator.type}</span>
+                <span className="periods">{t('nperiods', { count: indicator.periodCount })}</span>
+                {indicator.cumulative && (<span className="cumulative-flag">Cumulative</span>)}
+              </div>
             </StickyClass>}
           destroyInactivePanel
         >
