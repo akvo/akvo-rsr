@@ -1,7 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { Modal, Collapse, Icon, Pagination, Checkbox, Button, Spin, Alert, Input } from 'antd'
+import { Modal, Collapse, Icon, Pagination, Checkbox, Button, Spin, Alert, Input, Select, DatePicker } from 'antd'
 import { useTranslation } from 'react-i18next'
+import moment from 'moment'
 import api from '../../utils/api'
+
+const { Option } = Select
 
 const pageSize = 30
 const eutfAfrica = 3394
@@ -46,8 +49,59 @@ const ProblematicItems = ({type, project, items}) => {
   )
 }
 
+const DateRange = ({startPlaceholder, endPlaceholder, onStartChange, onEndChange}) => {
+  const [startValue, setStartValue] = useState()
+  const [endValue, setEndValue] = useState()
+
+  const disableStartDate = (date) => {
+    if (!date || !endValue) {
+      return false
+    }
+    return date.valueOf() > endValue.valueOf()
+  }
+  const disableEndDate = (date) => {
+    if (!date || !startValue) {
+      return false
+    }
+    return date.valueOf() <= startValue.valueOf()
+  }
+
+  return (
+    <div className="daterange">
+      <DatePicker
+        placeholder={startPlaceholder}
+        format="DD/MM/YYYY"
+        value={startValue}
+        onChange={date => {
+          setStartValue(date)
+          onStartChange(date)
+        }}
+        disabledDate={disableStartDate}
+      />
+      <DatePicker
+        placeholder={endPlaceholder}
+        format="DD/MM/YYYY"
+        value={endValue}
+        onChange={date => {
+          setEndValue(date)
+          onEndChange(date)
+        }}
+        disabledDate={disableEndDate}
+      />
+    </div>
+  )
+}
+
 const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) => {
   const { t } = useTranslation()
+  const STATUS_OPTIONS = [
+    { value: '1', label: t('Identification') },
+    { value: '2', label: t('Implementation') },
+    { value: '3', label: t('Completion') },
+    { value: '4', label: t('Post-completion') },
+    { value: '5', label: t('Canceled') },
+    { value: '6', label: t('Suspended') }
+  ]
   const [projects, setProjects] = useState([])
   const [allProjects, setAllProjects] = useState([])
   const [loading, setLoading] = useState(false)
@@ -60,50 +114,15 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
   const [filter, setFilter] = useState([])
   const [sending, setSending] = useState(false)
   const [src, setSrc] = useState('')
+  const [status, setStatus] = useState()
+  const [startDate, setStartDate] = useState()
+  const [endDate, setEndDate] = useState()
 
-  useEffect(() => {
-    if (visible) {
-      setLoading(true)
-      setAllProjects([])
-      setProjects([])
-      // get latest org first
-      api.get(`/iati_export/?reporting_organisation=${currentOrg}&ordering=-id&latest=True`)
-        .then(({ data: { results } }) => {
-          let _includedInLatest = includedInLatest
-          if (results?.length > 0) {
-            _includedInLatest = results[0].projects
-            setIncludedInLatest(_includedInLatest)
-          } else {
-            // no latest file
-          }
-          // proceed with fetching all projects
-          api.get('/project_iati_export/', { reporting_org: currentOrg, limit: 6000 })
-            .then(({ data: { results } }) => {
-              unfilteredProjects.current = results
-              let filteredProjects = unfilteredProjects.current
-              if (filter.indexOf('without-errors') !== -1) {
-                filteredProjects = unfilteredProjects.current.filter(it => it.checksErrors.length === 0)
-              }
-              if (filter.indexOf('in-last-export') !== -1) {
-                filteredProjects = filteredProjects.filter(it => _includedInLatest.indexOf(it.id) !== -1)
-              }
-              if (filter.indexOf('published') !== -1) {
-                filteredProjects = filteredProjects.filter(it => it.publishingStatus === 'published')
-              }
-              setAllProjects(filteredProjects)
-              setAllProjects(filteredProjects)
-              setProjects(filteredProjects.slice(0, pageSize))
-              setLoading(false)
-            })
-        })
-      prevOrg.current = currentOrg
-    }
-  }, [currentOrg, visible])
   const handlPageChange = (page) => {
     setProjects(allProjects.slice((page - 1) * pageSize, (page - 1) * pageSize + pageSize))
     setCurrentPage(page)
   }
-  const updateFilters = (_filter, _src) => {
+  const updateFilters = (_filter, _src, _status, _startDate, _endDate) => {
     let filteredProjects = unfilteredProjects.current
     if (_filter.indexOf('without-errors') !== -1) {
       filteredProjects = unfilteredProjects.current.filter(it => it.checksErrors.length === 0)
@@ -119,6 +138,25 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
         return String(it.id) === _src || it.title.toLowerCase().indexOf(_src.toLowerCase()) !== -1
       })
     }
+    if (_status) {
+      filteredProjects = filteredProjects.filter(it => it.iatiStatus === _status)
+    }
+    if (_startDate) {
+      filteredProjects = filteredProjects.filter(it => {
+        if (!it.startDate) {
+          return false
+        }
+        return it.startDate.diff(_startDate) >= 0
+      })
+    }
+    if (_endDate) {
+      filteredProjects = filteredProjects.filter(it => {
+        if (!it.endDate) {
+          return false
+        }
+        return it.endDate.diff(_endDate) <= 0
+      })
+    }
     setAllProjects(filteredProjects)
     setProjects(filteredProjects.slice(0, pageSize))
     setAllSelected(false)
@@ -126,14 +164,26 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
   const handleChangeFilter = (value) => {
     const _filter = filter.indexOf(value) === -1 ? [...filter, value] : filter.filter(it => it !== value)
     setFilter(_filter)
-    updateFilters(_filter, src)
+    updateFilters(_filter, src, status, startDate, endDate)
   }
   const handleSrcChange = ({target: {value}}) => {
     setSrc(value)
     clearTimeout(tmid)
     tmid = setTimeout(() => {
-      updateFilters(filter, value)
+      updateFilters(filter, value, status, startDate, endDate)
     }, 300)
+  }
+  const handleStatusChange = (value) => {
+    setStatus(value)
+    updateFilters(filter, src, value, startDate, endDate)
+  }
+  const handleStartDateChange = (value) => {
+    setStartDate(value)
+    updateFilters(filter, src, status, value, endDate)
+  }
+  const handleEndDateChange = (value) => {
+    setEndDate(value)
+    updateFilters(filter, src, status, startDate, value)
   }
   const toggleSelectAll = () => {
     if(!allSelected){
@@ -176,25 +226,80 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
     setSelected([])
   }
   const warnMessage = currentOrg === eutfAfrica ? t('Only published projects can be exported') : t('Only published projects without errors can be exported')
+
+  useEffect(() => {
+    if (visible) {
+      setLoading(true)
+      setAllProjects([])
+      setProjects([])
+      // get latest org first
+      api.get(`/iati_export/?reporting_organisation=${currentOrg}&ordering=-id&latest=True`)
+        .then(({ data: { results } }) => {
+          let _includedInLatest = includedInLatest
+          if (results?.length > 0) {
+            _includedInLatest = results[0].projects
+            setIncludedInLatest(_includedInLatest)
+          } else {
+            // no latest file
+          }
+          // proceed with fetching all projects
+          api.get('/project_iati_export/', { reporting_org: currentOrg, limit: 6000 })
+            .then(({ data: { results } }) => {
+              unfilteredProjects.current = results.map(it => {
+                it.startDate = it.dateStartActual ? moment(it.dateStartActual, 'DD/MM/YYYY') : null
+                it.endDate = it.dateEndActual ? moment(it.dateEndActual, 'DD/MM/YYYY') : null
+                return it
+              })
+              updateFilters(filter, src, status, startDate, endDate)
+              setLoading(false)
+            })
+        })
+      prevOrg.current = currentOrg
+    }
+  }, [currentOrg, visible])
+
   return (
     <Modal
       visible={visible} onCancel={handleClose} footer={null} className="new-export-modal"
       width={960}
       title={t('New IATI Export')}
     >
+      <div>
+        <div className="filters">
+          <div>
+            <Input.Search value={src} onChange={handleSrcChange} placeholder={t('Find a project...')} allowClear />
+            <Button.Group>
+              <Button onClick={() => handleChangeFilter('without-errors')} icon={filter.indexOf('without-errors') !== -1 && 'check'}>{t('Without errors')}</Button>
+              <Button onClick={() => handleChangeFilter('published')} icon={filter.indexOf('published') !== -1 && 'check'}>{t('Published')}</Button>
+              <Button onClick={() => handleChangeFilter('in-last-export')} icon={filter.indexOf('in-last-export') !== -1 && 'check'}>{t('Included in last export')}</Button>
+            </Button.Group>
+          </div>
+          <div>
+            <Select
+              showSearch
+              allowClear
+              placeholder={t('Project status')}
+              onChange={handleStatusChange}
+            >
+              {STATUS_OPTIONS.map(it => <Option key={it.value} value={it.value}>{t(it.label)}</Option>)}
+            </Select>
+            <DateRange
+              startPlaceholder={t('Project start date')}
+              endPlaceholder={t('Project end date')}
+              onStartChange={handleStartDateChange}
+              onEndChange={handleEndDateChange}
+            />
+          </div>
+        </div>
+      </div>
+      <p />
+      {((currentOrg !== eutfAfrica && filter.indexOf('without-errors') === -1) || filter.indexOf('published') === -1) &&
+        <><Alert message={warnMessage} type="info" showIcon /><p /></>
+      }
       <header>
         <Checkbox checked={allSelected} onClick={toggleSelectAll} />
-        <Input.Search value={src} onChange={handleSrcChange} placeholder={t('Find a project...')} allowClear />
-        <Button.Group>
-          <Button onClick={() => handleChangeFilter('without-errors')} icon={filter.indexOf('without-errors') !== -1 && 'check'}>{t('Without errors')}</Button>
-          <Button onClick={() => handleChangeFilter('published')} icon={filter.indexOf('published') !== -1 && 'check'}>{t('Published')}</Button>
-          <Button onClick={() => handleChangeFilter('in-last-export')} icon={filter.indexOf('in-last-export') !== -1 && 'check'}>{t('Included in last export')}</Button>
-        </Button.Group>
         <Button type="primary" loading={sending} onClick={handleClickExport} disabled={selected.length === 0}>{selected.length > 0 ? t('Export {{N}} selected', { N: selected.length}) : t('0 selected')}</Button>
       </header>
-      {((currentOrg !== eutfAfrica && filter.indexOf('without-errors') === -1) || filter.indexOf('published') === -1) &&
-        <Alert message={warnMessage} type="info" showIcon />
-      }
       {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
       <Collapse destroyInactivePanel accordion>
         {projects.map((item, ind) =>
