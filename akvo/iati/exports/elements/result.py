@@ -6,10 +6,14 @@
 
 from lxml import etree
 
+from django.conf import settings
 from akvo.iati.exports.elements.utils import has_data, has_qs_data
 from akvo.rsr.models.result.utils import QUANTITATIVE, QUALITATIVE
 
-DGIS_VALIDATION_SET_NAME = "DGIS IATI"
+DGIS_VALIDATION_SET_NAMES = [
+    settings.VALIDATION_SET['DGIS'],
+    settings.VALIDATION_SET['DGIS_MODIFIED']
+]
 NOT_AVAILABLE_YEAR = "1"
 DEFAULT_EMPTY_VALUE = "0"
 
@@ -23,7 +27,7 @@ def result(project):
     """
     result_elements = []
 
-    DGIS_PROJECT = project.validations.filter(name=DGIS_VALIDATION_SET_NAME).count() == 1
+    DGIS_PROJECT = project.validations.filter(name__in=DGIS_VALIDATION_SET_NAMES).count() > 0
 
     for res in project.results.all():
         if (has_data(res, ['type', 'title', 'description', ])

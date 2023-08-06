@@ -6,9 +6,13 @@
 
 import json
 
+from django.conf import settings
 from akvo.rsr.models.result.utils import QUANTITATIVE
 
-DGIS_VALIDATION_SET_NAME = "DGIS IATI"
+DGIS_VALIDATION_SET_NAMES = [
+    settings.VALIDATION_SET['DGIS'],
+    settings.VALIDATION_SET['DGIS_MODIFIED']
+]
 
 
 def results(project):
@@ -19,7 +23,7 @@ def results(project):
     checks = []
     all_checks_passed = True
 
-    DGIS_PROJECT = project.validations.filter(name=DGIS_VALIDATION_SET_NAME).count() == 1
+    DGIS_PROJECT = project.validations.filter(name__in=DGIS_VALIDATION_SET_NAMES).count() > 0
 
     project_results = project.results.prefetch_related('indicators', 'indicators__periods', 'indicators__references').all()
     for result in project_results:
