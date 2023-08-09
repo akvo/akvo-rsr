@@ -3,7 +3,11 @@ from django.db import models
 
 class PolicyConfig(models.Model):
     name = models.CharField(max_length=100, unique=True)
-    expiration = models.DurationField(blank=True, null=True)
+    expiration = models.PositiveSmallIntegerField(
+        blank=True,
+        null=True,
+        help_text="Maximum password age (days). Set empty for never expires",
+    )
     reuse = models.PositiveSmallIntegerField(
         blank=True, null=True, verbose_name="Reuse policy"
     )
