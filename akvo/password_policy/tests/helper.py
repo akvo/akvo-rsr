@@ -1,5 +1,6 @@
-from datetime import timedelta
+from typing import cast
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AbstractUser
 
 from akvo.password_policy.models import PolicyConfig
 from akvo.password_policy.services import PasswordHistoryService
@@ -13,11 +14,11 @@ class PasswordHistoryServiceTestBuilder:
         self.config = None
         self.no_config = False
 
-    def with_user(self, user):
+    def with_user(self, user: AbstractUser):
         self.user = user
         return self
 
-    def with_config(self, config):
+    def with_config(self, config: PolicyConfig):
         self.config = config
         return self
 
@@ -27,7 +28,7 @@ class PasswordHistoryServiceTestBuilder:
 
     def build(self):
         if not self.user:
-            self.user = User(username='test')
+            self.user = cast(AbstractUser, User(username="test"))
         if not self.config and not self.no_config:
             self.config = PolicyConfig(expiration=1, reuse=2)
         self.user.save()

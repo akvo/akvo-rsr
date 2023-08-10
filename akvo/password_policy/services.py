@@ -1,6 +1,9 @@
+from datetime import timedelta
 from typing import Optional
 from django.contrib.auth.hashers import check_password, make_password
 from django.contrib.auth.models import AbstractUser
+from django.db.models import QuerySet
+from django.utils.timezone import now
 from akvo.password_policy.models import PasswordHistory, PolicyConfig
 
 
@@ -12,6 +15,17 @@ class PasswordHistoryService:
     @property
     def reuse_limit(self) -> int:
         return self.config.reuse if self.config else 0
+
+    def is_expired(self) -> bool:
+        if not self.config:
+            return False
+        if not self.config.expiration:
+            return False
+        expired_at = now() - timedelta(days=self.config.expiration)
+        latest = self.latest()
+        if not latest:
+            return False
+        return latest.created_at < expired_at
 
     def contains(self, password: str) -> bool:
         if not self.reuse_limit:
@@ -26,12 +40,15 @@ class PasswordHistoryService:
         PasswordHistory.objects.create(user=self.user, password=make_password(password))
         self._remove_excess()
 
-    def _queryset(self):
+    def latest(self) -> Optional[PasswordHistory]:
+        return self._queryset().order_by("-created_at").first()
+
+    def _queryset(self) -> QuerySet[PasswordHistory]:
         return PasswordHistory.objects.filter(user=self.user)
 
     def _remove_excess(self):
         entries = self._queryset()
-        # Keep at least 1 for the newly added password
+        # Keep at least 1 for the user's current password
         offset = self.reuse_limit if self.reuse_limit else 1
         if entries.count() <= offset:
             return
