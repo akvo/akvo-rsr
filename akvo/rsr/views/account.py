@@ -14,7 +14,8 @@ from qrcode.image.svg import SvgPathImage
 from lxml import etree
 from base64 import b32encode
 
-from akvo.rsr.forms import RegisterForm, InvitedUserForm, PasswordResetForm
+from akvo.password_policy.services import PasswordHistoryService
+from akvo.rsr.forms import RegisterForm, InvitedUserForm, PasswordResetForm, resolve_password_policy
 from akvo.rsr.models import Employment
 from akvo.utils import rsr_send_mail
 from akvo.rsr.registration import activate_user
@@ -22,7 +23,7 @@ from akvo.rsr.registration import activate_user
 from django.conf import settings
 from django.contrib.auth import login, logout, authenticate, get_user_model
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.signing import TimestampSigner, BadSignature
@@ -35,6 +36,8 @@ from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from django.views.decorators.http import require_POST
 
 from two_factor.utils import get_otpauth_url, totp_digits
+from two_factor.forms import AuthenticationTokenForm, BackupTokenForm
+from two_factor.views.core import LoginView
 from two_factor.views.profile import DisableView
 
 
@@ -372,6 +375,37 @@ def totp_qrcode(request):
     resp = HttpResponse(content_type='image/svg+xml; charset=utf-8')
     img.save(resp)
     return resp
+
+
+class SignInView(LoginView):
+    PASSWORD_STEP = "password"
+
+    def has_password_step(self):
+        user = self.get_user()
+        if not user or user.is_anonymous:
+            return
+        config = resolve_password_policy(user)
+        service = PasswordHistoryService(user, config)
+        return service.is_expired()
+
+    form_list = (
+        (LoginView.AUTH_STEP, AuthenticationForm),
+        (LoginView.TOKEN_STEP, AuthenticationTokenForm),
+        (LoginView.BACKUP_STEP, BackupTokenForm),
+        (PASSWORD_STEP, PasswordChangeForm),
+    )
+    condition_dict = {
+        LoginView.TOKEN_STEP: LoginView.has_token_step,
+        LoginView.BACKUP_STEP: LoginView.has_backup_step,
+        PASSWORD_STEP: has_password_step,
+    }
+
+    def done(self, form_list, **kwargs):
+        for form in form_list:
+            if not callable(getattr(form, 'save', None)):
+                continue
+            form.save()
+        return super().done(form_list, **kwargs)
 
 
 class DisableTwoFactorView(DisableView):

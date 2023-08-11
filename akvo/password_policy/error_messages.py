@@ -4,6 +4,7 @@ from akvo.password_policy.rules.character import CharacterRule
 from akvo.password_policy.rules.common_password import CommonPasswordRule
 from akvo.password_policy.rules.length import LengthRule
 from akvo.password_policy.rules.regex import IllegalRegexRule
+from akvo.password_policy.rules.reuse_limit import ReuseLimitRule
 from akvo.password_policy.rules.user_attribute import UserAttributeRule
 
 ERROR_MESSAGES = {
@@ -27,6 +28,7 @@ ERROR_MESSAGES = {
         "Password must be %(expected)s or more characters in length."
     ),
     IllegalRegexRule.ERROR_CODE: _("Password matches the illegal pattern '%(match)s'."),
+    ReuseLimitRule.ERROR_CODE: _("Password matches one of %(limit)s previous passwords."),
     UserAttributeRule.ERROR_CODE: _("Password is too similar to the '%(attribute)s'."),
 }
 

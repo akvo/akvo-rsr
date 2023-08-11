@@ -1,9 +1,14 @@
 from django.db import models
+from django.conf import settings
 
 
 class PolicyConfig(models.Model):
     name = models.CharField(max_length=100, unique=True)
-    expiration = models.DurationField(blank=True, null=True)
+    expiration = models.PositiveSmallIntegerField(
+        blank=True,
+        null=True,
+        help_text="Maximum password age (days). Set empty for never expires",
+    )
     reuse = models.PositiveSmallIntegerField(
         blank=True, null=True, verbose_name="Reuse policy"
     )
@@ -24,3 +29,9 @@ class RegexRuleConfig(models.Model):
         PolicyConfig, on_delete=models.CASCADE, related_name="regex_rules"
     )
     pattern = models.CharField(max_length=255)
+
+
+class PasswordHistory(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    password = models.CharField(max_length=128)
+    created_at = models.DateTimeField(auto_now_add=True)

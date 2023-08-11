@@ -18,7 +18,6 @@ from django.conf.urls.i18n import i18n_patterns
 from django.views.static import serve
 from django.views.generic import RedirectView
 from rest_framework_swagger.views import get_swagger_view
-from two_factor import views as tf_views
 from two_factor.urls import urlpatterns as two_factor_urls
 
 from akvo.rsr import views
@@ -102,7 +101,7 @@ urlpatterns = i18n_patterns(
         account.invite_activate, name='invite_activate'),
 
     url(r'^sign_in/$',
-        tf_views.LoginView.as_view(), name='sign_in'),
+        account.SignInView.as_view(), name='sign_in'),
 
     url('^account/two_factor/disable/$',
         account.DisableTwoFactorView.as_view(), name='two_factor_disable'),
