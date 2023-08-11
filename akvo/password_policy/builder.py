@@ -9,7 +9,9 @@ from akvo.password_policy.rules.common_password import CommonPasswordRule
 from akvo.password_policy.rules.compound import CompoundRule
 from akvo.password_policy.rules.length import LengthRule
 from akvo.password_policy.rules.regex import IllegalRegexRule
+from akvo.password_policy.rules.reuse_limit import ReuseLimitRule
 from akvo.password_policy.rules.user_attribute import UserAttributeRule
+from akvo.password_policy.services import PasswordHistoryService
 
 RuleBuilder = Callable[[PolicyConfig, AbstractBaseUser], Optional[ValidationRule]]
 
@@ -50,6 +52,14 @@ def build_no_common_password_rule(config: PolicyConfig, *_) -> Optional[Validati
     return CommonPasswordRule()
 
 
+def build_reuse_limit_rule(
+    config: PolicyConfig, user: AbstractBaseUser
+) -> Optional[ValidationRule]:
+    if not config.reuse:
+        return None
+    return ReuseLimitRule(PasswordHistoryService(user, config))
+
+
 def build_no_user_attributes_rule(
     config: PolicyConfig, user: AbstractBaseUser
 ) -> Optional[ValidationRule]:
@@ -73,6 +83,7 @@ RULE_BUILDERS: List[RuleBuilder] = [
     build_numbers_rule,
     build_symbols_rule,
     build_no_common_password_rule,
+    build_reuse_limit_rule,
     build_no_user_attributes_rule,
     build_regex_rules,
 ]

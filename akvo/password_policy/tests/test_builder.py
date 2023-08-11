@@ -10,6 +10,7 @@ from akvo.password_policy.rules.common_password import CommonPasswordRule
 from akvo.password_policy.rules.compound import CompoundRule
 from akvo.password_policy.rules.length import LengthRule
 from akvo.password_policy.rules.regex import IllegalRegexRule
+from akvo.password_policy.rules.reuse_limit import ReuseLimitRule
 from akvo.password_policy.rules.user_attribute import UserAttributeRule
 
 User = get_user_model()
@@ -56,6 +57,12 @@ class ConfigAttributeBuilderTestCase(RuleBuilderTestMixin, TestCase):
         validator = build_validation_rule(config, self.user)
         self.assertEqual(1, len(validator.rules))
         self.assertIsInstance(validator.rules[0], CommonPasswordRule)
+
+    def test_reuse_limit_rule(self):
+        config = PolicyConfig(min_length=0, letters=0, reuse=1)
+        validator = build_validation_rule(config, self.user)
+        self.assertEqual(1, len(validator.rules))
+        self.assertIsInstance(validator.rules[0], ReuseLimitRule)
 
     def test_user_attributes_rule(self):
         config = PolicyConfig(min_length=0, letters=0, no_user_attributes=True)
