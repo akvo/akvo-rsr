@@ -3,7 +3,7 @@
 
 Additionally supported IDEs:
 
- - [PyCharm](doc/pycharm.md)
+ - [PyCharm](pycharm.md)
 
 ## System architecture
 
@@ -142,7 +142,7 @@ The developer console can help you see coarsely, the amount of time each request
 
 #### Django debug toolbar
 
-The Django Debug Toolbar(DDT) comes with a bunch of panels to display
+The Django Debug Toolbar (DDT) comes with a bunch of panels to display
 information about the currently displayed view, a bunch of information being
 quite useful to debug performance issues.
 
@@ -184,17 +184,11 @@ these?
 
 We use a branch and PR based development model.
 
-- `develop` branch is the default branch of the repository. Any new commits on
+- `master` branch is the default branch of the repository. Any new commits on
   this branch are deployed to the test server, automatically.
 
-- `master` branch is used for deployments to the live server. Any new commits to
-  master are automatically deployed to the live server.
-
-- Any code being committed onto `develop` should go through a pull-request and
+- Any code being committed onto `master` should go through a pull-request and
   code-review process.
-
-- Any code being committed to the `master` branch should go through a "release
-  process".
 
 ### Git branches workflow
 
@@ -203,7 +197,7 @@ We use a branch and PR based development model.
 - Name the branch `feature/1234-featurename` where #1234 is the issue number
 
 - When you have code ready to be merged, create a Pull Request from the Branch
-  to merge into `develop`.
+  to merge into `master`.
 
 - Make commits in the format:
 
@@ -213,25 +207,6 @@ We use a branch and PR based development model.
 
   When an issue is completely fixed, add `Fixes #1234` in the commit message, to
   automatically close the issue when the PR is merged.
-
-## Release Process
-
-- Make sure all the issues going into this release are in a Milestone, are
-  closed and have appropriate tags - bug, chore or feature-request.
-
-- Create a draft release in [GitHub](https://github.com/akvo/akvo-rsr/releases)
-
-- Run `scripts/devhelpers/release_notes.py` to get a draft version of the
-  release notes.
-
-- Copy them over to GitHub and iterate on them.
-
-- Set a [Status page announcement](https://akvo.statuspage.io/) to let our users
-  know about the release
-
-- Add the next version tag on `develop` and publish the release.
-
-- Send a PR to `master` from `develop` and merge when the time is right!
 
 ## i18n Translations
 
@@ -329,7 +304,7 @@ type may be relevant. Those files usually end in .txt
 
 ##### Q: How do I migrate or get a Django shell?
 
-You can `exec` commands on the web host. `docker-compose exec web python
+You can `exec` commands on the web host. `docker-compose exec -u akvo web python
 manage.py shell` for example.
 
 
@@ -350,7 +325,9 @@ To temporarily install additional packages in the docker machine, you can run
 installation is temporary, and all changes are lost when `docker-compose down`
 is run.
 
-To install add a new dependency, add it to `requirements.txt`.
+To install add a new dependency, see the instructions in the
+[scripts/devhelpers/update-locked-requirements](https://github.com/akvo/akvo-rsr/blob/master/scripts/devhelpers/update-locked-requirements#L4)
+file.
 
 
 ##### Q: I get a 502! Why?
@@ -361,18 +338,18 @@ Ensure that RSR is running. Chances are, a 502 means that no RSR app is running.
 ##### Q: How do create a copy of the test/live DB for local testing?
 
 See the instructions in the
-[restore-elephantsql-dump-to-dev-env.sh](https://github.com/akvo/akvo-rsr/blob/develop/scripts/data/restore-elephantsql-dump-to-dev-env.sh#L3)
+[scripts/data/make-and-restore-production-dump.sh](https://github.com/akvo/akvo-rsr/blob/master/scripts/data/make-and-restore-production-dump.sh#L3)
 file.
 
 ## Helpful notes
 
-* When you are done developing, run `docker-compose down` to stop and remove
-  containers, networks, images, and volumes.
+* When you are done developing, run `docker-compose down -v` to stop and remove
+  containers, networks, and volumes.
 
-* Run `docker-compose exec web /bin/bash` to get a shell on the docker web host.
+* Run `docker-compose exec -u akvo web /bin/bash` to get a shell on the docker web container.
 
-* The `akvo-rsr` repository from your local machine is synced to the virtual
-  machine, and the RSR application will restart when you make code changes.
+* The `akvo-rsr` repository from your local machine is mounted to the docker container,
+  and the RSR application will restart when you make code changes.
 
 ## Useful scripts
 

@@ -15,7 +15,7 @@ This a **manual** operation.
 In order to deploy to [production](https://rsr.akvo.org), the docker image must exist in the docker registry.
 At the moment, this is all tied to Akvo's private, docker registry on Google Cloud.
 
-The docker image is created during the deployment to the test environment or simply by merging into `production`.
+The docker image is created during the deployment to the test environment or simply by merging into `master`.
 
 ### Commands
 
