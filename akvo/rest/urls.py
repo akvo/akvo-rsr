@@ -56,6 +56,7 @@ router.register(r'(?P<version>(v1))/policy_marker', views.PolicyMarkerViewSet)
 router.register(r'(?P<version>(v1))/project', views.ProjectViewSet)
 router.register(r'(?P<version>(v1))/raw_project_hierarchy', views.RawProjectHierarchyViewSet)
 router.register(r'(?P<version>(v1))/program', views.ProgramViewSet)
+router.register(r'(?P<version>(v1))/project_by_uuid', views.ProjectByUuidViewSet)
 router.register(r'(?P<version>(v1))/my_projects', views.MyProjectsViewSet)
 router.register(r'(?P<version>(v1))/project_iati_export', views.ProjectIatiExportViewSet,
                 basename='project_iati_export')
