@@ -64,7 +64,7 @@ An important aspect that then comes into play is [results aggregation][aggregati
 [AkvoTreeModel]: #AkvoTreeModel
 [framework inheritance]: https://github.com/akvo/akvo-rsr/wiki/Details-on-inheriting-results-frameworks
 [ltree]: https://www.postgresql.org/docs/current/ltree.html
-[Report generation]: ../report_generation.md
+[Report generation]: report_generation.md
 [Results Framework]: results_framework/index.md
 [Project]: #akvo.rsr.models.project.Project
 [ProjectHierarchy]: #akvo.rsr.models.project_hierarchy.ProjectHierarchy

@@ -12,4 +12,5 @@ results_framework/index.md
 reports/index.md
 projects.md
 tasks.md
+report_generation.md
 :::
