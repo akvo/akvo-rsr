@@ -13,10 +13,9 @@ For more information on Akvo RSR, please visit the [wiki page](https://github.co
 Or use these links to go directly to one of the corresponding pages:
 
 * [Developer Documentation](https://akvo.github.io/akvo-rsr)
+* [Knowledge base](https://kb.akvo.org/rsr/)
 * [Managing Training Environments](ci/training-envs/README.md)
 * [Release notes](https://github.com/akvo/akvo-rsr/releases)
-* [What's next for RSR](https://github.com/akvo/akvo-rsr/wiki/What's-next-for-RSR)
-* [Authors](https://github.com/akvo/akvo-rsr/wiki/Authors)
 * [License](https://github.com/akvo/akvo-rsr/wiki/License)
 
-Read more about other [Akvo Products](http://akvo.org/products/).
+Read more about other [Akvo Products](https://akvo.org/tech-services/).
