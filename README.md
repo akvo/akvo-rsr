@@ -9,13 +9,10 @@ Akvo RSR is part of the Akvo platform. Akvo RSR is a web and Android-based syste
 
 We believe that Akvo RSR can be used in many other scenarios, including environmental programs and monitoring.
 
-For more information on Akvo RSR, please visit the [wiki page](https://github.com/akvo/akvo-rsr/wiki). 
-Or use these links to go directly to one of the corresponding pages:
+For more information on Akvo RSR, use these links to go directly to one of the corresponding pages:
 
-* [Developer Documentation](https://akvo.github.io/akvo-rsr)
 * [Knowledge base](https://kb.akvo.org/rsr/)
-* [Managing Training Environments](ci/training-envs/README.md)
-* [Release notes](https://github.com/akvo/akvo-rsr/releases)
-* [License](https://github.com/akvo/akvo-rsr/wiki/License)
+* [Developer Documentation](https://akvo.github.io/akvo-rsr)
+* [License](LICENSE)
 
 Read more about other [Akvo Products](https://akvo.org/tech-services/).
