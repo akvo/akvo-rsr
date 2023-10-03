@@ -41,7 +41,7 @@ xmltodict==0.10.2
 
 # RSR requirements
 Markdown==3.3.4
-Pillow==8.0.1
+Pillow==10.0.1
 python-memcached==1.59
 
 # Images and videos
