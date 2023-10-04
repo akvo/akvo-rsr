@@ -124,3 +124,5 @@ google-cloud-profiler
 
 phonenumbers
 django-two-factor-auth
+
+django-dbml
