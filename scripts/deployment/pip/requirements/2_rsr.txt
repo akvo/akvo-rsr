@@ -211,6 +211,10 @@ django-bootstrap3==15.0.0 \
 django-crontab==0.7.1 \
     --hash=sha256:1201810a212460aaaa48eb6a766738740daf42c1a4f6aafecfb1525036929236
     # via -r scripts/deployment/pip/requirements/production.in
+django-dbml==0.6.0 \
+    --hash=sha256:2a3d4fb54e4c3992c5615d5c7b7f42cf34038c5652a456db05d3b807195c80f6 \
+    --hash=sha256:e61ad4cbfeba08b8f40573f96a9f40e3e35d1cb5c270370313aba02a8272eff5
+    # via -r scripts/deployment/pip/requirements/production.in
 django-embed-video==1.4.0 \
     --hash=sha256:243e489fdb618dde4e9112ce51db1e651724d6b287122ce29662beade0e53362 \
     --hash=sha256:760af922e77fb1db5f6e9c5f1e35ecdca8dd35402d7a71f24c03f1ecb284be01
