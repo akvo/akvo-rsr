@@ -21,7 +21,7 @@ Table of Contents
 :maxdepth: 2
 
 components/index.md
-modules/modules.rst
+references.md
 dev.md
 deploying.md
 ```
@@ -30,5 +30,4 @@ Indices and tables
 ==================
 
 * {ref}`genindex`
-* {ref}`modindex`
 * {ref}`search`
