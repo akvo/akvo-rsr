@@ -179,10 +179,6 @@ click==8.1.3 \
     --hash=sha256:7682dc8afb30297001674575ea00d1814d808d6a36af415a82bd481d37ba7b8e \
     --hash=sha256:bb4d8133cb15a609f44e8213d9b391b0809795062913b383c62be0ee95b1db48
     # via pip-tools
-cloud-sptheme==1.10.1.post20200504175005 \
-    --hash=sha256:82be47ddebbc045e7386269fc062f79d6f87cefe8e5c1e35fe0e9f4266a57723 \
-    --hash=sha256:caf47ac4c6346eef47fc11e799adbeaf645921c712cc099cf2530560e7ecde44
-    # via -r scripts/deployment/pip/requirements/dev.in
 coreapi==2.3.3 \
     --hash=sha256:46145fcc1f7017c076a2ef684969b641d18a2991051fddec9458ad3f78ffc1cb \
     --hash=sha256:bf39d118d6d3e171f10df9ede5666f63ad80bba9a29a8ec17726a66cf52ee6f3
@@ -1318,9 +1314,13 @@ sphinx==6.1.3 \
     --hash=sha256:807d1cb3d6be87eb78a381c3e70ebd8d346b9a25f3753e9947e866b2786865fc
     # via
     #   -r scripts/deployment/pip/requirements/dev.in
-    #   cloud-sptheme
     #   myst-parser
+    #   sphinx-rtd-theme
     #   sphinxcontrib-plantuml
+sphinx-rtd-theme==0.5.1 \
+    --hash=sha256:eda689eda0c7301a80cf122dad28b1861e5605cbf455558f3775e1e8200e83a5 \
+    --hash=sha256:fa6bebd5ab9a73da8e102509a86f3fcc36dec04a0b52ea80e5a033b2aba00113
+    # via -r scripts/deployment/pip/requirements/dev.in
 sphinxcontrib-applehelp==1.0.4 \
     --hash=sha256:29d341f67fb0f6f586b23ad80e072c8e6ad0b48417db2bde114a4c9746feb228 \
     --hash=sha256:828f867945bbe39817c210a1abfd1bc4895c8b73fcaade56d45357a348a07d7e
