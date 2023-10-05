@@ -27,7 +27,6 @@ api: Makefile
 		--module-first \
 		--separate \
 		-o doc/modules \
-		-H "Reference documentation" \
 		--force \
 			akvo \
 			'*/migrations/*' \

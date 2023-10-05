@@ -11,6 +11,7 @@ blocks:
         - name: GCP
         - name: docker-hub-credentials
         - name: coveralls
+        - name: dbdocs-token
       prologue:
         commands:
           - checkout
