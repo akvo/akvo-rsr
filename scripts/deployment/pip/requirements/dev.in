@@ -15,7 +15,7 @@ django-debug-toolbar
 
 # Documentation
 Sphinx
-cloud-sptheme
+sphinx_rtd_theme
 sphinxcontrib-plantuml
 # Sphinx markdown support
 # https://www.sphinx-doc.org/en/master/usage/markdown.html
