@@ -55,4 +55,8 @@ if [[ -n "${COVERALLS_REPO_TOKEN}" ]] ; then
   coveralls
 fi
 
+if [[ "${CI_BRANCH}" == "master" ]]; then
+  ./manage.py dbml rsr password_policy auth contenttypes > rsr.dbml
+fi
+
 log Done

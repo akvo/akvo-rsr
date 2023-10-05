@@ -85,6 +85,12 @@ if [[ ! "${SKIP_BACKEND_TESTS:-}" = yes ]]; then
     run web scripts/docker/dev/run-as-user.sh scripts/docker/ci/build.sh
 fi
 
+if [[ -n "${DBDOCS_TOKEN:-}" ]] && [[ -f rsr.dbml ]]; then
+  log Generate dbml file and push it to dbdocs.io
+  docker build --rm=false -t rsr-dbdocs -f Dockerfile-dbdocs .
+  docker run --rm -e DBDOCS_TOKEN="${DBDOCS_TOKEN}" -v $(pwd):/app rsr-dbdocs dbdocs build rsr.dbml --project=rsr
+fi
+
 #log Stopping docker-compose
 #docker-compose -p rsrci -f docker-compose.yaml -f docker-compose.ci.yaml down
 
@@ -92,7 +98,6 @@ log Preparing deploy info file
 echo "DEPLOY_COMMIT_FULL_ID = $(quote "`git rev-parse HEAD`")" > ._66_deploy_info.conf
 echo "DEPLOY_COMMIT_ID = $(quote "`git rev-parse --short HEAD`")" >> ._66_deploy_info.conf
 echo "DEPLOY_BRANCH = $(quote "$CI_BRANCH")" >> ._66_deploy_info.conf
-
 
 docker_build akvo/rsr-backend-prod-no-code -f Dockerfile-prod-no-code .
 
