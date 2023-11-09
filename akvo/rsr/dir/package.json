@@ -41,7 +41,7 @@
     "lodash": "^4.17.21",
     "mapbox-gl": "^1.11.1",
     "moment": "^2.24.0",
-    "moment-timezone": "^0.5.26",
+    "moment-timezone": "^0.5.35",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-awesome-styled-grid": "^3.1.4",
