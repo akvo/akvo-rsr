@@ -68,9 +68,9 @@ cairocffi==1.4.0 \
     # via
     #   cairosvg
     #   weasyprint
-cairosvg==2.6.0 \
-    --hash=sha256:05069d5316e9f02f33028942f96929e01782db41e6ff07d8454c8d021b5b52f3 \
-    --hash=sha256:d5ec93e90101b3b6e82aa245d0546ee9b016cfda0b6344675159830d853d5d04
+cairosvg==2.7.0 \
+    --hash=sha256:17cb96423a896258848322a95c80160e714a58f1af3dd73b8e1750994519b9f9 \
+    --hash=sha256:ac4dc7c1d38b3a15717db2633a3a383012e0be664c727c911637e6af6a49293c
     # via weasyprint
 certifi==2022.12.7 \
     --hash=sha256:35824b4c3a97115964b408844d64aa14db1cc518f6562e8d7261699d1350a9e3 \
