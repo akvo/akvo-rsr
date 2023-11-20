@@ -30,7 +30,7 @@ from .eutf_org_results_table_excel_report import \
 from .eutf_project_results_table_excel_report import \
     render_report as render_eutf_project_results_table_excel_report
 from .results_indicators_excel_report import \
-    render_report as render_results_indicators_excel_report
+    add_email_report_job as render_results_indicators_excel_report
 from .organisation_projects_overview_report import \
     render_report as render_org_projects_overview_report
 from .program_overview_excel_report import add_email_report_job as add_program_overview_excel_report_email_job
