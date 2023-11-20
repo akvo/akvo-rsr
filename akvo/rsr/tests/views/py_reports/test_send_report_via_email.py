@@ -6,6 +6,7 @@ from parameterized import parameterized
 from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.models import Country
 from akvo.rsr.views.py_reports import (
+    results_indicators_excel_report,
     program_overview_pdf_report,
     program_overview_excel_report,
     program_period_labels_overview_pdf_report,
@@ -19,6 +20,7 @@ class SendReportViaEmailTestCase(BaseTestCase):
 
     def setUp(self):
         super().setUp()
+        self.org = self.create_organisation('Acme')
         self.program = self.create_program('Test program')
         self.user = self.create_user('test@akvo.org', 'password', is_admin=True)
         Country.objects.get_or_create(iso_code='nl')
@@ -57,7 +59,7 @@ class SendReportViaEmailTestCase(BaseTestCase):
             eutf_org_results_table_excel_report.handle_email_report,
         ),
     ])
-    def test_send_report_via_djangoq_email(self, url_name, query_params, report_name, email_handler):
+    def test_send_program_reports_via_djangoq_email(self, url_name, query_params, report_name, email_handler):
         self.c.get(f"{reverse(url_name, args=(self.program.id,))}?{query_params}")
 
         # Check that the task was enqueued with django-q
@@ -71,6 +73,38 @@ class SendReportViaEmailTestCase(BaseTestCase):
         params_arg = next(iter(task_args), {})
         self.assertEquals(self.program.id, params_arg.get("program_id"),
                           msg="The expected program ID isn't present in the task's first argument")
+
+        # Emulate executing the task without going through django-q
+        # There's currently no easy way to do so
+        f = task_dict.get("func")
+        self.assertEqual(f, email_handler)
+        f(*task_dict.get("args"), **task_dict.get("kwargs"))
+
+        # Ensure an email was sent out
+        msg = mail.outbox[0]
+        self.assertEqual([self.user.email], msg.to)
+
+    @parameterized.expand([
+        (
+            'py-reports-organisation-results-indicators-table', '',
+            results_indicators_excel_report.REPORT_NAME,
+            results_indicators_excel_report.handle_email_report,
+        ),
+    ])
+    def test_send_org_reports_via_djangoq_email(self, url_name, query_params, report_name, email_handler):
+        self.c.get(f"{reverse(url_name, args=(self.org.id,))}?{query_params}")
+
+        # Check that the task was enqueued with django-q
+        enqueued_task = OrmQ.objects.first()
+        self.assertIsNotNone(enqueued_task)
+        task_dict = SignedPackage.loads(enqueued_task.payload)
+        self.assertEquals(task_dict.get("name"), report_name)
+
+        # And with the correct program
+        task_args = task_dict.get("args")
+        params_arg = next(iter(task_args), {})
+        self.assertEquals(self.org.id, params_arg.get("org_id"),
+                          msg="The expected organisation ID isn't present in the task's first argument")
 
         # Emulate executing the task without going through django-q
         # There's currently no easy way to do so
