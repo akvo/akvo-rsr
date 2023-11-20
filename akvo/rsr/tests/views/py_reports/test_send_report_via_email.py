@@ -6,13 +6,14 @@ from parameterized import parameterized
 from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.models import Country
 from akvo.rsr.views.py_reports import (
-    results_indicators_excel_report,
     program_overview_pdf_report,
     program_overview_excel_report,
     program_period_labels_overview_pdf_report,
     results_indicators_with_map_pdf_reports,
     nuffic_country_level_map_report,
     eutf_org_results_table_excel_report,
+    results_indicators_excel_report,
+    organisation_data_quality_overview_report,
 )
 
 
@@ -89,6 +90,16 @@ class SendReportViaEmailTestCase(BaseTestCase):
             'py-reports-organisation-results-indicators-table', '',
             results_indicators_excel_report.REPORT_NAME,
             results_indicators_excel_report.handle_email_report,
+        ),
+        (
+            'py-reports-organisation-data-quality-overview', 'format=pdf',
+            organisation_data_quality_overview_report.REPORT_NAME,
+            organisation_data_quality_overview_report.handle_email_report,
+        ),
+        (
+            'py-reports-organisation-data-quality-overview', 'format=excel',
+            organisation_data_quality_overview_report.REPORT_NAME,
+            organisation_data_quality_overview_report.handle_email_report,
         ),
     ])
     def test_send_org_reports_via_djangoq_email(self, url_name, query_params, report_name, email_handler):
