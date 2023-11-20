@@ -9,12 +9,10 @@ see < http://www.gnu.org/licenses/agpl.html >.
 from django.utils import timezone
 
 from akvo.rsr.models import Organisation, Project
-from akvo.rsr.decorators import with_download_indicator
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.db.models import Q
-from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from pyexcelerate import Workbook, Style, Font, Color, Alignment, Format
@@ -23,37 +21,45 @@ from pyexcelerate.Border import Border
 
 from . import utils
 
+REPORT_NAME = 'organisation_data_quality'
+
 
 @login_required
-@with_download_indicator
-def render_report(request, org_id):
+def add_email_report_job(request, org_id):
     organisation = get_object_or_404(Organisation, pk=org_id)
+    payload = {
+        'org_id': organisation.id,
+        'format': request.GET.get('format')
+    }
+    recipient = request.user.email
+    return utils.make_async_email_report_task(handle_email_report, payload, recipient, REPORT_NAME)
+
+
+def handle_email_report(params, recipient):
+    organisation = Organisation.objects.get(pk=params['org_id'])
+    format = params['format']
     now = timezone.now()
     reader = OrganisationDataQualityReader(organisation, now)
 
-    format = request.GET.get('format')
-
     if format == 'pdf':
-        return _render_pdf(reader, True if request.GET.get('show-html', '') else False)
+        html = _render_pdf(reader)
+        filename = '{}-{}-organisation-data-quality.pdf'.format(
+            reader.date.strftime('%Y%m%d'), reader.organisation.id)
+        utils.send_pdf_report(html, recipient, filename)
     elif format == 'excel':
-        return _render_excel(reader)
+        wb = _render_excel(reader)
+        filename = '{}-{}-organisation-data-quality.xlsx'.format(
+            reader.date.strftime('%Y%m%d'), reader.organisation.id)
+        utils.send_excel_report(wb, recipient, filename)
     else:
-        return HttpResponseBadRequest('Unsupported format.')
+        pass
 
 
-def _render_pdf(reader, show_html=True):
-    html = render_to_string(
+def _render_pdf(reader):
+    return render_to_string(
         'reports/organisation-data-quality-overview.html',
         context={'reader': reader, 'domain': settings.RSR_DOMAIN}
     )
-
-    if show_html:
-        return HttpResponse(html)
-
-    filename = '{}-{}-organisation-data-quality.pdf'.format(
-        reader.date.strftime('%Y%m%d'), reader.organisation.id)
-
-    return utils.make_pdf_response(html, filename)
 
 
 def _render_excel(reader):
@@ -262,10 +268,7 @@ def _render_excel(reader):
         ws.set_cell_style(row, i, table_footer_style)
     ws.set_cell_value(row, 1, len(reader.without_photo_list))
 
-    filename = '{}-{}-organisation-data-quality.xlsx'.format(
-        reader.date.strftime('%Y%m%d'), reader.organisation.id)
-
-    return utils.make_excel_response(wb, filename)
+    return wb
 
 
 class OrganisationDataQualityReader(object):
