@@ -11,12 +11,10 @@ from django.utils import timezone
 from akvo.codelists.models import ActivityStatus
 from akvo.rsr.models import Organisation
 from akvo.utils import ObjectReaderProxy
-from akvo.rsr.decorators import with_download_indicator
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Sum
 from django.db.models.functions import Trunc
-from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse
@@ -151,39 +149,51 @@ def _activity_status_name(value, version=settings.IATI_VERSION):
     return status.name if status else 'None'
 
 
-@login_required
-@with_download_indicator
-def render_report(request, org_id):
-    organisation = get_object_or_404(Organisation, pk=org_id)
-    reader = OrganisationProjectsOverviewReader(organisation)
+REPORT_NAME = 'organisation_projects_overview'
 
-    format = request.GET.get('format')
+
+@login_required
+def add_email_report_job(request, org_id):
+    organisation = get_object_or_404(Organisation, pk=org_id)
+    payload = {
+        'org_id': organisation.id,
+        'format': request.GET.get('format')
+    }
+    recipient = request.user.email
+    return utils.make_async_email_report_task(handle_email_report, payload, recipient, REPORT_NAME)
+
+
+def handle_email_report(params, recipient):
+    organisation = Organisation.objects.get(pk=params['org_id'])
+    format = params['format']
+    reader = OrganisationProjectsOverviewReader(organisation)
+    current_date = timezone.now()
 
     if format == 'pdf':
-        return _render_pdf(reader, True if request.GET.get('show-html', '') else False)
+        html = _render_pdf(reader, current_date)
+        filename = '{}-{}-organisation-projects-overview.pdf'.format(
+            current_date.strftime('%Y%m%d'), reader.id)
+        utils.send_pdf_report(html, recipient, filename)
+
     elif format == 'excel':
-        return _render_excel(reader)
+        wb = _render_excel(reader)
+
+        filename = '{}-{}-organisation-projects-overview.xlsx'.format(
+            current_date.strftime('%Y%m%d'), reader.id)
+        utils.send_excel_report(wb, recipient, filename)
+
     else:
-        return HttpResponseBadRequest('Unsupported format.')
+        pass
 
 
-def _render_pdf(reader, show_html=True):
-    current_date = timezone.now()
-    html = render_to_string(
+def _render_pdf(reader, current_date):
+    return render_to_string(
         'reports/organisation-projects-overview.html',
         context={
             'reader': reader,
             'current_date': current_date
         }
     )
-
-    if show_html:
-        return HttpResponse(html)
-
-    filename = '{}-{}-organisation-projects-overview.pdf'.format(
-        current_date.strftime('%Y%m%d'), reader.id)
-
-    return utils.make_pdf_response(html, filename)
 
 
 def _render_excel(reader):
@@ -414,8 +424,4 @@ def _render_excel(reader):
             ws.set_cell_value(row, i, value)
 
         row += 1
-
-    filename = '{}-{}-organisation-projects-overview.xlsx'.format(
-        timezone.now().strftime('%Y%m%d'), reader.id)
-
-    return utils.make_excel_response(wb, filename)
+    return wb

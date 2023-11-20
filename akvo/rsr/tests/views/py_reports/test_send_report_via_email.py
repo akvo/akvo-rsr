@@ -14,6 +14,7 @@ from akvo.rsr.views.py_reports import (
     eutf_org_results_table_excel_report,
     results_indicators_excel_report,
     organisation_data_quality_overview_report,
+    organisation_projects_overview_report,
 )
 
 
@@ -100,6 +101,16 @@ class SendReportViaEmailTestCase(BaseTestCase):
             'py-reports-organisation-data-quality-overview', 'format=excel',
             organisation_data_quality_overview_report.REPORT_NAME,
             organisation_data_quality_overview_report.handle_email_report,
+        ),
+        (
+            'py-reports-organisation-projects-overview', 'format=pdf',
+            organisation_projects_overview_report.REPORT_NAME,
+            organisation_projects_overview_report.handle_email_report,
+        ),
+        (
+            'py-reports-organisation-projects-overview', 'format=excel',
+            organisation_projects_overview_report.REPORT_NAME,
+            organisation_projects_overview_report.handle_email_report,
         ),
     ])
     def test_send_org_reports_via_djangoq_email(self, url_name, query_params, report_name, email_handler):
