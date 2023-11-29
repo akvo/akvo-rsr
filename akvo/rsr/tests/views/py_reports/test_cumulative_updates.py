@@ -7,7 +7,6 @@ from akvo.rsr.tests.utils import ProjectFixtureBuilder
 from akvo.rsr.usecases.period_update_aggregation import aggregate
 from akvo.rsr.views.py_reports import (
     results_indicators_with_map_pdf_reports,
-    results_indicators_excel_report,
     kickstart_word_report,
     eutf_org_results_table_excel_report,
     program_period_labels_overview_pdf_report,
@@ -147,11 +146,6 @@ class ObjectReaderCumulativeUpdateBaseTestCase(CumulativeTestMixin, ABC):
 class ResultsIndicatorsWithMapPdfReportsTestCase(ObjectReaderCumulativeUpdateBaseTestCase, BaseTestCase):
     def make_project_view(self, project: Project) -> utils.ProjectProxy:
         return results_indicators_with_map_pdf_reports.build_view_object(project, self.PERIOD_2_START, self.PERIOD_3_END)
-
-
-class ResultsIndicatorsExcelReportTestCase(ObjectReaderCumulativeUpdateBaseTestCase, BaseTestCase):
-    def make_project_view(self, project: Project) -> utils.ProjectProxy:
-        return results_indicators_excel_report.build_view_object(project.reporting_org)[0]
 
 
 class KickstartWordReportTestCase(ObjectReaderCumulativeUpdateBaseTestCase, BaseTestCase):

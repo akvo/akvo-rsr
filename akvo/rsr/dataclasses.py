@@ -575,6 +575,7 @@ class IndicatorData(object):
     type: int = QUANTITATIVE
     measure: str = ''
     cumulative: bool = False
+    ascending: bool = False
     description: str = ''
     baseline_year: Optional[int] = None
     baseline_value: Optional[Decimal] = None
@@ -591,6 +592,7 @@ class IndicatorData(object):
             type=data.get(f"{prefix}type", QUANTITATIVE),
             measure=data.get(f"{prefix}measure", ''),
             cumulative=data.get(f"{prefix}cumulative", False),
+            ascending=data.get(f"{prefix}ascending", False),
             description=data.get(f"{prefix}description", ''),
             baseline_year=data.get(f"{prefix}baseline_year", None),
             baseline_value=maybe_decimal(data.get(f"{prefix}baseline_value", None)),
@@ -665,6 +667,44 @@ class ResultData(object):
             return type.name
         except ResultType.DoesNotExist:
             return ''
+
+
+@dataclass(frozen=True)
+class ProjectData(object):
+    id: int
+    title: str
+    subtitle: str
+    iati_activity_id: str
+    date_start_planned: Optional[date]
+    date_end_planned: Optional[date]
+    date_start_actual: Optional[date]
+    date_end_actual: Optional[date]
+    targets_at: str
+    recipient_countries: List[str] = field(default_factory=list)
+    partners: List[str] = field(default_factory=list)
+    results: List[ResultData] = field(default_factory=list)
+
+    @classmethod
+    def make(cls, data, prefix=''):
+        return cls(
+            id=data[f"{prefix}id"],
+            title=data.get(f"{prefix}title", ''),
+            subtitle=data.get(f"{prefix}subtitle", ''),
+            iati_activity_id=data.get(f"{prefix}iati_activity_id", ''),
+            date_start_planned=data.get(f"{prefix}date_start_planned", None),
+            date_end_planned=data.get(f"{prefix}date_end_planned", None),
+            date_start_actual=data.get(f"{prefix}date_start_actual", None),
+            date_end_actual=data.get(f"{prefix}date_end_actual", None),
+            targets_at=data.get(f"{prefix}targets_at", 'period'),
+        )
+
+    @property
+    def country_codes(self):
+        return ', '.join({it.lower() for it in self.recipient_countries})
+
+    @property
+    def partner_names(self):
+        return ', '.join({it for it in self.partners})
 
 
 class IndicatorType(Enum):
