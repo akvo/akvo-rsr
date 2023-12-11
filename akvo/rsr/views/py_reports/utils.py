@@ -33,7 +33,10 @@ from akvo.utils import ObjectReaderProxy, ensure_decimal, rsr_send_mail
 def make_async_email_report_task(report_handler, payload, recipient, task_name):
     async_task(report_handler, payload, recipient, task_name=task_name)
     return HttpResponse(
-        'Your report is being prepared. It will be sent to your email in a few moments.',
+        (
+            'Your report is being generated. It will be sent to you over email. '
+            'This can take several minutes depending on the amount of data needed to process.'
+        ),
         status=HTTPStatus.ACCEPTED,
     )
 
