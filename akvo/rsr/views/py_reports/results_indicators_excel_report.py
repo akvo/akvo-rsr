@@ -6,10 +6,11 @@ Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
 from django.conf import settings
+from django.contrib.sites.shortcuts import get_current_site
 from django.utils import timezone
 from akvo.rsr.dataclasses import IndicatorData, PeriodData, ProjectData, ResultData
 
-from akvo.rsr.models import Organisation, IndicatorPeriod, RecipientCountry, Partnership, Project
+from akvo.rsr.models import Organisation, IndicatorPeriod, RecipientCountry, Partnership, Project, User
 from akvo.rsr.models.result.utils import PERCENTAGE_MEASURE
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
@@ -28,6 +29,7 @@ def add_email_report_job(request, org_id):
     organisation = get_object_or_404(Organisation, pk=org_id)
     payload = {
         'org_id': organisation.id,
+        'site': str(get_current_site(request))
     }
     recipient = request.user.email
     return utils.make_async_email_report_task(handle_email_report, payload, recipient, REPORT_NAME)
@@ -35,10 +37,12 @@ def add_email_report_job(request, org_id):
 
 def handle_email_report(params, recipient):
     organisation = Organisation.objects.get(pk=params['org_id'])
+    user = User.objects.get(email=recipient)
+    site = params['site']
     wb = generate_workbook(organisation)
     filename = '{}-{}-results-and-indicators-simple-table.xlsx'.format(
-        timezone.now().strftime('%Y%m%d'), organisation.id)
-    utils.send_excel_report(wb, recipient, filename)
+        timezone.now().strftime('%Y%m%d%H%M%S'), organisation.id)
+    utils.save_excel_and_send_email(wb, site, user, filename)
 
 
 def fetch_periods(organisation: Organisation):

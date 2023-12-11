@@ -8,6 +8,7 @@ see < http://www.gnu.org/licenses/agpl.html >.
 """
 
 import io
+import os
 
 from collections import OrderedDict
 from datetime import date
@@ -16,12 +17,14 @@ from functools import cached_property
 from http import HTTPStatus
 
 from django.conf import settings
+from django.core.files.storage import FileSystemStorage, default_storage
 from django.http import HttpResponse
 from django_q.tasks import async_task
 from weasyprint import HTML
 from weasyprint.fonts import FontConfiguration
 
 from akvo.rsr.models import Partnership
+from akvo.rsr.models.user import User
 from akvo.rsr.project_overview import DisaggregationTarget, IndicatorType
 from akvo.rsr.models.result.utils import QUANTITATIVE, QUALITATIVE, PERCENTAGE_MEASURE, calculate_percentage
 from akvo.utils import ObjectReaderProxy, ensure_decimal, rsr_send_mail
@@ -33,6 +36,32 @@ def make_async_email_report_task(report_handler, payload, recipient, task_name):
         'Your report is being prepared. It will be sent to your email in a few moments.',
         status=HTTPStatus.ACCEPTED,
     )
+
+
+def save_excel_and_send_email(workbook, site: str, user: User, filename='report.xlsx'):
+    stream = io.BytesIO()
+    workbook.save(stream)
+    dir_path = "db/reports"
+    file_url = save_report_file(dir_path, filename, stream.getvalue())
+    rsr_send_mail(
+        [user.email],
+        subject='reports/email/subject.txt',
+        message='reports/email/message_link.txt',
+        msg_context={
+            'username': user.get_full_name(),
+            'site': site,
+            'file_url': file_url,
+        }
+    )
+
+
+def save_report_file(dir_path: str, filename: str, content: bytes):
+    if isinstance(default_storage, FileSystemStorage):
+        os.makedirs(default_storage.path(dir_path), exist_ok=True)
+    file_path = os.path.join(dir_path, filename)
+    with default_storage.open(file_path, 'wb') as f:
+        f.write(content)
+    return default_storage.url(file_path)
 
 
 def send_pdf_report(html, recipient, filename='reports.pdf'):
