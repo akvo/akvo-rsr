@@ -1,7 +1,7 @@
 Dear {{ username }},
 
 Your report is ready! Please use the following link to download your report (valid for 24 hours).
-https://{{ site }}{{ file_url }}
+{{ file_url }}
 
 Thank you,
 Akvo.org
