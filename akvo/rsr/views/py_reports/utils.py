@@ -64,6 +64,10 @@ def notify_dev_on_failed_task(task: Task):
     recipient = getattr(settings, 'REPORT_ERROR_RECIPIENTS', [])
     if not recipient:
         return
+    q_confing = getattr(settings, 'Q_CLUSTER', {})
+    max_attempts = q_confing.get('max_attempts', 1)
+    if task.attempt_count < max_attempts:
+        return
     rsr_send_mail(
         recipient,
         subject='reports/email/failed_subject_dev.txt',
