@@ -1,17 +1,21 @@
-from datetime import timedelta
 import io
 import os
+import binascii
+from datetime import timedelta
 from typing import cast
+from django.core import mail
 from django.core.files.storage import Storage, default_storage
-from django.test import TestCase
+from django.test import override_settings
 from django.utils import timezone
+from django_q.models import Task
+from akvo.rsr.tests.base import BaseTestCase
 
-from akvo.rsr.views.py_reports.utils import REPORTS_STORAGE_BASE_DIR, cleanup_expired_reports, save_report_file
+from akvo.rsr.views.py_reports.utils import REPORTS_STORAGE_BASE_DIR, cleanup_expired_reports, notify_dev_on_failed_task, notify_user_on_failed_report, save_report_file
 
 default_storage = cast(Storage, default_storage)
 
 
-class PyReportUtilsTestCase(TestCase):
+class StorageTestCase(BaseTestCase):
     def tearDown(self):
         _, files = default_storage.listdir(REPORTS_STORAGE_BASE_DIR)
         for f in files:
@@ -39,3 +43,47 @@ class PyReportUtilsTestCase(TestCase):
         t24 = now + timedelta(hours=24, minutes=2)
         cleanup_expired_reports(t24)
         self.assertFalse(default_storage.exists(self.file_path))
+
+
+@override_settings(REPORT_ERROR_RECIPIENTS=['dev@akvo.org'])
+class NotifyErrorTestCase(BaseTestCase):
+    def setUp(self):
+        super().setUp()
+        self.create_user('test@akvo.org')
+        self.failed_task = Task.objects.create(
+            id=self._generate_id(),
+            name='test',
+            args=({'report_label': 'test report'}, 'test@akvo.org'),
+            result='error',
+            success=False,
+            started=timezone.now(),
+            stopped=timezone.now()
+        )
+        self.success_task = Task.objects.create(
+            id=self._generate_id(),
+            name='test',
+            args=({'report_label': 'test report'}, 'test@akvo.org'),
+            success=True,
+            started=timezone.now(),
+            stopped=timezone.now()
+        )
+
+    def _generate_id(self):
+        return binascii.b2a_hex(os.urandom(16)).decode('utf-8')
+
+    def test_notify_dev(self):
+        notify_dev_on_failed_task(self.failed_task)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn('dev@akvo.org', mail.outbox[0].to)
+
+    def test_notify_user(self):
+        notify_user_on_failed_report(self.failed_task)
+        self.assertEqual(len(mail.outbox), 2)
+        self.assertEqual(
+            [it for mail in mail.outbox for it in mail.to],
+            ['test@akvo.org', 'dev@akvo.org']
+        )
+
+    def test_ignore_success(self):
+        notify_user_on_failed_report(self.success_task)
+        self.assertEqual(len(mail.outbox), 0)

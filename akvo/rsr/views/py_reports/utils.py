@@ -21,6 +21,7 @@ from django.conf import settings
 from django.core.files.storage import FileSystemStorage, Storage, default_storage
 from django.http import HttpResponse
 from django.utils import timezone
+from django_q.models import Task
 from django_q.tasks import async_task
 from weasyprint import HTML
 from weasyprint.fonts import FontConfiguration
@@ -37,8 +38,43 @@ REPORTS_STORAGE_BASE_DIR = 'db/reports'
 default_storage = cast(Storage, default_storage)
 
 
-def make_async_email_report_task(report_handler, payload, recipient, task_name):
-    async_task(report_handler, payload, recipient, task_name=task_name)
+def notify_user_on_failed_report(task: Task):
+    if task.success:
+        return
+    payload, recipient = task.args
+    user = User.objects.get(email=recipient)
+    report_label = payload.get('report_label', '')
+    if report_label:
+        report_label = f' ({report_label})'
+    rsr_send_mail(
+        [user.email],
+        subject='reports/email/failed_subject.txt',
+        message='reports/email/failed_message.txt',
+        msg_context={
+            'username': user.get_full_name(),
+            'report_label': report_label,
+        }
+    )
+    notify_dev_on_failed_task(task)
+
+
+def notify_dev_on_failed_task(task: Task):
+    if task.success:
+        return
+    recipient = getattr(settings, 'REPORT_ERROR_RECIPIENTS', [])
+    if not recipient:
+        return
+    rsr_send_mail(
+        recipient,
+        subject='reports/email/failed_subject_dev.txt',
+        message='reports/email/failed_message_dev.txt',
+        msg_context={'task': task}
+    )
+
+
+def make_async_email_report_task(report_handler, payload, recipient, task_name, hook=None):
+    hook = hook or notify_user_on_failed_report
+    async_task(report_handler, payload, recipient, task_name=task_name, hook=hook)
     return HttpResponse(
         (
             'Your report is being generated. It will be sent to you over email. '
