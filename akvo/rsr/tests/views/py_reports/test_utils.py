@@ -3,6 +3,7 @@ import os
 import binascii
 from datetime import timedelta
 from typing import cast
+from django.conf import settings
 from django.core import mail
 from django.core.files.storage import Storage, default_storage
 from django.test import override_settings
@@ -49,6 +50,7 @@ class StorageTestCase(BaseTestCase):
 class NotifyErrorTestCase(BaseTestCase):
     def setUp(self):
         super().setUp()
+        max_attempts = getattr(settings, 'Q_CLUSTER', {}).get('max_attempts', 1)
         self.create_user('test@akvo.org')
         self.failed_task = Task.objects.create(
             id=self._generate_id(),
@@ -57,7 +59,8 @@ class NotifyErrorTestCase(BaseTestCase):
             result='error',
             success=False,
             started=timezone.now(),
-            stopped=timezone.now()
+            stopped=timezone.now(),
+            attempt_count=max_attempts
         )
         self.success_task = Task.objects.create(
             id=self._generate_id(),
