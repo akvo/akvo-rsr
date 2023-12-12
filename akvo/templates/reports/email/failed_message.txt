@@ -1,0 +1,8 @@
+Dear {{ username }},
+
+We regret to inform you that your recent report generation request{{ report_label }} encountered an issue. Our developers have been notified and are actively working on a resolution.
+
+Please be patient, and feel free to retry generating the report after some time. We apologize for any inconvenience caused and appreciate your understanding.
+
+Thank you for your patience.
+Akvo.org

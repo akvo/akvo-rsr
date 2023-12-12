@@ -1,0 +1,11 @@
+Failed running background job
+
+id: {{ task.id }}
+name: {{ task.name }}
+started: {{ task.started }}
+stopped: {{ task.stopped }}
+args: {{ task.args|safe }}
+kwargs: {{ task.kwargs|safe }}
+
+result:
+{{ task.result|safe }}

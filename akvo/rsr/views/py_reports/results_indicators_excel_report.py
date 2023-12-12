@@ -27,12 +27,20 @@ REPORT_NAME = 'organisation_results_indicators_table'
 @login_required
 def add_email_report_job(request, org_id):
     organisation = get_object_or_404(Organisation, pk=org_id)
+    report_label = f'Results and Indicators Export for {organisation.name} organisation'
     payload = {
         'org_id': organisation.id,
-        'site': str(get_current_site(request))
+        'site': str(get_current_site(request)),
+        'report_label': report_label,
     }
     recipient = request.user.email
-    return utils.make_async_email_report_task(handle_email_report, payload, recipient, REPORT_NAME)
+    return utils.make_async_email_report_task(
+        handle_email_report,
+        payload,
+        recipient,
+        REPORT_NAME,
+        hook='akvo.rsr.views.py_reports.utils.notify_user_on_failed_report'
+    )
 
 
 def handle_email_report(params, recipient):
