@@ -11,14 +11,17 @@ import io
 import os
 
 from collections import OrderedDict
-from datetime import date
+from datetime import date, datetime, timedelta
+from typing import cast
 from dateutil.parser import parse, ParserError
 from functools import cached_property
 from http import HTTPStatus
 
 from django.conf import settings
-from django.core.files.storage import FileSystemStorage, default_storage
+from django.core.files.storage import FileSystemStorage, Storage, default_storage
 from django.http import HttpResponse
+from django.utils import timezone
+from django_q.models import Task
 from django_q.tasks import async_task
 from weasyprint import HTML
 from weasyprint.fonts import FontConfiguration
@@ -28,12 +31,55 @@ from akvo.rsr.models.user import User
 from akvo.rsr.project_overview import DisaggregationTarget, IndicatorType
 from akvo.rsr.models.result.utils import QUANTITATIVE, QUALITATIVE, PERCENTAGE_MEASURE, calculate_percentage
 from akvo.utils import ObjectReaderProxy, ensure_decimal, rsr_send_mail
+from akvo.utils.datetime import make_datetime_aware
+
+REPORTS_STORAGE_BASE_DIR = 'db/reports'
+
+default_storage = cast(Storage, default_storage)
 
 
-def make_async_email_report_task(report_handler, payload, recipient, task_name):
-    async_task(report_handler, payload, recipient, task_name=task_name)
+def notify_user_on_failed_report(task: Task):
+    if task.success:
+        return
+    payload, recipient = task.args
+    user = User.objects.get(email=recipient)
+    report_label = payload.get('report_label', '')
+    if report_label:
+        report_label = f' ({report_label})'
+    rsr_send_mail(
+        [user.email],
+        subject='reports/email/failed_subject.txt',
+        message='reports/email/failed_message.txt',
+        msg_context={
+            'username': user.get_full_name(),
+            'report_label': report_label,
+        }
+    )
+    notify_dev_on_failed_task(task)
+
+
+def notify_dev_on_failed_task(task: Task):
+    if task.success:
+        return
+    recipient = getattr(settings, 'REPORT_ERROR_RECIPIENTS', [])
+    if not recipient:
+        return
+    rsr_send_mail(
+        recipient,
+        subject='reports/email/failed_subject_dev.txt',
+        message='reports/email/failed_message_dev.txt',
+        msg_context={'task': task}
+    )
+
+
+def make_async_email_report_task(report_handler, payload, recipient, task_name, hook=None):
+    hook = hook or notify_user_on_failed_report
+    async_task(report_handler, payload, recipient, task_name=task_name, hook=hook)
     return HttpResponse(
-        'Your report is being prepared. It will be sent to your email in a few moments.',
+        (
+            'Your report is being generated. It will be sent to you over email. '
+            'This can take several minutes depending on the amount of data needed to process.'
+        ),
         status=HTTPStatus.ACCEPTED,
     )
 
@@ -41,8 +87,7 @@ def make_async_email_report_task(report_handler, payload, recipient, task_name):
 def save_excel_and_send_email(workbook, site: str, user: User, filename='report.xlsx'):
     stream = io.BytesIO()
     workbook.save(stream)
-    dir_path = "db/reports"
-    file_url = save_report_file(dir_path, filename, stream.getvalue())
+    file_url = save_report_file(REPORTS_STORAGE_BASE_DIR, filename, stream.getvalue())
     rsr_send_mail(
         [user.email],
         subject='reports/email/subject.txt',
@@ -62,6 +107,19 @@ def save_report_file(dir_path: str, filename: str, content: bytes):
     with default_storage.open(file_path, 'wb') as f:
         f.write(content)
     return default_storage.url(file_path)
+
+
+def cleanup_expired_reports(now=None):
+    if not default_storage.exists(REPORTS_STORAGE_BASE_DIR):
+        return
+    now = now if isinstance(now, datetime) else timezone.now()
+    target_time = make_datetime_aware(now - timedelta(hours=24))
+    _, files = default_storage.listdir(REPORTS_STORAGE_BASE_DIR)
+    for file in files:
+        file_path = os.path.join(REPORTS_STORAGE_BASE_DIR, file)
+        created_at = default_storage.get_created_time(file_path)
+        if created_at < target_time:
+            default_storage.delete(file_path)
 
 
 def send_pdf_report(html, recipient, filename='reports.pdf'):
