@@ -41,6 +41,9 @@ default_storage = cast(Storage, default_storage)
 def notify_user_on_failed_report(task: Task):
     if task.success:
         return
+    max_attempts = getattr(settings, 'Q_CLUSTER', {}).get('max_attempts', 1)
+    if task.attempt_count < max_attempts:
+        return
     payload, recipient = task.args
     user = User.objects.get(email=recipient)
     report_label = payload.get('report_label', '')
@@ -60,6 +63,9 @@ def notify_user_on_failed_report(task: Task):
 
 def notify_dev_on_failed_task(task: Task):
     if task.success:
+        return
+    max_attempts = getattr(settings, 'Q_CLUSTER', {}).get('max_attempts', 1)
+    if task.attempt_count < max_attempts:
         return
     recipient = getattr(settings, 'REPORT_ERROR_RECIPIENTS', [])
     if not recipient:
