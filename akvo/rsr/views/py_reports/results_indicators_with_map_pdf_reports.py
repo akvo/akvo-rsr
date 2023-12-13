@@ -7,7 +7,7 @@ Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from akvo.rsr.models import Project, Country, Organisation, IndicatorPeriod, ProjectHierarchy
+from akvo.rsr.models import Project, Country, Organisation, IndicatorPeriod, ProjectHierarchy, User
 from akvo.rsr.staticmap import get_staticmap_url, Coordinate, Size
 from akvo.rsr.decorators import with_download_indicator
 from akvo.utils import to_bool
@@ -64,6 +64,7 @@ def handle_org_projects_email_report(params, recipient):
         'projects__results__indicators__periods'
     ).get(pk=project_hierarchy.organisation.id)
     projects = organisation.all_projects().filter(primary_location__country=country)
+    user = User.objects.get(email=recipient)
     coordinates = [
         Coordinate(p.primary_location.latitude, p.primary_location.longitude)
         for p in projects if p.primary_location
@@ -82,10 +83,9 @@ def handle_org_projects_email_report(params, recipient):
     )
 
     filename = '{}-{}-{}-projects-results-indicators-overview.pdf'.format(
-        now.strftime('%Y%b%d'), organisation.id, country.iso_code
+        now.strftime('%Y%m%d%H%M%S'), organisation.id, country.iso_code
     )
-
-    return utils.send_pdf_report(html, recipient, filename)
+    utils.save_pdf_and_send_email(html, user, filename)
 
 
 @login_required

@@ -15,7 +15,7 @@ from pyexcelerate import Workbook, Style, Font, Color, Fill, Alignment
 
 from akvo.rsr.dataclasses import group_results_by_types
 from akvo.rsr.project_overview import is_aggregating_targets, get_disaggregations
-from akvo.rsr.models import Project
+from akvo.rsr.models import Project, User
 from akvo.rsr.models.result.utils import calculate_percentage
 from akvo.utils import ensure_decimal, maybe_decimal
 
@@ -39,6 +39,7 @@ def add_email_report_job(request, program_id):
         'program_id': program.id,
         'period_start': request.GET.get('period_start', '').strip(),
         'period_end': request.GET.get('period_end', '').strip(),
+        'report_label': 'Program overview results table',
     }
     recipient = request.user.email
 
@@ -47,11 +48,12 @@ def add_email_report_job(request, program_id):
 
 def handle_email_report(params, recipient):
     program = Project.objects.prefetch_related('results').get(pk=params['program_id'])
+    user = User.objects.get(email=recipient)
     start_date = utils.parse_date(params.get('period_start', ''), datetime(1900, 1, 1))
     end_date = utils.parse_date(params.get('period_end', ''), datetime(2999, 12, 31))
     wb = generate_workbok(program, start_date, end_date)
-    filename = '{}-{}-program-overview-report.xlsx'.format(datetime.today().strftime('%Y%b%d'), program.id)
-    utils.send_excel_report(wb, recipient, filename)
+    filename = '{}-{}-program-overview-report.xlsx'.format(datetime.today().strftime('%Y%m%d%H%M%S'), program.id)
+    utils.save_excel_and_send_email(wb, user, filename)
 
 
 def generate_workbok(program, start_date=None, end_date=None):

@@ -7,7 +7,7 @@ Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from akvo.rsr.models import Project, IndicatorPeriod, ProjectHierarchy, Result
+from akvo.rsr.models import Project, IndicatorPeriod, ProjectHierarchy, Result, User
 from akvo.rsr.models.result.utils import PERCENTAGE_MEASURE
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
@@ -50,18 +50,18 @@ def add_email_report_job(request, program_id, result_id=None):
         'result_id': result_id,
     }
     recipient = request.user.email
-
     return utils.make_async_email_report_task(handle_email_report, payload, recipient, REPORT_NAME)
 
 
 def handle_email_report(params, recipient):
     project_hierarchy = get_object_or_404(ProjectHierarchy, root_project=params['program_id'])
+    user = User.objects.get(email=recipient)
     organisation = project_hierarchy.organisation
     projects = build_view_object(organisation, result_id=params['result_id'])
     wb = generate_workbook(projects)
     filename = '{}-{}-eutf-results-and-indicators-simple-table.xlsx'.format(
-        timezone.now().strftime('%Y%m%d'), organisation.id)
-    utils.send_excel_report(wb, recipient, filename)
+        timezone.now().strftime('%Y%m%d%H%M%S'), organisation.id)
+    utils.save_excel_and_send_email(wb, user, filename)
 
 
 def generate_workbook(projects):
