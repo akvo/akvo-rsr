@@ -17,7 +17,7 @@ from typing import Optional, Dict, Any
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
-from akvo.rsr.models import Project, IndicatorPeriod, IndicatorPeriodLabel
+from akvo.rsr.models import Project, IndicatorPeriod, IndicatorPeriodLabel, User
 from akvo.rsr.models.result.utils import calculate_percentage
 from akvo.rsr.project_overview import get_periods_hierarchy_flatlist, make_object_tree_from_flatlist, IndicatorType, UpdateCollection
 from akvo.utils import ensure_decimal, ObjectReaderProxy
@@ -32,14 +32,15 @@ def add_email_report_job(request, program_id):
     program = get_object_or_404(Project, pk=program_id)
     payload = {
         'program_id': program.id,
+        'report_label': 'Program labeled periods overview',
     }
     recipient = request.user.email
-
     return utils.make_async_email_report_task(handle_email_report, payload, recipient, REPORT_NAME)
 
 
 def handle_email_report(params, recipient):
     program = Project.objects.prefetch_related('locations', 'partners', 'related_projects').get(pk=params['program_id'])
+    user = User.objects.get(email=recipient)
     program_view = build_view_object(program)
     now = datetime.today()
     html = render_to_string(
@@ -49,9 +50,8 @@ def handle_email_report(params, recipient):
             'today': now.strftime('%d-%b-%Y'),
         }
     )
-    filename = '{}-{}-program-labeled-period-overview.pdf'.format(now.strftime('%Y%b%d'), program.id)
-
-    return utils.send_pdf_report(html, recipient, filename)
+    filename = '{}-{}-program-labeled-period-overview.pdf'.format(now.strftime('%Y%m%d%H%M%S'), program.id)
+    utils.save_pdf_and_send_email(html, user, filename)
 
 
 def build_view_object(program):
