@@ -8,7 +8,7 @@ see < http://www.gnu.org/licenses/agpl.html >.
 """
 from django.utils import timezone
 
-from akvo.rsr.models import Organisation, Project
+from akvo.rsr.models import Organisation, Project, User
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
@@ -29,7 +29,8 @@ def add_email_report_job(request, org_id):
     organisation = get_object_or_404(Organisation, pk=org_id)
     payload = {
         'org_id': organisation.id,
-        'format': request.GET.get('format')
+        'format': request.GET.get('format'),
+        'report_label': 'Data quality overview',
     }
     recipient = request.user.email
     return utils.make_async_email_report_task(handle_email_report, payload, recipient, REPORT_NAME)
@@ -37,6 +38,7 @@ def add_email_report_job(request, org_id):
 
 def handle_email_report(params, recipient):
     organisation = Organisation.objects.get(pk=params['org_id'])
+    user = User.objects.get(email=recipient)
     format = params['format']
     now = timezone.now()
     reader = OrganisationDataQualityReader(organisation, now)
@@ -44,13 +46,13 @@ def handle_email_report(params, recipient):
     if format == 'pdf':
         html = _render_pdf(reader)
         filename = '{}-{}-organisation-data-quality.pdf'.format(
-            reader.date.strftime('%Y%m%d'), reader.organisation.id)
-        utils.send_pdf_report(html, recipient, filename)
+            reader.date.strftime('%Y%m%d%H%M%S'), reader.organisation.id)
+        utils.save_pdf_and_send_email(html, user, filename)
     elif format == 'excel':
         wb = _render_excel(reader)
         filename = '{}-{}-organisation-data-quality.xlsx'.format(
-            reader.date.strftime('%Y%m%d'), reader.organisation.id)
-        utils.send_excel_report(wb, recipient, filename)
+            reader.date.strftime('%Y%m%d%H%M%S'), reader.organisation.id)
+        utils.save_excel_and_send_email(wb, user, filename)
     else:
         pass
 

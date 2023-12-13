@@ -7,7 +7,7 @@ Akvo RSR module. For additional details on the GNU license please
 see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from akvo.rsr.models import Project, Country, IndicatorPeriod
+from akvo.rsr.models import Project, Country, IndicatorPeriod, User
 from akvo.rsr.staticmap import get_staticmap_url, Coordinate, Size
 from akvo.utils import to_bool
 from datetime import datetime
@@ -37,9 +37,9 @@ def add_email_report_job(request, program_id):
         'show_comment': show_comment,
         'start_date': start_date,
         'end_date': end_date,
+        'report_label': 'Nuffic country level overview',
     }
     recipient = request.user.email
-
     return utils.make_async_email_report_task(handle_email_report, payload, recipient, REPORT_NAME)
 
 
@@ -51,6 +51,7 @@ def handle_email_report(params, recipient):
 
     country = Country.objects.get(iso_code=country)
     program = Project.objects.get(pk=params['program_id'])
+    user = User.objects.get(email=recipient)
 
     project_ids = program.descendants()\
         .exclude(pk=program.id)\
@@ -67,7 +68,6 @@ def handle_email_report(params, recipient):
     ]
 
     now = datetime.today()
-
     html = render_to_string('reports/nuffic-country-level-report.html', context={
         'title': 'Country level report for projects in {}'.format(country.name),
         'staticmap': get_staticmap_url(coordinates, Size(900, 600), zoom=11),
@@ -75,10 +75,8 @@ def handle_email_report(params, recipient):
         'show_comment': show_comment,
         'today': now.strftime('%d-%b-%Y'),
     })
-
-    filename = '{}-{}-country-report.pdf'.format(now.strftime('%Y%b%d'), country.iso_code)
-
-    return utils.send_pdf_report(html, recipient, filename)
+    filename = '{}-{}-country-report.pdf'.format(now.strftime('%Y%m%d%H%M%S'), country.iso_code)
+    utils.save_pdf_and_send_email(html, user, filename)
 
 
 def build_view_objects(projects, start_date=None, end_date=None):

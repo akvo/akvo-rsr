@@ -17,7 +17,7 @@ from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 
 from akvo.rsr import dataclasses as dc
-from akvo.rsr.models import Project
+from akvo.rsr.models import Project, User
 from akvo.rsr.models.result.utils import calculate_percentage
 from akvo.rsr.staticmap import get_staticmap_url, Coordinate, Size
 from akvo.utils import ensure_decimal
@@ -34,15 +34,16 @@ def add_email_report_job(request, program_id):
         'program_id': program.id,
         'period_start': request.GET.get('period_start', '').strip(),
         'period_end': request.GET.get('period_end', '').strip(),
+        'report_label': 'Program overview',
     }
     recipient = request.user.email
-
     return utils.make_async_email_report_task(handle_email_report, payload, recipient, REPORT_NAME)
 
 
 def handle_email_report(params, recipient):
     now = datetime.today()
     program = Project.objects.prefetch_related('results').get(pk=params['program_id'])
+    user = User.objects.get(email=recipient)
     start_date = utils.parse_date(params.get('period_start', ''), datetime(1900, 1, 1))
     if not start_date:
         start_date = datetime(1900, 1, 1)
@@ -50,8 +51,8 @@ def handle_email_report(params, recipient):
     if not end_date:
         end_date = (datetime.today() + relativedelta(years=10))
     html = render_report(program, start_date, end_date)
-    filename = '{}-program-{}-overview.pdf'.format(now.strftime('%Y%b%d'), program.id)
-    utils.send_pdf_report(html, recipient, filename)
+    filename = '{}-program-{}-overview.pdf'.format(now.strftime('%Y%m%d%H%M%S'), program.id)
+    utils.save_pdf_and_send_email(html, user, filename)
 
 
 def render_report(program: Project, start_date: datetime, end_date: datetime):
