@@ -15,7 +15,7 @@ from rest_framework.decorators import authentication_classes
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 
-from akvo.rest.authentication import TastyTokenAuthentication
+from akvo.rest.authentication import JWTAuthentication, TastyTokenAuthentication
 from ..viewsets import BaseRSRViewSet
 from ..serializers import UserSerializer, UserDetailsSerializer, UserPasswordSerializer
 
@@ -88,7 +88,7 @@ def update_details(request, pk=None):
 
 
 @api_view(['GET'])
-@authentication_classes([SessionAuthentication, TastyTokenAuthentication])
+@authentication_classes([SessionAuthentication, TastyTokenAuthentication, JWTAuthentication])
 def current_user(request):
     user = request.user
 

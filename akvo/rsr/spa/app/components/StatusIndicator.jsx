@@ -9,8 +9,8 @@ const StatusIndicator = ({ status, updateClass }) => {
   return (
     <Row className="header-status">
       <Col style={{ display: 'flex', gap: 10 }} className={updateClass}>
-        <Text strong>Status</Text>
-        <Text>:&nbsp;{description}</Text>
+        <Text strong>Status :</Text>
+        <Text>{description}</Text>
       </Col>
     </Row>
   )
