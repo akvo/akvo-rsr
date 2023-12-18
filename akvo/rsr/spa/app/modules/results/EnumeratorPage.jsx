@@ -52,6 +52,7 @@ const EnumeratorPage = ({
   const [fileSet, setFileSet] = useState([])
   const [period, setPeriod] = useState(null)
   const [assign, setAssign] = useState(null)
+  const [hideSubmitted, setHideSubmitted] = useState(false)
 
   const formRef = useRef()
   const mdParse = SimpleMarkdown.defaultBlockParse
@@ -114,6 +115,8 @@ const EnumeratorPage = ({
       return p
     })
     ?.flatMap((p) => {
+      const myUpdates = orderBy(p.updates.filter((u) => u?.userDetails?.id === userRdr.id).filter((u) => u.status !== 'D'), ['lastModifiedAt'], ['desc'])
+      const lastSubmissionAt = myUpdates.length ? moment(myUpdates[0].lastModifiedAt).format('DD MMM YYYY') : null
       const pu = p
         ?.updates
         ?.filter((u) => {
@@ -125,6 +128,7 @@ const EnumeratorPage = ({
         })
         ?.map((u) => ({
           ...u,
+          lastSubmissionAt,
           indicator: p.indicator,
           result: p.indicator.result,
           period: {
@@ -142,6 +146,7 @@ const EnumeratorPage = ({
             status: null,
             statusDisplay: 'No Update Status',
             comments: [],
+            lastSubmissionAt,
             indicator: p.indicator,
             result: p.indicator.result,
             period: {
@@ -155,6 +160,7 @@ const EnumeratorPage = ({
       }
       return orderBy(pu, ['lastModifiedAt'], ['desc'])
     })
+    ?.filter((u) => !(hideSubmitted && !u.status && u.lastSubmissionAt))
     ?.map((u) => {
       const dsgItems = []
       if (u.indicator?.dimensionNames?.length) {
@@ -301,6 +307,8 @@ const EnumeratorPage = ({
     })
   }
 
+  const handleHideSubmitted = () => setHideSubmitted(!hideSubmitted)
+
   useEffect(() => {
     if ((activeKey && editing?.fileSet?.length) && (!deletion.length && !fileSet.length)) {
       setFileSet(editing.fileSet)
@@ -327,7 +335,7 @@ const EnumeratorPage = ({
   return (
     <div className="enum-ui">
       <PageHeader>
-        <FilterBar {...{ periods, period, handleOnSearch, handleOnSelectPeriod }} disabled={(assign && assign.length === 0)} />
+        <FilterBar {...{ periods, period, handleOnSearch, handleOnSelectPeriod, hideSubmitted, handleHideSubmitted }} disabled={(assign && assign.length === 0)} />
       </PageHeader>
       <List
         grid={{ column: 1 }}
@@ -353,6 +361,12 @@ const EnumeratorPage = ({
                       </div>
                     )}
                     <StatusIndicator status={item?.status} />
+                    <Row className="last-submission">
+                      <Col style={{ display: 'flex', gap: 10 }} className={classNames({'no-submissions': !item?.lastSubmissionAt})}>
+                        <Text strong>Last submission date : </Text>
+                        <Text>{item?.lastSubmissionAt || '-'}</Text>
+                      </Col>
+                    </Row>
                     <Text strong>Title : </Text>
                     <Highlighted text={item?.indicator?.title} highlight={keyword} />
                     {(item?.indicator?.description?.trim()?.length > 0) && (

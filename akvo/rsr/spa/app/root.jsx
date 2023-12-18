@@ -34,20 +34,18 @@ const isJWTView = () => {
 
 const Root = ({ dispatch }) => {
   const jwtView = isJWTView()
-  if (! jwtView) {
-    const [data, loading] = useFetch('/me')
-    if (!loading && data) {
-      if(data !== 403) {
-        dispatch({ type: 'SET_USER', user: data })
-        if (!(env && env.LOCALDEV)) {
-          const { id, email } = data
-          Sentry.configureScope(scope => {
-            scope.setUser({ id, email })
-          })
-        }
+  const [data, loading] = useFetch('/me')
+  if (!loading && data) {
+    if(data !== 403) {
+      dispatch({ type: 'SET_USER', user: data })
+      if (!(env && env.LOCALDEV)) {
+        const { id, email } = data
+        Sentry.configureScope(scope => {
+          scope.setUser({ id, email })
+        })
       }
-      else window.location.href = `/en/sign_in/?next=${window.location.href}`
     }
+    else window.location.href = `/en/sign_in/?next=${window.location.href}`
   }
   return (
     <Router basename="/my-rsr">
