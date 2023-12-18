@@ -1,5 +1,5 @@
 import React from 'react'
-import { Input, Icon, Button, Select, Row, Col } from 'antd'
+import { Input, Icon, Button, Select, Row, Col, Checkbox } from 'antd'
 import { useTranslation } from 'react-i18next'
 
 const { Option } = Select
@@ -11,6 +11,8 @@ export const FilterBar = ({
   handleOnSearch,
   handleSwitchLock,
   handleOnSelectPeriod,
+  hideSubmitted,
+  handleHideSubmitted,
   disabled = false
 }) => {
   const { t } = useTranslation()
@@ -36,30 +38,33 @@ export const FilterBar = ({
           {periods && periods.map(p => <Option key={p}>{p}</Option>)}
         </Select>
       </Col>
-      <Col lg={7} md={10} sm={24} xs={24} style={{ paddingTop: '1.5em' }}>
-        {handleSwitchLock && (
-          <>
-            <Button
-              type="ghost"
-              className="unlock"
-              icon="unlock"
-              onClick={() => handleSwitchLock('unlock')}
-              disabled={selectedLocked.length === 0}
-            >
-              {selectedLocked.length === 0 ? t('Unlock') : t('Unlock {{N}} periods', { N: selectedLocked.length })}
-            </Button>
-            <Button
-              type="ghost"
-              className="lock"
-              icon="lock"
-              onClick={() => handleSwitchLock('lock')}
-              disabled={selectedUnlocked.length === 0}
-            >
-              {selectedUnlocked.length === 0 ? t('Lock') : t('Lock {{N}} periods', { N: selectedUnlocked.length })}
-            </Button>
-          </>
-        )}
-      </Col>
+      {handleSwitchLock && (
+        <Col lg={7} md={10} sm={24} xs={24} style={{ paddingTop: '1.5em' }}>
+          <Button
+            type="ghost"
+            className="unlock"
+            icon="unlock"
+            onClick={() => handleSwitchLock('unlock')}
+            disabled={selectedLocked.length === 0}
+          >
+            {selectedLocked.length === 0 ? t('Unlock') : t('Unlock {{N}} periods', { N: selectedLocked.length })}
+          </Button>
+          <Button
+            type="ghost"
+            className="lock"
+            icon="lock"
+            onClick={() => handleSwitchLock('lock')}
+            disabled={selectedUnlocked.length === 0}
+          >
+            {selectedUnlocked.length === 0 ? t('Lock') : t('Lock {{N}} periods', { N: selectedUnlocked.length })}
+          </Button>
+        </Col>
+      )}
+      {handleHideSubmitted && (
+        <Col lg={7} md={10} sm={24} xs={24} style={{ paddingTop: '1.8em', paddingLeft: '2em' }}>
+          <Checkbox checked={hideSubmitted} onChange={handleHideSubmitted}>Hide approved submissions</Checkbox>
+        </Col>
+      )}
     </Row>
   )
 }
