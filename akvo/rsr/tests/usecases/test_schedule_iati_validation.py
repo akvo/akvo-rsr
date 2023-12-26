@@ -14,6 +14,8 @@ from akvo.rsr.usecases.iati_validation import schedule_iati_activity_validation,
 class ScheduleIatiActivityValidationTestCase(BaseTestCase):
     def setUp(self):
         self.project = self.create_project('Test project')
+        self.project.iati_activity_id = 'ABC-123'
+        self.project.save()
 
     def test_no_job_for_unpublished_project(self):
         schedule_at = now() + timedelta(minutes=1)

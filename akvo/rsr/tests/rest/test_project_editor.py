@@ -709,6 +709,8 @@ class ProjectUpdateTestCase(BaseTestCase):
         self.org = self.create_organisation('Akvo')
         self.make_org_admin(self.user, self.org)
         self.project = self.create_project('')
+        self.project.iati_activity_id = 'TEST-123'
+        self.project.save()
         self.make_partner(self.project, self.org)
         self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
         self.c.login(username=self.username, password=self.password)
@@ -725,7 +727,7 @@ class ProjectUpdateTestCase(BaseTestCase):
         # Given
         error_checks = self.project.iati_checks.filter(status=3).count()
         url = '/rest/v1/project/{}/?format=json'.format(self.project.id)
-        data = {"title": "DEMONSTRATION!", "date_start_planned": "2009-06-10"}
+        data = {"title": "DEMONSTRATION!", "date_start_planned": "2009-06-10", "iati_activity_id": "ABCD-123"}
 
         # When
         response = self.c.patch(

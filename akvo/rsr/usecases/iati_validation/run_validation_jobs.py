@@ -96,6 +96,8 @@ def get_pending_activity_jobs(scheduled_at: datetime) -> QuerySet:
 def process_activity_validation_results(project: Project, validator_result: IATIValidationResult, check_result: CheckResult):
     if check_result.error_count == validator_result.error_count:
         return
+    if check_result.error_count > 0:
+        return
     email_recipients = getattr(settings, 'IATI_ACTIVITY_VALIDATION_ERROR_RECIPIENTS', [])
     if not email_recipients:
         message = f'Inconsistent IATI activity validation results for project: {project.title}\n'\

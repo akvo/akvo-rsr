@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 def schedule_iati_activity_validation(project: Project, schedule_at: Optional[datetime] = None):
-    if project.is_published():
+    if project.is_published() and project.iati_activity_id:
         logger.info("Scheduling IATI validation for project %s", project.id)
         scheduled_at = schedule_at if schedule_at else now() + DEFAULT_SCHEDULE_DELAY_TIME
         pending_jobs = IatiActivityValidationJob.objects.filter(project=project, started_at=None)
