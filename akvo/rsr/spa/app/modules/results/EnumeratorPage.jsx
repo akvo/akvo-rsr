@@ -10,26 +10,27 @@ import {
   Modal,
   Icon,
   PageHeader,
-  Typography
+  Typography,
+  Tooltip
 } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { cloneDeep, split, orderBy, isEmpty } from 'lodash'
 import { connect } from 'react-redux'
 
-import SVGInline from 'react-svg-inline'
 import SimpleMarkdown from 'simple-markdown'
 import classNames from 'classnames'
 import moment from 'moment'
 
 import './enumerator.scss'
 import Highlighted from '../../components/Highlighted'
-import editButton from '../../images/edit-button.svg'
 import api from '../../utils/api'
 import { FilterBar } from '../results-overview/components'
 import ReportedEdit from '../results-admin/components/ReportedEdit'
 import StatusIndicator from '../../components/StatusIndicator'
 import * as actions from './actions'
 import { measureType } from '../../utils/constants'
+import SubmissionsModal from '../results-admin/components/SubmissionsModal'
+import { AllSubmissionsModal } from '../../components'
 
 const { Text } = Typography
 
@@ -53,6 +54,13 @@ const EnumeratorPage = ({
   const [period, setPeriod] = useState(null)
   const [assign, setAssign] = useState(null)
   const [hideSubmitted, setHideSubmitted] = useState(false)
+  const [submissions, setSubmissions] = useState({
+    scores: [],
+    updates: [],
+    enumerators: [],
+    item: null,
+    visible: false
+  })
 
   const formRef = useRef()
   const mdParse = SimpleMarkdown.defaultBlockParse
@@ -96,7 +104,8 @@ const EnumeratorPage = ({
             result: i.result,
             description: i.description,
             dimensionNames: i?.dimensionNames,
-            measure: i?.measure
+            measure: i?.measure,
+            scores: i?.scores,
           }
         }))
     })
@@ -309,6 +318,39 @@ const EnumeratorPage = ({
 
   const handleHideSubmitted = () => setHideSubmitted(!hideSubmitted)
 
+  const handleOnShowSubmissions = item => {
+    setSubmissions({
+      ...submissions,
+      item: { ...item, fetched: false },
+      visible: !submissions.visible
+    })
+    api.get(`/indicator_period_data_framework/?period=${item?.period?.id}&format=json`)
+      .then(({ data }) => {
+        const { results } = data
+        const updates = results?.filter((u) => u.userDetails?.id === userRdr.id)
+        setSubmissions({
+          scores: item?.indicator?.scores,
+          updates: updates,
+          enumerators: [],
+          item: {
+            ...item,
+            fetched: true
+          },
+          visible: !submissions.visible
+        })
+      })
+      .catch(() => console.error('Something went wrong'))
+  }
+  const handleOnCloseSubmissions = () => {
+    setSubmissions({
+      scores: [],
+      updates: [],
+      enumerators: [],
+      item: null,
+      visible: false
+    })
+  }
+
   useEffect(() => {
     if ((activeKey && editing?.fileSet?.length) && (!deletion.length && !fileSet.length)) {
       setFileSet(editing.fileSet)
@@ -337,6 +379,7 @@ const EnumeratorPage = ({
       <PageHeader>
         <FilterBar {...{ periods, period, handleOnSearch, handleOnSelectPeriod, hideSubmitted, handleHideSubmitted }} disabled={(assign && assign.length === 0)} />
       </PageHeader>
+      <SubmissionsModal {...submissions} onClose={handleOnCloseSubmissions} />
       <List
         grid={{ column: 1 }}
         itemLayout="vertical"
@@ -350,8 +393,16 @@ const EnumeratorPage = ({
             ((userRdr.id && editing && editing.userDetails) && (editing.userDetails.id !== userRdr.id && editing.status === 'R')) ||
             isPreview
           )
+          const allSubmissions = resultRdr
+            ?.filter((r) => r.id === item.result)
+            ?.flatMap((r) => r.indicators)
+            ?.filter((i) => i.id == item.indicator?.id)
+            ?.flatMap((i) => i.periods)
+            ?.filter((p) => p.id == item.period?.id && p.updates.length)
+            ?.flatMap((p) => p.updates)
+            ?.filter((u) => u.userDetails.id === userRdr.id)
           return (
-            <List.Item className="enum-ui-item">
+              <List.Item className="enum-ui-item">
               <Card className={classNames(updateClass, { active: (activeKey === iKey) })}>
                 <Row type="flex" justify="space-between" align="middle" gutter={[{ sm: 8, xs: 8 }, { sm: 16, xs: 16 }]}>
                   <Col xl={22} lg={22} md={22} sm={24} xs={24}>
@@ -376,7 +427,7 @@ const EnumeratorPage = ({
                       </details>
                     )}
                   </Col>
-                  <Col xl={2} lg={2} md={2} sm={24} xs={24} className="enum-action">
+                  <Col lg={2} md={2} sm={24} xs={24} className="enum-action">
                     {
                       (activeKey === iKey)
                         ? (
@@ -388,30 +439,45 @@ const EnumeratorPage = ({
                           </div>
                         )
                         : (
-                          <Button
-                            type="link"
-                            className={updateClass}
-                            onClick={() => {
-                              handleOnEdit(item)
-                              setActiveKey(iKey)
-                            }}
-                            block
-                          >
-                            {(['P', 'A'].includes(item?.status) || isPreview)
-                              ? (
-                                <>
-                                  <Icon type="eye" className="edit-button" />
-                                  <span className="action-text">View Update</span>
-                                </>
-                              )
-                              : (
-                                <>
-                                  <SVGInline svg={editButton} className="edit-button" />
-                                  <span className="action-text">Edit Value</span>
-                                </>
-                              )
-                            }
-                          </Button>
+                          <>
+                            {(allSubmissions.length > 0) && (
+                              <Tooltip placement="top" title="Submissions">
+                                <Button style={{ borderColor: 'transparent', fontSize: '22px' }} onClick={() => handleOnShowSubmissions(item)}>
+                                  <Icon type="solution" />
+                                  <span className="action-text">Submissions</span>
+                                </Button>
+                              </Tooltip>
+                            )}
+                            <Tooltip
+                              placement="top"
+                              title={(['P', 'A'].includes(item?.status) || isPreview)? "View update" : "Edit update"}
+                            >
+                              <Button
+                                style={{ borderColor: 'transparent', fontSize: '22px' }}
+                                className={updateClass}
+                                onClick={() => {
+                                  handleOnEdit(item)
+                                  setActiveKey(iKey)
+                                }}
+                                block
+                              >
+                                {(['P', 'A'].includes(item?.status) || isPreview)
+                                  ? (
+                                    <>
+                                      <Icon type="eye" className="edit-button" />
+                                      <span className="action-text">View Update</span>
+                                    </>
+                                  )
+                                  : (
+                                    <>
+                                      <Icon type="form" />
+                                      <span className="action-text">Edit Update</span>
+                                    </>
+                                  )
+                                }
+                              </Button>
+                            </Tooltip>
+                          </>
                         )
                     }
                   </Col>
