@@ -264,7 +264,7 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
     fieldsets = (
         (_('General information'),
             {'fields': ('name', 'long_name', 'iati_org_id', 'description', 'new_organisation_type',
-                        'logo', 'language', 'currency', 'iati_prefixes', 'password_policy')}),
+                        'logo', 'language', 'currency', 'iati_prefixes', 'enforce_2fa', 'password_policy')}),
         (_('Contact information'),
             {'fields': ('url', 'facebook', 'twitter', 'linkedin', 'phone', 'mobile', 'fax',
                         'contact_person', 'contact_email', )}),
