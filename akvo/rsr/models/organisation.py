@@ -171,6 +171,10 @@ class Organisation(TimestampsMixin):
     public_iati_file = models.BooleanField(
         _('Show latest exported IATI file on organisation page.'), default=True
     )
+    enforce_2fa = models.BooleanField(
+        _('Enforce 2-Factor-Authentication'), default=False,
+        help_text=_('Enfore related users (through employment or project access) to enable their 2FA'),
+    )
     password_policy = models.ForeignKey(
         PolicyConfig, null=True, blank=True, on_delete=models.SET_NULL,
         help_text='Password policies config for employees of this organization.'
