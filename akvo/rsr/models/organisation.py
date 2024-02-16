@@ -12,11 +12,13 @@ from django.dispatch import receiver
 from django.urls import reverse
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
+from django_q.tasks import async_task
 
 from sorl.thumbnail.fields import ImageField
 from akvo.password_policy.models import PolicyConfig
 
 from akvo.utils import codelist_choices, codelist_name, rsr_image_path
+from akvo.rsr.usecases.toggle_org_enforce_2fa import toggle_enfore_2fa
 
 from ..mixins import TimestampsMixin
 from ..fields import ValidXMLCharField, ValidXMLTextField
@@ -205,6 +207,18 @@ class Organisation(TimestampsMixin):
     @property
     def canonical_name(self):
         return self.long_name or self.name
+
+    __original_enforce_2fa = False
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.__original_enforce_2fa = self.enforce_2fa
+
+    def save(self, *args, **kwargs):
+        if self.enforce_2fa != self.__original_enforce_2fa:
+            async_task(toggle_enfore_2fa, self)
+        super().save(*args, **kwargs)
+        self.__original_enforce_2fa = self.enforce_2fa
 
     def clean(self):
         """Organisations can only be saved when we're sure that they do not exist already."""
