@@ -9,7 +9,9 @@ if TYPE_CHECKING:
 
 
 def toggle_enfore_2fa(org: Organisation):
-    print("toggle to: ", org.enforce_2fa, ", from", not org.enforce_2fa)
+    User = apps.get_model('rsr.User')
+    user_ids = find_related_users(org).values_list('id', flat=True)
+    User.objects.filter(id__in=user_ids).update(enforce_2fa=org.enforce_2fa)
 
 
 def find_related_users(organisation: Organisation) -> QuerySet:
