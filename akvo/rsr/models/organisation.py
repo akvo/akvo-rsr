@@ -12,11 +12,13 @@ from django.dispatch import receiver
 from django.urls import reverse
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
+from django_q.tasks import async_task
 
 from sorl.thumbnail.fields import ImageField
 from akvo.password_policy.models import PolicyConfig
 
 from akvo.utils import codelist_choices, codelist_name, rsr_image_path
+from akvo.rsr.usecases.toggle_org_enforce_2fa import toggle_enfore_2fa
 
 from ..mixins import TimestampsMixin
 from ..fields import ValidXMLCharField, ValidXMLTextField
@@ -171,6 +173,10 @@ class Organisation(TimestampsMixin):
     public_iati_file = models.BooleanField(
         _('Show latest exported IATI file on organisation page.'), default=True
     )
+    enforce_2fa = models.BooleanField(
+        _('Enforce 2-Factor-Authentication'), default=False,
+        help_text=_('Enfore related users (through employment or project access) to enable their 2FA'),
+    )
     password_policy = models.ForeignKey(
         PolicyConfig, null=True, blank=True, on_delete=models.SET_NULL,
         help_text='Password policies config for employees of this organization.'
@@ -201,6 +207,18 @@ class Organisation(TimestampsMixin):
     @property
     def canonical_name(self):
         return self.long_name or self.name
+
+    __original_enforce_2fa = False
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.__original_enforce_2fa = self.enforce_2fa
+
+    def save(self, *args, **kwargs):
+        if self.enforce_2fa != self.__original_enforce_2fa:
+            async_task(toggle_enfore_2fa, self)
+        super().save(*args, **kwargs)
+        self.__original_enforce_2fa = self.enforce_2fa
 
     def clean(self):
         """Organisations can only be saved when we're sure that they do not exist already."""
