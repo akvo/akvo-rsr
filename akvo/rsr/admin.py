@@ -542,7 +542,7 @@ class UserAdmin(DjangoUserAdmin):
         (None, {'fields': ('username', 'email', 'password')}),
         (_('Personal info'), {'fields': ('first_name', 'last_name')}),
         (_('Permissions'), {
-            'fields': ('is_active', 'is_staff', 'is_admin', 'is_support', 'is_superuser')
+            'fields': ('is_active', 'is_staff', 'is_admin', 'is_support', 'is_superuser', 'enforce_2fa')
         }),
         (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
     )
