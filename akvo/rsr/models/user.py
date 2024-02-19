@@ -90,6 +90,10 @@ class User(AbstractBaseUser, PermissionsMixin):
                     'willing to receive notifications when a new user registers for '
                     'their organisation.')
     )
+    enforce_2fa = models.BooleanField(
+        _('Enforce 2-Factor-Authentication'), default=False,
+        help_text=_('Enfore related users (through employment or project access) to enable their 2FA'),
+    )
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
     organisations = models.ManyToManyField(
         'Organisation', verbose_name=_('organisations'), through='Employment',

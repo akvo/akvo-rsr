@@ -264,7 +264,8 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
     fieldsets = (
         (_('General information'),
             {'fields': ('name', 'long_name', 'iati_org_id', 'description', 'new_organisation_type',
-                        'logo', 'language', 'currency', 'iati_prefixes', 'password_policy')}),
+                        'logo', 'language', 'currency', 'iati_prefixes', 'password_policy',
+                        'enforce_2fa')}),
         (_('Contact information'),
             {'fields': ('url', 'facebook', 'twitter', 'linkedin', 'phone', 'mobile', 'fax',
                         'contact_person', 'contact_email', )}),
@@ -541,7 +542,7 @@ class UserAdmin(DjangoUserAdmin):
         (None, {'fields': ('username', 'email', 'password')}),
         (_('Personal info'), {'fields': ('first_name', 'last_name')}),
         (_('Permissions'), {
-            'fields': ('is_active', 'is_staff', 'is_admin', 'is_support', 'is_superuser')
+            'fields': ('is_active', 'is_staff', 'is_admin', 'is_support', 'is_superuser', 'enforce_2fa')
         }),
         (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
     )
