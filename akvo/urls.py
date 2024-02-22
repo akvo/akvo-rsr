@@ -20,6 +20,7 @@ from django.views.generic import RedirectView
 from rest_framework_swagger.views import get_swagger_view
 from two_factor.urls import urlpatterns as two_factor_urls
 
+from akvo.rsr.decorators import two_factor_required
 from akvo.rsr import views
 from akvo.rsr.views import account
 from akvo.rsr.views import my_rsr
@@ -134,11 +135,11 @@ urlpatterns = i18n_patterns(
         my_rsr.my_details, name='my_details'),
 
     url(r'^myrsr/projects/$',
-        RedirectView.as_view(url='/my-rsr/'),
+        two_factor_required(RedirectView.as_view(url='/my-rsr/')),
         name='my_projects'),
 
     url(r'^myrsr/project_editor/(?P<project_id>\d+)/$',
-        RedirectView.as_view(url='/my-rsr/projects/%(project_id)s/'),
+        two_factor_required(RedirectView.as_view(url='/my-rsr/projects/%(project_id)s/')),
         name='project_editor'),
 
     url(r'^translations.json$', translations.myrsr, name='myrsr-translations'),
