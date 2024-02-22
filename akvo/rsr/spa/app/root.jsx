@@ -32,6 +32,10 @@ const isJWTView = () => {
   return reqToken !== null
 }
 
+const shouldEnable2FA = function (data) {
+  return data.enforce2fa && !data.otpKeys?.totp ? true : false
+}
+
 const Root = ({ dispatch }) => {
   const jwtView = isJWTView()
   const [data, loading] = useFetch('/me')
@@ -44,8 +48,13 @@ const Root = ({ dispatch }) => {
           scope.setUser({ id, email })
         })
       }
+      if (shouldEnable2FA(data)) {
+        window.location.href = `/en/account/two_factor/setup/?next=${window.location.href}`
+      }
     }
-    else window.location.href = `/en/sign_in/?next=${window.location.href}`
+    else {
+      window.location.href = `/en/sign_in/?next=${window.location.href}`
+    }
   }
   return (
     <Router basename="/my-rsr">

@@ -11,6 +11,9 @@ from functools import wraps
 
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
+from django.contrib.auth.decorators import user_passes_test
+from django.urls import reverse_lazy
+from two_factor.utils import default_device
 
 from akvo.rsr.models import Project
 
@@ -53,3 +56,24 @@ def with_download_indicator(view):
         return response
 
     return wrapper
+
+
+def two_factor_required(view=None, login_url=None):
+    """
+    If a user has enforced_2fa attribute as True, the user should enable 2FA
+    for accessing the page or user will be redirected to 2FA setup page.
+    """
+    if login_url is None:
+        login_url = reverse_lazy('two_factor:setup')
+
+    def test(user):
+        if not user.is_authenticated:
+            return True
+        has_default_device = bool(default_device(user))
+        if user.enforce_2fa and not has_default_device:
+            return False
+        return True
+
+    decorator = user_passes_test(test, login_url=login_url)
+
+    return decorator if (view is None) else decorator(view)
