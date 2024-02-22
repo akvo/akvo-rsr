@@ -71,6 +71,7 @@ class UserSerializer(BaseRSRSerializer):
             'organisations',
             'approved_employments',
             'api_key',
+            'enforce_2fa',
             'otp_keys',
             'legacy_org',
             'programs',
