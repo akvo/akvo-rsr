@@ -104,6 +104,9 @@ urlpatterns = i18n_patterns(
     url(r'^sign_in/$',
         account.SignInView.as_view(), name='sign_in'),
 
+    url('^account/two_factor/setup/$',
+        account.SetupTwoFactorView.as_view(), name='two_factor_setup'),
+
     url('^account/two_factor/disable/$',
         account.DisableTwoFactorView.as_view(), name='two_factor_disable'),
 

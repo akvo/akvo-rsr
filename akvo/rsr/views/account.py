@@ -37,7 +37,7 @@ from django.views.decorators.http import require_POST
 
 from two_factor.utils import get_otpauth_url, totp_digits
 from two_factor.forms import AuthenticationTokenForm, BackupTokenForm
-from two_factor.views.core import LoginView
+from two_factor.views.core import LoginView, SetupView
 from two_factor.views.profile import DisableView
 
 
@@ -408,6 +408,25 @@ class SignInView(LoginView):
         return super().done(form_list, **kwargs)
 
 
+def get_enforce_2fa(user):
+    if not user.is_authenticated:
+        return False
+    return user.enforce_2fa
+
+
 class DisableTwoFactorView(DisableView):
     # override the redirect url
     success_url = '/my-rsr/my-details/'
+
+    def get_context_data(self, **kwargs):
+        if 'enforce_2fa' not in kwargs and self.request.user:
+            kwargs['enforce_2fa'] = get_enforce_2fa(self.request.user)
+        return super().get_context_data(**kwargs)
+
+
+class SetupTwoFactorView(SetupView):
+
+    def get_context_data(self, form, **kwargs):
+        if 'enforce_2fa' not in kwargs and self.request.user:
+            kwargs['enforce_2fa'] = get_enforce_2fa(self.request.user)
+        return super().get_context_data(form, **kwargs)
