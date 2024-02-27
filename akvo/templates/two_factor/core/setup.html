@@ -8,6 +8,10 @@
       <h2 class="text-center verticalPadding">{% block title %}{% trans "Enable Two-Factor Authentication" %}{% endblock %}</h1>
 
       {% if wizard.steps.current == 'welcome' %}
+        {% if enforce_2fa %}
+          <p>{% blocktrans trimmed %}An organization or project your are associated with
+            requires Two-Factor Authentication (2FA). Please configure it{% endblocktrans %}</p>
+        {% endif %}
       <p>{% blocktrans trimmed %}You are about to take your account security to the
         next level. Follow the steps in this wizard to enable two-factor
         authentication.{% endblocktrans %}</p>
@@ -33,7 +37,9 @@
         {# hidden submit button to enable [enter] key #}
         <input type="submit" value="" hidden />
 
+        {% if not enforce_2fa %}
         <a href="/my-rsr/my-details/" class="pull-right btn btn-link">{% trans "Cancel" %}</a>
+        {% endif %}
         {% if wizard.steps.prev %}
         <button name="wizard_goto_step" type="submit"
           value="{{ wizard.steps.prev }}"
