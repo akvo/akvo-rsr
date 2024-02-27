@@ -7,15 +7,27 @@
     <div class="col-md-6 col-md-offset-3">
       <h2 class="text-center verticalPadding">{% block title %}{% trans "Disable Two-factor Authentication" %}{% endblock %}</h1>
 
-      <p>{% blocktrans trimmed %}You are about to disable two-factor authentication. This
+      {% if enforce_2fa %}
+
+        <p>{% blocktrans trimmed %}An organization or project your are associated with requires Two-Factor Authentication (2FA).
+        You cannot disable it.{% endblocktrans %}</p>
+        <p>
+          <a href="/my-rsr/my-details/" class="pull-right btn btn-link">{% trans "Cancel" %}</a>
+        </p>
+
+      {% else %}
+
+        <p>{% blocktrans trimmed %}You are about to disable two-factor authentication. This
         weakens your account security, are you sure?{% endblocktrans %}</p>
 
-      <form method="post">
-        {% csrf_token %}
-        {% bootstrap_form form %}
-        <a href="/my-rsr/my-details/" class="pull-right btn btn-link">{% trans "Cancel" %}</a>
-        <button class="btn btn-danger" type="submit">{% trans "Disable" %}</button>
-      </form>
+        <form method="post">
+          {% csrf_token %}
+          {% bootstrap_form form %}
+          <a href="/my-rsr/my-details/" class="pull-right btn btn-link">{% trans "Cancel" %}</a>
+          <button class="btn btn-danger" type="submit">{% trans "Disable" %}</button>
+        </form>
+
+      {% endif %}
 
     </div>
   </div>
