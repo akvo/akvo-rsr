@@ -22,7 +22,6 @@ import classNames from 'classnames'
 import moment from 'moment'
 
 import './enumerator.scss'
-import Item from 'antd/lib/list/Item'
 import Highlighted from '../../components/Highlighted'
 import api from '../../utils/api'
 import { FilterBar } from '../results-overview/components'
@@ -30,7 +29,7 @@ import ReportedEdit from '../results-admin/components/ReportedEdit'
 import StatusIndicator from '../../components/StatusIndicator'
 import * as actions from './actions'
 import { measureType } from '../../utils/constants'
-import SubmissionsModal from '../results-admin/components/SubmissionsModal'
+import EnumeratorSubmissionsModal from './EnumeratorSubmissionsModal'
 
 const { Text } = Typography
 
@@ -57,7 +56,6 @@ const EnumeratorPage = ({
   const [submissions, setSubmissions] = useState({
     scores: [],
     updates: [],
-    enumerators: [],
     item: null,
     visible: false
   })
@@ -331,7 +329,6 @@ const EnumeratorPage = ({
         setSubmissions({
           scores: item?.indicator.scores,
           updates,
-          enumerators: [],
           item: {
             ...item,
             fetched: true
@@ -345,7 +342,6 @@ const EnumeratorPage = ({
     setSubmissions({
       scores: [],
       updates: [],
-      enumerators: [],
       item: null,
       visible: false
     })
@@ -379,7 +375,7 @@ const EnumeratorPage = ({
       <PageHeader>
         <FilterBar {...{ periods, period, handleOnSearch, handleOnSelectPeriod, hideSubmitted, handleHideSubmitted }} disabled={(assign && assign.length === 0)} />
       </PageHeader>
-      <SubmissionsModal {...submissions} onClose={handleOnCloseSubmissions} />
+      <EnumeratorSubmissionsModal {...submissions} enumerator={userRdr} onClose={handleOnCloseSubmissions} />
       <List
         grid={{ column: 1 }}
         itemLayout="vertical"
