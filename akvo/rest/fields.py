@@ -11,8 +11,8 @@ import six
 import uuid
 
 from django.core.files.base import ContentFile
-from django.utils.encoding import smart_text
-from django.utils.translation import ugettext_lazy as _
+from django.utils.encoding import smart_str
+from django.utils.translation import gettext_lazy as _
 
 from rest_framework import serializers
 from rest_framework.fields import ImageField
@@ -32,7 +32,7 @@ class NonNullCharField(serializers.CharField):
             return value
         if value is None:
             return ''
-        return smart_text(value)
+        return smart_str(value)
 
 
 class NonNullURLField(NonNullCharField, serializers.URLField):

@@ -10,7 +10,7 @@ from .utils import check_auth_groups
 from .rsr.views import widgets as widget_views
 
 from django.conf import settings
-from django.conf.urls import include, url
+from django.urls import include, path, re_path
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
@@ -41,97 +41,97 @@ docs_view = get_swagger_view('Akvo RSR API Docs')
 urlpatterns = i18n_patterns(
 
     # Admin
-    url(r'^admin/', admin.site.urls),
+    re_path(r'^admin/', admin.site.urls),
 
     # Home page
-    url(r'^$',
+    path('',
         views.index, name='index'),
 
     # Hack to prompt password on password-protected partner sites
-    url(r'^lockpass/$',
+    path('lockpass/',
         views.lockpass, name='lockpass'),
 
     # Projects
-    url(r'^projects/$',
+    path('projects/',
         project.directory, name='project-directory'),
 
-    url(r'^project/(?P<project_id>\d+)/$',
+    path('project/<int:project_id>/',
         project.main, name='project-main'),
 
     # Organisations
-    url(r'^organisations/$',
+    path('organisations/',
         organisation.directory,
         name='organisation-directory'),
 
-    url(r'^organisation/(?P<organisation_id>\d+)/$',
+    path('organisation/<int:organisation_id>/',
         organisation.main, name='organisation-main'),
 
     # Updates
-    url(r'^updates/$',
+    path('updates/',
         project_update.directory, name='update-directory'),
 
-    url(r'^project/(?P<project_id>\d+)/update/(?P<update_id>\d+)/$',
+    path('project/<int:project_id>/update/<int:update_id>/',
         project_update.main, name='update-main'),
 
     # Account
-    url(r'^register/$',
+    path('register/',
         account.register, name='register'),
 
-    url(r'^activate/(?P<activation_key>[-:\w]+)/$',
+    re_path(r'^activate/(?P<activation_key>[-:\w]+)/$',
         account.activate, name='activate'),
 
-    url(r'^activate_invite/(?P<inviting_pk>\d+)/(?P<user_pk>\d+)/(?P<employment_pk>\d+)/(?P<token_date>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z_\-]+)/$',
+    re_path(r'^activate_invite/(?P<inviting_pk>\d+)/(?P<user_pk>\d+)/(?P<employment_pk>\d+)/(?P<token_date>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z_\-]+)/$',
         account.invite_activate, name='invite_activate'),
 
-    url(r'^sign_in/$',
+    path('sign_in/',
         account.SignInView.as_view(), name='sign_in'),
 
-    url('^account/two_factor/setup/$',
+    path('account/two_factor/setup/',
         account.SetupTwoFactorView.as_view(), name='two_factor_setup'),
 
-    url('^account/two_factor/disable/$',
+    path('account/two_factor/disable/',
         account.DisableTwoFactorView.as_view(), name='two_factor_disable'),
 
-    url("^account/two_factor/backup/tokens/$",
-        account.TwoFactorBackupTokensView.as_view(), name="two_factor_backup_token"),
+    path('account/two_factor/backup/tokens',
+        account.TwoFactorBackupTokensView.as_view(), name='two_factor_backup_token'),
 
-    url('', include(two_factor_urls)),
+    path('', include(two_factor_urls)),
 
-    url(r'^sign_out/$',
+    path('sign_out/',
         account.sign_out, name='sign_out'),
 
-    url(r'^reset_password/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,32})/$',
+    re_path(r'^reset_password/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,32})/$',
         auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
 
-    url(r'^reset_password/complete/$',
+    path('reset_password/complete/',
         auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
 
     # Partner site logo & CSS
-    url(r'^logo/$',
+    path('logo/',
         my_rsr.logo, name='logo'),
-    url(r'^css/$',
+    path('css/',
         my_rsr.css, name='css'),
 
     # MyRSR
-    url(r'^myrsr/$',
+    path('myrsr/',
         my_rsr.my_rsr, name='my_rsr'),
 
-    url(r'^myrsr/my_project/(?P<project_id>\d+)/$',
+    path('myrsr/my_project/<int:project_id>/',
         my_rsr.my_project, name='project-edit'),
 
-    url(r'^myrsr/details/$',
+    path('myrsr/details/',
         my_rsr.my_details, name='my_details'),
 
-    url(r'^myrsr/projects/$',
+    path('myrsr/projects/',
         two_factor_required(RedirectView.as_view(url='/my-rsr/')),
         name='my_projects'),
 
-    url(r'^myrsr/project_editor/(?P<project_id>\d+)/$',
+    path('myrsr/project_editor/<int:project_id>/',
         two_factor_required(RedirectView.as_view(url='/my-rsr/projects/%(project_id)s/')),
         name='project_editor'),
 
-    url(r'^translations.json$', translations.myrsr, name='myrsr-translations'),
-    url(r'^project-dir-translations.json$',
+    re_path(r'^translations.json$', translations.myrsr, name='myrsr-translations'),
+    re_path(r'^project-dir-translations.json$',
         translations.project_directory,
         name='project-dir-translations'),
 )
@@ -142,157 +142,157 @@ urlpatterns = i18n_patterns(
 
 urlpatterns += [
 
-    url(r'^account/totp_qrcode/$', account.totp_qrcode, name='totp_qrcode'),
+    path('account/totp_qrcode/', account.totp_qrcode, name='totp_qrcode'),
 
     # Python generated reports
-    url(r'^py-reports/checkz/$',
+    path('py-reports/checkz/',
         py_reports.check, name='py-reports-check'),
 
-    url(r'^py-reports/project/(?P<project_id>\d+)/results-indicators-map-overview/$',
+    path('py-reports/project/<int:project_id>/results-indicators-map-overview/',
         py_reports.render_project_results_indicators_map_overview,
         name='py-reports-project-results-indicators-map-overview'),
 
-    url(r'^py-reports/program/(?P<program_id>\d+)/projects-results-indicators-map-overview/$',
+    path('py-reports/program/<int:program_id>/projects-results-indicators-map-overview/',
         py_reports.add_org_projects_email_report_job,
         name='py-reports-organisation-projects-results-indicators-map-overview'),
 
-    url(r'^py-reports/project/(?P<project_id>\d+)/results-indicators-table/$',
+    path('py-reports/project/<int:project_id>/results-indicators-table/',
         py_reports.render_project_results_indicators_excel_report,
         name='py-reports-project-results-indicators-table'),
 
-    url(r'^py-reports/project/(?P<project_id>\d+)/updates-table/$',
+    path('py-reports/project/<int:project_id>/updates-table/',
         py_reports.render_project_updates_excel_report,
         name='py-reports-project-updates-table'),
 
-    url(r'^py-reports/project/(?P<project_id>\d+)/results-indicators-overview/$',
+    path('py-reports/project/<int:project_id>/results-indicators-overview/',
         py_reports.render_project_results_indicators_overview,
         name='py-reports-project-results-indicators-overview'),
 
-    url(r'^py-reports/project/(?P<project_id>\d+)/eutf-results-indicators-table/$',
+    path('py-reports/project/<int:project_id>/eutf-results-indicators-table/',
         py_reports.render_eutf_project_results_table_excel_report,
         name='py-reports-project-eutf-results-indicators-table'),
 
-    url(r'^py-reports/project/(?P<project_id>\d+)/kickstart-report/$',
+    path('py-reports/project/<int:project_id>/kickstart-report/',
         py_reports.render_kickstart_report,
         name='py-reports-project-kickstart-report'),
 
-    url(r'^py-reports/project/(?P<project_id>\d+)/eutf-narrative-report/$',
+    path('py-reports/project/<int:project_id>/eutf-narrative-report/',
         py_reports.render_eutf_narrative_word_report,
         name='py-reports-project-eutf-narrative-word-report'),
 
-    url(r'^py-reports/project/(?P<project_id>\d+)/overview-report/$',
+    path('py-reports/project/<int:project_id>/overview-report/',
         py_reports.render_project_overview_pdf_report,
         name='py-reports-project-overview-pdf-report'),
 
-    url(r'^py-reports/organisation/(?P<org_id>\d+)/data-quality-overview/$',
+    path('py-reports/organisation/<int:org_id>/data-quality-overview/',
         py_reports.render_organisation_data_quality_overview,
         name='py-reports-organisation-data-quality-overview'),
 
-    url(r'^py-reports/program/(?P<program_id>\d+)/eutf-results-indicators-table/$',
+    path('py-reports/program/<int:program_id>/eutf-results-indicators-table/',
         py_reports.render_eutf_org_results_table_excel_report,
         name='py-reports-organisation-eutf-results-indicators-table'),
 
-    url(r'^py-reports/program/(?P<program_id>\d+)/eutf-common-output-indicators-table/(?P<result_id>\d+)/$',
+    path('py-reports/program/<int:program_id>/eutf-common-output-indicators-table/<int:result_id>/',
         py_reports.render_eutf_org_results_table_excel_report,
         name='py-reports-organisation-eutf-common-output-indicators-table'),
 
-    url(r'^py-reports/organisation/(?P<org_id>\d+)/results-indicators-table/$',
+    path('py-reports/organisation/<int:org_id>/results-indicators-table/',
         py_reports.render_results_indicators_excel_report,
         name='py-reports-organisation-results-indicators-table'),
 
-    url(r'^py-reports/organisation/(?P<org_id>\d+)/org-projects-overview/$',
+    path('py-reports/organisation/<int:org_id>/org-projects-overview/',
         py_reports.render_org_projects_overview_report,
         name='py-reports-organisation-projects-overview'),
 
-    url(r'^py-reports/program/(?P<program_id>\d+)/program-overview-table/$',
+    path('py-reports/program/<int:program_id>/program-overview-table/',
         py_reports.add_program_overview_excel_report_email_job,
         name='py-reports-program-overview-table'),
 
-    url(r'^py-reports/program/(?P<program_id>\d+)/program-overview/$',
+    path('py-reports/program/<int:program_id>/program-overview/',
         py_reports.add_program_overview_pdf_report_email_job,
         name='py-reports-program-overview'),
 
-    url(r'^py-reports/program/(?P<program_id>\d+)/program-labeled-periods-overview/$',
+    path('py-reports/program/<int:program_id>/program-labeled-periods-overview/',
         py_reports.add_program_period_labels_overview,
         name='py-reports-program-period-labels-overview'),
 
-    url(r'^py-reports/program/(?P<program_id>\d+)/nuffic-country-level-report/$',
+    path('py-reports/program/<int:program_id>/nuffic-country-level-report/',
         py_reports.add_nuffic_country_level_report_job,
         name='py-reports-nuffic-country-level-report'),
 
     # IATI file
-    url(r'^project/(?P<project_id>\d+)/iati/$',
+    path('project/<int:project_id>/iati/',
         project.iati, name='project-iati'),
 
-    url(r'^organisation/(?P<organisation_id>\d+)/iati(/|(/?\.xml)?)$',
+    re_path(r'^organisation/(?P<organisation_id>\d+)/iati(/|(/?\.xml)?)$',
         organisation.iati, name='projects-iati'),
 
     # IATI organisation file
-    url(r'^organisation/(?P<organisation_id>\d+)/iati-org(/|(/?\.xml)?)$',
+    re_path(r'^organisation/(?P<organisation_id>\d+)/iati-org(/|(/?\.xml)?)$',
         organisation.iati_org, name='org-iati'),
 
     # Legacy TastyPie API emulation
-    url(r'^api/', include('akvo.rest.urls')),
+    path('api/', include('akvo.rest.urls')),
 
     # Django Rest Framework urls
-    url(r'^rest/', include('akvo.rest.urls')),
-    url(r'^rest/docs/', docs_view),
+    path('rest/', include('akvo.rest.urls')),
+    re_path(r'^rest/docs/', docs_view),
 
     # RSS
-    url(r'^rss/updates/(?P<project_id>\d+)/$',
+    path('rss/updates/<int:project_id>/',
         ProjectUpdates(),
         name="rss_project_updates"),
 
-    url(r'^rss/org-updates/(?P<org_id>\d+)/$',
+    path('rss/org-updates/<int:org_id>/',
         OrganisationUpdates(),
         name="rss_org_updates"),
 
-    url(r'^rss/all-updates/$',
+    path('rss/all-updates/',
         AllProjectUpdates(),
         name="rss_all_updates"),
 
     # Auth token for mobile apps
-    url(r'^auth/token/$', account.api_key, name="auth_token"),
+    path('auth/token/', account.api_key, name="auth_token"),
 
     # Set csrf token cookie for SPA
-    url(r'^auth/csrf-token/$', account.get_csrf_token, name="auth_csrf_token"),
+    path('auth/csrf-token/', account.get_csrf_token, name="auth_csrf_token"),
 
-    url(r'^auth/login/$', account.json_login, name="auth_json_login"),
+    path('auth/login/', account.json_login, name="auth_json_login"),
 
-    url(r'^auth/reset-password/$', account.json_reset_password, name="auth_json_reset_password"),
+    path('auth/reset-password/', account.json_reset_password, name="auth_json_reset_password"),
 
-    url(r'^auth/register/$', account.json_register, name="auth_json_register"),
+    path('auth/register/', account.json_register, name="auth_json_register"),
 
     # Widgets
-    url(r'^widgets/projects/map/$',
+    path('widgets/projects/map/',
         widget_views.ProjectMapView.as_view(),
         name="widget_org_map"),
 
-    url(r'^widgets/projects/list/$',
+    path('widgets/projects/list/',
         widget_views.ProjectListView.as_view(),
         name="widget_project_list"),
 
-    url(r'^widgets/cobranded-banner/(?P<project_id>\d+)/$',
+    path('widgets/cobranded-banner/<int:project_id>/',
         widget_views.CobrandedBannerView.as_view(),
         name="widget_cobranded_banner"),
 
-    url(r'^widgets/cobranded-banner/random/$',
+    path('widgets/cobranded-banner/random/',
         widget_views.RandomCobrandedBannerView.as_view(),
         name="widget_random_cobranded_banner"),
 
-    url(r'^widgets/project-narrow/(?P<project_id>\d+)/$',
+    path('widgets/project-narrow/<int:project_id>/',
         widget_views.ProjectNarrowView.as_view(),
         name="widget_project_narrow"),
 
-    url(r'^widgets/project-narrow/random/$',
+    path('widgets/project-narrow/random/',
         widget_views.RandomProjectNarrowView.as_view(),
         name="widget_random_project_narrow"),
 
-    url(r'^widgets/project-small/(?P<project_id>\d+)/$',
+    path('widgets/project-small/<int:project_id>/',
         widget_views.ProjectSmallView.as_view(),
         name="widget_project_small"),
 
-    url(r'^widgets/project-small/random/$',
+    path('widgets/project-small/random/',
         widget_views.RandomProjectSmallView.as_view(),
         name="widget_random_project_small"),
 ]
@@ -300,7 +300,7 @@ urlpatterns += [
 handler500 = 'akvo.rsr.views.error.server_error'
 
 urlpatterns += [
-    url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+    re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
 ]
 
 if settings.DEBUG:
@@ -312,7 +312,7 @@ if settings.DEBUG:
     else:
         urlpatterns = [
             # For django versions before 2.0:
-            url(r'^__debug__/', include(debug_toolbar.urls)),
+            path('__debug__/', include(debug_toolbar.urls)),
         ] + urlpatterns
 
 if settings.REQUIRED_AUTH_GROUPS:

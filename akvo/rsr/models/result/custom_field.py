@@ -6,7 +6,7 @@
 
 from django.db.models import JSONField
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from akvo.rsr.fields import ValidXMLCharField, ValidXMLTextField
 

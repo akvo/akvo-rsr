@@ -11,7 +11,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.signals import user_login_failed, user_logged_in
 from django.db import models
-from django.utils.translation import ugettext_lazy as _, ungettext_lazy
+from django.utils.translation import gettext_lazy as _, ngettext_lazy
 from django.utils.timezone import now
 
 from akvo.rsr.mixins import TimestampsMixin
@@ -79,7 +79,7 @@ def log_failed_login(sender, credentials, **kwargs):
         remaining_logins = MAX_FAILED_LOGINS - failed_logins
         from django.contrib.auth.forms import AuthenticationForm
         raise forms.ValidationError(
-            ungettext_lazy(
+            ngettext_lazy(
                 '%(error)s You only have one more login attempt before login is disabled '
                 'for %(time)d minutes. '
                 'Make sure to enter your password correctly.',

@@ -323,7 +323,7 @@ def json_login(request):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
     data = json.loads(request.body) \
-        if request.META['CONTENT_TYPE'] == 'application/json' \
+        if request.headers['content-type'] == 'application/json' \
         else request.POST
     form = AuthenticationForm(data=data)
     if not form.is_valid():
@@ -338,7 +338,7 @@ def json_reset_password(request):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
     data = json.loads(request.body) \
-        if request.META['CONTENT_TYPE'] == 'application/json' \
+        if request.headers['content-type'] == 'application/json' \
         else request.POST
     form = PasswordResetForm(data=data)
     if not form.is_valid():
@@ -351,7 +351,7 @@ def json_register(request):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
     data = json.loads(request.body) \
-        if request.META['CONTENT_TYPE'] == 'application/json' \
+        if request.headers['content-type'] == 'application/json' \
         else request.POST
     form = RegisterForm(data=data)
     if not form.is_valid():

@@ -11,7 +11,7 @@ from django.db.models import Sum, Q, signals
 from django.dispatch import receiver
 from django.urls import reverse
 from django.utils.functional import cached_property
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django_q.tasks import async_task
 
 from sorl.thumbnail.fields import ImageField

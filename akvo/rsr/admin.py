@@ -23,9 +23,9 @@ from django.db import models, transaction
 from django.apps import apps
 from django.db.models import JSONField
 from django.utils.decorators import method_decorator
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_protect
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 
 from prettyjson import PrettyJSONWidget
 from sorl.thumbnail.fields import ImageField
@@ -403,7 +403,7 @@ class OrganisationAdmin(TimestampsAdminDisplayMixin, ObjectPermissionsModelAdmin
             media = media + inline_admin_formset.media
 
         context = {
-            'title': _('Add %s') % force_text(opts.verbose_name),
+            'title': _('Add %s') % force_str(opts.verbose_name),
             'adminform': adminForm,
             'is_popup': IS_POPUP_VAR in request.POST,
             'show_delete': False,

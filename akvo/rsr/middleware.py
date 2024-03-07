@@ -54,7 +54,7 @@ def _build_api_link(request, resource, object_id):
     protocol = 'https' if request.is_secure() else 'http'
     object_id_part = '/' if not object_id else '/{0}/'.format(object_id)
     return '{0}://{1}/api/v1/{2}{3}?{4}'.format(
-        protocol, request.META['HTTP_HOST'], resource, object_id_part, request.GET.urlencode()
+        protocol, request.headers['host'], resource, object_id_part, request.GET.urlencode()
     )
 
 
@@ -183,7 +183,7 @@ class RequestTokenMiddleware(RTM):
         if request.method in {'GET', 'POST', 'PUT', 'PATCH', 'DELETE'}:
             token = request.GET.get(JWT_QUERYSTRING_ARG)
             if not token and request.method in {'POST', 'PUT', 'PATCH'}:
-                if request.META.get('CONTENT_TYPE') == 'application/json':
+                if request.headers.get('content-type') == 'application/json':
                     body = json.loads(request.body)
                     token = body.get(JWT_QUERYSTRING_ARG) if hasattr(body, 'get') else None
                 if not token:
