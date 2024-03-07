@@ -26,5 +26,3 @@ class PolicyConfigAdmin(admin.ModelAdmin):
         ("Prohibited words", {"fields": ("no_common_password", "no_user_attributes")}),
     )
     inlines = (RegexRuleConfigInline,)
-
-
