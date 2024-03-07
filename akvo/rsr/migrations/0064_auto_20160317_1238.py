@@ -106,7 +106,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='crsaddotherflag',
             name='significance',
-            field=models.NullBooleanField(help_text='Indicate whether the flag applies or not.', verbose_name='significance'),
+            field=models.BooleanField(null=True, help_text='Indicate whether the flag applies or not.', verbose_name='significance'),
             preserve_default=True,
         ),
         migrations.AlterField(
@@ -124,7 +124,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='fss',
             name='priority',
-            field=models.NullBooleanField(help_text='True if the partner country is a priority partner country.', verbose_name='priority'),
+            field=models.BooleanField(null=True, help_text='True if the partner country is a priority partner country.', verbose_name='priority'),
             preserve_default=True,
         ),
         migrations.AlterField(
