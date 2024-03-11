@@ -18,7 +18,7 @@ export CUSTOM_COMPILE_COMMAND=${0}
 
 compile-requirements () {
    echo "Generating ${2} ..."
-   pip-compile --quiet --allow-unsafe --generate-hashes --resolver=backtracking --output-file "${2}" "${1}"
+   pip-compile --quiet --allow-unsafe --generate-hashes --resolver=backtracking --strip-extras --output-file "${2}" "${1}"
 }
 
 compile-requirements scripts/deployment/pip/requirements/production.in \

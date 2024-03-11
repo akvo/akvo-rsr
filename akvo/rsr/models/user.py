@@ -216,6 +216,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.get_admin_employment_orgs().content_owned_organisations().users()
 
     def first_organisation(self):
+        if not self.pk:
+            return None
         all_orgs = self.approved_organisations()
         if all_orgs:
             return all_orgs[0]

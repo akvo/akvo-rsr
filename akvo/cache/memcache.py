@@ -4,11 +4,11 @@ import socket
 from functools import reduce
 from typing import List, Tuple, Dict
 
-import memcache
-from django.core.cache.backends.memcached import MemcachedCache
+import pymemcache
+from django.core.cache.backends.memcached import PyMemcacheCache
 
 
-class AkvoMemcacheClient(memcache.Client):
+class AkvoMemcacheClient(pymemcache.HashClient):
 
     def get_slabs(self) -> List[Tuple[str, Dict[str, dict]]]:  # pragma: no cover
         """
@@ -16,6 +16,8 @@ class AkvoMemcacheClient(memcache.Client):
 
         Slabs are memory regions in memcache where data is stored.
         They have a unique ID (number).
+
+        FIXME: Needs to be rewritten because the dependency is changed to pymemcache
         """
         data = []
         for s in self.servers:
@@ -45,16 +47,14 @@ class AkvoMemcacheClient(memcache.Client):
         return data
 
 
-class AkvoMemcachedCache(MemcachedCache):
+class AkvoMemcachedCache(PyMemcacheCache):
 
     @property
     def _cache(self):
         """Provide our AkvoMemcacheClient for cache access"""
 
         if getattr(self, '_client', None) is None:
-            client_kwargs = dict(pickleProtocol=pickle.HIGHEST_PROTOCOL)
-            client_kwargs.update(self._options)
-            self._client = AkvoMemcacheClient(self._servers, **client_kwargs)
+            self._client = AkvoMemcacheClient(self._servers, **self._options)
         return self._client
 
     def list_keys(self) -> List[str]:

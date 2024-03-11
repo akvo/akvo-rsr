@@ -17,10 +17,10 @@ class IndicatorDimensionNameSerializer(BaseRSRSerializer):
         model = IndicatorDimensionName
         fields = '__all__'
 
-    def is_valid(self, raise_exception=False):
+    def is_valid(self, *, raise_exception=False):
         # HACK to allow nested posting... There should be a better way than this!
         self._values = self.initial_data.pop('values', [])
-        return super(IndicatorDimensionNameSerializer, self).is_valid(raise_exception)
+        return super(IndicatorDimensionNameSerializer, self).is_valid(raise_exception=raise_exception)
 
     def create(self, validated_data):
         instance = super(IndicatorDimensionNameSerializer, self).create(validated_data)

@@ -30,10 +30,11 @@ class DefaultPeriod(models.Model):
 
         is_new_default_period = not self.pk
 
-        for child_period in self.child_periods.all():
-            child_period.period_start = self.period_start
-            child_period.period_end = self.period_end
-            child_period.save()
+        if self.pk:
+            for child_period in self.child_periods.all():
+                child_period.period_start = self.period_start
+                child_period.period_end = self.period_end
+                child_period.save()
 
         super(DefaultPeriod, self).save(*args, **kwargs)
 
