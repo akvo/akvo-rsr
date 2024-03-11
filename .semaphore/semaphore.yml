@@ -53,5 +53,4 @@ blocks:
             - popd
         on_fail:
           commands:
-            - artifact push job rsr.dbml
             - ./ci/on-fail-semaphoreci.sh
