@@ -7,7 +7,7 @@ function log {
 }
 
 function get_status {
-  echo $(curl --output /dev/null --silent --head --write-out %{http_code} $1)
+  echo $(curl --output /dev/null  --head --write-out %{http_code} $1)
 }
 
 function test_http_status {
@@ -20,7 +20,7 @@ function test_http_status {
 }
 
 function test_content {
-  local content=$(curl --location --silent "$2")
+  local content=$(curl --location  "$2")
   if [[ "$content" != "$1" ]]; then
     log Failed to assert "$2" with expected content "$1" got "$content".
     exit 1
@@ -51,7 +51,7 @@ fi
 log Testing legacy front-end assets
 
 # Legacy assets
-PAGE_CONTENT=$(curl --location --silent "${BASE_URL}/en/organisations/")
+PAGE_CONTENT=$(curl --location  "${BASE_URL}/en/organisations/")
 ASSETS=$(echo "${PAGE_CONTENT}" | grep -Eo "\/static/rsr/dist/.+(css|js)" | head -n 3)
 while read -r path; do
   # test asset
@@ -69,7 +69,7 @@ test_http_status "${HTTP_OK}" "${SPA_URL}/path"
 test_http_status "${HTTP_OK}" "${SPA_URL}/sub/path"
 
 # My RSR SPA assets
-SPA_PAGE=$(curl --location --silent "${SPA_URL}")
+SPA_PAGE=$(curl --location  "${SPA_URL}")
 
 # Sentry params
 echo "${SPA_PAGE}" | grep "SENTRY_ENVIRONMENT = 'test'" > /dev/null || (echo "Sentry env not found in:"; echo "${SPA_PAGE}"; exit 1)
@@ -92,7 +92,7 @@ SPA_URL="$BASE_URL"
 test_http_status "${HTTP_OK}" "${SPA_URL}/"
 
 # Project Directory SPA assets
-SPA_PAGE=$(curl --location --silent "${SPA_URL}")
+SPA_PAGE=$(curl --location  "${SPA_URL}")
 SPA_ASSETS=$(echo "${SPA_PAGE}" | grep -Eo "\/project-directory/.+(css|js)" | head -n 3)
 while read -r path; do
     # test asset

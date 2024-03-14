@@ -30,6 +30,7 @@ services:
       - DEFAULT_FILE_STORAGE=django.core.files.storage.FileSystemStorage
   nginx:
     image: eu.gcr.io/${PROJECT_NAME}/rsr-nginx:${TRAVIS_COMMIT}
+    container_name: rsr.localdev.akvo.org
     volumes:
       - media-disk:/data
     environment:
