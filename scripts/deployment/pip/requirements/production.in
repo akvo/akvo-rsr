@@ -123,6 +123,9 @@ matplotlib
 google-cloud-profiler
 
 phonenumbers
+# Migration error when updating to version 1.15.4 https://github.com/jazzband/django-two-factor-auth/issues/647
 django-two-factor-auth==1.15.3
 
-django-dbml
+# version 0.7.0 have bug that is fixed in https://github.com/makecodes/django-dbml/pull/15
+# TODO: update when 0.8.0 is available
+django-dbml==0.6.0
