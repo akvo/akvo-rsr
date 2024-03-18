@@ -9,6 +9,10 @@ RUN set -ex; apt-get update && \
     libxml2-dev libxslt1-dev zlib1g-dev python3-dev && \
     rm -rf /var/lib/apt/lists/*
 
+RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
+    python get-pip.py && \
+    rm get-pip.py
+
 WORKDIR /var/akvo/rsr/code
 
 COPY scripts/deployment/pip/requirements/2_rsr.txt ./
