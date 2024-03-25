@@ -28,9 +28,10 @@ RUN set -ex; apt-get update \
 
 RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
     python get-pip.py && \
+    pip install --upgrade pip && \
     rm get-pip.py
 
-ENV NODE_VERSION 10.24.1
+ENV NODE_VERSION 14.21.3
 
 RUN curl -fsSLO --compressed "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.xz" \
   && tar -xJf "node-v$NODE_VERSION-linux-x64.tar.xz" -C /usr/local --strip-components=1 --no-same-owner \

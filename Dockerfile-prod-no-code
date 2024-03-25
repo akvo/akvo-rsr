@@ -11,6 +11,7 @@ RUN set -ex; apt-get update && \
 
 RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
     python get-pip.py && \
+    pip install --upgrade pip && \
     rm get-pip.py
 
 WORKDIR /var/akvo/rsr/code
