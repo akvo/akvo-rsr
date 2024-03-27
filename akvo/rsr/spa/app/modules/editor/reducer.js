@@ -216,7 +216,7 @@ export default (state = initialState, action) => {
       set(
         newState[sectionKey].fields,
         action.setName,
-        get(newState[sectionKey].fields, action.setName).filter((it, index) => index !== action.itemIndex)
+        get(newState[sectionKey].fields, action.setName).filter((it, idx) => idx !== action.itemIndex)
       )
       if (!action.skipValidation) newState[sectionKey].errors = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
       return newState

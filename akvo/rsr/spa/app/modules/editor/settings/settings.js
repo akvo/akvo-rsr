@@ -71,8 +71,8 @@ const Settings = ({ isPublic, canEditSettings, validations, match: { params }, h
         api.post('/raw_project_hierarchy/', { rootProject: data.id, maxDepth: 2 })
         .then(() => {
           api.get('/me')
-          .then(({data}) => {
-            props.setUser(data)
+          .then(({data: user}) => {
+            props.setUser(user)
           })
         })
         props.addProgram({ id: data.id, name: t('Untitled program')})

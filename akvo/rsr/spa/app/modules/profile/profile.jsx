@@ -10,7 +10,7 @@ import './styles.scss'
 import api from '../../utils/api'
 
 const { Item } = Form
-const passwordReg = new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*",<>./?\'+=;:-_~`\|{}()])(?=.{8,})')
+const passwordReg = new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*",<>./?\'+=;:-_~`|{}()])(?=.{8,})')
 
 const Profile = ({userRdr}) => {
   const { t } = useTranslation()
@@ -38,9 +38,9 @@ const Profile = ({userRdr}) => {
         .then(() => {
           setSaving(false)
         })
-        .catch(error => {
-          if (error.response && error.response.data){
-            setError(error.response.data[Object.keys(error.response.data)[0]])
+        .catch(err => {
+          if (err.response && err.response.data){
+            setError(err.response.data[Object.keys(err.response.data)[0]])
             setSaving(false)
           }
         })

@@ -28,7 +28,7 @@ const AssignmentView = ({ id, selectedIndicators, setSelectedIndicators, enumera
     const _enumerators = enumerators.map(it => ({ ...it }))
     const _it = _enumerators.find(it => it.email === enumerator.email)
     if(_it) {
-      _it.indicators = _it.indicators.filter(id => selectedIndicators.indexOf(id) === -1)
+      _it.indicators = _it.indicators.filter(it => selectedIndicators.indexOf(it) === -1)
       api.patch(`/project/${id}/enumerators/`, [_it])
       setEnumerators(_enumerators)
     }

@@ -62,8 +62,8 @@ const LineChart = ({
       return `${x},${y}`
     }).join(' ')
 
-  const Axis = ({ points }) => (
-    <polyline fill="none" stroke="#ccc" strokeWidth=".5" points={points} />
+  const Axis = ({ points: _points }) => (
+    <polyline fill="none" stroke="#ccc" strokeWidth=".5" points={_points} />
   )
 
   const XAxis = () => (

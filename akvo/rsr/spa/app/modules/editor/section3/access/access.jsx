@@ -26,7 +26,7 @@ export const roleLabelDict = {
   Users: 'User',
 }
 
-const Access = ({ projectId, partners, roleData, admin, mne, saveFields }) => {
+const Access = ({ projectId, partners, roleData, admin, mne, saveFields: _saveFields }) => {
   const [useProjectRoles, setUseProjectRoles] = useState(false)
   const [modalVisible, setModalVisible] = useState(false)
   const [matrixVisible, setMatrixVisible] = useState(false)
@@ -49,7 +49,7 @@ const Access = ({ projectId, partners, roleData, admin, mne, saveFields }) => {
       roles: _roles.map(({ email, role}) => ({ email, role })),
     })
       .then(() => {
-        saveFields({ lastModifiedAt: new Date() }, 1, false)
+        _saveFields({ lastModifiedAt: new Date() }, 1, false)
       })
   }
   const handleProjectRolesChange = ({ target: {value}}) => {
@@ -60,7 +60,7 @@ const Access = ({ projectId, partners, roleData, admin, mne, saveFields }) => {
         useProjectRoles: value
       })
         .then(() => {
-          saveFields({ lastModifiedAt: new Date() }, 1, false)
+          _saveFields({ lastModifiedAt: new Date() }, 1, false)
         })
     }
   }
@@ -72,7 +72,7 @@ const Access = ({ projectId, partners, roleData, admin, mne, saveFields }) => {
       roles: updatedRoles.map(({ email, role }) => ({ email, role })) // eslint-disable-line
     })
       .then(() => {
-        saveFields({ lastModifiedAt: new Date() }, 1, false)
+        _saveFields({ lastModifiedAt: new Date() }, 1, false)
       })
   }
   const confirmAccessReset = () => {
@@ -86,7 +86,7 @@ const Access = ({ projectId, partners, roleData, admin, mne, saveFields }) => {
       roles: updatedRoles.map(({ email, role }) => ({ email, role })),
     })
       .then(() => {
-        saveFields({ lastModifiedAt: new Date() }, 1, false)
+        _saveFields({ lastModifiedAt: new Date() }, 1, false)
       })
   }
   const handlePopconfirmVisibleChange = (visible) => {

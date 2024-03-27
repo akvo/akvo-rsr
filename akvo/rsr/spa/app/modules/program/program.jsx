@@ -133,8 +133,8 @@ const Program = ({
       <Route path="/programs/:projectId/reports" render={() =>
         <Reports programId={params.projectId} />
       } />
-      <Route path="/programs/:id/editor" render={({ match: {params}}) =>
-        <Editor {...{ params }} program />
+      <Route path="/programs/:id/editor" render={({ match: {params: args}}) =>
+        <Editor {...{ params: args }} program />
       } />
       <div id="bar-tooltip" />
       <div id="disagg-bar-tooltip" />

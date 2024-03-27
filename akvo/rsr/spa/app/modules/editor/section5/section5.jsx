@@ -222,8 +222,8 @@ const Section5 = (props) => {
   const [showImport, setShowImport] = useState(false)
   useEffect(() => {
     api.get(`/project/${props.projectId}/period-labels/`)
-      .then(({data: {periodLabels}}) => {
-        setPeriodLabels(periodLabels)
+      .then(({data: {periodLabels: labels}}) => {
+        setPeriodLabels(labels)
       })
     api.get(`/indicator_custom_field/?project=${props.projectId}`)
       .then(({data: {results}}) => {

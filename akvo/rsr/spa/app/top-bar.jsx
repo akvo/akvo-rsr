@@ -96,7 +96,7 @@ const TopBar = ({ userRdr, dispatch, location }) => {
                     <a href="/my-rsr/my-details/">{t('My details')}</a>
                   </Menu.Item>
                   <Menu.Item key="1">
-                    <a href="#" onClick={handleOnLogout}>{t('Sign out')}</a>
+                    <Button type="link" style={{display: 'inline'}} href="#" onClick={handleOnLogout}>{t('Sign out')}</Button>
                   </Menu.Item>
                 </Menu>
               }
@@ -131,7 +131,7 @@ const TopBar = ({ userRdr, dispatch, location }) => {
               <div className="div">settings</div>
               <ul>
                 <li><a href="/my-rsr/my-details/">{t('My details')}</a></li>
-                <li><a href="#" onClick={handleOnLogout}>{t('Sign out')}</a></li>
+                <li><Button type="link" href="#" onClick={handleOnLogout}>{t('Sign out')}</Button></li>
               </ul>
               <Dropdown overlay={langMenu({ userRdr, dispatch, i18n })} trigger={['click']} placement="topLeft" overlayStyle={{ zIndex: 99999 }}>
                 <div className="change-lang">{t('Change language')}<span className="lang"><b>{userRdr.lang}</b></span></div>

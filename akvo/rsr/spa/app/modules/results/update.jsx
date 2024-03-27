@@ -45,7 +45,7 @@ const Update = ({ update, period, indicator, fullUpdates, setFullUpdates }) => {
             text.trim().length &&
             (latestComments.find((c) => !c.comment.toLowerCase().includes(text.toLowerCase())) || !latestComments.length)
           ) {
-            latestComments?.push({ ...update, comment: text })
+            latestComments.push({ ...update, comment: text })
           }
           setComments(latestComments)
           if (scoreIndices.length) setScores(scoreIndices.map(index => indicator.scores[index - 1]))

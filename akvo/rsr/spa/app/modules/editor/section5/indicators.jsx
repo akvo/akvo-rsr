@@ -43,7 +43,7 @@ const indicatorTypes = [
 ]
 
 const Indicators = connect(null, { addSetItem, removeSetItem, moveSetItem })(
-  ({ fieldName, formPush, addSetItem, removeSetItem, moveSetItem, resultId, resultIndex, primaryOrganisation, projectId, program, allowIndicatorLabels, indicatorLabelOptions, selectedIndicatorIndex, selectedPeriodIndex, validations, periodLabels, setPeriodLabels, result, resultImported, parentRF, fetchFields, customFields, targetsAt, disableReordering }) => {
+  ({ fieldName, formPush, addSetItem: _addSetItem, removeSetItem: _removeSetItem, moveSetItem: _moveSetItem, resultId, resultIndex, primaryOrganisation, projectId, program, allowIndicatorLabels, indicatorLabelOptions, selectedIndicatorIndex, selectedPeriodIndex, validations, periodLabels, setPeriodLabels, result, resultImported, parentRF, fetchFields, customFields, targetsAt, disableReordering }) => {
     const { t } = useTranslation()
     const accordionCompRef = useRef()
     const [showImport, setShowImport] = useState(false)
@@ -59,17 +59,17 @@ const Indicators = connect(null, { addSetItem, removeSetItem, moveSetItem })(
       // TODO: move this logic to backend?
       if (defaultPeriods) newItem.periods = defaultPeriods
       formPush(`${fieldName}.indicators`, newItem)
-      addSetItem(5, `${fieldName}.indicators`, newItem)
+      _addSetItem(5, `${fieldName}.indicators`, newItem)
     }
     const remove = (index, fields) => {
       fields.remove(index)
-      removeSetItem(5, `${fieldName}.indicators`, index)
+      _removeSetItem(5, `${fieldName}.indicators`, index)
     }
     const moveIndicator = (from, to, fields, itemId) => {
       const doMove = () => {
         fields.move(from, to)
         api.post(`/project/${projectId}/reorder_items/`, `item_type=indicator&item_id=${itemId}&item_direction=${from > to ? 'up' : 'down'}`)
-        moveSetItem(5, `${fieldName}.indicators`, from, to)
+        _moveSetItem(5, `${fieldName}.indicators`, from, to)
       }
       if (accordionCompRef.current.state.activeKey.length === 0) {
         doMove()
@@ -111,7 +111,7 @@ const Indicators = connect(null, { addSetItem, removeSetItem, moveSetItem })(
     }
     const showIndexNumbers = !(program && program.id === 9062)
     const getScoreOptions = (index) => {
-      return result && result.indicators[index] && result.indicators[index].scores && result.indicators[index].scores.map((label, index) => ({ value: index + 1, label })
+      return result && result.indicators[index] && result.indicators[index].scores && result.indicators[index].scores.map((label, idx) => ({ value: idx + 1, label })
       )
     }
     return (

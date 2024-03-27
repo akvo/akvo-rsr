@@ -71,7 +71,7 @@ const EnumeratorPage = ({
 
   const disaggregations = []
   if (editing?.indicator?.dimensionNames?.length) {
-    editing?.indicator.dimensionNames.forEach(group => {
+    editing.indicator.dimensionNames.forEach(group => {
       group.dimensionValues.forEach(dimen => {
         disaggregations.push({ category: group.name, type: dimen.value, typeId: dimen.id, groupId: group.id })
       })
@@ -171,8 +171,8 @@ const EnumeratorPage = ({
     ?.map((u) => {
       const dsgItems = []
       if (u.indicator?.dimensionNames?.length) {
-        u.indicator?.dimensionNames?.forEach(dn => {
-          dn?.dimensionValues?.forEach(dv => {
+        u.indicator.dimensionNames.forEach(dn => {
+          dn.dimensionValues.forEach(dv => {
             const findValue = u?.disaggregations?.find((du) => (du?.categoryId === dn.id && du?.typeId === dv.id))
             dsgItems.push({
               ...findValue,
@@ -325,10 +325,10 @@ const EnumeratorPage = ({
     api.get(`/indicator_period_data_framework/?period=${item?.period?.id}&format=json`)
       .then(({ data }) => {
         const { results } = data
-        const updates = results?.filter((u) => u.userDetails?.id === userRdr.id)
+        const userUpdates = results?.filter((u) => u.userDetails?.id === userRdr.id)
         setSubmissions({
           scores: item?.indicator.scores,
-          updates,
+          updates: userUpdates,
           item: {
             ...item,
             fetched: true

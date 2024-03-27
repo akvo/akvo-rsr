@@ -69,7 +69,7 @@ export const dateTransform = {
           res[key] = $data[key].map(item => transformItem(item))
         }
         else if (typeof $data[key] === 'string' && (key.indexOf('date') !== -1 || key.indexOf('period') !== -1) && $data[key]) {
-          if (/^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$/.test($data[key])) {
+          if (/^\d{4}-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$/.test($data[key])) {
             const date = $data[key].split('-')
             res[key] = `${date[2]}/${date[1]}/${date[0]}`
           } else {
@@ -167,7 +167,7 @@ export const swapNullValues = (obj) => {
  * Get subdomain
  * */
 export const getSubdomainName = () => {
-  const domain = /:\/\/([^\/]+)/.exec(window.location.href)[1] || null
+  const domain = /:\/\/([^/]+)/.exec(window.location.href)[1] || null
   return domain ? domain.split('.')[0] : ''
 }
 

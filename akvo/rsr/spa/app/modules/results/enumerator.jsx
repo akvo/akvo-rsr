@@ -219,8 +219,8 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
   const [fileSet, setFileSet] = useState([])
   const formRef = useRef()
   const disaggregations = []
-  if (indicator) {
-    indicator.dimensionNames && indicator.dimensionNames.forEach(group => {
+  if (indicator && indicator.dimensionNames) {
+    indicator.dimensionNames.forEach(group => {
       group.dimensionValues.forEach(dsg => {
         disaggregations.push({ category: group.name, type: dsg.value, typeId: dsg.id, groupId: group.id })
       })

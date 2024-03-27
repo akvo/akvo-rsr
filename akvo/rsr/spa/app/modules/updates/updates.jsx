@@ -93,8 +93,8 @@ const Updates = ({ projectId }) => {
 
   const handleEditItem = async (input, initial) => {
     const {photos: inputPhotos, ...inputValues} = input
-    const {photos: initialPhotos, ...initialValues} = initial
-    const {photo: diffPhoto, ...diffValues} = diff(initialValues, {...inputValues, eventDate: inputValues.eventDate.format('DD/MM/YYYY')})
+    const {photos: initialPhotos, ...initValues} = initial
+    const {photo: diffPhoto, ...diffValues} = diff(initValues, {...inputValues, eventDate: inputValues.eventDate.format('DD/MM/YYYY')})
     const currentPhotos = inputPhotos.filter(photo => photo?.hasOwnProperty('id'))
     const diffCurrentPhotos = currentPhotos.map(photo => {
       const initialPhoto = initialPhotos.find(it => it.id === photo.id)
@@ -171,9 +171,9 @@ const Updates = ({ projectId }) => {
     try {
       const {data} = await axios.post(`${config.baseURL}/project_update/`, formData, axiosConfig)
       if (inputPhotos.length > 0) {
-        const massUploads = inputPhotos.map(photo => makePostPhotoRequest(data, photo))
+        const massUploads = inputPhotos.map(p => makePostPhotoRequest(data, p))
         const responses = await Promise.all(massUploads)
-        data.photos = responses.map(({data}) => data)
+        data.photos = responses.map(({data: it}) => it)
       }
       result = data
     } catch (err) {

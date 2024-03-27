@@ -213,7 +213,7 @@ const EnumeratorList = ({ selectedIndicators, indicatorMap, enumerators, id, set
     const _enumerators = enumerators.map(it => ({ ...it }))
     const _enumerator = _enumerators.find(it => it.email === enumerator.email)
     if (_enumerator) {
-      _enumerator.indicators = _enumerator.indicators.filter(id => id !== indicatorId)
+      _enumerator.indicators = _enumerator.indicators.filter(it => it !== indicatorId)
       api.patch(`/project/${id}/enumerators/`, [_enumerator])
       setEnumerators(_enumerators)
     }

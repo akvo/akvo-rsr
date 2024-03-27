@@ -8,7 +8,7 @@ import { setNumberFormat } from '../../utils/misc'
 const getAggregatedUpdatesLength = (updates, contributors) => {
   let total = 0
   total += updates.filter(it => it.status && it.status.code === 'A').length
-  contributors?.forEach(contrib => {
+  contributors.forEach(contrib => {
     total += getAggregatedUpdatesLength(updates, contrib)
   })
   return total

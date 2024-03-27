@@ -226,7 +226,11 @@ const Indicator = ({ setResults, indicator, treeFilter, statusFilter, pushUpdate
   const editPeriod = (period) => {
     patchPeriod(period, indicatorId, resultId)
   }
-  (indicator.periods.length === 0) && <div className="no-periods">{t('This indicator has no periods')}</div>
+  if (indicator.periods.length === 0) {
+    return (
+      <div className="no-periods">{t('This indicator has no periods')}</div>
+    )
+  }
   const initActualValue = 0
   const sumActualValue = indicator?.periods.reduce((total, currentValue) => total + currentValue.actualValue, initActualValue)
   return (

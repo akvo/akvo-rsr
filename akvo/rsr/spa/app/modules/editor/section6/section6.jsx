@@ -143,7 +143,7 @@ const Finance = ({ validations, fields, currency, dispatch, pagination, projectI
         setTimeout(() => {
           document
             .querySelector(`#${setName}-${ftx?.index}`)
-            ?.scrollIntoView({ behavior: 'smooth', block: 'end' })
+            .scrollIntoView({ behavior: 'smooth', block: 'end' })
         }, 1000)
       }
     }
