@@ -1,7 +1,7 @@
 /* eslint-disable no-shadow */
 /* global window, FormData */
 import React, { useState, useEffect, useRef } from 'react'
-import { Collapse, Button, Icon, Form, Divider, Upload, Typography, Modal } from 'antd'
+import { Collapse, Button, Icon, Form, Divider, Upload, Modal } from 'antd'
 import { Form as FinalForm, Field, FormSpy } from 'react-final-form'
 import { useTranslation } from 'react-i18next'
 import axios from 'axios'
@@ -32,7 +32,6 @@ const axiosConfig = {
 }
 
 const { Panel } = Collapse
-const { Text } = Typography
 
 
 export const AddUpdate = ({

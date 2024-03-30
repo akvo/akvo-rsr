@@ -1,7 +1,6 @@
 import React from 'react'
 import { Button, Form, Row, Col } from 'antd'
 import { useTranslation } from 'react-i18next'
-import { Field } from 'react-final-form'
 
 import FinalField from '../../../../utils/final-field'
 import ItemArray from '../../../../utils/item-array'

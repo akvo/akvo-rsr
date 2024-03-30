@@ -1,12 +1,12 @@
 import React, { useReducer, useState, useEffect } from 'react'
 import { Form, Checkbox, Icon, Select, Tooltip, Spin, Button, Alert, Skeleton } from 'antd'
-import { Field } from 'react-final-form';
+import { Field } from 'react-final-form'
 import { useTranslation } from 'react-i18next'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import InputLabel from '../../../../utils/input-label'
 import FinalField from '../../../../utils/final-field'
-import AutoSave from '../../../../utils/auto-save'
+import AutoSaveFS from '../../../../utils/auto-save'
 import * as actions from '../../actions'
 import api from '../../../../utils/api'
 
@@ -83,7 +83,7 @@ const ProjectPicker = ({
   return (
     <Skeleton loading={!(projects)} paragraph={{ rows: 2 }} active>
       <Item label={(<InputLabel optional>{t('Contributes to')}</InputLabel>)}>
-        <AutoSave sectionIndex={1} />
+        <AutoSaveFS sectionIndex={1} />
         {isExternal && (
           <Field
             name="externalParentIatiActivityId"

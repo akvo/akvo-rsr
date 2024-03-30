@@ -5,7 +5,7 @@ import { FormSpy, Field } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
 import {Route} from 'react-router-dom'
 import { withTranslation } from 'react-i18next'
-import AutoSave from './auto-save'
+import AutoSaveFS from './auto-save'
 import * as actions from '../modules/editor/actions'
 import RequiredHint from './required-hint'
 
@@ -112,8 +112,8 @@ class ItemArray extends React.Component{
     const { t } = this.props
     return (
       <div>
-      <Route path="/projects/:id" component={({ match: { params } }) => { if (params.id) { this.projectId = params.id; } return null }} />
-      <Route path="/programs/:id" component={({ match: { params } }) => { if (params.id) { this.projectId = params.id; } return null }} />
+      <Route path="/projects/:id" component={({ match: { params } }) => { if (params.id) { this.projectId = params.id } return null }} />
+      <Route path="/programs/:id" component={({ match: { params } }) => { if (params.id) { this.projectId = params.id } return null }} />
       <FieldArray name={this.props.setName} subscription={{}}>
         {({ fields }) => (
           <div>
@@ -147,11 +147,12 @@ class ItemArray extends React.Component{
                   id={`${this.props.setName}-${index}`}
                 >
                   <UpdateHalter parentState={this.state}>
-                    <AutoSave sectionIndex={this.props.sectionIndex} setName={this.props.setName} itemIndex={index} />
+                    <AutoSaveFS sectionIndex={this.props.sectionIndex} setName={this.props.setName} itemIndex={index} />
                     {this.props.panel(name, index)}
                   </UpdateHalter>
                 </Panel>
-                } />
+                }
+                />
               ))}
             </Collapse>
             }

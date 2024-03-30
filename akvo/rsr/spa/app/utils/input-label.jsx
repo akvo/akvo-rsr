@@ -1,3 +1,4 @@
+/* eslint-disable react/no-danger */
 import React from 'react'
 import { Tooltip, Icon } from 'antd'
 import { useTranslation } from 'react-i18next'

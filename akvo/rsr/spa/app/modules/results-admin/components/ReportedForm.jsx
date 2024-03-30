@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Field, FormSpy } from 'react-final-form'
-import { Icon, Form, Divider, Upload, Typography, Button } from 'antd'
+import { Icon, Form, Divider, Upload, Typography } from 'antd'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import SimpleMarkdown from 'simple-markdown'

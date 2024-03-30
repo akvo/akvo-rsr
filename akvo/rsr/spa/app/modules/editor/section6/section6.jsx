@@ -10,7 +10,6 @@ import { useTranslation } from 'react-i18next'
 import isEmpty from 'lodash/isEmpty'
 import invert from 'lodash/invert'
 import chunk from 'lodash/chunk'
-import moment from 'moment'
 
 import { Aux, shouldUpdateSectionRoot } from '../../../utils/misc'
 import InputLabel from '../../../utils/input-label'
@@ -20,11 +19,11 @@ import CountryBudgetItems from './country-budget-items/country-budget-items'
 import Transactions from './transactions/transactions'
 import PlannedDisbursements from './planned-disbursements/disbursements'
 import FinalField from '../../../utils/final-field'
-import AutoSave from '../../../utils/auto-save'
+import AutoSaveFS from '../../../utils/auto-save'
 import SectionContext from '../section-context'
 import validationDefs from './validations'
 import './styles.scss'
-import { useFetch } from '../../../utils/hooks';
+import { useFetch } from '../../../utils/hooks'
 import actionTypes from '../action-types'
 import api from '../../../utils/api'
 import { endpoints } from '../endpoints'
@@ -271,7 +270,7 @@ const Finance = ({ validations, fields, currency, dispatch, pagination, projectI
                   <PlannedDisbursements formPush={push} validations={validations} orgs={orgs} loadingOrgs={loadingOrgs} currency={currency} />
                 </Aux>
               )}
-              <AutoSave sectionIndex={6} />
+              <AutoSaveFS sectionIndex={6} />
             </Form>
           )
           }

@@ -171,7 +171,6 @@ const AddOrganizationModal = ({ visible, onHide, onAddedOrg }) => {
           document.getElementsByClassName('ant-modal-wrap')[0].scroll({ top: 0, behavior: 'smooth' })
         })
     } catch (errors) {
-      console.log(errors)
       setValidationErrors(errors.inner)
       setLoading(false)
       document.getElementsByClassName('ant-modal-wrap')[0].scroll({ top: 0, behavior: 'smooth' })

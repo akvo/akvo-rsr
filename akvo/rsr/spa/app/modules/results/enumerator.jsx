@@ -54,7 +54,7 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
   const [filteredIndicators, setFilteredIndicators] = useState([])
   const prevSelected = useRef()
 
-  const handleFilterIndicators = (items, indicator = {}, status = null) => {
+  const handleFilterIndicators = (items, indicator = {}) => {
     const pds = items.flatMap((i) => i.periods)
     const ids = items
       .map((i) => {

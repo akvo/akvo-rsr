@@ -1,4 +1,5 @@
 /* global document, window */
+/* eslint-disable react/no-danger */
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { Switch, Tooltip, Icon, Divider, Spin } from 'antd'

@@ -7,7 +7,7 @@ import arrayMutators from 'final-form-arrays'
 import { useTranslation } from 'react-i18next'
 
 import FinalField from '../../../utils/final-field'
-import AutoSave from '../../../utils/auto-save'
+import AutoSaveFS from '../../../utils/auto-save'
 import InputLabel from '../../../utils/input-label'
 import getSymbolFromCurrency from '../../../utils/get-symbol-from-currency'
 import CHANNEL_CODES from './channel-codes.json'
@@ -15,7 +15,7 @@ import FlagsStack from './flags/flags-stack'
 import ForecastsStack from './forecasts/forecasts-stack'
 import LegaciesStack from './comp/legacies-stack'
 import './styles.scss'
-import SectionContext from '../section-context';
+import SectionContext from '../section-context'
 import { shouldUpdateSectionRoot } from '../../../utils/misc'
 
 const { Item } = Form
@@ -211,7 +211,7 @@ const LoanStatus = ({ currency }) => {
               label: t('Principal arrears'),
               tooltip: t('Arrears of principal at the end of the year. Included in principal outstanding.')
           }}
-        />
+          />
         </Col>
         <Col span={12}>
           <FinalField
@@ -257,8 +257,8 @@ const Reporting = ({ fields, projectId }) => {
             }
             return (
               <div>
-                <AutoSave sectionIndex={11} setName="crs" itemIndex={0} />
-                <AutoSave sectionIndex={11} setName="fss" itemIndex={0} />
+                <AutoSaveFS sectionIndex={11} setName="crs" itemIndex={0} />
+                <AutoSaveFS sectionIndex={11} setName="fss" itemIndex={0} />
                 <LoanTerms />
                 <Field
                   name="currency"

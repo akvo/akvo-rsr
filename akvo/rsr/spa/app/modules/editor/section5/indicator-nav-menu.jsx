@@ -1,6 +1,6 @@
 /* global document */
 import React from 'react'
-import { Radio, Button, Tooltip } from 'antd'
+import { Radio } from 'antd'
 import jump from 'jump.js'
 import { withTranslation } from 'react-i18next'
 

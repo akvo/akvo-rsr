@@ -1,9 +1,8 @@
 /* global window */
-import React, { useRef, useEffect, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { connect } from 'react-redux'
-import arrayMutators from 'final-form-arrays'
 import { Form, Button, Dropdown, Menu, Collapse, Divider, Col, Row, Radio, Popconfirm, Select, Tooltip, notification, Icon, Modal, Alert } from 'antd'
-import { Form as FinalForm, Field } from 'react-final-form'
+import { Field } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
 import { useTranslation } from 'react-i18next'
 import * as clipboard from 'clipboard-polyfill'
@@ -15,7 +14,7 @@ import './styles.scss'
 import InputLabel from '../../../utils/input-label'
 import Accordion from '../../../utils/accordion'
 import Condition from '../../../utils/condition'
-import AutoSave from '../../../utils/auto-save'
+import AutoSaveFS from '../../../utils/auto-save'
 import { addSetItem, removeSetItem, moveSetItem } from '../actions'
 import Periods from './periods/periods'
 import Disaggregations from './disaggregations/disaggregations'
@@ -28,7 +27,6 @@ import Scores from './scores'
 import { IndicatorCustomFields } from '../custom-fields'
 import Targets from './periods/targets'
 import References from './references/references'
-import SectionContext from '../section-context'
 import { useDefaultPeriodsState } from './periods/defaults-context'
 import { CumulativeToggle } from './cumulative'
 
@@ -189,7 +187,7 @@ const Indicators = connect(null, { addSetItem, removeSetItem, moveSetItem })(
                       </div>
                     )}
                   >
-                    <AutoSave sectionIndex={5} setName={`${fieldName}.indicators`} itemIndex={index} />
+                    <AutoSaveFS sectionIndex={5} setName={`${fieldName}.indicators`} itemIndex={index} />
                     <div id={`${fieldNameToId(name)}-info`} />
                     <FinalField
                       name={`${name}.title`}

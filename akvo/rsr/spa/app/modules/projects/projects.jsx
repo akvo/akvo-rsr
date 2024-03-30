@@ -1,6 +1,6 @@
 /* global window, document */
 import React from 'react'
-import { Button, Divider, Icon, Radio, Dropdown, Menu, Modal, Card, Checkbox, Switch, Row, Col } from 'antd'
+import { Button, Divider, Icon, Radio, Dropdown, Menu, Modal, Card, Switch, Row, Col } from 'antd'
 import { connect } from 'react-redux'
 import { withTranslation } from 'react-i18next'
 import { Link, withRouter } from 'react-router-dom'
@@ -23,7 +23,7 @@ const Aux = node => node.children
 
 class Projects extends React.Component{
   state = {
-    results: [], loading: false, pagination: { pageSize }, viewMode: 'table', hasMore: true, params: {}, programFilter: [], filterProgram: null
+    results: [], loading: false, pagination: { pageSize }, viewMode: 'table', hasMore: true, params: {}, filterProgram: null
   }
   componentDidMount(){
     this.fetch()
@@ -42,7 +42,7 @@ class Projects extends React.Component{
       if(!Number.isNaN(Number(params.src))){
         params.q_filter3 = { id: params.src }
       }
-      params.show_restricted = 1;
+      params.show_restricted = 1
       delete params.src
     }
     Object.keys(params).forEach(key => {
@@ -187,7 +187,8 @@ class Projects extends React.Component{
                           }
                         </Menu>
                       }
-                        trigger={['click']}>
+                        trigger={['click']}
+                      >
                         <Button type="primary" icon="plus">{t('Create new project')}</Button>
                       </Dropdown>
                     }

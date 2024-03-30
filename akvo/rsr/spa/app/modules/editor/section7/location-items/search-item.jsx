@@ -20,7 +20,7 @@ function $fetch(input, callback, gservice) {
   function req() {
     gservice.getPlacePredictions({ input, types: ['(regions)'] }, (results, status) => {
       if (status !== 'OK') {
-        console.log('error', status)
+        console.log('error', status) // eslint-disable-line no-console
         return
       }
       callback(results)
@@ -41,7 +41,7 @@ class SearchItem extends React.Component{
         this.gservice = new googleMaps.places.AutocompleteService()
         this.geocoder = new googleMaps.Geocoder()
       }).catch((error) => {
-        console.error(error)
+        console.error(error) // eslint-disable-line no-console
       })
   }
   handleSearch = (value) => {

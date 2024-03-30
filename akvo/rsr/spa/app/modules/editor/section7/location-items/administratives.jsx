@@ -1,3 +1,4 @@
+/* eslint-disable react/no-danger */
 import React from 'react'
 import { Form, Row, Col, Popconfirm, Button, Collapse, Tag, Select, Input } from 'antd'
 import { FieldArray } from 'react-final-form-arrays'
@@ -11,7 +12,7 @@ import VOCABULARY_OPTIONS from './admin-vocab-options.json'
 import EUTF_ADMIN_CODES_OPTIONS from './eutf-admin-codes.json'
 import Accordion from '../../../../utils/accordion'
 import { removeSetItem } from '../../actions'
-import AutoSave from '../../../../utils/auto-save'
+import AutoSaveFS from '../../../../utils/auto-save'
 
 const { Item } = Form
 const { Panel } = Collapse
@@ -64,7 +65,7 @@ const Administratives = connect(null, { removeSetItem })(({ push, parentName, lo
             )}
           >
           <div>
-            <AutoSave sectionIndex={7} setName={`${parentName}.administratives`} itemIndex={index} />
+            <AutoSaveFS sectionIndex={7} setName={`${parentName}.administratives`} itemIndex={index} />
             <Item label={<InputLabel optional tooltip={t('For reference: <a href="http://iatistandard.org/202/codelists/GeographicVocabulary/" target="_blank">http://iatistandard.org/202/codelists/GeographicVocabulary/</a>.')}>{t('vocabulary')}</InputLabel>}>
             <FinalField
               name={`${name}.vocabulary`}
@@ -88,7 +89,8 @@ const Administratives = connect(null, { removeSetItem })(({ push, parentName, lo
                               const { children } = option.props
                               const text = (typeof children === 'object' && children.props && children.props.dangerouslySetInnerHTML) ? children.props.dangerouslySetInnerHTML.__html : children
                               return text.toLowerCase().indexOf(_input.toLowerCase()) !== -1
-                            }}>
+                            }}
+                            >
                               {EUTF_ADMIN_CODES_OPTIONS.map(option => <Option value={option.value}><span dangerouslySetInnerHTML={{ __html: option.label}} /></Option>)}
                             </Select>
                           )

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Col, Descriptions, Icon, Modal, Row, Skeleton, Table, Typography } from 'antd'
-import { orderBy, sortBy } from 'lodash'
+import { orderBy } from 'lodash'
 import moment from 'moment'
 import ShowMoreText from 'react-show-more-text'
 import PeriodTitle from '../results-admin/components/PeriodTitle'
@@ -64,7 +64,7 @@ const getStatus = (current, previous) => {
 
 const SubmissionsTable = ({ data, scores }) => {
   const d = data.reduceRight((all, cur) => {
-    const prev = all.slice(-1).pop();
+    const prev = all.slice(-1).pop()
     all.push({ ...cur, status: getStatus(cur, prev) })
     return all
   }, [])

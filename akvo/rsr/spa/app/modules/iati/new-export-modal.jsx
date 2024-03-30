@@ -302,7 +302,7 @@ const NewExportModal = ({ visible, setVisible, currentOrg, userId, addExport }) 
       </header>
       {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
       <Collapse destroyInactivePanel accordion>
-        {projects.map((item, ind) =>
+        {projects.map((item) =>
         <Collapse.Panel
           header={[
             <Checkbox disabled={!isProjectExportable(item, currentOrg)} checked={selected.indexOf(item.id) !== -1} onClick={handleSelectItem(item.id)} />,

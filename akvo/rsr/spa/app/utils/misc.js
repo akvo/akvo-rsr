@@ -213,7 +213,7 @@ export const getProjectUuids = (path) => path?.split('.')?.map((value) => value?
  * @returns {null|String} A parent UUID if there is one
  */
 export const getParentUuid = (path) => {
-  const uuids = getProjectUuids(path);
+  const uuids = getProjectUuids(path)
   if(uuids === undefined || uuids.length === 1){
     return null
   }

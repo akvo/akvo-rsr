@@ -336,7 +336,7 @@ const EnumeratorPage = ({
           visible: !submissions.visible
         })
       })
-      .catch(() => console.error('Something went wrong'))
+      .catch(() => console.error('Something went wrong')) // eslint-disable-line no-console
   }
   const handleOnCloseSubmissions = () => {
     setSubmissions({

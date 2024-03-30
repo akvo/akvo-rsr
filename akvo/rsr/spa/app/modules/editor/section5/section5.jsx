@@ -15,11 +15,11 @@ import FinalField from '../../../utils/final-field'
 import './styles.scss'
 import Accordion from '../../../utils/accordion'
 import Indicators from './indicators'
-import AutoSave from '../../../utils/auto-save'
+import AutoSaveFS from '../../../utils/auto-save'
 import { useForceUpdate } from '../../../utils/hooks'
 import { addSetItem, removeSetItem, fetchSetItems, fetchFields, saveFields, moveSetItem} from '../actions'
 import api from '../../../utils/api'
-import InputLabel from '../../../utils/input-label';
+import InputLabel from '../../../utils/input-label'
 import SectionContext from '../section-context'
 import { check4deleted, getProjectUuids } from '../../../utils/misc'
 import { resultTypes } from '../../../utils/constants'
@@ -49,7 +49,7 @@ export const parseHashComponents = (hash) => {
   return ret
 }
 
-const AddResultButton = connect(({ editorRdr: { projectId }}) => ({ projectId }), { addSetItem })(({ push, addSetItem, projectId, deletedResults, showImport, ...props }) => { // eslint-disable-line
+const AddResultButton = connect(({ editorRdr: { projectId }}) => ({ projectId }), { addSetItem })(({ push, addSetItem: addSetItem_, projectId, deletedResults, showImport, ...props }) => {
   const { t } = useTranslation()
   const addResult = ({ key }) => {
     if(key === 'import'){
@@ -58,7 +58,7 @@ const AddResultButton = connect(({ editorRdr: { projectId }}) => ({ projectId })
     }
     const newItem = { type: key, indicators: [], project: projectId }
     push('results', newItem)
-    addSetItem(5, 'results', newItem)
+    addSetItem_(5, 'results', newItem)
   }
   return (
     <Dropdown overlay={
@@ -69,13 +69,14 @@ const AddResultButton = connect(({ editorRdr: { projectId }}) => ({ projectId })
         {deletedResults && deletedResults.length > 0 && [<Menu.Divider />, <Menu.Item key="import" className="import-result-menu-item"><Icon type="plus" /><i>{t('Import from parent')}</i></Menu.Item>]}
       </Menu>
     }
-    trigger={['click']}>
+    trigger={['click']}
+    >
       <Button icon="plus" className="add-result" size="large" {...props}>{t('Add result')}</Button>
     </Dropdown>
   )
 })
 
-const Summary = React.memo(({ values: { results }, fetchSetItems, hasParent, push, projectId, onJumpToItem, showRequired, errors, deletedResults }) => { // eslint-disable-line
+const Summary = React.memo(({ values: { results }, fetchSetItems: fetchSetItems_, hasParent, push, projectId, onJumpToItem, showRequired, errors, deletedResults }) => {
   const { t } = useTranslation()
   const [importing, setImporting] = useState(false)
   const [copying, setCopying] = useState(false)
@@ -93,7 +94,7 @@ const Summary = React.memo(({ values: { results }, fetchSetItems, hasParent, pus
         api.get('/results_framework/', { project: projectId })
         .then(({ data }) => {
             setImporting(false)
-            fetchSetItems(5, 'results', data.results)
+            fetchSetItems_(5, 'results', data.results)
           })
       })
       .catch((error) => {
@@ -110,7 +111,7 @@ const Summary = React.memo(({ values: { results }, fetchSetItems, hasParent, pus
         api.get('/results_framework/', { project: projectId })
         .then(({ data }) => {
             setCopying(false)
-            fetchSetItems(5, 'results', data.results)
+            fetchSetItems_(5, 'results', data.results)
           })
       })
       .catch(() => {
@@ -407,7 +408,6 @@ const Section5 = (props) => {
                                   <RequiredHint section="section5" name={name} />
                                 </span>}
                               extra={
-                                // eslint-disable-next-line
                                 <div onClick={e => e.stopPropagation()}>
                                   <div className="delete-btn-holder">
                                     <Button.Group>
@@ -435,13 +435,14 @@ const Section5 = (props) => {
                                             <Button size="small" icon="delete" className="delete-panel" />
                                           </Popconfirm>
                                         </Aux>
-                                      } />
+                                      }
+                                      />
                                     </Button.Group>
                                   </div>
                                 </div>
                               }
                             >
-                              <AutoSave sectionIndex={5} setName="results" itemIndex={index} />
+                              <AutoSaveFS sectionIndex={5} setName="results" itemIndex={index} />
                               <div className="main-form">
                                 <FinalField
                                   name={`${name}.title`}
@@ -498,7 +499,8 @@ const Section5 = (props) => {
                                 )}
                               />
                             </Panel>
-                          } />
+                          }
+                          />
                         )}
                       />
                       {props.fields.results.length > 0 && <AddResultButton {...{push, deletedResults}} showImport={() => setShowImport(true)} />}

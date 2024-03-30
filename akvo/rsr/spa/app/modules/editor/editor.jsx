@@ -119,7 +119,8 @@ const SavingStatus = connect(
                 )}
                 {backendError.response && typeof backendError.response === 'string' && <span>{backendError.response}<br /></span>}
               </span>
-            }>
+            }
+          >
             <Icon type="warning" /><span>{t('Something went wrong')}</span>
           </Tooltip>
         </div>

@@ -1,5 +1,5 @@
 /* global document */
-import React, { useState } from 'react'
+import React from 'react'
 import { Collapse, Select } from 'antd'
 import moment from 'moment'
 import classNames from 'classnames'
@@ -163,7 +163,6 @@ const ProgramPeriod = ({
   handleAccordionChange,
   ...props
 }) => {
-  const [popUp, setPopUp] = useState(false)
   const mouseEnterBar = (index, value, ev) => {
     if (pinned === index || !listRef.current) return
     listRef.current.children[0].children[index].classList.add('active')

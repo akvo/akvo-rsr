@@ -100,7 +100,8 @@ const Program = ({
             <TabPane tab={<Link to={`/programs/${params.projectId}/reports`}>Reports</Link>} key="reports" />
           </Tabs>
         ]
-      }} />
+      }}
+      />
       {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 40 }} spin />} /></div>}
       <Route path="/programs/:projectId" exact render={() => {
         if(!loading && results.length > 0) { return [
@@ -126,16 +127,20 @@ const Program = ({
         }
         if (!loading) return <Redirect to={`/programs/${params.projectId}/editor`} />
         return null
-      }} />
+      }}
+      />
       <Route path="/programs/:programId/hierarchy/:projectId?" render={(_props) =>
         <Hierarchy {..._props} canEdit={canEdit} program />
-      } />
+      }
+      />
       <Route path="/programs/:projectId/reports" render={() =>
         <Reports programId={params.projectId} />
-      } />
+      }
+      />
       <Route path="/programs/:id/editor" render={({ match: {params: args}}) =>
         <Editor {...{ params: args }} program />
-      } />
+      }
+      />
       <div id="bar-tooltip" />
       <div id="disagg-bar-tooltip" />
     </div>

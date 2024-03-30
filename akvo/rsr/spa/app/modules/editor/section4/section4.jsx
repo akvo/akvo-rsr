@@ -1,3 +1,4 @@
+/* eslint-disable react/no-danger */
 import React, { useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
 import { Form, Button, Modal, Icon, Tooltip } from 'antd'
@@ -8,7 +9,7 @@ import { isFieldOptional, getValidationSets } from '../../../utils/validation-ut
 import RTE from '../../../utils/rte'
 import api from '../../../utils/api'
 import { snakeToCamel, camelToSnake, arrayMove } from '../../../utils/misc'
-import AutoSave from '../../../utils/auto-save'
+import AutoSaveFS from '../../../utils/auto-save'
 import validationDefs, { RSR } from './validations'
 import SectionContext from '../section-context'
 import './styles.scss'
@@ -129,7 +130,7 @@ const Desc = ({ fields, descriptionsOrder, projectId }) => {
                       )}
                     </FormSpy>
                   </Modal>
-                  <AutoSave sectionIndex={4} />
+                  <AutoSaveFS sectionIndex={4} />
                 </div>
               )
             }}

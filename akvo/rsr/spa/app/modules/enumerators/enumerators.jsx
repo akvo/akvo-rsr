@@ -188,7 +188,7 @@ const Enumerators = ({ match: { params: { id } }, rf, setRF, setProjectTitle }) 
   )
 }
 
-const EnumeratorList = ({ selectedIndicators, indicatorMap, enumerators, id, setEnumerators }) => {
+const EnumeratorList = ({ indicatorMap, enumerators, id, setEnumerators }) => {
   const [sending, setSending] = useState('')
   const { t } = useTranslation()
   const handleSendEmail = (enumerator) => (e) => {

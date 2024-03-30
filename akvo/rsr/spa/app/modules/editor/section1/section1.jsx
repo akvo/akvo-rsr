@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next'
 import moment from 'moment'
 
 import FinalField from '../../../utils/final-field'
-import AutoSave from '../../../utils/auto-save'
+import AutoSaveFS from '../../../utils/auto-save'
 import { isFieldOptional, doesFieldExist, getValidationSets } from '../../../utils/validation-utils'
 import ProjectPhoto from './comp/project-photo'
 import validationDefs from './validations'
@@ -23,7 +23,7 @@ import SectionContext from '../section-context'
 import './styles.scss'
 import InputLabel from '../../../utils/input-label'
 import { useFetch } from '../../../utils/hooks'
-import ProjectPicker from './comp/project-picker';
+import ProjectPicker from './comp/project-picker'
 import ExternalProjects from './comp/external-projects'
 import { getParentUuid } from '../../../utils/misc'
 
@@ -82,7 +82,7 @@ const Info = ({ validations, fields, projectId, errors, showRequired, program, d
         mutators={{ ...arrayMutators }}
         render={() => (
           <div>
-          <AutoSave sectionIndex={1} />
+          <AutoSaveFS sectionIndex={1} />
           <FinalField
             name="title"
             withLabel
@@ -344,7 +344,7 @@ const Info = ({ validations, fields, projectId, errors, showRequired, program, d
 
           </div>
         )}
-        />
+      />
       </Form>
       </SectionContext.Provider>
     </div>

@@ -50,6 +50,7 @@ const PolicyMarker = ({ validations, formPush }) => {
               withLabel
               dict={{
                 label: t('Significance'),
+                // eslint-disable-next-line no-multi-str
                 tooltip: t('Each reported marker must contain the significance of the policy marker for this activity. Choices are:<br />\
 0 - Not targeted<br />\
 1 - Significant objective: the policy objectives are important, but were not the prime motivation for undertaking the activity.<br />\

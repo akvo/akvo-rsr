@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import ConditionalLink from '../projects/conditional-link'
 import countriesDict from '../../utils/countries-dict'
 
-const Card = ({ project, selected, onClick, filterCountry, countryFilter, level, program, canCreateProjects, isProgram, isOldVersion, isReff }) => {
+const Card = ({ project, selected, onClick, filterCountry, countryFilter, level, canCreateProjects, isProgram, isOldVersion, isReff }) => {
   const { t } = useTranslation()
   const childrenCount = project.childrenCount ? project.childrenCount : (project.children ? project.children.filter(filterCountry).length : -1)
   const { locations, title, subtitle, referenced, recipientCountries = [] } = project

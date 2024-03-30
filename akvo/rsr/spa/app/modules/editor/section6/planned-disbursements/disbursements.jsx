@@ -9,7 +9,7 @@ import FinalField from '../../../../utils/final-field'
 import ItemArray from '../../../../utils/item-array'
 import InputLabel from '../../../../utils/input-label'
 import { validationType } from '../../../../utils/validation-utils'
-import OrganizationSelect from '../../../../utils/organization-select';
+import OrganizationSelect from '../../../../utils/organization-select'
 import getSymbolFromCurrency from '../../../../utils/get-symbol-from-currency'
 
 const { Item } = Form

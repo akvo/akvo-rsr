@@ -48,7 +48,7 @@ const DimensionBox = ({ dimension, handleAdd, fetchDimensions }) => {
       })
       .catch(err => {
         setState({ deleting: false })
-        console.log(err)
+        console.log(err) // eslint-disable-line no-console
       })
   }
   const handleEditRow = (value) => () => setState({ editingRow: value })

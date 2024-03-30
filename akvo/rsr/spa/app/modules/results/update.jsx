@@ -106,13 +106,13 @@ const Update = ({ update, period, indicator, fullUpdates, setFullUpdates }) => {
         <div className="horizontal">
           {update.numerator ? (
             <div className="labeled">
-              <label>Numerator</label>
+              <div>Numerator</div>
               <b>{setNumberFormat(update.numerator)}</b>
             </div>
           ) : null}
           {update.denominator ? (
             <div className="labeled">
-              <label>Denominator</label>
+              <div>Denominator</div>
               <b>{setNumberFormat(update.denominator)}</b>
             </div>
           ) : null}

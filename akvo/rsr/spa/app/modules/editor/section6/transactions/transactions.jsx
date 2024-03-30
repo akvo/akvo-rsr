@@ -21,7 +21,7 @@ import AID_TYPE_VOCABULARY_OPTIONS from '../../section1/options/aid-type-vocabul
 import REGION_OPTIONS from '../../section7/recipient-regions/regions.json'
 import Sectors from './sectors'
 import validationDefs from './validations'
-import OrganizationSelect from '../../../../utils/organization-select';
+import OrganizationSelect from '../../../../utils/organization-select'
 import getSymbolFromCurrency from '../../../../utils/get-symbol-from-currency'
 
 const { Item } = Form

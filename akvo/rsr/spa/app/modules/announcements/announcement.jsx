@@ -1,7 +1,6 @@
 /* global window */
 import React, { useState, useEffect } from 'react'
-import { Button, Divider, Modal, Popover, Typography } from 'antd'
-import classNames from 'classnames'
+import { Button, Modal, Popover } from 'antd'
 import { connect } from 'react-redux'
 import { Player } from '@lottiefiles/react-lottie-player'
 import list from './list'
@@ -9,23 +8,17 @@ import AnnouncementModal from './modal'
 import lottieJson from '../../images/alert2.json'
 import HelpLinks from './HelpLinks'
 
-const { Text } = Typography
 
 export default connect()(({ userRdr, openMenu }) => {
   const [showModal, setShowModal] = useState(false)
-  const [highlight, setHighlight] = useState(false)
   const [showPrompt, setShowPrompt] = useState(false)
   const [showHelp, setShowHelp] = useState(false)
-  useEffect(() => {
-    const hasNew = userRdr.seenAnnouncements.length < list.length
-    setHighlight(hasNew)
-  }, [userRdr])
   useEffect(() => {
     const hasNew = userRdr.seenAnnouncements.length < list.length
     setTimeout(() => {
       setShowPrompt(hasNew)
     }, 1000)
-  }, [])
+  }, [userRdr])
   useEffect(() => {
     const onScroll = () => {
       if (showHelp) {
