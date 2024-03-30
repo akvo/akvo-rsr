@@ -1,7 +1,7 @@
-const { resolve } = require('path');
-const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const { resolve } = require('path')
+const webpack = require('webpack')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 
 const config = {
@@ -139,4 +139,4 @@ const config = {
   },
 }
 
-module.exports = config;
+module.exports = config
