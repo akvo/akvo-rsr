@@ -7,7 +7,7 @@
     "start": "webpack-dev-server",
     "start:fe": "webpack-dev-server --env.DETACHED_FE",
     "clean": "rimraf dist",
-    "production": "cross-env npm run clean && webpack --config webpack.production.config.js --progress --profile --colors",
+    "production": "cross-env npm run clean && webpack --config webpack.production.config.js --progress=profile --color",
     "lint": "eslint . --quiet --ext .jsx --ext .js",
     "webpack:dev": "webpack --colors",
     "webpack:prod": "webpack --config webpack.production.config.js --colors",
@@ -105,9 +105,9 @@
     "terser-webpack-plugin": "^2.1.2",
     "uglifyjs-webpack-plugin": "2.1.1",
     "url-loader": "1.1.2",
-    "webpack": "4.27.0",
-    "webpack-cli": "3.3.12",
-    "webpack-dev-server": "^3.11.2"
+    "webpack": "4.37.0",
+    "webpack-cli": "4.10.0",
+    "webpack-dev-server": "4.15.2"
   },
   "jest": {
     "moduleNameMapper": {
