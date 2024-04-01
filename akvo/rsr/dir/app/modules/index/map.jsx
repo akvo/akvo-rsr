@@ -90,7 +90,7 @@ const Map = ({ data, getRef, handlePan, getCenter, getMarkerBounds, onHoverProje
       style: 'mapbox://styles/mapbox/light-v10',
       zoom: 2
     })
-    const nav = new mapboxgl.NavigationControl();
+    const nav = new mapboxgl.NavigationControl()
     mapRef.current.addControl(nav, 'top-right')
     mapRef.current.on('load', () => { mapLoaded.current = true })
     if(getRef) getRef(mapRef.current)
@@ -98,14 +98,14 @@ const Map = ({ data, getRef, handlePan, getCenter, getMarkerBounds, onHoverProje
     // mapRef.current.on('zoomend', updateProjects)
 
     // handle popup show full summary text
-    document.addEventListener('click', function (e) {
+    document.addEventListener('click', (e) => {
       for (let target = e.target; target && target !== this; target = target.parentNode) {
         if (target.matches('.toggle-excerpt')) {
           onClickToggleExcerpt(e)
-          break;
+          break
         }
       }
-    }, false);
+    }, false)
   }, [])
   useEffect(() => {
     if(data && data.projects){
@@ -185,9 +185,9 @@ const Map = ({ data, getRef, handlePan, getCenter, getMarkerBounds, onHoverProje
             layers: ['clusters']
           })
           const clusterId = features[0].properties.cluster_id
-          const pointCount = features[0].properties.point_count;
-          const center = features[0].geometry.coordinates;
-          const clusterSource = mapRef.current.getSource('projects');
+          const pointCount = features[0].properties.point_count
+          const center = features[0].geometry.coordinates
+          const clusterSource = mapRef.current.getSource('projects')
           clusterSource.getClusterExpansionZoom(clusterId, (err, zoom) => { // eslint-disable-line
               if (err) return
               if(zoom > 11) zoom = 11 // prevent maximum zoom on cluster of points on the exact same location
@@ -264,13 +264,13 @@ const Map = ({ data, getRef, handlePan, getCenter, getMarkerBounds, onHoverProje
           // copies of the feature are visible, the popup appears
           // over the copy being pointed to.
           while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360
           }
 
           new mapboxgl.Popup({maxWidth: '470px'})
             .setLngLat(coordinates)
             .setHTML(content)
-            .addTo(mapRef.current);
+            .addTo(mapRef.current)
         })
         const lngLatBounds = getBounds(projectsWithCoords.filter(it => it.lat !== null))
         getMarkerBounds(lngLatBounds)

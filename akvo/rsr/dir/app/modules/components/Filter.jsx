@@ -40,7 +40,7 @@ const FilterTitle = ({
   </Col>
 )
 
-const PopOverButton = ({ visible, onPopOver, onOpenModal }) => visible
+const PopOverButton = ({ visible, onPopOver }) => visible
   ? <Icon type="close" style={{ fontSize: 24 }} onClick={onPopOver} className="btn-filter-lg" />
   : <SVGInline svg={filterSvg} onClick={onPopOver} width="24px" />
 
@@ -50,7 +50,6 @@ const FilterInput = ({
   loading,
   onChange,
   onPopOver,
-  onOpenModal,
   ...props
 }) => (
   <Col className="filter-search">
@@ -70,7 +69,7 @@ const FilterInput = ({
           visible={visible}
         >
           <div style={{ paddingTop: '8px' }}>
-            {loading ? <Icon type="loading" style={{ fontSize: 24 }} spin /> : <PopOverButton {...{ visible, onPopOver, onOpenModal }} />}
+            {loading ? <Icon type="loading" style={{ fontSize: 24 }} spin /> : <PopOverButton {...{ visible, onPopOver }} />}
           </div>
         </Popover>
       )}

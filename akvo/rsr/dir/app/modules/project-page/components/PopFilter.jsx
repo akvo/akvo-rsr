@@ -1,7 +1,6 @@
 import React from 'react'
 import {
   Typography,
-  Input,
   Icon,
   Row,
   Col,

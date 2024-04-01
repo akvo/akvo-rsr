@@ -16,7 +16,7 @@ export const TrimText = ({ text, max = 400, isMarkdown = false, url = null }) =>
 
   let escaped = []
   escaped = text.match(escapeRegex) || escaped
-  escaped.forEach((x, i) => {
+  escaped.forEach((x) => {
     const replacer = x.replace(/\s/g, '###')
     text = text.replace(x, replacer)
   })

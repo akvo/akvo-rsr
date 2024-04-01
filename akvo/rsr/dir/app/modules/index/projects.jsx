@@ -5,19 +5,14 @@ import { Icon, Spin } from 'antd'
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
 import { useTranslation } from 'react-i18next'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import { useLocalStorage } from '@rehooks/local-storage'
 import lookup from 'country-code-lookup'
 import logoPng from '../../images/logo3.png'
 
 const pageSize = 20
-// let allowShowMore = true
-const isLocal = window.location.href.indexOf('localhost') !== -1 || window.location.href.indexOf('localakvoapp') !== -1
-const urlPrefix = isLocal ? 'http://rsr.akvo.org' : ''
 const isRSR = window.location.host.split('.')[0] === 'rsr'
 
 const Projects = ({ projects = [], loading, show, setShow, ulRef, showSortLabel = true }) => {
   const { t } = useTranslation()
-  const [lang] = useLocalStorage('lang', 'en')
   const [visibleProjects, setVisibleProjects] = useState([])
   const [hasMore, setHasMore] = useState(false)
   const [projectsLength, setProjectsLength] = useState(pageSize)

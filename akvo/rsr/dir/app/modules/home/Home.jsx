@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Container, Row, Col } from 'react-awesome-styled-grid'
 import moment from 'moment'
 

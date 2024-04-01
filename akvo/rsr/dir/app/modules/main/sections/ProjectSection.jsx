@@ -21,7 +21,6 @@ import { prefixUrl, images } from '../../../utils/config'
 import { MapView } from '../components/MapView'
 import { queryAllOrganisations, queryAllSectors, queryGeoJson } from '../queries'
 import { getMultiItems } from '../../../utils/misc'
-import { Vstack } from '../../components'
 
 const Wrapper = styled.div`
   position: relative;

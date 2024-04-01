@@ -208,10 +208,10 @@ export const MapView = ({
         layers: ['clusters']
       })
       const clusterId = features[0].properties.cluster_id
-      const pointCount = features[0].properties.point_count;
-      const center = features[0].geometry.coordinates;
-      const clusterSource = mapRef.current.getSource('projects');
-      clusterSource.getClusterExpansionZoom(clusterId, (err, zoom) => { // eslint-disable-line
+      const pointCount = features[0].properties.point_count
+      const center = features[0].geometry.coordinates
+      const clusterSource = mapRef.current.getSource('projects')
+      clusterSource.getClusterExpansionZoom(clusterId, (err, zoom) => {
         if (err) return
         if (zoom > 11) zoom = 11 // prevent maximum zoom on cluster of points on the exact same location
         mapRef.current.easeTo({ center, zoom })
