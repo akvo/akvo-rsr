@@ -100,7 +100,7 @@ const Map = ({ data, getRef, handlePan, getCenter, getMarkerBounds, onHoverProje
     // handle popup show full summary text
     document.addEventListener('click', (e) => {
       for (let target = e.target; target && target !== this; target = target.parentNode) {
-        if (target.matches('.toggle-excerpt')) {
+        if (target.matches && target.matches('.toggle-excerpt')) {
           onClickToggleExcerpt(e)
           break
         }
