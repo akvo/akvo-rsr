@@ -78,7 +78,6 @@
     "babel-jest": "^24.8.0",
     "babel-loader": "8.0.3",
     "babel-preset-react-hmre": "1.1.1",
-    "copy-webpack-plugin": "4.6.0",
     "css-hot-loader": "1.4.3",
     "css-loader": "2.1.0",
     "eslint": "5.0.0",
