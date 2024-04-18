@@ -50,7 +50,9 @@ router.register(
     r"(?P<version>(v1))/indicator_custom_value", views.IndicatorCustomValueViewSet
 )
 router.register(
-    r"(?P<version>(v1))/indicator_framework", views.IndicatorFrameworkViewSet
+    r"(?P<version>(v1))/indicator_framework",
+    views.IndicatorFrameworkViewSet,
+    "indicator_framework",
 )
 router.register(r"(?P<version>(v1))/indicator_period", views.IndicatorPeriodViewSet)
 router.register(
@@ -59,6 +61,7 @@ router.register(
 router.register(
     r"(?P<version>(v1))/indicator_period_data_framework",
     views.IndicatorPeriodDataFrameworkViewSet,
+    "indicator_period_data_framework",
 )
 router.register(
     r"(?P<version>(v1))/indicator_period_data_comment",
@@ -88,7 +91,9 @@ router.register(
 )
 router.register(r"(?P<version>(v1))/partnership", views.PartnershipViewSet)
 router.register(
-    r"(?P<version>(v1))/partnership_more_link", views.PartnershipMoreLinkViewSet
+    r"(?P<version>(v1))/partnership_more_link",
+    views.PartnershipMoreLinkViewSet,
+    "partnership_more_link",
 )
 router.register(
     r"(?P<version>(v1))/planned_disbursement", views.PlannedDisbursementViewSet
@@ -98,9 +103,13 @@ router.register(r"(?P<version>(v1))/project", views.ProjectViewSet)
 router.register(
     r"(?P<version>(v1))/raw_project_hierarchy", views.RawProjectHierarchyViewSet
 )
-router.register(r"(?P<version>(v1))/program", views.ProgramViewSet)
-router.register(r"(?P<version>(v1))/project_by_uuid", views.ProjectByUuidViewSet)
-router.register(r"(?P<version>(v1))/my_projects", views.MyProjectsViewSet)
+router.register(r"(?P<version>(v1))/program", views.ProgramViewSet, "program")
+router.register(
+    r"(?P<version>(v1))/project_by_uuid", views.ProjectByUuidViewSet, "project_by_uuid"
+)
+router.register(
+    r"(?P<version>(v1))/my_projects", views.MyProjectsViewSet, "my_projects"
+)
 router.register(
     r"(?P<version>(v1))/project_iati_export",
     views.ProjectIatiExportViewSet,
@@ -134,9 +143,15 @@ router.register(
     r"(?P<version>(v1))/reports", views.ReportViewSet, basename="reports_api"
 )
 router.register(r"(?P<version>(v1|v2))/result", views.ResultsViewSet)
-router.register(r"(?P<version>(v1))/results_framework", views.ResultsFrameworkViewSet)
 router.register(
-    r"(?P<version>(v1))/results_framework_lite", views.ResultsFrameworkLiteViewSet
+    r"(?P<version>(v1))/results_framework",
+    views.ResultsFrameworkViewSet,
+    "results_framework",
+)
+router.register(
+    r"(?P<version>(v1))/results_framework_lite",
+    views.ResultsFrameworkLiteViewSet,
+    "results_framework_lite",
 )
 router.register(r"(?P<version>(v1))/sector", views.SectorViewSet)
 router.register(r"(?P<version>(v1))/transaction", views.TransactionViewSet)
