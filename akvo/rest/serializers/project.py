@@ -14,7 +14,7 @@ from rest_framework import serializers
 from timeout_decorator import timeout
 
 from akvo.rsr.models import Project, ProjectUpdate, IndicatorPeriodData
-from akvo.utils import get_thumbnail
+from akvo.utils import get_thumbnail, make_safe_timezone_aware_date
 from akvo.rsr.models.project_thumbnail import get_cached_thumbnail
 from akvo.rsr.usecases.iati_validation import schedule_iati_activity_validation
 from . import OrganisationBasicSerializer
@@ -80,6 +80,7 @@ class ProjectSerializer(BaseRSRSerializer):
     iati_profile_url = serializers.SerializerMethodField()
     path = serializers.SerializerMethodField()
     uuid = serializers.ReadOnlyField()
+    created_at = serializers.SerializerMethodField()
 
     class Meta:
         model = Project
@@ -135,6 +136,14 @@ class ProjectSerializer(BaseRSRSerializer):
 
     def get_path(self, project: Project):
         return str(project.path)
+
+    def get_created_at(self, project: Project):
+        """
+        This is a work around to silence the "Invalid datetime for the timezone
+        Europe/Stockholm" which has appeared several times and not yet known
+        why.
+        """
+        return make_safe_timezone_aware_date(project.created_at)
 
     def update(self, project: Project, validated_data: dict):
         if "contributes_to_project" in validated_data:

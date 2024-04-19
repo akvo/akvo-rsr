@@ -6,7 +6,6 @@
 
 # utility functions for RSR
 from collections import namedtuple
-from datetime import datetime
 import hashlib
 import inspect
 import json
@@ -569,3 +568,18 @@ class ObjectReaderProxy(object):
 
     def __getattr__(self, attr):
         return getattr(self._real, attr)
+
+
+def make_safe_timezone_aware_date(d):
+    '''
+    If datetime is naive and is an invalid datetime of current timezone,
+    then assume datetime is in UTC and convert it to a datetime of current
+    timezone.
+    '''
+    if not timezone.is_naive(d):
+        return d
+    try:
+        return timezone.make_aware(d, timezone.get_current_timezone())
+    except pytz.InvalidTimeError:
+        date_utc = timezone.make_aware(d, timezone.utc)
+        return date_utc.astimezone(timezone.get_current_timezone())
