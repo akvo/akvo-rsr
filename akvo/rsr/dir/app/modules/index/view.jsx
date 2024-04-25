@@ -1,5 +1,6 @@
 /* global window, document */
 import React, { useState, useRef, useEffect } from 'react'
+import { FullscreenOutlined } from '@ant-design/icons'
 import { Button, Tag, Menu, Dropdown } from 'antd'
 import { useLocalStorage } from '@rehooks/local-storage'
 import {cloneDeep} from 'lodash'
@@ -254,7 +255,7 @@ const View = () => {
           {filters.filter(it => it.selected.length > 0).map(filter => <Tag closable visible onClose={() => removeFilter(filter)}>{filter.name} ({filter.selected.length})</Tag>)}
           {data && geoFilteredProjects.length !== projectsWithCoords.length && <span>{t('{{projects}} projects in this area', { projects: filteredProjects.length })}</span>}
           {data && geoFilteredProjects.length === projectsWithCoords.length && <span>{t('{{projects}} projects globally', { projects: data.projects.filter(filterProjects(filters)).length })}</span>}
-          {data && geoFilteredProjects.length !== projectsWithCoords.length && <Button type="link" icon="fullscreen" className="show-all" onClick={resetZoomAndPan}>{t('View All')}</Button>}
+          {data && geoFilteredProjects.length !== projectsWithCoords.length && <Button type="link" icon={<FullscreenOutlined />} className="show-all" onClick={resetZoomAndPan}>{t('View All')}</Button>}
         </div>
         <div className="right-side">
           <a className="login" href="/my-rsr/" target="_blank">{t('Login')}</a>

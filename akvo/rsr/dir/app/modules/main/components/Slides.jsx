@@ -1,8 +1,9 @@
 import React from 'react'
 import { Carousel, Button, Row, Col } from 'antd'
 import styled from 'styled-components'
+import { ArrowRightOutlined } from '@ant-design/icons'
 
-import { Flex, Icon, Number, Swipeable } from '../../components'
+import { Flex, Number, Swipeable } from '../../components'
 import { homePage } from '../../../utils/ui-text'
 import AmpImage from '../../components/AmpImage'
 
@@ -63,7 +64,7 @@ const Slides = ({ data, reff }) => (
               <p>{cs.content}</p>
               <Button type="link" href={cs.url} target="_blank" rel="noopener noreferrer" className="btn-read-more" aria-label="Go to case study">
                 {homePage.exploreCaseStudy}
-                <Icon type="arrow-right" />
+                <ArrowRightOutlined />
               </Button>
             </Wrapper>
           </Col>

@@ -1,12 +1,6 @@
 import React from 'react'
-import {
-  Typography,
-  Icon,
-  Row,
-  Col,
-  Collapse,
-  Form,
-} from 'antd'
+import { CaretRightOutlined } from '@ant-design/icons'
+import { Typography, Row, Col, Collapse, Form } from 'antd'
 import SelectDebounce from '../../components/SelectDebounce'
 
 const { Text } = Typography
@@ -19,7 +13,7 @@ const PopFilter = ({
   <Collapse
     bordered={false}
     defaultActiveKey={['0']}
-    expandIcon={({ isActive }) => <Icon type="caret-right" rotate={isActive ? 90 : 0} />}
+    expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
     expandIconPosition="right"
   >
     <Collapse.Panel header={<Text strong>Contributing Writers</Text>} key="0">

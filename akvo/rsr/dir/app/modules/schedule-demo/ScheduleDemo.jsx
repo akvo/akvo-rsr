@@ -1,6 +1,6 @@
 /* global document */
 import React, { useState, useEffect } from 'react'
-import { Col, Form, Row, Typography, Switch, Modal, Result, Button as AntButton, message } from 'antd'
+import { Col, Row, Typography, Form, Switch, Modal, Result, Button as AntButton, message } from 'antd'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { useHistory } from 'react-router-dom'
@@ -116,7 +116,7 @@ const ScheduleDemo = () => {
           </Col>
           <Col xl={14} lg={14} md={15} sm={24} xs={24} className="rsr-form">
             <Title level={2}>About you</Title>
-            <Form onSubmit={formik.handleSubmit} method="post">
+            <Form onFinish={formik.handleSubmit} method="post">
               <Row gutter={[8, 8]}>
                 <Col lg={12} md={12} sm={24} xs={24}>
                   <Form.Item

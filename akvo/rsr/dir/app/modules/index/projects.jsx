@@ -1,7 +1,8 @@
 /* global window */
 import React, { useEffect, useState, useRef } from 'react'
 import classNames from 'classnames'
-import { Icon, Spin } from 'antd'
+import { CaretRightOutlined, GithubOutlined, LoadingOutlined } from '@ant-design/icons'
+import { Spin } from 'antd'
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
 import { useTranslation } from 'react-i18next'
 import InfiniteScroll from 'react-infinite-scroll-component'
@@ -42,9 +43,9 @@ const Projects = ({ projects = [], loading, show, setShow, ulRef, showSortLabel 
   return [
     <div className={classNames('projects', { on: show })}>
       <div className="expander" role="button" tabIndex={-1} onClick={() => setShow(!show)}>
-        <Icon type="caret-right" />
+        <CaretRightOutlined />
       </div>
-      {loading && <div className="loading-container"><Spin indicator={<Icon type="loading" style={{ fontSize: 36 }} spin />} /></div>}
+      {loading && <div className="loading-container"><Spin indicator={<LoadingOutlined style={{ fontSize: 36 }} spin />} /></div>}
       <ul ref={ulRef} id="ul-scrollview">
         <InfiniteScroll
           dataLength={projectsLength}
@@ -90,7 +91,7 @@ const Projects = ({ projects = [], loading, show, setShow, ulRef, showSortLabel 
           <li><a href="http://akvo.org/help/akvo-policies-and-terms-2/akvo-rsr-terms-of-use/">{t('Terms')}</a></li>
           <li><a href="https://github.com/akvo/akvo-rsr/wiki/RSR_Partner-API">API</a></li>
           <li><a href="http://rsrsupport.akvo.org/">{t('Support')}</a></li>
-          <li><a href="https://github.com/akvo/akvo-rsr">{t('Source')} &nbsp;<Icon type="github" /></a></li>
+          <li><a href="https://github.com/akvo/akvo-rsr">{t('Source')} &nbsp;<GithubOutlined /></a></li>
         </ul>
       </footer>
     </div>,

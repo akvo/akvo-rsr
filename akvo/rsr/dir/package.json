@@ -17,11 +17,12 @@
   "author": "Martin Christov",
   "license": "MIT",
   "dependencies": {
+    "@ant-design/icons": "^4.8.3",
     "@reduxjs/toolkit": "^1.8.4",
     "@rehooks/local-storage": "^2.4.0",
     "@sentry/browser": "^5.9.1",
     "@turf/bbox": "^6.5.0",
-    "antd": "^3.26.7",
+    "antd": "^4.24.16",
     "axios": "^0.28.1",
     "babel-polyfill": "^6.26.0",
     "classnames": "^2.2.6",

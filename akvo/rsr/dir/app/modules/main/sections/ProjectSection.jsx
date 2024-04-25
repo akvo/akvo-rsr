@@ -1,11 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
-import {
-  Spin,
-  Icon,
-  List,
-  Skeleton,
-  Button
-} from 'antd'
+import { ArrowDownOutlined, CaretRightOutlined } from '@ant-design/icons'
+import { Spin, List, Skeleton, Button } from 'antd'
 import classNames from 'classnames'
 import humps from 'humps'
 import uniq from 'lodash/uniq'
@@ -217,7 +212,7 @@ const ProjectSection = () => {
                 {((!searchResult && showItems <= 63) || (searchResult && showItems <= searchResult.length - 1)) && (
                   <Button
                     type="ghost"
-                    icon="arrow-down"
+                    icon={<ArrowDownOutlined />}
                     className="btn-load-more"
                     onClick={() => setShowItems(showItems + 4)}
                     block
@@ -264,7 +259,7 @@ const ProjectSection = () => {
         <Col lg={showProjects ? 8 : 11} md={showProjects ? 6 : 11} sm={8} id="map-view">
           <Hidden xs>
             <div className={classNames('expander', { on: showProjects })} role="button" tabIndex={-1} onClick={() => handleOnShowProjects(!showProjects)}>
-              <Icon type="caret-right" />
+              <CaretRightOutlined />
             </div>
             <Spin spinning={processing || !organisations}>
               <MapView

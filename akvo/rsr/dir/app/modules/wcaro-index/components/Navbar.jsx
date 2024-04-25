@@ -1,11 +1,10 @@
 /* global window */
 import React from 'react'
-import { Row, Col, Menu, Dropdown, Button, Icon } from 'antd'
+import { DownOutlined, UserOutlined, InfoCircleFilled, DashboardFilled } from '@ant-design/icons'
+import { Row, Col, Menu, Dropdown, Button } from 'antd'
 import SVGInline from 'react-svg-inline'
 import { useHistory } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-
-const MenuIcon = ({ icon, ...props }) => <Icon type={icon} theme="filled" className="menu-icon" style={{ fontSize: '24px', paddingLeft: '0.3em' }} {...props} />
 
 export const Navbar = ({
   logo,
@@ -25,11 +24,11 @@ export const Navbar = ({
       <Col span={18}>
         <Menu mode="horizontal" selectedKeys={[menuKey]} className="wcaro-menu" onClick={({ key }) => setMenuKey(key)}>
           <Menu.Item key="info" onClick={() => history.push('/')}>
-            <MenuIcon icon="info-circle" />
+            <InfoCircleFilled className="menu-icon" style={{ fontSize: '24px', paddingLeft: '0.3em' }} />
           </Menu.Item>
           {user && (
             <Menu.Item key="dashboard" onClick={() => history.push('/dir/framework')}>
-              <MenuIcon icon="dashboard" />
+              <DashboardFilled className="menu-icon" style={{ fontSize: '24px', paddingLeft: '0.3em' }} />
             </Menu.Item>
           )}
         </Menu>
@@ -54,13 +53,13 @@ export const Navbar = ({
               }
             >
               <span style={{ cursor: 'pointer' }}>
-                <Icon type="user" className="wcaro-nav-icon" />
+                <UserOutlined className="wcaro-nav-icon" />
               </span>
             </Dropdown>
           )
           : (
             <a href={`/en/sign_in/?next=${window.location.href}`} target="_blank" rel="noopener noreferrer">
-              <Icon type="user" className="wcaro-nav-icon" />
+              <UserOutlined className="wcaro-nav-icon" />
             </a>
           )}
       </Col>
@@ -74,7 +73,7 @@ export const Navbar = ({
         )} trigger={['click']}
         >
           <Button onClick={e => e.preventDefault()}>
-            <strong style={{ textTransform: 'uppercase' }}>{lang}</strong>&nbsp;<Icon type="down" />
+            <strong style={{ textTransform: 'uppercase' }}>{lang}</strong>&nbsp;<DownOutlined />
           </Button>
         </Dropdown>
       </Col>

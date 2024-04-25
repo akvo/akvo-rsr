@@ -3,9 +3,9 @@ import React, { useState, useRef, useEffect} from 'react'
 import SVGInline from 'react-svg-inline'
 import classNames from 'classnames'
 import { useSpring, animated } from 'react-spring'
-import { Button, Icon, Input } from 'antd'
+import { LeftOutlined, RightOutlined, UpOutlined } from '@ant-design/icons'
+import { Button, Input } from 'antd'
 import uniq from 'lodash/uniq'
-// import InfiniteScroll from 'react-infinite-scroller'
 import { useTranslation } from 'react-i18next'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
@@ -97,7 +97,7 @@ const FilterBar = ({ onSetFilter, filters, geoFilteredProjects }) => {
               <animated.div className="holder" style={props}>
                 <div>
                   <ul>
-                    {filters.map((filter, index) => <li onClick={() => _setSubIndex(index)}>{t(filter.name)} <div>{filter.selected.length > 0 && <div className="selected">{t('{{projects}} projects', { projects: filter.selected.length})}</div>} <Icon type="right" /></div></li>)}
+                    {filters.map((filter, index) => <li onClick={() => _setSubIndex(index)}>{t(filter.name)} <div>{filter.selected.length > 0 && <div className="selected">{t('{{projects}} projects', { projects: filter.selected.length})}</div>} <RightOutlined /></div></li>)}
                   </ul>
                 </div>
                 {subIndex.map((index, inIndex) => {
@@ -188,7 +188,7 @@ const OptionList = ({ subIndex, inIndex, goto, back, handleSubRef, geoFilteredPr
     <div className="sub" ref={(ref) => { if (ref) { scrollRef.current = ref.parentNode.parentNode } }}>
       {inIndex < 1 &&
         <div className="top">
-          <Button type="link" icon="left" onClick={back}>{t('Filters')}</Button>
+          <Button type="link" icon={<LeftOutlined />} onClick={back}>{t('Filters')}</Button>
           {sub.selected && sub.selected.length > 0 &&
             <div className="selected">
               {t('{{items}} selected', { items: sub.selected.length})}
@@ -245,13 +245,13 @@ const OptionList = ({ subIndex, inIndex, goto, back, handleSubRef, geoFilteredPr
               <li className={classNames({ selected, hidden: items === 0 })} onClick={() => setFilter(opt, optIndex, sub)}>
                 {t(opt.name)}
                 {items > 0 && <span>&nbsp;({items})</span>}
-                {opt.options && <div><Icon type="right" /></div>}
+                {opt.options && <div><RightOutlined /></div>}
               </li>
             )
           })}
         </InfiniteScroll>
       </ul>
-      {showScrollTop && <Button id="scroll-top-btn" icon="up" shape="circle" type="primary" onClick={handleScrollTop} />}
+      {showScrollTop && <Button id="scroll-top-btn" icon={<UpOutlined />} shape="circle" type="primary" onClick={handleScrollTop} />}
     </div>
   )
 }

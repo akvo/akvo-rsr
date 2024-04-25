@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { Input, Icon, Spin, Popover } from 'antd'
+import { CloseOutlined, LoadingOutlined, SearchOutlined } from '@ant-design/icons'
+import { Input, Spin, Popover } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { SearchResult } from '../wcaro-index/components'
 
@@ -24,7 +25,7 @@ const Search = ({ onChange, onClear, loading, items }) => {
       <Popover placement="bottom" content={<SearchResult {...{ items }} />}>
         <Input
           value={text}
-          suffix={text === '' ? <Icon type="search" /> : (loading && text !== '' ? <Spin indicator={<Icon type="loading" style={{ fontSize: 18 }} spin />} /> : <Icon onClick={handleClear} type="close" />)}
+          suffix={text === '' ? <SearchOutlined /> : (loading && text !== '' ? <Spin indicator={<LoadingOutlined style={{ fontSize: 18 }} spin />} /> : <CloseOutlined onClick={handleClear} />)}
           placeholder={t('Find a project')}
           onChange={handleChange}
         />
@@ -33,7 +34,7 @@ const Search = ({ onChange, onClear, loading, items }) => {
     : (
       <Input
         value={text}
-        suffix={text === '' ? <Icon type="search" /> : (loading && text !== '' ? <Spin indicator={<Icon type="loading" style={{ fontSize: 18 }} spin />} /> : <Icon onClick={handleClear} type="close" />)}
+        suffix={text === '' ? <SearchOutlined /> : (loading && text !== '' ? <Spin indicator={<LoadingOutlined style={{ fontSize: 18 }} spin />} /> : <CloseOutlined onClick={handleClear} />)}
         placeholder={t('Find a project')}
         onChange={handleChange}
       />
