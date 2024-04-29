@@ -51,7 +51,7 @@ const FooterSection = () => (
       </Col>
       <Col lg={3} md={3} sm={24} xs={24}>
         <Row gutter={[8, 24]}>
-          <Col>
+          <Col span={24}>
             <Text strong>AKVO RSR</Text>
           </Col>
           <Col>
@@ -67,7 +67,7 @@ const FooterSection = () => (
       </Col>
       <Col lg={5} md={5} sm={24} xs={24}>
         <Row gutter={[8, 16]}>
-          <Col>
+          <Col span={24}>
             <Text strong>LEARNING</Text>
           </Col>
           <Col>
