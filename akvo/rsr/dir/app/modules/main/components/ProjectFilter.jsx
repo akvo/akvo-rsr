@@ -48,6 +48,7 @@ const ProjectFilter = ({
       onClear()
     }
   }, [filter, search])
+
   return (
     <Row>
       <Col lg={{ span: 22, offset: 1 }}>
@@ -62,7 +63,7 @@ const ProjectFilter = ({
               onPopOver={() => setFilter({ apply: false, visible: !filter.visible })}
               onOpenModal={() => setOpenModal(true)}
             >
-              <Row>
+              <Row style={{ display: 'block' }}>
                 <Col>
                   <Text strong>Applied Filter Results</Text>
                 </Col>
@@ -147,7 +148,7 @@ const ProjectFilter = ({
                       </Col>
                       <Col span={24}>
                         {search.organisation.map((og, ox) => {
-                          const findOrg = organisations.find((o) => o.id === og.key)
+                          const findOrg = organisations.find((o) => o.id === parseInt(og.key, 10))
                           return findOrg
                             ? (
                               <Filter.Tag key={ox} onClose={() => handleOnClose('organisation', og)}>

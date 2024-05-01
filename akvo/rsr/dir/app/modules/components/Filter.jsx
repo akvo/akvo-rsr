@@ -10,7 +10,7 @@ const { Title, Text } = Typography
 
 const Filter = ({ children, ...props }) => {
   return (
-    <Row {...props}>
+    <Row {...props} style={{ display: 'block' }}>
       {children}
     </Row>
   )
