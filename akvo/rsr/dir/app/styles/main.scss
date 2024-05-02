@@ -10,6 +10,11 @@
           display: block;
         }
       }
+      .ant-form.ant-form-horizontal {
+        .ant-row.ant-form-item-row {
+          display: block;
+        }
+      }
     }
   }
 }
