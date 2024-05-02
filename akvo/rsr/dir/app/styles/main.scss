@@ -2,6 +2,14 @@
   .ant-popover-content {
     .ant-popover-inner-content {
       width: 100%;
+      & > .ant-row {
+        display: block;
+      }
+      .ant-collapse-content-box {
+        & > .ant-row {
+          display: block;
+        }
+      }
     }
   }
 }

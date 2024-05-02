@@ -63,7 +63,7 @@ const ProjectFilter = ({
               onPopOver={() => setFilter({ apply: false, visible: !filter.visible })}
               onOpenModal={() => setOpenModal(true)}
             >
-              <Row style={{ display: 'block' }}>
+              <Row>
                 <Col>
                   <Text strong>Applied Filter Results</Text>
                 </Col>
