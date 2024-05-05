@@ -1,6 +1,6 @@
 /* global document */
 import React, { useState, useEffect } from 'react'
-import { Col, Row, Typography, Form, Switch, Modal, Result, Button as AntButton, message } from 'antd'
+import { Col, Row, Typography, Form, Input, Select, Switch, Modal, Result, Button as AntButton, message } from 'antd'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { useHistory } from 'react-router-dom'
@@ -9,7 +9,6 @@ import { useSelector } from 'react-redux'
 
 import '../../styles/schedule-demo.scss'
 import api from '../../utils/api'
-import Section from '../components/Section'
 import MainLayout from '../components/layout/MainLayout'
 import RsrHeader from '../components/layout/RsrHeader'
 import { Button } from '../components'
@@ -74,7 +73,7 @@ const ScheduleDemo = () => {
         left={[3, 3, 6, 8, 8]}
         right={[21, 21, 18, 16, 16]}
       />
-      <Section>
+      <div className="main-container">
         <Modal
           closable={false}
           visible={modalVisible}
@@ -102,7 +101,7 @@ const ScheduleDemo = () => {
             )}
           />
         </Modal>
-        <Row type="flex" justify="space-between" align="top">
+        <Row justify="space-between">
           <Col xl={8} lg={8} md={8} sm={24} xs={24} className="rsr-hero">
             <h1 className="text-6xl">
               <mark>Really</mark>
@@ -124,11 +123,10 @@ const ScheduleDemo = () => {
                     validateStatus={validFirstName}
                     help={(formik.touched.firstName && formik.errors.firstName) && formik.errors.firstName}
                   >
-                    <input
+                    <Input
                       id="firstName"
                       name="firstName"
                       type="text"
-                      className="ant-input"
                       placeholder="First name"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
@@ -142,11 +140,10 @@ const ScheduleDemo = () => {
                     validateStatus={validLastName}
                     help={(formik.touched.lastName && formik.errors.lastName) && formik.errors.lastName}
                   >
-                    <input
+                    <Input
                       id="lastName"
                       name="lastName"
                       type="text"
-                      className="ant-input"
                       placeholder="Last name"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
@@ -160,10 +157,9 @@ const ScheduleDemo = () => {
                     validateStatus={validEmail}
                     help={(formik.touched.email && formik.errors.email) && formik.errors.email}
                   >
-                    <input
+                    <Input
                       id="emailAddress"
                       name="email"
-                      className="ant-input"
                       type="email"
                       placeholder="Work email"
                       onChange={formik.handleChange}
@@ -174,13 +170,13 @@ const ScheduleDemo = () => {
                 </Col>
                 <Col lg={12} md={12} sm={24} xs={24}>
                   <Form.Item
+                    hasFeedback
                     validateStatus={validPhone}
                     help={(formik.touched.phone && formik.errors.phone) && formik.errors.phone}
                   >
-                    <input
+                    <Input
                       id="phoneNumber"
                       name="phone"
-                      className="ant-input"
                       type="text"
                       placeholder="Phone number"
                       onChange={formik.handleChange}
@@ -195,21 +191,24 @@ const ScheduleDemo = () => {
                     validateStatus={validAkvoHub}
                     help={(formik.touched.akvoHub && formik.errors.akvoHub) && formik.errors.akvoHub}
                   >
-                    <select
+                    <Select
                       id="akvoHub"
                       name="akvoHub"
-                      className="ant-input"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
+                      onChange={(value) => {
+                        formik.setFieldValue('akvoHub', value)
+                      }}
+                      onBlur={() => {
+                        formik.setFieldTouched('akvoHub')
+                      }}
                       value={formik.values.akvoHub}
                     >
-                      <option value="">Which Akvo hub should contact you?</option>
-                      {akvoHubItems.map((op, ox) => <option key={ox} value={op}>{op}</option>)}
-                    </select>
+                      <Select.Option value="">Which Akvo hub should contact you?</Select.Option>
+                      {akvoHubItems.map((op, ox) => <Select.Option key={ox} value={op}>{op}</Select.Option>)}
+                    </Select>
                   </Form.Item>
                 </Col>
               </Row>
-              <Row className="input-description">
+              <Row className="input-description" style={{ display: 'block' }}>
                 <Col>
                   <Title level={4}>{'Tell us why you\'d like to get in touch'}</Title>
                   <Text type="secondary">{'The more specific you are, the better we\'ll be able to help'}</Text>
@@ -220,10 +219,9 @@ const ScheduleDemo = () => {
                     validateStatus={validMessage}
                     help={(formik.touched.message && formik.errors.message) && formik.errors.message}
                   >
-                    <textarea
+                    <Input.TextArea
                       name="message"
                       id="message"
-                      className="ant-input"
                       rows="3"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
@@ -267,7 +265,7 @@ const ScheduleDemo = () => {
             </Form>
           </Col>
         </Row>
-      </Section>
+      </div>
     </MainLayout>
   )
 }
