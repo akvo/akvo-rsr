@@ -21,32 +21,32 @@ let tmid
 let source
 const Aux = node => node.children
 
-class Projects extends React.Component{
+class Projects extends React.Component {
   state = {
     results: [], loading: false, pagination: { pageSize }, viewMode: 'table', hasMore: true, params: {}, filterProgram: null
   }
-  componentDidMount(){
+  componentDidMount() {
     this.fetch()
     document.title = `${this.props.t('Projects')} | Akvo RSR`
   }
   fetch = (mode = 'paginate', page = 1) => {
     this.setState({ loading: true })
     const { viewMode } = this.state
-    let params = {...this.state.params}
+    let params = { ...this.state.params }
     if (params.src) {
       params = {
         ...params,
-        q_filter1: { title__icontains: params.src },
-        q_filter2: { subtitle__icontains: params.src },
+        q_filter1: JSON.stringify({ title__icontains: params.src }),
+        q_filter2: JSON.stringify({ subtitle__icontains: params.src }),
       }
-      if(!Number.isNaN(Number(params.src))){
-        params.q_filter3 = { id: params.src }
+      if (!Number.isNaN(Number(params.src))) {
+        params.q_filter3 = JSON.stringify({ id: params.src })
       }
       params.show_restricted = 1
       delete params.src
     }
     Object.keys(params).forEach(key => {
-      if(params[key] === '') delete params[key]
+      if (params[key] === '') delete params[key]
     })
     params.page = this.state.viewMode === 'table' ? this.state.pagination.current : page
 
@@ -82,7 +82,7 @@ class Projects extends React.Component{
     this.setState({
       loading: true,
       pagination: { ...this.state.pagination, current: 1 },
-      params: {...this.state.params, src: src?.trim()}
+      params: { ...this.state.params, src: src?.trim() }
     })
     clearTimeout(tmid)
     tmid = setTimeout(this.fetch, 500)
@@ -90,7 +90,7 @@ class Projects extends React.Component{
     if (this.cardsViewRef) this.cardsViewRef.resetPage()
   }
   clearSearch = () => {
-    this.setState({ pagination: { ...this.state.pagination, current: 1 }, params: {...this.state.params, src: ''} })
+    this.setState({ pagination: { ...this.state.pagination, current: 1 }, params: { ...this.state.params, src: '' } })
     setTimeout(this.fetch, 100)
   }
   handleFilter = (param) => {
@@ -107,11 +107,11 @@ class Projects extends React.Component{
     this.setState({ viewMode, results: [], loading: true })
     setTimeout(this.fetch)
   }
-  handleNewProjectChoice = ({key}) => {
-    if(key === 'standalone'){
+  handleNewProjectChoice = ({ key }) => {
+    if (key === 'standalone') {
       this.props.history.push('/projects/new')
-    } else if(key === 'contributing'){
-      if (this.props.userRdr.programs.length === 1){
+    } else if (key === 'contributing') {
+      if (this.props.userRdr.programs.length === 1) {
         this.props.history.push(`/programs/${this.props.userRdr.programs[0].id}/hierarchy`)
       } else {
         this.setState({ showProgramSelectModal: true })
@@ -126,16 +126,16 @@ class Projects extends React.Component{
     }
   }
   handleProgramFilter = (programId) => async (on) => {
-    if (on && this.state.filterProgram !== programId){
+    if (on && this.state.filterProgram !== programId) {
       await this.setState({ filterProgram: programId })
       this.fetch()
     }
-    else if (!on && this.state.filterProgram === programId){
+    else if (!on && this.state.filterProgram === programId) {
       await this.setState({ filterProgram: null })
       this.fetch()
     }
   }
-  render(){
+  render() {
     const { t, userRdr } = this.props
     // only for selected org users
     const canCreateProjects = userRdr.organisations && userRdr.organisations.findIndex(it => it.canCreateProjects) !== -1
@@ -143,12 +143,12 @@ class Projects extends React.Component{
     const enforceProgramProjects = userRdr && userRdr.organisations && userRdr.organisations.length > 0 && userRdr.organisations.reduce((acc, val) => val.enforceProgramProjects && acc, true)
     return (
       <div id="projects-view">
-        <Programmes {...{ userRdr, filterProgram: this.state.filterProgram, handleProgramFilter: this.handleProgramFilter}} />
+        <Programmes {...{ userRdr, filterProgram: this.state.filterProgram, handleProgramFilter: this.handleProgramFilter }} />
         <Row type="flex" justify="space-between" gutter={[8, 16]}>
           <Col lg={8} md={24} sm={24} xs={24}>
             <Row type="flex" justify="start" align="middle">
               <Col lg={6} md={4} sm={8} xs={8}>
-                <Radio.Group value={this.state.viewMode} onChange={({ target: {value}}) => this.handleModeChange(value)}>
+                <Radio.Group value={this.state.viewMode} onChange={({ target: { value } }) => this.handleModeChange(value)}>
                   <Radio.Button value="table"><Icon type="unordered-list" /></Radio.Button>
                   <Radio.Button value="cards"><Icon type="appstore" /></Radio.Button>
                 </Radio.Group>
@@ -203,22 +203,22 @@ class Projects extends React.Component{
         </Row>
         <Divider />
         {this.state.viewMode === 'table' &&
-        <TableView
-          dataSource={this.state.results}
-          loading={this.state.loading}
-          pagination={this.state.pagination}
-          onChange={this.handleTableChange}
-          {...{ userRdr }}
-        />
+          <TableView
+            dataSource={this.state.results}
+            loading={this.state.loading}
+            pagination={this.state.pagination}
+            onChange={this.handleTableChange}
+            {...{ userRdr }}
+          />
         }
         {this.state.viewMode === 'cards' &&
-        <CardsView
-          dataSource={this.state.results}
-          loading={this.state.loading}
-          onShowMore={this.showMore}
-          hasMore={this.state.hasMore}
-          setRef={ref => { this.cardsViewRef = ref }}
-        />
+          <CardsView
+            dataSource={this.state.results}
+            loading={this.state.loading}
+            onShowMore={this.showMore}
+            hasMore={this.state.hasMore}
+            setRef={ref => { this.cardsViewRef = ref }}
+          />
         }
         <Modal
           visible={this.state.showProgramSelectModal}
@@ -272,7 +272,7 @@ const Programmes = ({ userRdr, filterProgram, handleProgramFilter }) => {
       </div>
     </div>
   ]
-  if(masterProgram){
+  if (masterProgram) {
     return [
       <header>
         <div className="caps">
