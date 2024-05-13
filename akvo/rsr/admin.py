@@ -62,7 +62,7 @@ class OrganisationLocationInline(NestedStackedInline):
     fk_name = 'location_target'
 
     def get_extra(self, request, obj=None, **kwargs):
-        if obj:
+        if obj and obj.pk:
             return 1 if obj.locations.count() == 0 else 0
         else:
             return 1
@@ -84,7 +84,7 @@ class OrganisationTotalBudgetInline(NestedTabularInline):
     fk_name = 'organisation'
 
     def get_extra(self, request, obj=None, **kwargs):
-        if obj:
+        if obj and obj.pk:
             return 1 if obj.total_budgets.count() == 0 else 0
         else:
             return 1
@@ -107,7 +107,7 @@ class OrganisationRecipientOrgBudgetInline(NestedTabularInline):
     fk_name = 'organisation'
 
     def get_extra(self, request, obj=None, **kwargs):
-        if obj:
+        if obj and obj.pk:
             return 1 if obj.recipient_org_budgets.count() == 0 else 0
         else:
             return 1
@@ -130,7 +130,7 @@ class OrganisationRegionBudgetInline(NestedTabularInline):
     fk_name = 'organisation'
 
     def get_extra(self, request, obj=None, **kwargs):
-        if obj:
+        if obj and obj.pk:
             return 1 if obj.recipient_region_budgets.count() == 0 else 0
         else:
             return 1
@@ -153,7 +153,7 @@ class OrganisationCountryBudgetInline(NestedTabularInline):
     fk_name = 'organisation'
 
     def get_extra(self, request, obj=None, **kwargs):
-        if obj:
+        if obj and obj.pk:
             return 1 if obj.recipient_country_budgets.count() == 0 else 0
         else:
             return 1
@@ -175,7 +175,7 @@ class OrganisationTotalExpenditureInline(NestedTabularInline):
     fk_name = 'organisation'
 
     def get_extra(self, request, obj=None, **kwargs):
-        if obj:
+        if obj and obj.pk:
             return 1 if obj.total_expenditures.count() == 0 else 0
         else:
             return 1
@@ -206,7 +206,7 @@ class OrganisationDocumentInline(NestedStackedInline):
     fk_name = 'organisation'
 
     def get_extra(self, request, obj=None, **kwargs):
-        if obj:
+        if obj and obj.pk:
             return 1 if obj.documents.count() == 0 else 0
         else:
             return 1
@@ -222,7 +222,7 @@ class OrganisationCustomFieldInline(NestedTabularInline):
     }
 
     def get_extra(self, request, obj=None, **kwargs):
-        if obj:
+        if obj and obj.pk:
             return 1 if obj.custom_fields.count() == 0 else 0
         else:
             return 1
@@ -234,7 +234,7 @@ class OrganisationIndicatorLabelInline(NestedTabularInline):
     fk_name = 'organisation'
 
     def get_extra(self, request, obj=None, **kwargs):
-        if obj:
+        if obj and obj.pk:
             return 1 if obj.indicator_labels.count() == 0 else 0
         else:
             return 1
@@ -831,7 +831,7 @@ class IndicatorPeriodDataCommentInline(admin.TabularInline):
     model = apps.get_model('rsr', 'IndicatorPeriodDataComment')
 
     def get_extra(self, request, obj=None, **kwargs):
-        if obj:
+        if obj and obj.pk:
             return 1 if obj.comments.count() == 0 else 0
         else:
             return 1
