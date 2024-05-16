@@ -550,6 +550,10 @@ django-ltree==0.5.3 \
     --hash=sha256:8e47e33f812c14bbb9405b21fb5b7695a15945edca161fbd0b06075adbdf7732 \
     --hash=sha256:9bc8b801d7c26cb38f1f10d80330e29cc5bf83969ff62dd50d2e842e22dcd8c7
     # via -r scripts/deployment/pip/requirements/production.in
+django-maintenance-mode==0.21.1 \
+    --hash=sha256:b79afddb671c59972ae542e4fafbc99117d2d37991843eaaa837e328eed12b1b \
+    --hash=sha256:c02fff0e386b7f8b2ab54479d3a0d336ae34014da22a7a2365ca96d5a2c1db94
+    # via -r scripts/deployment/pip/requirements/production.in
 django-markup==1.8.1 \
     --hash=sha256:04824880a7afbd19e7b3cdaf0005e759f818b2cc4e3b4f1dd97182b7038a72c9 \
     --hash=sha256:ab0bbdcb721ec92a2848dd93f47e4a0d01760677ca78789230432298cf82a7c8 \
@@ -1576,6 +1580,10 @@ python-docx==1.1.0 \
     --hash=sha256:5829b722141cf1ab79aedf0c34d9fe9924b29764584c0f2164eb2b02dcdf17c9 \
     --hash=sha256:bac9773278098a1ddc43a52d84e22f5909c4a3080a624530b3ecb3771b07c6cd
     # via -r scripts/deployment/pip/requirements/production.in
+python-fsutil==0.14.1 \
+    --hash=sha256:0d45e623f0f4403f674bdd8ae7aa7d24a4b3132ea45c65416bd2865e6b20b035 \
+    --hash=sha256:8fb204fa8059f37bdeee8a1dc0fff010170202ea47c4225ee71bb3c26f3997be
+    # via django-maintenance-mode
 python-mimeparse==1.6.0 \
     --hash=sha256:76e4b03d700a641fd7761d3cd4fdbbdcd787eade1ebfac43f877016328334f78 \
     --hash=sha256:a295f03ff20341491bfe4717a39cd0a8cc9afad619ba44b77e86b0ab8a2b8282

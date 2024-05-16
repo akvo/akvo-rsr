@@ -301,6 +301,7 @@ urlpatterns += [
         widget_views.RandomProjectSmallView.as_view(),
         name="widget_random_project_small",
     ),
+    path("maintenance", views.maintenance, name="maintenance")
 ]
 
 handler500 = "akvo.rsr.views.error.server_error"
