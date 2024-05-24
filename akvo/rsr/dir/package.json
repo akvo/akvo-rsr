@@ -54,6 +54,7 @@
     "react-map-gl": "^6.1.17",
     "react-redux": "^8.0.2",
     "react-router-dom": "^5.1.2",
+    "react-share": "^5.1.0",
     "react-spring": "^8.0.27",
     "react-svg-inline": "^2.1.1",
     "react-transition-group": "^4.3.0",

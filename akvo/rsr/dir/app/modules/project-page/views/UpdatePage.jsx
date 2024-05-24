@@ -1,10 +1,12 @@
-import React from 'react'
+/* global window */
+import React, { useMemo } from 'react'
 import { LeftOutlined, LoadingOutlined } from '@ant-design/icons'
 import { Row, Col, Result, Button, Typography, Spin, Divider, Carousel } from 'antd'
 import { Link, useLocation } from 'react-router-dom'
 import SimpleMarkdown from 'simple-markdown'
 import { Container } from 'react-awesome-styled-grid'
 import styled from 'styled-components'
+import { FacebookIcon, FacebookShareButton, LinkedinIcon, LinkedinShareButton, TwitterIcon, TwitterShareButton } from 'react-share'
 
 import Author from '../components/Author'
 import UpdateItem from './UpdateItem'
@@ -31,6 +33,7 @@ const UpdatePage = ({ projectId }) => {
   const { data, error } = queryStory(query.get('id'))
   const { data: other } = queryOtherStories(projectId, query.get('id'))
   const { results } = other || {}
+  const currentPageUrl = useMemo(() => typeof window !== 'undefined' ? window.location.href : '', [])
 
   const parse = SimpleMarkdown.defaultBlockParse
   const mdOutput = SimpleMarkdown.defaultReactOutput
@@ -115,6 +118,24 @@ const UpdatePage = ({ projectId }) => {
             <Author {...data} />
           </Col>
         </Row>
+        {(currentPageUrl && data) && (
+          <Row>
+            <Col style={{ margin: '2em 0' }}>
+              <strong>Share this post!</strong>
+              <div>
+                <span style={{ marginRight: '10px' }}>
+                  <FacebookShareButton url={currentPageUrl}><FacebookIcon /></FacebookShareButton>
+                </span>
+                <span style={{ marginRight: '10px' }}>
+                  <TwitterShareButton url={currentPageUrl} title={data.title}><TwitterIcon /></TwitterShareButton>
+                </span>
+                <span style={{ marginRight: '10px' }}>
+                  <LinkedinShareButton url={currentPageUrl}><LinkedinIcon /></LinkedinShareButton>
+                </span>
+              </div>
+            </Col>
+          </Row>)
+        }
         <Row>
           <Col>
             <Divider />
