@@ -52,7 +52,7 @@ class CleanupOptionsTestCase(CleanupUntitledAndUnpublishedProjectsTestCase):
         self.assertTrue(Project.objects.filter(id=keep.id).exists())
 
     def test_cleanup_with_date_option(self):
-        remove = self.create_project(title='', published=False, created_at=self.SEVEN_DAYS_AGO)
+        remove = self.create_project(title='', published=False, created_at=self.EIGHT_DAYS_AGO)
         keep = self.create_project(title='', published=False, created_at=self.TWO_DAYS_AGO)
         self.run_cleanup(self.SIX_DAYS_AGO)
         self.assertFalse(Project.objects.filter(id=remove.id).exists())

@@ -27,6 +27,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.db.models import Q
 from django.db.models import JSONField
 from django.utils.functional import cached_property
+from django.utils import timezone
+from pytz import InvalidTimeError
 
 from sorl.thumbnail.fields import ImageField
 
@@ -548,6 +550,12 @@ class Project(TimestampsMixin, AkvoTreeModel):
             if self.targets_at != orig.targets_at and hasattr(self, "projecthierarchy"):
                 descendants = self.descendants()
                 descendants.exclude(pk=self.pk).update(targets_at=self.targets_at)
+
+        # This is a work around to handle invalid/ambiguous date exception raised by pytz
+        # TODO: This may no longer necessary as of Django 4.2
+        if self.pk and _is_invalid_date(self.created_at):
+            _fix_invalid_created_at(self)
+            self.refresh_from_db()
 
         super(Project, self).save(*args, **kwargs)
 
@@ -1832,3 +1840,24 @@ def print_tree(node: TreeNode, depth=0, tab_char=' '):
     print(f"{tab_char * depth}{node.item}")
     for child in node:
         print_tree(child, depth + 1, tab_char)
+
+
+# WORKAROUNDS!!
+# See: Project.save()
+
+def _is_invalid_date(d):
+    if not timezone.is_naive(d):
+        return False
+    try:
+        timezone.make_aware(d, timezone.get_current_timezone())
+        return False
+    except InvalidTimeError:
+        return True
+
+
+def _fix_invalid_created_at(project):
+    from django.db import connection
+    date_utc = timezone.make_aware(project.created_at, timezone.utc)
+    date_tz = date_utc.astimezone(timezone.get_current_timezone())
+    with connection.cursor() as cursor:
+        cursor.execute("UPDATE rsr_project SET created_at = %s WHERE id = %s", (date_tz.strftime("%Y-%m-%d %H:%M:%S.%f"), project.id))

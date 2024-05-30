@@ -15,6 +15,7 @@ from embed_video.fields import EmbedVideoField
 from sorl.thumbnail.fields import ImageField
 
 from akvo.utils import rsr_image_path, to_gmt
+from akvo.utils.datetime import make_datetime_aware
 from ..fields import ValidXMLCharField, ValidXMLTextField
 from ..mixins import TimestampsMixin
 
@@ -101,7 +102,7 @@ class ProjectUpdate(TimestampsMixin):
         of posting it.
 
         """
-        return (self.last_modified_at - self.created_at).total_seconds() > 60
+        return (make_datetime_aware(self.last_modified_at) - make_datetime_aware(self.created_at)).total_seconds() > 60
 
     def __str__(self):
         return _('Project update for %(project_name)s') % {'project_name': self.project.title}
