@@ -142,6 +142,8 @@ class ProjectSerializer(BaseRSRSerializer):
         This is a work around to silence the "Invalid datetime for the timezone
         Europe/Stockholm" which has appeared several times and not yet known
         why.
+
+        TODO: This may no longer necessary as of Django 4.2
         """
         return make_safe_timezone_aware_date(project.created_at)
 
