@@ -58,24 +58,6 @@ urlpatterns = i18n_patterns(
     url(r'^project/(?P<project_id>\d+)/$',
         project.main, name='project-main'),
 
-    url(r'^project/(?P<project_id>\d+)/hierarchy/$',
-        project.hierarchy, name='project-hierarchy'),
-
-    url(r'^project/(?P<project_id>\d+)/report/$',
-        project.report, name='project-report'),
-
-    url(r'^project/(?P<project_id>\d+)/widgets/$',
-        project.widgets, name='project-widgets'),
-
-    url(r'^project/(?P<project_id>\d+)/updates/$',
-        project_update.project_updates, name='project-updates'),
-
-    url(r'^project/(?P<project_id>\d+)/partners/$',
-        project.partners, name='project-partners'),
-
-    url(r'^project/(?P<project_id>\d+)/finance/$',
-        project.finance, name='project-finance'),
-
     # Organisations
     url(r'^organisations/$',
         organisation.directory,
