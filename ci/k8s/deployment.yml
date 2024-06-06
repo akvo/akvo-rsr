@@ -97,7 +97,7 @@ spec:
           requests:
             cpu: "1000m"
           limits:
-            cpu: "4000m"
+            cpu: "6000m"
         ports:
         - containerPort: 8000
           protocol: TCP
