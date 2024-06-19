@@ -112,6 +112,9 @@ docker_build akvo/rsr-backend-spa -f Dockerfile-spa .
 log Creating Production Nginx image
 docker build --rm=false -t eu.gcr.io/${PROJECT_NAME}/rsr-nginx:${CI_COMMIT} -f Dockerfile-nginx .
 
+log Creating Production Nginx image for maintenance mode
+docker build --rm=false -t eu.gcr.io/${PROJECT_NAME}/rsr-nginx-maintenance:${CI_COMMIT} -f Dockerfile-nginx-maintenance .
+
 log Starting docker-compose for end to end tests
 touch "log_docker_compose_ci_prod"
 docker-compose -p rsrciprod -f docker-compose.yaml -f docker-compose.ci.yaml -f docker-compose.ci.prod.images.yaml up -d --build
