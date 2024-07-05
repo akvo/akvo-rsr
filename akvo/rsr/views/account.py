@@ -8,6 +8,8 @@ see < http://www.gnu.org/licenses/agpl.html >.
 """
 
 import json
+from django.utils.http import url_has_allowed_host_and_scheme
+from django_otp.plugins.otp_static.models import StaticToken
 import qrcode
 
 from qrcode.image.svg import SvgPathImage
@@ -21,7 +23,7 @@ from akvo.utils import rsr_send_mail
 from akvo.rsr.registration import activate_user
 
 from django.conf import settings
-from django.contrib.auth import login, logout, authenticate, get_user_model
+from django.contrib.auth import REDIRECT_FIELD_NAME, login, logout, authenticate, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.contrib.sites.shortcuts import get_current_site
@@ -30,14 +32,15 @@ from django.core.signing import TimestampSigner, BadSignature
 from django.http import (HttpResponse, HttpResponseRedirect,
                          HttpResponseForbidden, HttpResponseNotAllowed,
                          HttpResponseBadRequest, HttpResponseNotFound)
-from django.shortcuts import redirect, render
+from django.contrib.auth.views import SuccessURLAllowedHostsMixin as RedirectURLMixin
+from django.shortcuts import redirect, render, reverse
 
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from django.views.decorators.http import require_POST
 
 from two_factor.utils import get_otpauth_url, totp_digits
 from two_factor.forms import AuthenticationTokenForm, BackupTokenForm
-from two_factor.views.core import LoginView, SetupView
+from two_factor.views.core import LoginView, SetupView, BackupTokensView
 from two_factor.views.profile import DisableView
 
 
@@ -426,7 +429,60 @@ class DisableTwoFactorView(DisableView):
 
 class SetupTwoFactorView(SetupView):
 
+    success_url = 'two_factor:backup_tokens'
+    number_of_tokens = 10
+
     def get_context_data(self, form, **kwargs):
         if 'enforce_2fa' not in kwargs and self.request.user:
             kwargs['enforce_2fa'] = get_enforce_2fa(self.request.user)
         return super().get_context_data(form, **kwargs)
+
+    def get_success_url(self):
+        next_url = self.get_redirect_url()
+        success_url = reverse(self.success_url)
+        return f"{success_url}?next={next_url}" if next_url else success_url
+
+    def done(self, form_list, **kwargs):
+        response = super().done(form_list, **kwargs)
+        self.generate_backup_tokens()
+        return response
+
+    def generate_backup_tokens(self):
+        device = self.get_static_device()
+        device.token_set.all().delete()
+        for n in range(self.number_of_tokens):
+            device.token_set.create(token=StaticToken.random_token())
+
+    def get_static_device(self):
+        return self.request.user.staticdevice_set.get_or_create(name='backup')[0]
+
+
+class TwoFactorBackupTokensView(RedirectURLMixin, BackupTokensView):
+
+    def form_valid(self, form):
+        super().form_valid(form)
+        next_url = self.get_redirect_url()
+        success_url = reverse(self.success_url)
+        redirect_url = f'{success_url}?next={next_url}' if next_url else success_url
+        return redirect(redirect_url)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        next_url = self.get_redirect_url()
+        context.update({"next_url": next_url})
+        return context
+
+    # Copied from django.contrib.auth.views.LoginView (Branch: stable/1.11.x)
+    # https://github.com/django/django/blob/58df8aa40fe88f753ba79e091a52f236246260b3/django/contrib/auth/views.py#L67
+    def get_redirect_url(self):
+        """Return the user-originating redirect URL if it's safe."""
+        redirect_to = self.request.POST.get(
+            REDIRECT_FIELD_NAME,
+            self.request.GET.get(REDIRECT_FIELD_NAME, '')
+        )
+        url_is_safe = url_has_allowed_host_and_scheme(
+            url=redirect_to,
+            allowed_hosts=self.get_success_url_allowed_hosts(),
+            require_https=self.request.is_secure(),
+        )
+        return redirect_to if url_is_safe else ''

@@ -92,6 +92,9 @@ urlpatterns = i18n_patterns(
     url('^account/two_factor/disable/$',
         account.DisableTwoFactorView.as_view(), name='two_factor_disable'),
 
+    url("^account/two_factor/backup/tokens/$",
+        account.TwoFactorBackupTokensView.as_view(), name="two_factor_backup_token"),
+
     url('', include(two_factor_urls)),
 
     url(r'^sign_out/$',
