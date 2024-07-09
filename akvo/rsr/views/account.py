@@ -439,8 +439,8 @@ class SetupTwoFactorView(SetupView):
 
     def get_success_url(self):
         next_url = self.get_redirect_url()
-        success_url = reverse(self.success_url)
-        return f"{success_url}?next={next_url}" if next_url else success_url
+        success_url = f"{reverse(self.success_url)}?setup=1"
+        return f"{success_url}&next={next_url}" if next_url else success_url
 
     def done(self, form_list, **kwargs):
         response = super().done(form_list, **kwargs)
@@ -469,7 +469,11 @@ class TwoFactorBackupTokensView(RedirectURLMixin, BackupTokensView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         next_url = self.get_redirect_url()
-        context.update({"next_url": next_url})
+        is_setup = self.request.GET.get("setup", "")
+        context.update({
+            "next_url": next_url,
+            "show_generate_button": False if is_setup else True,
+        })
         return context
 
     # Copied from django.contrib.auth.views.LoginView (Branch: stable/1.11.x)

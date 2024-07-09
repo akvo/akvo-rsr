@@ -30,7 +30,9 @@
         {% else %}
         <a id="setup-done" href="/my-rsr/my-details/" class="pull-right btn btn-link">{% trans "Back to Account Security" %}</a>
         {% endif %}
+        {% if show_generate_button %}
         <button class="btn btn-primary" type="submit">{% trans "Generate Tokens" %}</button>
+        {% endif %}
       </form>
 
     </div>
