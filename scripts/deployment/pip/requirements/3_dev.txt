@@ -617,9 +617,9 @@ django-webpack-loader==3.1.0 \
     --hash=sha256:5c35f8ad9ce0d0360b120abd9a6da6f043a6ff97a4ae7d0fa246d64af012983f \
     --hash=sha256:b06b83ca819ed4bbb858ab57b8d8cb67a25c4a57ed822dedd4e9fee4c097afd5
     # via -r scripts/deployment/pip/requirements/production.in
-djangorestframework==3.15.1 \
-    --hash=sha256:3ccc0475bce968608cf30d07fb17d8e52d1d7fc8bfe779c905463200750cbca6 \
-    --hash=sha256:f88fad74183dfc7144b2756d0d2ac716ea5b4c7c9840995ac3bfd8ec034333c1
+djangorestframework==3.15.2 \
+    --hash=sha256:2b8871b062ba1aefc2de01f773875441a961fefbf79f5eed1e32b2f096944b20 \
+    --hash=sha256:36fe88cd2d6c6bec23dca9804bab2ba5517a8bb9d8f47ebc68981b56840107ad
     # via
     #   -r scripts/deployment/pip/requirements/production.in
     #   django-rest-swagger
