@@ -914,4 +914,4 @@ class ImportResultsTestCase(BaseTestCase):
 
         self.assertEqual(201, response.status_code)
         self.assertTrue(response.data['import_success'])
-        self.assertEqual(response.data['project_id'], str(child.id))
+        self.assertEqual(response.data['project_id'], child.id)

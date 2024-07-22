@@ -26,7 +26,7 @@ export const roleLabelDict = {
   Users: 'User',
 }
 
-const Access = ({ projectId, partners, roleData, admin, mne, saveFields }) => {
+const Access = ({ projectId, partners, roleData, admin, mne, saveFields: _saveFields }) => {
   const [useProjectRoles, setUseProjectRoles] = useState(false)
   const [modalVisible, setModalVisible] = useState(false)
   const [matrixVisible, setMatrixVisible] = useState(false)
@@ -49,7 +49,7 @@ const Access = ({ projectId, partners, roleData, admin, mne, saveFields }) => {
       roles: _roles.map(({ email, role}) => ({ email, role })),
     })
       .then(() => {
-        saveFields({ lastModifiedAt: new Date() }, 1, false)
+        _saveFields({ lastModifiedAt: new Date() }, 1, false)
       })
   }
   const handleProjectRolesChange = ({ target: {value}}) => {
@@ -60,7 +60,7 @@ const Access = ({ projectId, partners, roleData, admin, mne, saveFields }) => {
         useProjectRoles: value
       })
         .then(() => {
-          saveFields({ lastModifiedAt: new Date() }, 1, false)
+          _saveFields({ lastModifiedAt: new Date() }, 1, false)
         })
     }
   }
@@ -72,7 +72,7 @@ const Access = ({ projectId, partners, roleData, admin, mne, saveFields }) => {
       roles: updatedRoles.map(({ email, role }) => ({ email, role })) // eslint-disable-line
     })
       .then(() => {
-        saveFields({ lastModifiedAt: new Date() }, 1, false)
+        _saveFields({ lastModifiedAt: new Date() }, 1, false)
       })
   }
   const confirmAccessReset = () => {
@@ -86,7 +86,7 @@ const Access = ({ projectId, partners, roleData, admin, mne, saveFields }) => {
       roles: updatedRoles.map(({ email, role }) => ({ email, role })),
     })
       .then(() => {
-        saveFields({ lastModifiedAt: new Date() }, 1, false)
+        _saveFields({ lastModifiedAt: new Date() }, 1, false)
       })
   }
   const handlePopconfirmVisibleChange = (visible) => {
@@ -165,7 +165,7 @@ const emailRegEx = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@
 const Search = ({ isEmail, onChange, getReset }) => {
   const [value, setValue] = useState('')
   const handleChange = e => {
-    setValue(e.target.value);
+    setValue(e.target.value)
     clearTimeout(tmid);
     ((val) => {
       tmid = setTimeout(() => onChange(val), 200)
@@ -191,6 +191,7 @@ const InviteUserModal = ({ visible, onCancel, orgs, onAddRole, roles, projectId,
     const reportingOrg = orgs.find(it => it.iatiOrganisationRole === 101)
     api.get(`/members/?orgs=[${orgs.filter(it => it.organisation).map(it => it.organisation).join(',')}]`)
       .then(d => {
+        // eslint-disable-next-line no-unused-vars
         const _data = reportingOrg ? d.data.sort((a, b) => a.id === reportingOrg.organisation ? -1 : 0) : d.data
         setData(_data)
         setLoading(false)
@@ -210,7 +211,7 @@ const InviteUserModal = ({ visible, onCancel, orgs, onAddRole, roles, projectId,
     const {src: email, name, role } = state
     api.post(`/project/${projectId}/invite-user/`, {
       email, name, role
-    }).then((e) => {
+    }).then(() => {
       saveFields({ lastModifiedAt: new Date() }, 1, false)
       onAddRole({ email, name, role })
       setState({ sendingStatus: 'sent' })

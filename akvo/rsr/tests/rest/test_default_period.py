@@ -36,7 +36,7 @@ class DefaultPeriodTestCase(BaseTestCase):
         self.assertNotIn({'period_start': '2017-01-01', 'period_end': '2017-12-31'}, data['periods'])
         self.assertIn({'period_start': '2018-01-01', 'period_end': '2018-12-31'}, data['periods'])
         self.assertIn({'period_start': '2019-01-01', 'period_end': '2019-12-31'}, data['periods'])
-        self.assertEqual(data['project'], str(project.pk))
+        self.assertEqual(data['project'], project.pk)
 
     def test_default_period_post(self):
         project = self.create_project("Test project")

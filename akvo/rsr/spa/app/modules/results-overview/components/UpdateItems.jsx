@@ -4,10 +4,8 @@ import { Button, Card, Collapse, Row, Col } from 'antd'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import SVGInline from 'react-svg-inline'
-import orderBy from 'lodash/orderBy'
 
 import Update from '../../results/update'
-import DsgOverview from '../../results/dsg-overview'
 import { StatusPeriod } from '../../../components/StatusPeriod'
 import editButton from '../../../images/edit-button.svg'
 import ProgressBar from '../../../components/ProgressBar'
@@ -23,12 +21,9 @@ const UpdateItems = ({
   indicator,
   updates,
   targetsAt,
-  editPeriod,
-  disaggregations,
   setEditing
 }) => {
   const { t } = useTranslation()
-  const [hover, setHover] = useState(null)
   const [pinned, setPinned] = useState('0')
   const [fullUpdates, setFullUpdates] = useState(updates)
 
@@ -140,7 +135,7 @@ const UpdateItems = ({
                     </div>
                     <div className="value-container">
                       {indicator.type === 1 &&
-                        <div className={classNames('value', { hovered: hover === updates.length - 1 - index || Number(pinned) === index })}>
+                        <div className={classNames('value', { hovered: Number(pinned) === index })}>
                           {String(update.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                           {indicator.measure === measureType.PERCENTAGE && <small>%</small>}
                         </div>

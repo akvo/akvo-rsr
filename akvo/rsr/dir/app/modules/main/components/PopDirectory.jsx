@@ -1,9 +1,6 @@
 import React from 'react'
-import {
-  Icon,
-  Collapse,
-  Typography
-} from 'antd'
+import { CaretRightOutlined } from '@ant-design/icons'
+import { Collapse, Typography } from 'antd'
 import SelectDebounce from '../../components/SelectDebounce'
 
 const { Text } = Typography
@@ -23,7 +20,7 @@ const PopDirectory = ({
   return (
     <Collapse
       bordered={false}
-      expandIcon={({ isActive }) => <Icon type="caret-right" rotate={isActive ? 90 : 0} />}
+      expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
       expandIconPosition="right"
     >
       <Collapse.Panel header={<Text strong>Sectors</Text>} key="sector">

@@ -1,5 +1,6 @@
 import React from 'react'
-import { Card, Collapse, List, Row, Col, Typography, Icon, Progress, Badge } from 'antd'
+import { DashboardFilled, GlobalOutlined, ShareAltOutlined } from '@ant-design/icons'
+import { Card, Collapse, List, Row, Col, Typography, Progress, Badge } from 'antd'
 import SimpleMarkdown from 'simple-markdown'
 import allCountries from '../../../utils/countries.json'
 import { setNumberFormat } from '../../../utils/misc'
@@ -7,9 +8,9 @@ import { setNumberFormat } from '../../../utils/misc'
 const { Panel } = Collapse
 const { Text } = Typography
 
-const IconText = ({ type, text }) => (
+const GlobalWithTextIcon = ({ text }) => (
   <span className="wcaro-small-text small-primary">
-    <Icon style={{ marginRight: 8 }} type={type} />
+    <GlobalOutlined style={{ marginRight: 8 }} />
     {text}
   </span>
 )
@@ -97,8 +98,7 @@ export const IndicatorCard = ({ indicator, ...props }) => {
       key={indicator.id}
       title={<Text strong>{indicator.title}</Text>}
       extra={(
-        <Icon
-          type="share-alt"
+        <ShareAltOutlined
           style={{
             WebkitTransform: 'rotate(90deg)',
             msTransform: 'rotate(90deg)',
@@ -114,7 +114,7 @@ export const IndicatorCard = ({ indicator, ...props }) => {
           header={(
             <>
               <div style={{ float: 'left' }}>
-                <Icon type="global" className="wcaro-small-text" />&nbsp;
+                <GlobalOutlined className="wcaro-small-text" />&nbsp;
                 {indicator.countries.length > 0 &&
                   (
                     <Text type="secondary">
@@ -125,7 +125,7 @@ export const IndicatorCard = ({ indicator, ...props }) => {
               </div>
               <div style={{ float: 'right' }}>
                 <Text strong>
-                  <Icon type="dashboard" theme="filled" />&nbsp;
+                  <DashboardFilled />&nbsp;
                   {indicator.indicators ? `${indicator.indicators.length} indicators` : ''}
                 </Text>
               </div>
@@ -148,7 +148,7 @@ export const IndicatorCard = ({ indicator, ...props }) => {
                 <TwoColumns
                   paddingLeft="1em"
                   left={<Text className="wcaro-small-text small-primary" strong>QUANTITATIVE</Text>}
-                  right={<IconText type="global" text={selectedCountries} />}
+                  right={<GlobalWithTextIcon text={selectedCountries} />}
                 />
                 <ListPeriods data={item} />
               </List.Item>

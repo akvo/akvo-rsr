@@ -1,10 +1,10 @@
 import React from 'react'
-import { Icon } from 'antd'
+import { DownOutlined } from '@ant-design/icons'
 import classNames from 'classnames'
 
 const ExpandIcon = ({ isActive }) => (
   <div className={classNames('expander', { isActive })}>
-    <Icon type="down" />
+    <DownOutlined />
   </div>
 )
 

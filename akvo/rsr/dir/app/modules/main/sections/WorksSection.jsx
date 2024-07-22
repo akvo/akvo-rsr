@@ -9,6 +9,7 @@ import {
   Hidden,
 } from 'react-awesome-styled-grid'
 import classNames from 'classnames'
+import { MinusOutlined, PlusOutlined } from '@ant-design/icons'
 
 import {
   Space,
@@ -127,7 +128,7 @@ const WorksSection = () => (
       <Col xl={5} lg={5} md={6} align="flex-start">
         <Collapse
           bordered={false}
-          expandIcon={({ isActive }) => <Icon type={isActive ? 'minus' : 'plus'} />}
+          expandIcon={({ isActive }) => isActive ? <MinusOutlined /> : <PlusOutlined />}
           className="feature-collapsible"
           expandIconPosition="right"
         >

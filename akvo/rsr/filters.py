@@ -9,7 +9,7 @@ see < http://www.gnu.org/licenses/agpl.html >.
 from copy import deepcopy
 
 from django.db.models import Q
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from akvo.codelists.store.default_codelists import SECTOR_CATEGORY
 from akvo.utils import codelist_choices

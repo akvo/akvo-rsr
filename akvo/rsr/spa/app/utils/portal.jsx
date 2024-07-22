@@ -1,6 +1,6 @@
 /* global document */
-import React, { useEffect } from 'react';
-import { createPortal } from 'react-dom';
+import React, { useEffect } from 'react'
+import { createPortal } from 'react-dom'
 
 const Portal = ({ children, id = 'top-portal-root' }) => {
   const mount = document.getElementById(id)
@@ -12,6 +12,6 @@ const Portal = ({ children, id = 'top-portal-root' }) => {
   }, [el, mount])
 
   return createPortal(children, el)
-};
+}
 
 export default React.memo(Portal, () => true)

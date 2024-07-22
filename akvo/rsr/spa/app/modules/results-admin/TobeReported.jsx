@@ -186,10 +186,10 @@ const TobeReported = ({
     })
     api.get(`/indicator_period_data_framework/?period=${item?.period?.id}&format=json`)
       .then(({ data }) => {
-        const { results } = data
+        const { results: updateData } = data
         setSubmissions({
           scores: item?.indicator?.scores,
-          updates: results,
+          updates: updateData,
           enumerators: enumerators?.[item?.indicator?.id] || [],
           item: {
             ...item,

@@ -39,7 +39,8 @@ const CountryBudgetItems = ({ formPush }) => {
             <InputLabel tooltip={t('If more than one identifier is reported, the percentage share must be reported and all percentages should add up to 100 percent. Use a period to denote decimals.')}>
               {t('Percentage')}
             </InputLabel>
-          }>
+          }
+          >
           <FinalField
             name={`${name}.percentage`}
             suffix={<span>%</span>}

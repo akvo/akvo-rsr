@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next'
 
 import FinalField from '../../../utils/final-field'
 import InputLabel from '../../../utils/input-label'
-import AutoSave from '../../../utils/auto-save'
+import AutoSaveFS from '../../../utils/auto-save'
 import RTE from '../../../utils/rte'
 import { useFetch } from '../../../utils/hooks'
 
@@ -28,7 +28,7 @@ const CommentsKeywords = ({ fields }) => {
           subscription={{}}
           render={() => (
             <div>
-              <AutoSave sectionIndex={10} />
+              <AutoSaveFS sectionIndex={10} />
               <Item label={<InputLabel optional tooltip={t('The project comments are only for internal use and will not be displayed anywhere on the project page.')}>{t('Comments')}</InputLabel>}>
                 <FinalField
                   name="notes"

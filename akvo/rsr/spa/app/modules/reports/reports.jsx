@@ -153,17 +153,17 @@ const Report = ({ report, currentOrg, projectId, programId, setDownloading }) =>
     }
     return (e) => {
       e.stopPropagation()
-      const handler = async function () {
+      const handler = async () => {
         try {
           const { data } = await axios.get(downloadUrl)
           Modal.success({
             content: data,
-          });
+          })
         } catch {
           Modal.error({
             title: 'Failed connecting to server',
             content: 'Please try again in a few minutes...',
-          });
+          })
         } finally {
           setDownloading(false)
         }
@@ -213,10 +213,10 @@ const Report = ({ report, currentOrg, projectId, programId, setDownloading }) =>
           {hasPeriodDates && (
             <div className="date-range">
               <Select dropdownMatchSelectWidth={false} placeholder={t('Period start')} allowClear={true} onChange={(e) => setState({ period_start: e })}>
-                {periodDates.map(({ 0: startDate, 1: endDate }) => <Select.Option value={startDate}>{moment(startDate).format('DD MMM YYYY')}</Select.Option>)}
+                {periodDates.map(({ 0: startDate }) => <Select.Option value={startDate}>{moment(startDate).format('DD MMM YYYY')}</Select.Option>)}
               </Select>
               <Select dropdownMatchSelectWidth={false} placeholder={t('Period end')} allowClear={true} onChange={(e) => setState({ period_end: e })}>
-                {periodDates.map(({ 0: startDate, 1: endDate }) => <Select.Option value={endDate}>{moment(endDate).format('DD MMM YYYY')}</Select.Option>)}
+                {periodDates.map(({ 1: endDate }) => <Select.Option value={endDate}>{moment(endDate).format('DD MMM YYYY')}</Select.Option>)}
               </Select>
             </div>
           )}

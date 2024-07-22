@@ -1,14 +1,6 @@
 import React from 'react'
-import {
-  Row,
-  Col,
-  Icon,
-  Input,
-  Button,
-  Popover,
-  Typography,
-  Tag
-} from 'antd'
+import { CloseCircleOutlined, CloseOutlined, LoadingOutlined, SearchOutlined } from '@ant-design/icons'
+import { Row, Col, Input, Button, Popover, Typography, Tag } from 'antd'
 import SVGInline from 'react-svg-inline'
 import classNames from 'classnames'
 
@@ -18,7 +10,7 @@ const { Title, Text } = Typography
 
 const Filter = ({ children, ...props }) => {
   return (
-    <Row {...props}>
+    <Row {...props} style={{ display: 'block' }}>
       {children}
     </Row>
   )
@@ -40,8 +32,8 @@ const FilterTitle = ({
   </Col>
 )
 
-const PopOverButton = ({ visible, onPopOver, onOpenModal }) => visible
-  ? <Icon type="close" style={{ fontSize: 24 }} onClick={onPopOver} className="btn-filter-lg" />
+const PopOverButton = ({ visible, onPopOver }) => visible
+  ? <CloseOutlined style={{ fontSize: 24 }} onClick={onPopOver} className="btn-filter-lg" />
   : <SVGInline svg={filterSvg} onClick={onPopOver} width="24px" />
 
 const FilterInput = ({
@@ -50,13 +42,12 @@ const FilterInput = ({
   loading,
   onChange,
   onPopOver,
-  onOpenModal,
   ...props
 }) => (
   <Col className="filter-search">
     <Input
       {...props}
-      prefix={<Icon type="search" />}
+      prefix={<SearchOutlined />}
       size="large"
       disabled={loading}
       addonAfter={(
@@ -70,7 +61,7 @@ const FilterInput = ({
           visible={visible}
         >
           <div style={{ paddingTop: '8px' }}>
-            {loading ? <Icon type="loading" style={{ fontSize: 24 }} spin /> : <PopOverButton {...{ visible, onPopOver, onOpenModal }} />}
+            {loading ? <LoadingOutlined style={{ fontSize: 24 }} spin /> : <PopOverButton {...{ visible, onPopOver }} />}
           </div>
         </Popover>
       )}
@@ -111,7 +102,7 @@ const FilterInfo = ({
             {isFiltering && (
               <Button type="link" className="btn-clear-all" onClick={onClear}>
                 Clear all
-                <Icon type="close-circle" />
+                <CloseCircleOutlined />
               </Button>
             )}
           </Col>
@@ -123,7 +114,7 @@ const FilterInfo = ({
 
 const FilterTag = ({ children, onClose, ...props }) => (
   <Tag {...props}>
-    <Icon type="close" onClick={onClose} />
+    <CloseOutlined onClick={onClose} />
     {children}
   </Tag>
 )

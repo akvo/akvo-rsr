@@ -10,11 +10,16 @@ import { filteroutFns, swapNullValues } from './misc'
 
 const debounce = 2000
 
+const checkOwnProperty = (obj, propertyName) =>
+  (obj && (typeof obj === 'object' || typeof obj === 'function') &&
+    Object.prototype.hasOwnProperty.call(obj, propertyName))
+    ? true : false
+
 const getSetRootValues = (values) => {
   const sets = ['indicators', 'periods', 'disaggregations', 'sectors', 'administratives', 'references']
   const ret = { ...values }
   sets.forEach(fieldSet => {
-    if (ret.hasOwnProperty(fieldSet)) {
+    if (checkOwnProperty(ret, fieldSet)) {
       delete ret[fieldSet]
     }
   })
@@ -33,7 +38,7 @@ const customDiff = (oldObj, newObj) => {
 
 const getRootValues = (values, sectionKey) => {
   const ret = { ...values }
-  if (fieldSets.hasOwnProperty(sectionKey)) {
+  if (checkOwnProperty(fieldSets, sectionKey)) {
     fieldSets[sectionKey].forEach(set => {
       delete ret[set]
     })
@@ -101,18 +106,18 @@ class AutoSave extends React.Component {
           transformUndefinedToEmptyStringOrNull(difference, savedValues)
           const { disaggregationTargets, id: itemID, ...itemValues } = item
           const allValues = disaggregationTargets && disaggregationTargets?.length > 0 ? { ...itemValues, disaggregationTargets } : itemValues
-          if(itemID){
+          if (itemID) {
             if (
-              (sectionIndex === 5 && difference?.hasOwnProperty('scores') && difference?.scores?.length) ||
-              (sectionIndex === 5 && !difference?.hasOwnProperty('scores')) ||
+              (sectionIndex === 5 && checkOwnProperty(difference, 'scores') && difference?.scores?.length) ||
+              (sectionIndex === 5 && !checkOwnProperty(difference, 'scores')) ||
               (sectionIndex !== 5)
-              ) {
-                this.props.editSetItem(sectionIndex, setName, itemIndex, itemID, difference)
+            ) {
+              this.props.editSetItem(sectionIndex, setName, itemIndex, itemID, difference)
             }
           } else {
             if (
-              (sectionIndex === 5 && allValues?.hasOwnProperty('periodEnd') && allValues?.hasOwnProperty('indicator')) ||
-              (sectionIndex === 5 && !allValues?.hasOwnProperty('periodEnd')) ||
+              (sectionIndex === 5 && checkOwnProperty(allValues, 'periodEnd') && checkOwnProperty(allValues, 'indicator')) ||
+              (sectionIndex === 5 && !checkOwnProperty(allValues, 'periodEnd')) ||
               (sectionIndex !== 5)
             ) {
               this.props.addSetItem(sectionIndex, setName, allValues)

@@ -11,7 +11,7 @@ from akvo.codelists.store.default_codelists import (HUMANITARIAN_SCOPE_TYPE,
 from akvo.utils import codelist_choices, codelist_value
 
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 
 class HumanitarianScope(models.Model):

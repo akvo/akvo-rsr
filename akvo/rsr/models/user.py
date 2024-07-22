@@ -14,7 +14,7 @@ from django.db import models
 from django.db.models import Q
 from django.utils import timezone
 from django.utils.functional import cached_property
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 import rules
 from sorl.thumbnail.fields import ImageField
 from tastypie.models import ApiKey
@@ -216,6 +216,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.get_admin_employment_orgs().content_owned_organisations().users()
 
     def first_organisation(self):
+        if not self.pk:
+            return None
         all_orgs = self.approved_organisations()
         if all_orgs:
             return all_orgs[0]

@@ -54,7 +54,7 @@ const Enumerator = ({ results, jwtView, title, mneView, needsReportingTimeoutDay
   const [filteredIndicators, setFilteredIndicators] = useState([])
   const prevSelected = useRef()
 
-  const handleFilterIndicators = (items, indicator = {}, status = null) => {
+  const handleFilterIndicators = (items, indicator = {}) => {
     const pds = items.flatMap((i) => i.periods)
     const ids = items
       .map((i) => {
@@ -219,8 +219,8 @@ const AddUpdate = ({ period, indicator, addUpdateToPeriod, patchUpdateInPeriod, 
   const [fileSet, setFileSet] = useState([])
   const formRef = useRef()
   const disaggregations = []
-  if (indicator) {
-    indicator.dimensionNames && indicator.dimensionNames.forEach(group => {
+  if (indicator && indicator.dimensionNames) {
+    indicator.dimensionNames.forEach(group => {
       group.dimensionValues.forEach(dsg => {
         disaggregations.push({ category: group.name, type: dsg.value, typeId: dsg.id, groupId: group.id })
       })

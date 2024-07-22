@@ -8,6 +8,7 @@ class RegexRuleConfigInline(admin.TabularInline):
     extra = 1
 
 
+@admin.register(PolicyConfig)
 class PolicyConfigAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {"fields": ("name", "expiration", "reuse", "min_length")}),
@@ -25,6 +26,3 @@ class PolicyConfigAdmin(admin.ModelAdmin):
         ("Prohibited words", {"fields": ("no_common_password", "no_user_attributes")}),
     )
     inlines = (RegexRuleConfigInline,)
-
-
-admin.site.register(PolicyConfig, PolicyConfigAdmin)

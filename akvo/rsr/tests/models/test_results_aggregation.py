@@ -9,6 +9,7 @@ from decimal import Decimal
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django_pgviews.models import ViewSyncer
+from django.db import DEFAULT_DB_ALIAS
 
 from akvo.rsr.models import (Indicator, IndicatorPeriod, IndicatorPeriodData, Project, Result,
                              PeriodActualValue, Disaggregation, IndicatorDimensionName,
@@ -33,7 +34,7 @@ class PeriodActualValueTestCase(TestCase):
 
         #  set up PG views
         vs = ViewSyncer()
-        vs.run(True, True)
+        vs.run(True, True, DEFAULT_DB_ALIAS)
 
     def test_actual_value_with_two_approved_updates(self):
         # Given
@@ -171,7 +172,7 @@ class PeriodDisaggregationTestCase(TestCase):
         self.update3.refresh_from_db()
         #  set up PG views
         vs = ViewSyncer()
-        vs.run(True, True)
+        vs.run(True, True, DEFAULT_DB_ALIAS)
 
     def test_disaggregated_values_aggregated_over_period(self):
         # Given

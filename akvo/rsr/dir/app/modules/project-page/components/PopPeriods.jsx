@@ -1,12 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import {
-  Typography,
-  Icon,
-  Row,
-  Col,
-  Collapse,
-  Select,
-} from 'antd'
+import { CaretRightOutlined } from '@ant-design/icons'
+import { Typography, Row, Col, Collapse, Select } from 'antd'
 import { useSelector, useDispatch } from 'react-redux'
 import { selectPeriod } from '../../../features/periods/periodSlice'
 
@@ -28,7 +22,7 @@ const PopPeriods = ({ visible }) => {
     <Collapse
       bordered={false}
       defaultActiveKey={['0']}
-      expandIcon={({ isActive }) => <Icon type="caret-right" rotate={isActive ? 90 : 0} />}
+      expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
       expandIconPosition="right"
     >
       <Collapse.Panel header={<Text strong>Reporting Periods</Text>} key="0">

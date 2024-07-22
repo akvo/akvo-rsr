@@ -1,5 +1,3 @@
-version: '3.8'
-
 x-web-common: &web-common
   build:
     context: .

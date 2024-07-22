@@ -130,9 +130,14 @@
       }
     }
   }
-  .ant-menu-horizontal > .ant-menu-item-selected,
-  .ant-menu-item:hover {
-    border-bottom: 3px solid $primary-700;
+  .ant-menu-horizontal {
+    & > .ant-menu-item-selected,
+    .ant-menu-item:hover {
+      border-bottom: 3px solid $primary-700;
+      &::after {
+        border-bottom: none;
+      }
+    }
   }
   .project-updates {
     .ant-list-item-meta-description {
@@ -360,6 +365,7 @@
             .summary {
               position: absolute;
               bottom: 0;
+              display: block;
               .ant-typography {
                 color: #1a1a1a;
               }

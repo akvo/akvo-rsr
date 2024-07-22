@@ -11,7 +11,7 @@ import HumanitarianScopes from './humanitarian-scopes/humanitarian-scope'
 import { doesFieldExist, getValidationSets } from '../../../utils/validation-utils'
 import InputLabel from '../../../utils/input-label'
 import FinalField from '../../../utils/final-field'
-import AutoSave from '../../../utils/auto-save'
+import AutoSaveFS from '../../../utils/auto-save'
 import validationDefs from './validations'
 import './styles.scss'
 import SectionContext from '../section-context'
@@ -59,7 +59,7 @@ const Focus = ({ validations, fields, primaryOrganisation}) => {
                   </Group>
                 )}
               />
-              <AutoSave sectionIndex={8} />
+              <AutoSaveFS sectionIndex={8} />
             </Item>
           </Aux>
           }

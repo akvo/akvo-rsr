@@ -20,6 +20,7 @@ fi
 if [ -z "${IS_REPORTS_CONTAINER:-}" ] && [[ -z "${IS_WORKER:-}" ]] ; then
   log Migrating
   SKIP_REQUIRED_AUTH_GROUPS=true python manage.py migrate --noinput
+  SKIP_REQUIRED_AUTH_GROUPS=true python manage.py createcachetable || true
 fi
 
 if [ -z "${IS_REPORTS_CONTAINER:-}" ] && [[ -z "${IS_WORKER:-}" ]] ; then

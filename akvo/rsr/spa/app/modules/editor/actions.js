@@ -59,7 +59,7 @@ export const removeSetItem = (sectionIndex, setName, itemIndex) => (dispatch, ge
     dispatch({ type: actionTypes.BACKEND_SYNC })
   }
 }
-export const moveSetItem = (sectionIndex, setName, oldIndex, newIndex) => (dispatch, getState) => {
+export const moveSetItem = (sectionIndex, setName, oldIndex, newIndex) => (dispatch, getState) => { // eslint-disable-line no-unused-vars
   dispatch({ type: actionTypes.MOVED_SET_ITEM, sectionIndex, setName, oldIndex, newIndex })
 }
 export const setProjectId = projectId => ({ type: actionTypes.SET_PROJECT_ID, projectId })

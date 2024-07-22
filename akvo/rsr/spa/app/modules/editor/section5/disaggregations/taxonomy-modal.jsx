@@ -56,7 +56,7 @@ const TaxonomyModal = ({ visible, handleCancel, handleAdd, projectId, dimensions
             .catch((err) => {
               setError(true)
               setLoading(false)
-              console.log(err.response.data)
+              console.log(err.response.data) // eslint-disable-line no-console
             })
           }}
           subscription={{}}

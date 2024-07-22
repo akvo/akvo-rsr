@@ -24,7 +24,7 @@ from django.utils import timezone
 from django_q.models import Task
 from django_q.tasks import async_task
 from weasyprint import HTML
-from weasyprint.fonts import FontConfiguration
+from weasyprint.text.fonts import FontConfiguration
 
 from akvo.rsr.models import Partnership
 from akvo.rsr.models.user import User

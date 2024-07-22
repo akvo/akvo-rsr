@@ -1,8 +1,9 @@
 import React from 'react'
 import { Carousel, Button, Row, Col } from 'antd'
 import styled from 'styled-components'
+import { ArrowRightOutlined } from '@ant-design/icons'
 
-import { Flex, Icon, Number, Swipeable } from '../../components'
+import { Flex, Number, Swipeable } from '../../components'
 import { homePage } from '../../../utils/ui-text'
 import AmpImage from '../../components/AmpImage'
 
@@ -45,13 +46,16 @@ const Swipe = styled(Swipeable)`
   .ant-carousel .slick-dots-bottom {
     bottom: 0;
   }
+  .ant-row .ant-col {
+    float: left;
+  }
 `
 
 const Slides = ({ data, reff }) => (
   <Swipe>
     <Carousel effect="fade" ref={reff}>
       {data.map((cs, cx) => (
-        <Row type="flex" justify="center" align="middle" key={cx}>
+        <Row key={cx}>
           <Col lg={8} md={8} sm={24} xs={24} className="image">
             <AmpImage src={cs.image} alt={cs.title} width="100%" height="276">
               <Number>{cx + 1}</Number>
@@ -63,7 +67,7 @@ const Slides = ({ data, reff }) => (
               <p>{cs.content}</p>
               <Button type="link" href={cs.url} target="_blank" rel="noopener noreferrer" className="btn-read-more" aria-label="Go to case study">
                 {homePage.exploreCaseStudy}
-                <Icon type="arrow-right" />
+                <ArrowRightOutlined />
               </Button>
             </Wrapper>
           </Col>

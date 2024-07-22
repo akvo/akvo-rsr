@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Row, Col, Form } from 'antd'
+import { Button, Row, Col } from 'antd'
 import currencies from 'currency-codes/data'
 import { Field } from 'react-final-form'
 import { useTranslation } from 'react-i18next'
@@ -7,9 +7,7 @@ import { useTranslation } from 'react-i18next'
 import getSymbolFromCurrency from '../../../../utils/get-symbol-from-currency'
 import FinalField from '../../../../utils/final-field'
 import ItemArray from '../../../../utils/item-array'
-import InputLabel from '../../../../utils/input-label'
 
-const { Item } = Form
 
 const ForecastsStack = ({ formPush, fssParent }) => {
   const { t } = useTranslation()

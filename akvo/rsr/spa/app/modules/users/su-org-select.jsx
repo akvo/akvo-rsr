@@ -1,6 +1,5 @@
 import React, { useState, useReducer, useEffect } from 'react'
 import { Select } from 'antd'
-import { useTranslation } from 'react-i18next'
 import api from '../../utils/api'
 
 let intid
@@ -8,9 +7,8 @@ const { Option } = Select
 
 const SUOrgSelect = ({ value, onChange, allOrgsOption, noOrgsOption, ...props }) => {
   const [orgs, setOrgs] = useState([])
-  const { t } = useTranslation()
   const [state, setState] = useReducer(
-    (state, newState) => ({ ...state, ...newState }), // eslint-disable-line
+    (state_, newState) => ({ ...state_, ...newState }),
     { options: [], searchStr: '' }
   )
   useEffect(() => {
@@ -51,7 +49,7 @@ const SUOrgSelect = ({ value, onChange, allOrgsOption, noOrgsOption, ...props })
       intid = setTimeout(() => {
         const options = orgs
           .filter(it => it.name.toLowerCase().indexOf(_value.toLowerCase()) !== -1 || it.longName.toLowerCase().indexOf(_value.toLowerCase()) !== -1)
-          .map(({ id, name }) => ({ value: id, label: name })) // eslint-disable-line
+          .map(({ id, name }) => ({ value: id, label: name }))
         setState({
           options
         })

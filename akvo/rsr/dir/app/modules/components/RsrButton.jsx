@@ -1,6 +1,8 @@
 /* eslint-disable react/button-has-type */
 /* global window */
-import { Button, Icon } from 'antd'
+import { LoadingOutlined } from '@ant-design/icons';
+
+import { Button } from 'antd';
 import classNames from 'classnames'
 import React from 'react'
 import { useHistory } from 'react-router-dom'
@@ -25,9 +27,9 @@ const External = ({
     : props
   return (
     <button type={type} className={classNames(`rsr-btn-external ${className}`, { block, 'ant-btn-loading': loading })} {...props}>
-      {loading && <><Icon type="loading" />&nbsp;</>}{children}
+      {loading && <><LoadingOutlined />&nbsp;</>}{children}
     </button>
-  )
+  );
 }
 
 const Internal = ({
@@ -48,9 +50,9 @@ const Internal = ({
       }}
       {...props}
     >
-      {loading && <><Icon type="loading" />&nbsp;</>}{children}
+      {loading && <><LoadingOutlined />&nbsp;</>}{children}
     </button>
-  )
+  );
 }
 
 const RsrButton = ({ children, ...props }) => (

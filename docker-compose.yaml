@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   web:
     #;; user superme:passwd
@@ -18,7 +16,7 @@ services:
       retries: 3
       start_period: 2m30s
   rsrdbhost:
-    image: akvo/akvo-rsr-dev-postgres:20200226.151639.3782188
+    image: postgres:14.11
     environment:
       - POSTGRES_PASSWORD=mysecretpassword
     expose:

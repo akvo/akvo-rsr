@@ -16,5 +16,5 @@ export CI_COMMIT=$(git rev-parse HEAD)
 export TRAVIS_COMMIT="${CI_COMMIT}"
 export DOCKER_USERNAME=akvodevops
 export SKIP_DOCKER_PUSH=yes
-export SKIP_BACKEND_TESTS=yes
+export SKIP_BACKEND_TESTS="${SKIP_BACKEND_TESTS:-yes}"
 ./ci/build-semaphoreci.sh

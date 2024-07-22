@@ -3,7 +3,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { Button as AntButton } from 'antd'
 import { useHistory } from 'react-router-dom'
-import { Icon } from '../Icon'
+import { LoadingOutlined } from '@ant-design/icons'
 
 const Btn = styled.button`
   width: ${props => props.block ? '100%' : props.width || 'fit-content'};
@@ -79,7 +79,7 @@ export const Button = ({
         }}
         {...props}
       >
-        {loading && <><Icon type="loading" />{' '}</>}{children}
+        {loading && <><LoadingOutlined />{' '}</>}{children}
       </Btn>
     )
 }

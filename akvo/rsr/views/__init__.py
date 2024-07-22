@@ -7,6 +7,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 
 from django.http import HttpResponseRedirect
+from django.shortcuts import render
 from django.urls import reverse
 
 
@@ -29,3 +30,9 @@ def lockpass(request):
     return HttpResponseRedirect(
         next_page if next_page else reverse("project-directory", args=[])
     )
+
+
+def maintenance(request):
+    response = render(request, '503.html', context={})
+    response.status_code = 503
+    return response

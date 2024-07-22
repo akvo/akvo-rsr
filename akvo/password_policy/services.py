@@ -41,10 +41,12 @@ class PasswordHistoryService:
         self._remove_excess()
 
     def latest(self) -> Optional[PasswordHistory]:
-        return self._queryset().order_by("-created_at").first()
+        return self._queryset().first()
 
     def _queryset(self) -> QuerySet[PasswordHistory]:
-        return PasswordHistory.objects.filter(user=self.user)
+        return PasswordHistory.objects\
+            .filter(user=self.user)\
+            .order_by("-created_at")
 
     def _remove_excess(self):
         entries = self._queryset()

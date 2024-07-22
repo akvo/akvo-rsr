@@ -8,7 +8,7 @@ import FinalField from '../../../../utils/final-field'
 import InputLabel from '../../../../utils/input-label'
 import VOCABULARY_OPTIONS from '../../section8/vocab.json'
 import Accordion from '../../../../utils/accordion'
-import AutoSave from '../../../../utils/auto-save'
+import AutoSaveFS from '../../../../utils/auto-save'
 import { removeSetItem } from '../../actions'
 
 const { Item } = Form
@@ -62,7 +62,7 @@ const Sectors = connect(null, { removeSetItem })(({ push, parentName, transactio
             )}
           >
           <div>
-            <AutoSave sectionIndex={6} setName={`${parentName}.sectors`} itemIndex={index} />
+            <AutoSaveFS sectionIndex={6} setName={`${parentName}.sectors`} itemIndex={index} />
             <FinalField
               name={`${name}.code`}
               render={({ input }) => (
