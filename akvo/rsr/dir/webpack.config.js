@@ -35,10 +35,11 @@ const config = () => {
     devServer: {
       host: '0.0.0.0',
       port: 8081,
-      disableHostCheck: true,
-      hot: true,
+      allowedHosts: 'all',
       historyApiFallback: true,
-      publicPath: '/'
+      devMiddleware: {
+        publicPath: '/'
+      }
     },
 
     resolve: {

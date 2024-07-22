@@ -21,6 +21,9 @@ const Section3 = ({ fields, errors, projectId, canEditAccess: admin, canEditEnum
       .then(({ data }) => {
         setRoleData(data)
       })
+      .catch(() => {
+        // ignore errors
+      })
   }, [])
   return (
     <div className="partners view">

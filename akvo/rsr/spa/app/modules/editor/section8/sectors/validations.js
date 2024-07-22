@@ -1,5 +1,5 @@
 import * as yup from 'yup'
-import { validationType, transformUndefined } from '../../../../utils/validation-utils'
+import { validationType } from '../../../../utils/validation-utils'
 
 const RSR = yup.object().shape({
   vocabulary: yup.string(),

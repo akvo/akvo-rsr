@@ -117,7 +117,7 @@ const LocationItems = ({ validations, formPush, primaryOrganisation, saving }) =
                     label: t('reference'),
                     tooltip: t('An internal reference that describes the location in the reporting organisation\'s own system.For reference see: <a href="http://iatistandard.org/202/activity-standard/iati-activities/iati-activity/location/#attributes" target="_blank">http://iatistandard.org/202/activity-standard/iati-activities/iati-activity/location/#attributes</a>.')
               }}
-            />
+                />
               </Col>
               }
               {fieldExists('locationCode') &&

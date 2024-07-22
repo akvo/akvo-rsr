@@ -1,12 +1,5 @@
 import React from 'react'
-import {
-  Row,
-  Col,
-  Switch,
-  Typography,
-  Form,
-  Empty
-} from 'antd'
+import { Row, Col, Switch, Typography, Empty, Form } from 'antd'
 import moment from 'moment'
 import classNames from 'classnames'
 import isEmpty from 'lodash/isEmpty'

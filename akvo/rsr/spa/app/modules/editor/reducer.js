@@ -1,4 +1,4 @@
-import {cloneDeep, set, get, isEmpty} from 'lodash'
+import { cloneDeep, set, get } from 'lodash'
 import { notification } from 'antd'
 import actionTypes from './action-types'
 import { validate } from './validation'
@@ -184,7 +184,7 @@ export default (state = initialState, action) => {
       return newState
     case actionTypes.MOVED_SET_ITEM:
       const items = get(newState[sectionKey].fields, action.setName)
-      const {oldIndex, newIndex} = action;
+      const {oldIndex, newIndex} = action
       const index = Math.min(oldIndex, newIndex)
       const [item, otherItem] = items.slice(index, index + 2)
       set(
@@ -216,7 +216,7 @@ export default (state = initialState, action) => {
       set(
         newState[sectionKey].fields,
         action.setName,
-        get(newState[sectionKey].fields, action.setName).filter((it, index) => index !== action.itemIndex)
+        get(newState[sectionKey].fields, action.setName).filter((it, idx) => idx !== action.itemIndex)
       )
       if (!action.skipValidation) newState[sectionKey].errors = validateSection(sectionKey, state.validations, newState[sectionKey].fields)
       return newState

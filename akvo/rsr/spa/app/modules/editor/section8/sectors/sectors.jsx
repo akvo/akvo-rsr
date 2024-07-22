@@ -134,7 +134,7 @@ const Sectors = ({ validations, formPush, primaryOrganisation }) => {
                         name={`${name}.text`}
                         withLabel
                         label={<InputLabel optional={isOptional('text')}>{t('description')}</InputLabel>}
-                      />
+                             />
                     }
                     return null
                   }}

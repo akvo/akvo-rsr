@@ -233,6 +233,9 @@ h1.text-3xl {
 #rsr-contact-form .ant-col > * {
   margin-bottom: $margin-default;
 }
+#rsr-contact-form .ant-form-item-control-input {
+  margin-bottom: 0;
+}
 #rsr-contact-form {
   background: $primary-gradient-700-600;
   padding-top: 3em;

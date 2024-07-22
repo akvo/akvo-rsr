@@ -74,7 +74,7 @@ def get_setting_schedules() -> List[Schedule]:
         }
         data.append(conf)
     serializer = ScheduleSerializer(data=data, many=True)
-    serializer.is_valid(True)
+    serializer.is_valid(raise_exception=True)
     return [Schedule(schedule_type=Schedule.CRON, **item) for item in serializer.validated_data]
 
 

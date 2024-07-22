@@ -238,8 +238,8 @@ const ResultAdmin = ({
     ?.map((u) => {
       const dsgItems = []
       if (u.indicator?.dimensionNames?.length) {
-        u.indicator?.dimensionNames?.forEach(dn => {
-          dn?.dimensionValues?.forEach(dv => {
+        u.indicator.dimensionNames.forEach(dn => {
+          dn.dimensionValues.forEach(dv => {
             const findValue = u?.disaggregations?.find((du) => (du?.categoryId === dn.id && du?.typeId === dv.id))
             dsgItems.push({
               ...findValue,

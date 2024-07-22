@@ -151,7 +151,7 @@ const ResultOverview = ({
                 onClear={handleOnCancelFilter}
                 label="Periods"
               >
-                <Row gutter={[8, 8]}>
+                <Row gutter={[8, 8]} style={{ display: 'block' }}>
                   <Col>
                     {(selectedPeriods.length > 0) && <Text type="secondary">PERIODS</Text>}
                   </Col>

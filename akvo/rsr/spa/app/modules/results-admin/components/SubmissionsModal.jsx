@@ -19,6 +19,7 @@ const SubmissionsModal = ({ updates = [], enumerators = [], scores = [], item, v
     return ret
   }, {})
   const noSubsEnumerators = enumerators.filter(enumerator => !haveSubsEnumerators.hasOwnProperty(enumerator.email))
+  // eslint-disable-next-line no-unused-vars
   const data = sortBy(Object.entries(haveSubsEnumerators).map(([_, update]) => {
     const { userDetails: { email, firstName, lastName } } = update
     return {
@@ -59,7 +60,6 @@ const SubmissionsModal = ({ updates = [], enumerators = [], scores = [], item, v
 }
 
 const SubmissionsTable = ({ data, scores }) => {
-  console.log(data, scores)
   const ds = data.map(it => ({
     id: it.id,
     user: it.user,

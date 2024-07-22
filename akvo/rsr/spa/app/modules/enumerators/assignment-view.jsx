@@ -1,9 +1,7 @@
-
-/* global window */
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useState } from 'react'
 import { Button, Select } from 'antd'
 import { useTranslation } from 'react-i18next'
-import { css, jsx } from '@emotion/core'
+import { css } from '@emotion/core'
 import api from '../../utils/api'
 
 
@@ -28,7 +26,7 @@ const AssignmentView = ({ id, selectedIndicators, setSelectedIndicators, enumera
     const _enumerators = enumerators.map(it => ({ ...it }))
     const _it = _enumerators.find(it => it.email === enumerator.email)
     if(_it) {
-      _it.indicators = _it.indicators.filter(id => selectedIndicators.indexOf(id) === -1)
+      _it.indicators = _it.indicators.filter(it => selectedIndicators.indexOf(it) === -1)
       api.patch(`/project/${id}/enumerators/`, [_it])
       setEnumerators(_enumerators)
     }
@@ -55,7 +53,8 @@ const AssignmentView = ({ id, selectedIndicators, setSelectedIndicators, enumera
             margin-left: auto;
           }
         `
-        }>
+        }
+        >
           <h5 css={css`margin-top: 5px`}>{assignedEnumerators.length} assigned enumerators</h5>
           {assignedEnumerators.length > 1 && <Button>Unassign all</Button>}
         </div>

@@ -3,8 +3,9 @@ import { Collapse } from 'antd'
 import styled from 'styled-components'
 import SimpleMarkdown from 'simple-markdown'
 import isEmpty from 'lodash/isEmpty'
+import { PlusOutlined, MinusOutlined } from '@ant-design/icons'
 
-import { Title, Flex, Icon, Line } from '../../../components'
+import { Title, Flex, Line } from '../../../components'
 
 const Wrapper = styled.div`
   .ant-collapse-borderless {
@@ -36,7 +37,7 @@ const ProjectSummary = ({ project }) => {
           bordered={false}
           className="project-summary"
           expandIconPosition="right"
-          expandIcon={({ isActive }) => <Icon type={isActive ? 'minus' : 'plus'} />}
+          expandIcon={({ isActive }) => isActive ? <MinusOutlined /> : <PlusOutlined />}
           accordion
         >
           {(project && !(isEmpty(project.goalsOverview))) && (

@@ -1,5 +1,6 @@
 import React from 'react'
-import { Row, Col, Menu, Dropdown, Button, Icon, Checkbox, Tag } from 'antd'
+import { DownOutlined } from '@ant-design/icons'
+import { Row, Col, Menu, Dropdown, Button, Checkbox, Tag } from 'antd'
 import { useTranslation } from 'react-i18next'
 import Search from '../../index/search'
 import allCountries from '../../../utils/countries.json'
@@ -45,7 +46,7 @@ export const HeaderFilter = ({
           )}
         >
           <Button type="link" className="ant-dropdown-link">
-            <Icon type="down" />&nbsp;{t('All Countries')}
+            <DownOutlined />&nbsp;{t('All Countries')}
           </Button>
         </Dropdown>
         <Dropdown
@@ -56,7 +57,7 @@ export const HeaderFilter = ({
           )}
         >
           <Button type="link" className="ant-dropdown-link" onClick={e => e.preventDefault()}>
-            <Icon type="down" />&nbsp;{selectedPeriod || t('All Periods')}
+            <DownOutlined />&nbsp;{selectedPeriod || t('All Periods')}
           </Button>
         </Dropdown>
         {countryTags && countryTags.map(country => <Tag key={country.code} closable onClose={() => onCountry(country.code, false)}>{country.name}</Tag>)}

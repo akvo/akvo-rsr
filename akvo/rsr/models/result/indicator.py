@@ -12,7 +12,7 @@ from akvo.utils import codelist_choices, codelist_value
 from django.contrib.postgres.fields import ArrayField
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.db.models.signals import post_save, m2m_changed
 from django.dispatch import receiver
 

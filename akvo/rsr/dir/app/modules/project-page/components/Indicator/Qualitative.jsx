@@ -21,7 +21,7 @@ const Qualitative = ({ periods = [] }) => {
     updates: p.updates
   }))
   return (
-    <Row gutter={[8, 16]}>
+    <Row gutter={[8, 16]} style={{ display: 'block' }}>
       {data.filter((d) => (d.updates.length)).map((d) => (
         <Col className="allPeriods" key={d.id}>
           <List

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Menu, Typography } from 'antd'
+import { Button, Typography } from 'antd'
 import { useLocation } from 'react-router-dom'
 
 import jsonLinks from './help-links.json'

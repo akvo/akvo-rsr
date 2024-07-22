@@ -30,6 +30,6 @@ class PasswordHistoryServiceTestBuilder:
         if not self.user:
             self.user = cast(AbstractUser, User(username="test"))
         if not self.config and not self.no_config:
-            self.config = PolicyConfig(expiration=1, reuse=2)
+            self.config = PolicyConfig.objects.create(expiration=1, reuse=2)
         self.user.save()
         return PasswordHistoryService(self.user, self.config)

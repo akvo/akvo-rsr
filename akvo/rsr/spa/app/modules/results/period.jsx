@@ -219,8 +219,10 @@ const Period = ({ setResults, period, measure, treeFilter, statusFilter, increas
     toggleSelectedPeriod(period, indicatorId)
   }
   const handleUpdateStatus = (update, status, reviewNote, e) => {
-    e?.stopPropagation()
-    e?.preventDefault()
+    if (e) {
+      e.stopPropagation()
+      e.preventDefault()
+    }
     const index = updates.findIndex(it => it.id === update.id)
     setUpdates([...updates.slice(0, index), { ...update, status }, ...updates.slice(index + 1)])
     api.patch(`/indicator_period_data_framework/${update.id}/`, {

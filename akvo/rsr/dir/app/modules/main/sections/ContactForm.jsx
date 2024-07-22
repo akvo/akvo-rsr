@@ -1,12 +1,5 @@
 import React from 'react'
-import {
-  Row,
-  Col,
-  Input,
-  Button,
-  Typography,
-  Form
-} from 'antd'
+import { Row, Col, Input, Button, Typography, Form } from 'antd'
 import { Container } from 'react-awesome-styled-grid'
 import styled from 'styled-components'
 import { useFormik } from 'formik'
@@ -60,7 +53,7 @@ const ContactForm = () => {
             {contactUs.description}
           </Paragraph>
         </Container>
-        <Form onSubmit={formik.handleSubmit} method="post">
+        <Form onFinish={formik.handleSubmit} method="post">
           <Row type="flex" justify="center" className="mb-3">
             <Col lg={16} md={16} sm={20} xs={20} className="text-left">
               <Input.Group className="w-full" size="large">

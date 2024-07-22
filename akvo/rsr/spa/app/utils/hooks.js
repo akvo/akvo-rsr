@@ -24,6 +24,7 @@ function useFetch(url) {
 }
 
 function useForceUpdate() {
+  // eslint-disable-next-line no-unused-vars
   const [value, set] = useState(true) // boolean state
   return () => set(_value => !_value) // toggle the state to force render
 }

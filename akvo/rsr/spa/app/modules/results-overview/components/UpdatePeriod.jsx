@@ -93,8 +93,8 @@ const UpdatePeriod = ({
       onOk() {
         setDeleting(true)
         api
-          ?.delete(`/indicator_period_data_framework/${update.id}/`)
-          ?.then(() => {
+          .delete(`/indicator_period_data_framework/${update.id}/`)
+          .then(() => {
             const _results = resultRdr.map((r) => ({
               ...r,
               indicators: r.indicators
@@ -112,7 +112,7 @@ const UpdatePeriod = ({
             setResultState(_results)
             setEditing(null)
           })
-          ?.catch(() => {
+          .catch(() => {
             setEditing(null)
           })
       }
@@ -166,8 +166,8 @@ const UpdatePeriod = ({
         }))
     }
     api
-      ?.patch(`/indicator_period_data_framework/${editing.id}/`, payload)
-      ?.then(({ data }) => {
+      .patch(`/indicator_period_data_framework/${editing.id}/`, payload)
+      .then(({ data }) => {
         let update = { ...editing, ...data }
         const resolveUploads = (comment = null) => {
           if (comment) {
@@ -220,7 +220,7 @@ const UpdatePeriod = ({
           }, 500)
         }
       })
-      ?.catch(({ response: { data } }) => {
+      .catch(({ response: { data } }) => {
         setSubmitting(false)
         setErrors(data)
       })

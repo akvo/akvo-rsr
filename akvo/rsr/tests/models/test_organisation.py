@@ -119,9 +119,9 @@ class OrganisationModelTestCase(BaseTestCase):
 
     def test_chaining_managers(self):
         qs = Organisation.objects.all()
-        self.assertQuerysetEqual(
+        self.assertQuerySetEqual(
             qs.fieldpartners().reportingpartners().order_by('id'),
-            [repr(org) for org in (
+            [org for org in (
                 Organisation.objects.all().filter(pk=self.orgs['E'].pk).order_by('id')
             )]
         )

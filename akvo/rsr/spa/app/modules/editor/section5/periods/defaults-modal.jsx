@@ -89,7 +89,7 @@ export const DefaultsModal = ({ visible, setVisible }) => {
                           </Item>
                         </Col>
                         <Col span={2} style={{ paddingTop: '2em' }}>
-                          <a onClick={() => {
+                          <Button type="link" onClick={() => {
                             confirm({
                               content: 'Are you sure remove this period?',
                               onOk: () => {
@@ -99,7 +99,7 @@ export const DefaultsModal = ({ visible, setVisible }) => {
                             }}
                           >
                             <Icon type="delete" />
-                          </a>
+                          </Button>
                         </Col>
                       </Row>
                     ))}

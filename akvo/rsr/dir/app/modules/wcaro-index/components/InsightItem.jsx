@@ -1,5 +1,6 @@
 import React from 'react'
-import { Card, Icon, Typography } from 'antd'
+import { RightOutlined } from '@ant-design/icons'
+import { Card, Typography } from 'antd'
 import { LineChart, Line, CartesianGrid, XAxis, YAxis } from 'recharts'
 import { MapWcaro } from './MapWcaro'
 
@@ -26,7 +27,7 @@ export const InsightItem = ({ type, data }) => {
             </Text>,
             <Text key="right">
               Read More&nbsp;
-              <Icon type="right" />
+              <RightOutlined />
             </Text>
           ]}
         >

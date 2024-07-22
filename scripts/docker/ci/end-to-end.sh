@@ -75,7 +75,7 @@ SPA_PAGE=$(curl --location  "${SPA_URL}")
 echo "${SPA_PAGE}" | grep "SENTRY_ENVIRONMENT = 'test'" > /dev/null || (echo "Sentry env not found in:"; echo "${SPA_PAGE}"; exit 1)
 echo "${SPA_PAGE}" | grep "SENTRY_RELEASE = '1234567899876543212'" > /dev/null || (echo "Sentry release not found in:"; echo "${SPA_PAGE}"; exit 1)
 
-SPA_ASSETS=$(echo "${SPA_PAGE}" | grep -Eo "\/my-rsr/.+(css|js)" | head -n 3)
+SPA_ASSETS=$(echo "${SPA_PAGE}" | grep -Eo "\/my-rsr\/[a-z/]+\.[[:alnum:]]+\.(css|js)" | head -n 3)
 while read -r path; do
   # test asset
   test_http_status "${HTTP_OK}" "$BASE_URL$path"
@@ -93,7 +93,7 @@ test_http_status "${HTTP_OK}" "${SPA_URL}/"
 
 # Project Directory SPA assets
 SPA_PAGE=$(curl --location  "${SPA_URL}")
-SPA_ASSETS=$(echo "${SPA_PAGE}" | grep -Eo "\/project-directory/.+(css|js)" | head -n 3)
+SPA_ASSETS=$(echo "${SPA_PAGE}" | grep -Eo "\/project-directory\/[a-z/]+\.[[:alnum:]]+\.(css|js)" | head -n 3)
 while read -r path; do
     # test asset
     test_http_status "${HTTP_OK}" "$BASE_URL$path"

@@ -14,12 +14,12 @@ import RTE from '../../../../utils/rte'
 import FinalField from '../../../../utils/final-field'
 import InputLabel from '../../../../utils/input-label'
 import Accordion from '../../../../utils/accordion'
-import AutoSave from '../../../../utils/auto-save'
+import AutoSaveFS from '../../../../utils/auto-save'
 import Targets from './targets'
 import { getValidations } from '../../../../utils/validation-utils'
 import RequiredHint from '../../../../utils/required-hint'
 import { useDefaultPeriodsState } from './defaults-context'
-import DefaultsModal from './defaults-modal'
+import { DefaultsModal } from './defaults-modal'
 import PeriodLabelsModal from './period-labels-modal'
 import api, { config } from '../../../../utils/api'
 import actionTypes from '../../action-types'
@@ -279,7 +279,7 @@ const Periods = ({
                   </div>
                 )}
               >
-                <AutoSave sectionIndex={5} setName={`${fieldName}.periods`} itemIndex={index} />
+                <AutoSaveFS sectionIndex={5} setName={`${fieldName}.periods`} itemIndex={index} />
                 <Row gutter={16}>
                   <Col span={12}>
                     <Field
@@ -329,10 +329,11 @@ const Periods = ({
                         withLabel
                         optional={!isDGIS}
                         dict={{ label: t('Target value') }}
-                      />
+                             />
                     }
                     return null
-                  }} />,
+                  }}
+                  />,
                   <Field name={`results[${resultIndex}].indicators[${indicatorIndex}].type`} render={({input: {value: indicatorType}}) => {
                     if(indicatorType === 2) {
                       return (
@@ -349,7 +350,8 @@ const Periods = ({
                       )
                     }
                     return null
-                  }} />,
+                  }}
+                  />,
                   <Field name={`${name}.id`} render={({ input }) => <Targets fieldName={`${fieldName}.periods[${index}]`} periodId={input.value} periodIndex={index} {...{ indicatorId, indicatorIndex, resultId, resultIndex, formPush, targetsAt }} />} />
                 ]
                 }
@@ -361,10 +363,11 @@ const Periods = ({
                     <Select
                       placeholder={t('Please select...')}
                       {...input}
-                      >
+                    >
                       {periodLabels?.map(option => <Select.Option value={option.id}>{option.label}</Select.Option>)}
                     </Select>
-                  )} />
+                  )}
+                  />
                 </Item>
               </Panel>
             )

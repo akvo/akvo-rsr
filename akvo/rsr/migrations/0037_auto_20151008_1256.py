@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='partnership',
             name='is_secondary_reporter',
-            field=models.NullBooleanField(help_text='This indicates whether the reporting organisation is a secondary publisher: publishing data for which it is not directly responsible.', verbose_name='secondary reporter'),
+            field=models.BooleanField(null=True, help_text='This indicates whether the reporting organisation is a secondary publisher: publishing data for which it is not directly responsible.', verbose_name='secondary reporter'),
             preserve_default=True,
         ),
         migrations.AlterField(

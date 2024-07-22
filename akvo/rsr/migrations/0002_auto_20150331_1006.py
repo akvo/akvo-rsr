@@ -61,7 +61,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('code', akvo.rsr.fields.ValidXMLCharField(max_length=1, verbose_name='code', choices=[('1', '1 - Free standing technical cooperation'), ('2', '2 - Programme-based approach'), ('3', '3 - Investment project'), ('4', '4 - Associated financing')])),
-                ('significance', models.NullBooleanField(verbose_name='significance')),
+                ('significance', models.BooleanField(null=True, verbose_name='significance')),
                 ('crs', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='other_flags', verbose_name='crs', to='rsr.CrsAdd')),
             ],
             options={
@@ -75,7 +75,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('project', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, primary_key=True, serialize=False, to='rsr.Project')),
                 ('extraction_date', models.DateField(null=True, verbose_name='extraction date', blank=True)),
-                ('priority', models.NullBooleanField(verbose_name='priority')),
+                ('priority', models.BooleanField(null=True, verbose_name='priority')),
                 ('phaseout_year', models.PositiveIntegerField(max_length=4, null=True, verbose_name='phaseout year', blank=True)),
             ],
             options={

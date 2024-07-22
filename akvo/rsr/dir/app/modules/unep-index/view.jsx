@@ -1,7 +1,8 @@
 /* global window, document */
 import React, { useState, useRef, useEffect } from 'react'
 import { useLocalStorage } from '@rehooks/local-storage'
-import { Dropdown, Menu, Tag, Button, Icon } from 'antd'
+import { DownOutlined } from '@ant-design/icons'
+import { Dropdown, Menu, Tag, Button } from 'antd'
 import {cloneDeep} from 'lodash'
 import { useTranslation } from 'react-i18next'
 import Projects from '../index/projects'
@@ -229,7 +230,7 @@ const View = () => {
           <a className="unep-links" href="https://unep.tc.akvo.org/" rel="noopener noreferrer" target="_blank">{t('Go to Interactive Dashboard')}</a>
           <Dropdown overlay={langMenu({ lang, setLang })} trigger={['click']}>
             <Button className="lang">
-              <b>{lang}</b> <Icon type="down" />
+              <b>{lang}</b> <DownOutlined />
             </Button>
           </Dropdown>
         </div>

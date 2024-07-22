@@ -1,7 +1,7 @@
 /* eslint-disable no-shadow */
 /* global window, FormData */
 import React, { useState, useEffect, useRef } from 'react'
-import { Collapse, Button, Icon, Form, Divider, Upload, Typography, Modal } from 'antd'
+import { Collapse, Button, Icon, Form, Divider, Upload, Modal } from 'antd'
 import { Form as FinalForm, Field, FormSpy } from 'react-final-form'
 import { useTranslation } from 'react-i18next'
 import axios from 'axios'
@@ -32,7 +32,6 @@ const axiosConfig = {
 }
 
 const { Panel } = Collapse
-const { Text } = Typography
 
 
 export const AddUpdate = ({
@@ -52,8 +51,8 @@ export const AddUpdate = ({
   const [fileSet, setFileSet] = useState([])
   const formRef = useRef()
   const disaggregations = []
-  if (indicator) {
-    indicator.dimensionNames && indicator.dimensionNames.forEach(group => {
+  if (indicator && indicator.dimensionNames) {
+    indicator.dimensionNames.forEach(group => {
       group.dimensionValues.forEach(dsg => {
         disaggregations.push({ category: group.name, type: dsg.value, typeId: dsg.id, groupId: group.id })
       })
