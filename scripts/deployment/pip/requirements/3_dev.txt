@@ -489,9 +489,9 @@ diff-cover==9.0.0 \
     --hash=sha256:1dc851d3f3f320c048d03618e4c0d9861fa4a1506b425d2d09a564b20c95674a \
     --hash=sha256:31b308259b79e2cab5f30aff499a3ea3ba9475f0d495d82ba9b6caa7487bca03
     # via -r scripts/deployment/pip/requirements/dev.in
-django==4.2.11 \
-    --hash=sha256:6e6ff3db2d8dd0c986b4eec8554c8e4f919b5c1ff62a5b4390c17aff2ed6e5c4 \
-    --hash=sha256:ddc24a0a8280a0430baa37aff11f28574720af05888c62b7cfe71d219f4599d3
+django==4.2.14 \
+    --hash=sha256:3ec32bc2c616ab02834b9cac93143a7dc1cdcd5b822d78ac95fc20a38c534240 \
+    --hash=sha256:fc6919875a6226c7ffcae1a7d51e0f2ceaf6f160393180818f6c95f51b1e7b96
     # via
     #   -r scripts/deployment/pip/requirements/production.in
     #   django-bootstrap3
