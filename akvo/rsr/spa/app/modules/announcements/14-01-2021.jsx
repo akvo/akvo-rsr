@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Divider } from 'antd'
+import { Button } from 'antd'
 import { Link } from 'react-router-dom'
 import api from '../../utils/api'
 

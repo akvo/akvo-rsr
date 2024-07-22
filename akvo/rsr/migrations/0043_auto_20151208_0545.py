@@ -93,7 +93,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='indicator',
             name='ascending',
-            field=models.NullBooleanField(help_text='Choose ascending if the target value of the indicator is higher than the baseline value (eg. people with access to sanitation). Choose descending if the target value of the indicator is lower than the baseline value (eg. people with diarrhea).', verbose_name='ascending'),
+            field=models.BooleanField(null=True, help_text='Choose ascending if the target value of the indicator is higher than the baseline value (eg. people with access to sanitation). Choose descending if the target value of the indicator is lower than the baseline value (eg. people with diarrhea).', verbose_name='ascending'),
             preserve_default=True,
         ),
         migrations.AlterField(
@@ -765,7 +765,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='result',
             name='aggregation_status',
-            field=models.NullBooleanField(help_text='Indicate whether the data in the result set can be accumulated.', verbose_name='aggregation status'),
+            field=models.BooleanField(null=True, help_text='Indicate whether the data in the result set can be accumulated.', verbose_name='aggregation status'),
             preserve_default=True,
         ),
         migrations.AlterField(

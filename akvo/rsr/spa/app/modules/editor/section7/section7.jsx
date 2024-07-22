@@ -13,7 +13,7 @@ import { Aux, shouldUpdateSectionRoot } from '../../../utils/misc'
 import { getValidationSets, doesFieldExist } from '../../../utils/validation-utils'
 import SCOPE_OPTIONS from './scope-options.json'
 import FinalField from '../../../utils/final-field'
-import AutoSave from '../../../utils/auto-save'
+import AutoSaveFS from '../../../utils/auto-save'
 import SectionContext from '../section-context'
 import validationDefs from './validations'
 
@@ -55,7 +55,7 @@ const LocationsView = ({ projectId, validations, fields, primaryOrganisation }) 
             />
           </Item>
           }
-          <AutoSave sectionIndex={7} />
+          <AutoSaveFS sectionIndex={7} />
           <Skeleton loading={isLoading} paragraph={{ rows: 4 }} active>
             <LocationsItems formPush={push} {...passProps} primaryOrganisation={primaryOrganisation} />
           </Skeleton>
@@ -73,7 +73,7 @@ const LocationsView = ({ projectId, validations, fields, primaryOrganisation }) 
           )}
         </Form>
       )}
-    />
+      />
     </SectionContext.Provider>
     </div>
   )

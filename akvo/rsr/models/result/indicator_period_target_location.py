@@ -9,7 +9,7 @@ from .indicator_period import IndicatorPeriod
 from akvo.rsr.fields import ValidXMLCharField
 
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 
 class IndicatorPeriodTargetLocation(models.Model):

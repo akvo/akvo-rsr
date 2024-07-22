@@ -8,7 +8,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 from django.conf import settings
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from akvo.rsr.validators import hostname_validator
 from akvo.utils import rsr_show_keywords

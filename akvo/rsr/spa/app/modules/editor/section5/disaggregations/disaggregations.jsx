@@ -69,7 +69,7 @@ const Disaggregations = ({ fieldName, formPush, addSetItem, removeSetItem, proje
       <TaxonomyModal
         visible={modalVisible}
         handleCancel={() => setModalVisible(false)}
-        handleAdd={(dimension, isNew) => addItem(dimension)}
+        handleAdd={(dimension) => addItem(dimension)}
         dimensions={unaddedDimensions}
         fetchDimensions={fetchDimensions}
       />

@@ -75,7 +75,8 @@ class DimensionTargets extends React.Component {
                                 formPush(`${fieldName}.disaggregationTargets[${targetIndex}].index`, targetIndex)
                                 input.onChange(e.target.value)
                               }
-                            }} />
+                            }}
+                            />
                           </Form.Item>
                         )
                       }}

@@ -7,4 +7,4 @@ data:
   cloud-profiler-enable: "true"
   google-storege-bucket-name: akvo-rsr-test-media-files
   default-file-storage: storages.backends.gcloud.GoogleCloudStorage
-  google-sql-db-instance: shared-test-database
+  google-sql-db-instance: shared-test-database-2024

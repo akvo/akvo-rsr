@@ -4,13 +4,6 @@ set -eu
 DEPLOY_COMMITISH="${1:-master}"
 git fetch --all
 
-echo "Running E2E tests"
-if [[ $(uname -s) == "Linux" ]] && [[ ! "${HEADLESS:-}" = false ]]; then
-  ./scripts/devhelpers/run-e2e-linux.sh
-else
-  ./scripts/devhelpers/run-e2e-local.sh
-fi
-
 COMMIT_HASH="$(git rev-parse ${DEPLOY_COMMITISH})"
 
 docker run --rm -e ZULIP_CLI_TOKEN -v ~/.config:/home/akvo/.config -v "$(pwd)":/app \

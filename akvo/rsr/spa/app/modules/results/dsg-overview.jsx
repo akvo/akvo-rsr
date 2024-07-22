@@ -62,8 +62,8 @@ const DsgOverview = ({
     })
     .then(() => {
       const _period = cloneDeep(period)
-      const it = _period.disaggregationTargets.find(it => it.id === item.targetId)
-      if (it) it.value = value
+      const target = _period.disaggregationTargets.find(it => it.id === item.targetId)
+      if (target) target.value = value
       editPeriod(_period)
     })
   }

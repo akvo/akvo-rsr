@@ -159,7 +159,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='project',
             name='humanitarian',
-            field=models.NullBooleanField(help_text='Determines whether this project relates entirely or partially to humanitarian aid.', verbose_name='humanitarian project'),
+            field=models.BooleanField(null=True, help_text='Determines whether this project relates entirely or partially to humanitarian aid.', verbose_name='humanitarian project'),
             preserve_default=True,
         ),
         migrations.AddField(
@@ -183,7 +183,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='transaction',
             name='humanitarian',
-            field=models.NullBooleanField(help_text='Determines whether this transaction relates entirely or partially to humanitarian aid.', verbose_name='humanitarian transaction'),
+            field=models.BooleanField(null=True, help_text='Determines whether this transaction relates entirely or partially to humanitarian aid.', verbose_name='humanitarian transaction'),
             preserve_default=True,
         ),
         migrations.AddField(

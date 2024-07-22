@@ -16,7 +16,7 @@ const ValidationBar = ({ editorRdr, dispatch }) => {
         <Route
           path={`/projects/:id/${section.key}`}
           exact
-          render={(props) => {
+          render={() => {
             const required = editorRdr[`section${index + 1}`].errors
               .filter(it => it.type === 'required' || it.type === 'min')
               .reduce((acc, val) => { if (acc.findIndex(it => it.path === val.path) === -1) return [...acc, val]; return acc }, [])

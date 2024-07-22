@@ -14,28 +14,30 @@ const FilterCheckbox = ({ results, filteredResults, periodFilter, setPeriodFilte
   let approved = 0
   const periodOpts = []
   const pendingUpdates = []
-  results?.forEach(result => {
-    result.indicators.forEach(indicator => {
-      indicator.periods.forEach(period => {
-        const item = { start: period.periodStart, end: period.periodEnd }
-        if (periodOpts.findIndex(it => it.start === item.start && it.end === item.end) === -1) {
-          periodOpts.push(item)
-        }
-        if (isPeriodNeedsReporting(period, needsReportingTimeoutDays)) {
-          needsReporting += 1
-        }
-        if (isPeriodApproved(period)) {
-          approved += 1
-        }
-        period.updates.forEach(update => {
-          if (update.status === 'P') {
-            pending += 1
-            pendingUpdates.push({ ...update, indicatorId: indicator.id, periodId: period.id, resultId: result.id })
+  if (results) {
+    results.forEach(result => {
+      result.indicators.forEach(indicator => {
+        indicator.periods.forEach(period => {
+          const item = { start: period.periodStart, end: period.periodEnd }
+          if (periodOpts.findIndex(it => it.start === item.start && it.end === item.end) === -1) {
+            periodOpts.push(item)
           }
+          if (isPeriodNeedsReporting(period, needsReportingTimeoutDays)) {
+            needsReporting += 1
+          }
+          if (isPeriodApproved(period)) {
+            approved += 1
+          }
+          period.updates.forEach(update => {
+            if (update.status === 'P') {
+              pending += 1
+              pendingUpdates.push({ ...update, indicatorId: indicator.id, periodId: period.id, resultId: result.id })
+            }
+          })
         })
       })
     })
-  })
+  }
   useEffect(() => {
     dispatch({ type: actionTypes.SAVE_FIELDS, fields: { pendingUpdateCount: pending }, sectionIndex: 1, noSync: true })
   }, [results])
@@ -95,12 +97,12 @@ const FilterCheckbox = ({ results, filteredResults, periodFilter, setPeriodFilte
         result.indicators.forEach(indicator => {
           let filterIndicator = false
           indicator.periods.forEach(period => {
-            const pending = period.updates.filter(it => it.status === 'P')
-            if (pending.length > 0) {
+            const pendingPeriods = period.updates.filter(it => it.status === 'P')
+            if (pendingPeriods.length > 0) {
               filterIndicator = true
               filterResult = true
               filtered.periodIds.push(period.id)
-              filtered.updateIds = pending.map(it => it.id)
+              filtered.updateIds = pendingPeriods.map(it => it.id)
             }
           })
           if (filterIndicator) {

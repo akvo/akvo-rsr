@@ -1,15 +1,8 @@
-import React, { useEffect, useState } from 'react'
-import { Modal, Form, Button, Row, Col, Input, Popconfirm } from 'antd'
-import { Form as FinalForm, FormSpy, Field } from 'react-final-form'
-import { FieldArray } from 'react-final-form-arrays'
-import arrayMutators from 'final-form-arrays'
+import React, { useState } from 'react'
+import { Modal, Button, Input, Popconfirm } from 'antd'
+import { Form as FinalForm, Field } from 'react-final-form'
 import { useTranslation } from 'react-i18next'
-import moment from 'moment'
-import InputLabel from '../../../../utils/input-label'
-import FinalField from '../../../../utils/final-field'
 import api from '../../../../utils/api'
-
-const { Item } = Form
 
 
 const PeriodLabelsModal = ({ visible, setVisible, projectId, setPeriodLabels, periodLabels }) => {
@@ -17,9 +10,6 @@ const PeriodLabelsModal = ({ visible, setVisible, projectId, setPeriodLabels, pe
   let rowFormRef
   let addFormRef
   const [state, setState] = useState({})
-  const addToIndicator = () => {
-    setVisible(false)
-  }
   const handleEditRow = (value) => () => setState({ editingRow: value })
   const handleRowSubmit = (value) => {
     setState({ editingName: false })
@@ -39,7 +29,7 @@ const PeriodLabelsModal = ({ visible, setVisible, projectId, setPeriodLabels, pe
       })
       .catch(err => {
         setState({ deleting: false })
-        console.log(err)
+        console.log(err) // eslint-disable-line no-console
       })
     setState({ deleting: true, editingRow: false })
   }
@@ -75,7 +65,7 @@ const PeriodLabelsModal = ({ visible, setVisible, projectId, setPeriodLabels, pe
                             okText="Yes"
                             okType="danger"
                             cancelText="No"
-                            >
+                          >
                             <Button icon="delete" type="danger" disabled={state.deleting} />
                           </Popconfirm>
                         </div>

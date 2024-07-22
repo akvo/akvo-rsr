@@ -13,7 +13,7 @@ from urllib.parse import urlparse
 from django.core.management.base import BaseCommand
 from django.db.utils import DataError
 from django.utils.text import slugify
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
 from akvo.rest.cache import delete_project_from_project_directory_cache
 from akvo.rsr.iso3166 import ISO_3166_COUNTRIES

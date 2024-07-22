@@ -115,7 +115,7 @@ JSON_CODELISTS_PATH_PREFIX = 'akvo/rsr/spa/app/modules/editor/'
 
 DOC_TEMPLATE = """# -*- coding: utf-8 -*-
 
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 {codelists}
 """
@@ -408,7 +408,7 @@ if __name__ == '__main__':
     codelist_path = join(HERE, '..', 'store', "codelists_v%s.py" % args.version.replace(".", ""))
     with open(codelist_path, "w") as iati_file:
         iati_file.write('# -*- coding: utf-8 -*-\n\n')
-        iati_file.write('from django.utils.translation import ugettext_lazy as _\n\n')
+        iati_file.write('from django.utils.translation import gettext_lazy as _\n\n')
         iati_file.writelines('codelist_list = [\n    "{}"\n]\n'.format('",\n    "'.join(identifiers)))
         iati_file.write(codelists)
         iati_file.write('\n')

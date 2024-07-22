@@ -190,7 +190,7 @@ class MapboxAdapter(object):
         markers = [
             'pin-s-{}+1890ff({},{})'.format(v, c.longitude, c.latitude)
             for c, v
-            in sorted(location_groups.items(), key=lambda kv:(kv[1], kv[0]))
+            in sorted(location_groups.items(), key=lambda kv: (kv[1], kv[0]))
         ]
 
         return ','.join(markers)
@@ -219,7 +219,7 @@ class MapquestAdapter(object):
         location_strings = [
             '{},{}|marker-{}'.format(c.latitude, c.longitude, v)
             for c, v
-            in sorted(location_groups.items(), key=lambda kv:(kv[1], kv[0]))
+            in sorted(location_groups.items(), key=lambda kv: (kv[1], kv[0]))
         ]
         url = self.URL.format(self.key, "||".join(location_strings))
         if size:

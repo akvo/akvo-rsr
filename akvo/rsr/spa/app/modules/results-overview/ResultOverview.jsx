@@ -132,6 +132,15 @@ const ResultOverview = ({
   }
 
   const sumActualValue = (indicator) => {
+    if (indicator.measure === '2') {
+      const { numerator, denominator } = indicator.periods.reduce((result, period) => {
+        return {
+          numerator: result.numerator + period.numerator,
+          denominator: result.denominator + period.denominator
+        }
+      }, { numerator: 0, denominator: 0 })
+      return ((numerator / denominator) * 100).toFixed(2)
+    }
     if (!indicator.isCumulative) {
       return indicator.periods.reduce((total, currentValue) => total + currentValue.actualValue, 0)
     }

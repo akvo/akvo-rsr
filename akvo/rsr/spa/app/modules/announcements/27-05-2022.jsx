@@ -30,7 +30,7 @@ export default ({ close }) => {
       }
       <Divider />
       <h3>Indicator reporting via Enumerator webforms</h3>
-      <p>{'Now M\&E managers can select specific indicators to assign to their team using simple webforms.'}</p>
+      <p>Now M&E managers can select specific indicators to assign to their team using simple webforms.</p>
       {project != null &&
         <Button
           type="primary"

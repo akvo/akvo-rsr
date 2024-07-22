@@ -1,8 +1,8 @@
-const { resolve } = require('path');
+const { resolve } = require('path')
 
-const webpack = require('webpack');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpack = require('webpack')
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 const config = () => {
   const env = {
@@ -34,10 +34,12 @@ const config = () => {
 
     devServer: {
       host: '0.0.0.0',
-      disableHostCheck: true,
-      hot: true,
+      port: 8080,
+      allowedHosts: 'all',
       historyApiFallback: true,
-      publicPath: '/'
+      devMiddleware: {
+        publicPath: '/'
+      }
     },
 
     resolve: {

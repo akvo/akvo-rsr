@@ -1,45 +1,45 @@
-import React, { useReducer, useEffect, createContext, useContext } from 'react';
-import { differenceWith, intersectionWith, isEqual } from 'lodash';
-import api from '../../../../utils/api';
+import React, { useReducer, useEffect, createContext, useContext } from 'react'
+import { differenceWith, intersectionWith, isEqual } from 'lodash'
+import api from '../../../../utils/api'
 
 const diffPeriods = (first, second) => {
-    return differenceWith(first, second, isEqual);
-};
+    return differenceWith(first, second, isEqual)
+}
 const intersectPeriods = (first, second) => {
-    return intersectionWith(first, second, isEqual);
-};
+    return intersectionWith(first, second, isEqual)
+}
 
 const symmetricDifferencePeriods = (first, second) => {
-    return [].concat(diffPeriods(first, second), diffPeriods(second, first));
-};
+    return [].concat(diffPeriods(first, second), diffPeriods(second, first))
+}
 
-export const DefaultPeriodsStateContext = createContext();
-export const DefaultPeriodsCommandsContext = createContext();
+export const DefaultPeriodsStateContext = createContext()
+export const DefaultPeriodsCommandsContext = createContext()
 
 export const defaultPeriodsReducer = (state, action) => {
     switch (action.type) {
         case 'INIT':
-            return { items: [...action.items], added: [], removed: [], status: null };
+            return { items: [...action.items], added: [], removed: [], status: null }
         case 'RESET_ADDED':
-            return { ...state, added: [], status: action?.payload };
+            return { ...state, added: [], status: action?.payload }
         case 'RESET_REMOVED':
-            return { ...state, removed: [], status: action?.payload };
+            return { ...state, removed: [], status: action?.payload }
         case 'MODIFY':
-            const addedDiff = diffPeriods(action.items, state.items);
-            const removedDiff = diffPeriods(state.items, action.items);
-            const added = [...state.added, ...addedDiff];
-            const removed = [...state.removed, ...removedDiff];
-            const intersect = intersectPeriods(added, removed);
+            const addedDiff = diffPeriods(action.items, state.items)
+            const removedDiff = diffPeriods(state.items, action.items)
+            const added = [...state.added, ...addedDiff]
+            const removed = [...state.removed, ...removedDiff]
+            const intersect = intersectPeriods(added, removed)
             return {
                 items: [...action.items],
                 added: diffPeriods(added, intersect),
                 removed: diffPeriods(removed, intersect),
                 status: 'modify'
-            };
+            }
         default:
-            return state;
+            return state
     }
-};
+}
 
 export const DefaultPeriodsProvider = ({ children, projectId }) => {
     const [state, dispatch] = useReducer(defaultPeriodsReducer, {
@@ -47,12 +47,12 @@ export const DefaultPeriodsProvider = ({ children, projectId }) => {
         added: [],
         removed: [],
         status: null
-    });
+    })
     const commands = {
       updateItems: async (periods) => {
-        const hasModifications = symmetricDifferencePeriods(periods, state.items).length > 0;
+        const hasModifications = symmetricDifferencePeriods(periods, state.items).length > 0
         if (!hasModifications) {
-          return;
+          return
         }
         await api.post(`/project/${projectId}/default_periods/`, { periods })
         dispatch({ type: 'MODIFY', items: periods })
@@ -73,11 +73,11 @@ export const DefaultPeriodsProvider = ({ children, projectId }) => {
         const initializeDefaultPeriods = async () => {
             const {
                 data: { periods },
-            } = await api.get(`/project/${projectId}/default_periods/`);
-            dispatch({ type: 'INIT', items: periods });
-        };
-        initializeDefaultPeriods();
-    }, []);
+            } = await api.get(`/project/${projectId}/default_periods/`)
+            dispatch({ type: 'INIT', items: periods })
+        }
+        initializeDefaultPeriods()
+    }, [])
 
     return (
         <DefaultPeriodsStateContext.Provider value={state}>
@@ -85,21 +85,21 @@ export const DefaultPeriodsProvider = ({ children, projectId }) => {
                 {children}
             </DefaultPeriodsCommandsContext.Provider>
         </DefaultPeriodsStateContext.Provider>
-    );
-};
+    )
+}
 
 export const useDefaultPeriodsState = () => {
-    const state = useContext(DefaultPeriodsStateContext);
+    const state = useContext(DefaultPeriodsStateContext)
     if (typeof state === 'undefined') {
-        throw new Error('useDefaultPeriodsState must be used within a DefaultPeriodsProvider');
+        throw new Error('useDefaultPeriodsState must be used within a DefaultPeriodsProvider')
     }
-    return state;
-};
+    return state
+}
 
 export const useDefaultPeriodsCommands = () => {
-    const update = useContext(DefaultPeriodsCommandsContext);
+    const update = useContext(DefaultPeriodsCommandsContext)
     if (typeof update === 'undefined') {
-        throw new Error('useDefaultPeriodsCommands must be used within a DefaultPeriodsProvider');
+        throw new Error('useDefaultPeriodsCommands must be used within a DefaultPeriodsProvider')
     }
-    return update;
-};
+    return update
+}

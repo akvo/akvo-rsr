@@ -1,3 +1,27 @@
+.ant-popover {
+  .ant-popover-content {
+    .ant-popover-inner-content {
+      width: 100%;
+      & > .ant-row {
+        display: block;
+      }
+      .ant-collapse-content-box {
+        & > .ant-row {
+          display: block;
+        }
+      }
+      .ant-form.ant-form-horizontal {
+        .ant-row.ant-form-item-row {
+          display: block;
+        }
+      }
+    }
+  }
+}
+.ant-typography {
+  word-break: normal;
+}
+
 .svg-marker{
   width: 30px;
   height: 40px;

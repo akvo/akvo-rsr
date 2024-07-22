@@ -48,8 +48,8 @@ const ReportedEdit = ({
   const submitStatus = editing?.status === 'P' ? 'P' : mneView ? 'A' : 'P'
 
   const disaggregations = []
-  if (editing?.indicator) {
-    editing?.indicator.dimensionNames && editing?.indicator.dimensionNames.forEach(group => {
+  if (editing?.indicator && editing.indicator.dimensionNames) {
+    editing.indicator.dimensionNames.forEach(group => {
       group.dimensionValues.forEach(dsg => {
         disaggregations.push({ category: group.name, type: dsg.value, typeId: dsg.id, groupId: group.id })
       })

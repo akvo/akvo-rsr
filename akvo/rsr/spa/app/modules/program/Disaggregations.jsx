@@ -1,4 +1,4 @@
-/* global window, document */
+/* global document */
 import React, { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 

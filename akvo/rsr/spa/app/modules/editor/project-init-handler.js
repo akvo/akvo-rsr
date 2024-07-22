@@ -12,18 +12,18 @@ const insertRouteParams = (route, params) => {
   return route
 }
 
-const SECTION_INFO = 1;
-const SECTION_CONTACT = 2;
-const SECTION_USER_ACCESS = 3;
-const SECTION_DESCRIPTION = 4;
-const SECTION_RESULTS_INDICATORS = 5;
-const SECTION_FINANCE = 6;
-const SECTION_LOCATION = 7;
-const SECTION_FOCUS = 8;
-const SECTION_LINK_N_DOC = 9;
-const SECTION_COMMENT = 10;
-const SECTION_CRS = 11;
-const SECTION_COUNT = 11;
+const SECTION_INFO = 1
+const SECTION_CONTACT = 2
+const SECTION_USER_ACCESS = 3
+const SECTION_DESCRIPTION = 4
+const SECTION_RESULTS_INDICATORS = 5
+const SECTION_FINANCE = 6
+const SECTION_LOCATION = 7
+const SECTION_FOCUS = 8
+const SECTION_LINK_N_DOC = 9
+const SECTION_COMMENT = 10
+const SECTION_CRS = 11
+const SECTION_COUNT = 11
 
 const sectionInstanceToRoot = [
   SECTION_DESCRIPTION,
@@ -31,7 +31,7 @@ const sectionInstanceToRoot = [
   SECTION_LOCATION,
   SECTION_FOCUS,
   SECTION_COMMENT
-];
+]
 const sectionHasEndpoint = [
   SECTION_INFO,
   SECTION_CONTACT,

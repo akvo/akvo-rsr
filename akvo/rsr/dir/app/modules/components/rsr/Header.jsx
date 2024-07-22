@@ -2,6 +2,7 @@ import React from 'react'
 import { Button, Spin } from 'antd'
 import { Row, Col, Visible, Hidden } from 'react-awesome-styled-grid'
 import { Link } from 'react-router-dom'
+import { LoadingOutlined, MenuOutlined } from '@ant-design/icons'
 
 import { Button as ButtonRsr } from './Button'
 import { Icon } from '../Icon'
@@ -29,10 +30,10 @@ const Header = ({
         </Hidden>
       </Col>
       <Col sm={3} md={4} lg={2} justify="center" align="flex-end">
-        {loading && <Spin indicator={<Icon type="loading" style={{ fontSize: 24 }} spin />} spinning />}
+        {loading && <Spin indicator={<LoadingOutlined />} spinning />}
         <Visible xs>
           <Button type="link" onClick={toggleDrawer}>
-            <Icon type="menu" />
+            <MenuOutlined />
           </Button>
         </Visible>
         <Hidden xs>

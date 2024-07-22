@@ -1,17 +1,14 @@
 import React from 'react'
 import { Button } from 'antd'
-import { Field } from 'react-final-form'
 import { useTranslation } from 'react-i18next'
 
 import InputLabel from '../../../../utils/input-label'
 import FinalField from '../../../../utils/final-field'
 import ItemArray from '../../../../utils/item-array'
 import VOCABULARY_OPTIONS from './vocab.json'
-import SectionContext from '../../section-context'
-import MinRequired from '../../../../utils/min-required'
 
 
-const References = ({ fieldName, validations, formPush, indicatorId }) => {
+const References = ({ fieldName, formPush, indicatorId }) => {
   const { t } = useTranslation()
   return (
     <div>
@@ -28,7 +25,7 @@ const References = ({ fieldName, validations, formPush, indicatorId }) => {
         }}
         headerField="vocabulary"
         formPush={formPush}
-        panel={(name, index) => (
+        panel={(name) => (
         <div>
           <FinalField
             control="select"

@@ -31,13 +31,13 @@ const Result = ({
     if (!fetched && !(indicators.length)) {
       const resultIndex = results.findIndex(it => it.id === id)
       api
-        ?.get(`/project/${programId}/result/${id}/`)
-        ?.then(({ data }) => {
+        .get(`/project/${programId}/result/${id}/`)
+        .then(({ data }) => {
           if (resultIndex > -1) {
             props.updateProgrammePerResult(resultIndex, { ...data, fetched: true })
           }
         })
-        ?.catch(() => {
+        .catch(() => {
           props.updateProgrammePerResult(resultIndex, { fetched: true })
         })
     }

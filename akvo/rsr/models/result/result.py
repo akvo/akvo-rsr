@@ -6,7 +6,7 @@
 
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from akvo.codelists.models import ResultType
 from akvo.codelists.store.default_codelists import RESULT_TYPE

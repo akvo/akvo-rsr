@@ -186,8 +186,6 @@ const EditUpdate = ({ update, handleUpdateEdit, indicator }) => {
               handleFileListChange([...update.fileSet, ...files])
               return false
             }}
-            onSuccess={(item) => {
-            }}
             onRemove={file => {
               handleFileListChange(update.fileSet.filter(_file => _file !== file))
             }}

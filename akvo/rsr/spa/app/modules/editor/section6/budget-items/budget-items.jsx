@@ -13,7 +13,7 @@ import { budgetItemTypes } from '../../../../utils/constants'
 import { validationType, isFieldOptional, getValidationSets, doesFieldExist } from '../../../../utils/validation-utils'
 import getSymbolFromCurrency from '../../../../utils/get-symbol-from-currency'
 import validationDefs from './validations'
-import Condition from '../../../../utils/condition';
+import Condition from '../../../../utils/condition'
 import MinRequired from '../../../../utils/min-required'
 import { setNumberFormat } from '../../../../utils/misc'
 
@@ -125,7 +125,8 @@ const BudgetItems = ({
                     {t('Budget item')} {index + 1}: {title}
                   </Aux>
                 )
-              }} />
+              }}
+              />
             </span>
           )
         }}

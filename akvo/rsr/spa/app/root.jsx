@@ -32,7 +32,7 @@ const isJWTView = () => {
   return reqToken !== null
 }
 
-const shouldEnable2FA = function (data) {
+const shouldEnable2FA = (data) => {
   return data.enforce2fa && !data.otpKeys?.totp ? true : false
 }
 

@@ -119,7 +119,6 @@ class CardsView extends React.Component {
     window.onscroll = null
   }
   resetPage = () => {
-    console.log('reset page')
     this.setState({ page: 1 })
   }
   render() {

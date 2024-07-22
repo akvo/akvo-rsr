@@ -6,7 +6,7 @@ import { Field } from 'react-final-form'
 import moment from 'moment'
 import { useTranslation } from 'react-i18next'
 import { isEqual, times } from 'lodash'
-import { datePickerConfig, wordWrap } from './misc'
+import { datePickerConfig } from './misc'
 import InputLabel from './input-label'
 import RTE from './rte'
 import SectionContext from '../modules/editor/section-context'
@@ -30,11 +30,6 @@ const inputNumberAmountFormatting = (currencySymbol) => {
   })
 }
 
-const validateNumber = (string) => {
-  if(string === '') return false
-  const regex = /[0-9]|\./
-  return String(string).split('').map(char => regex.test(char)).reduce((val, acc) => val && acc)
-}
 const CONTROLS = {
   input: ({ input, meta, control, ...props }) => {
     return <Input {...{ ...input, ...props}} />
