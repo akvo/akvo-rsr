@@ -12,6 +12,7 @@ blocks:
         - name: docker-hub-credentials
         - name: coveralls
         - name: dbdocs-token
+        - name: RSR
       prologue:
         commands:
           - checkout
