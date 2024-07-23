@@ -12,12 +12,17 @@ blocks:
         - name: docker-hub-credentials
         - name: coveralls
         - name: dbdocs-token
+        - name: RSR
       prologue:
         commands:
           - checkout
           - pushd akvo/rsr/front-end
           - cache restore client-fe-npm-deps-$(checksum package.json)
           - popd
+          - rm -rf .phpbrew
+          - rm -rf .nvm
+          - rm -rf .rbenv
+          - rm -rf .kerl
       jobs:
         - name: 'Build&Test'
           commands:
