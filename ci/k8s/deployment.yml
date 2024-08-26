@@ -39,7 +39,7 @@ spec:
                       - "rsr-dedicated"
       containers:
       - name: rsr-nginx
-        image: eu.gcr.io/akvo-lumen/rsr-nginx-maintenance:${TRAVIS_COMMIT}
+        image: eu.gcr.io/akvo-lumen/rsr-nginx:${TRAVIS_COMMIT}
         ports:
         - containerPort: 80
           protocol: TCP
