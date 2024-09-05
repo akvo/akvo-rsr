@@ -100,7 +100,7 @@ const Indicators = connect(null, { addSetItem, removeSetItem, moveSetItem })(
     const importIndicator = (indicator) => {
       api.post(`/project/${projectId}/import_indicator/${indicator.id}/`)
         .then(() => {
-          api.get(`/results_framework_lite/?project=${projectId}`)
+          api.get(`/results_framework_lite/?project=${projectId}&limit=100`)
             .then(d => {
               fetchFields(5, d.data)
               setShowImport(false)

@@ -317,7 +317,7 @@ const Section5 = (props) => {
   useEffect(() => {
     if(parent){
       // has a parent AND it has imported results framework
-      api.get(`/results_framework_lite/?project=${parentId}`)
+      api.get(`/results_framework_lite/?project=${parentId}&limit=100`)
         .then(d => {
           setParentRF(d.data.results)
         })
@@ -333,7 +333,7 @@ const Section5 = (props) => {
   const importResult = (result) => {
     api.post(`/project/${props.projectId}/import_result/${result.id}/`)
       .then(() => {
-        api.get(`/results_framework_lite/?project=${props.projectId}`)
+        api.get(`/results_framework_lite/?project=${props.projectId}&limit=100`)
           .then(d => {
             props.fetchFields(5, d.data)
             setShowImport(false)
