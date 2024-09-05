@@ -33,7 +33,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Build web service
-        run: docker-compose build web
+        run: docker compose build web
       - name: Generate sphinx documentation
         run: make USE_DOCKER=1 full-doc
       - name: Setup Pages
