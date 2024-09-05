@@ -10,7 +10,7 @@ BUILDDIR      = public
 DOCKER        ?=
 USE_DOCKER    ?=  # Calls parts of make in docker
 
-dc_run = docker-compose run --rm --no-deps web
+dc_run = docker compose run --rm --no-deps web
 # Function to optionally run a target in docker
 docker = $(if $(USE_DOCKER) , $(dc_run) make $@ , $(1))
 
