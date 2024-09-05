@@ -72,7 +72,11 @@ const ProjectInitHandler = ({ match: { params }, editorRdr, ...props }) => {
     sectionEndPoints.forEach(item => {
       const { endpoint, setName } = item
       let _params = endpoint === '/project_location/' ? { location_target: params.id } : { project: params.id }
-      _params = endpoint?.includes('related_project') ? { ..._params, relation: 1 } : _params
+      _params = endpoint?.includes('related_project')
+        ? { ..._params, relation: 1 }
+        : endpoint?.includes('results_framework_lite')
+          ? { ..._params, limit: 100 }
+          : _params
 
       api
         .get(endpoint, _params, getTransform(index, setName, 'response'))
