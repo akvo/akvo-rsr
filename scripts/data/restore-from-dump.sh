@@ -14,9 +14,8 @@ psql_settings=("--username=postgres" "--host=${DB_HOST}" "--dbname=${RSR_DB_NAME
 psql "${psql_settings[@]}" --command="DROP SCHEMA public CASCADE"
 psql "${psql_settings[@]}" --command="CREATE SCHEMA public"
 gunzip --stdout "${DUMP_FILE}" \
-  | sed -e "/rsr_db_test_reportserver_user/d" \
-  | sed -e "/rsr_db_readonly_reportserver/d" \
-  | sed -e "/rsr_reportserver_db_user/d" \
+  | sed -e "/^REVOKE\ /d" \
+  | sed -e "/^GRANT\ /d" \
   | sed -e "/ALTER DEFAULT PRIVILEGES FOR ROLE postgres/d" \
   | psql "${psql_settings[@]}"
 
