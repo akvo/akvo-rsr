@@ -174,7 +174,11 @@ def get_total_period_targets(indicator):
 
 
 def get_indicator_target(indicator, targets_at):
-    return ensure_decimal(indicator.target_value) if targets_at == 'indicator' else get_total_period_targets(indicator)
+    return (
+        ensure_decimal(indicator.target_value)
+        if targets_at == 'indicator' or indicator.target_value
+        else get_total_period_targets(indicator)
+    )
 
 
 def generate_workbook(organisation):
