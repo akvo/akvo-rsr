@@ -38,7 +38,7 @@ fi
 
 if [[ -z "${IS_WORKER:-}" ]] ; then
   log Starting gunicorn in background
-  gunicorn akvo.wsgi --max-requests 200 --workers 6 --timeout 300 --bind 0.0.0.0:${DJANGO_PORT:-8000} ${GUNICORN_DEBUG_ARGS:-} &
+  gunicorn akvo.wsgi --max-requests 200 --workers 12 --timeout 300 --bind 0.0.0.0:${DJANGO_PORT:-8000} ${GUNICORN_DEBUG_ARGS:-} &
 else
   log Starting probe server
   ./manage.py django_q_probettp &
