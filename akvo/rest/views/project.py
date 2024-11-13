@@ -294,7 +294,7 @@ class ProjectUpViewSet(ProjectViewSet):
 ###############################################################################
 
 @api_view(['GET'])
-@cache_page(60 * 60)
+@cache_page(60 * 60 * 6, cache='database')
 def project_directory(request):
     """Return the values for various project filters.
 
