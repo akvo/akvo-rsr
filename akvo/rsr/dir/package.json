@@ -20,7 +20,7 @@
     "@ant-design/icons": "^4.8.3",
     "@reduxjs/toolkit": "^1.8.4",
     "@rehooks/local-storage": "^2.4.0",
-    "@sentry/browser": "^5.9.1",
+    "@sentry/browser": "^7.119.1",
     "@turf/bbox": "^6.5.0",
     "antd": "^4.24.16",
     "axios": "^0.28.1",
