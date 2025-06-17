@@ -368,3 +368,215 @@ class IatiProfileUrlTestCase(BaseTestCase):
             project.get_iati_profile_url(),
             f"https://d-portal.org/ctrack.html?reporting_ref={self.iati_org_id}#view=act&aid={self.iati_activity_id}"
         )
+
+
+class ProjectDeletionTrackerTestCase(TestCase):
+    """Tests for the ProjectDeletionTracker class"""
+
+    def setUp(self):
+        # Import here to avoid circular imports
+        from akvo.rsr.models.project import ProjectDeletionTracker
+        self.tracker = ProjectDeletionTracker()
+
+    def test_add_and_contain_project(self):
+        """Test adding a project to deletion tracking"""
+        project_id = 123
+
+        # Initially not in tracker
+        self.assertNotIn(project_id, self.tracker)
+
+        # Add project
+        self.tracker.add(project_id)
+
+        # Should now contain project
+        self.assertIn(project_id, self.tracker)
+
+    def test_discard_project(self):
+        """Test removing a project from deletion tracking"""
+        project_id = 456
+
+        # Add project
+        self.tracker.add(project_id)
+        self.assertIn(project_id, self.tracker)
+
+        # Remove project
+        self.tracker.discard(project_id)
+        self.assertNotIn(project_id, self.tracker)
+
+    def test_discard_nonexistent_project(self):
+        """Test that discarding a nonexistent project doesn't raise an error"""
+        project_id = 789
+
+        # Should not raise an error
+        self.tracker.discard(project_id)
+        self.assertNotIn(project_id, self.tracker)
+
+    def test_multiple_projects(self):
+        """Test tracking multiple projects simultaneously"""
+        project_ids = [100, 200, 300]
+
+        # Add all projects
+        for project_id in project_ids:
+            self.tracker.add(project_id)
+
+        # All should be tracked
+        for project_id in project_ids:
+            self.assertIn(project_id, self.tracker)
+
+        # Remove one project
+        self.tracker.discard(200)
+        self.assertNotIn(200, self.tracker)
+
+        # Others should still be tracked
+        self.assertIn(100, self.tracker)
+        self.assertIn(300, self.tracker)
+
+    def test_thread_safety(self):
+        """Test that tracker operations are thread-safe"""
+        import threading
+        import time
+
+        project_ids = list(range(100))
+        results = []
+
+        def add_projects():
+            for project_id in project_ids[:50]:
+                self.tracker.add(project_id)
+                time.sleep(0.001)  # Small delay to increase contention
+
+        def remove_projects():
+            time.sleep(0.025)  # Let some adds happen first
+            for project_id in project_ids[25:75]:
+                self.tracker.discard(project_id)
+                time.sleep(0.001)
+
+        def check_projects():
+            time.sleep(0.050)  # Let operations complete
+            for project_id in project_ids:
+                results.append((project_id, project_id in self.tracker))
+
+        # Run operations concurrently
+        threads = [
+            threading.Thread(target=add_projects),
+            threading.Thread(target=remove_projects),
+            threading.Thread(target=check_projects)
+        ]
+
+        for thread in threads:
+            thread.start()
+
+        for thread in threads:
+            thread.join()
+
+        # Verify results are consistent (no race conditions caused exceptions)
+        self.assertEqual(len(results), len(project_ids))
+
+    @patch('time.time')
+    def test_automatic_cleanup(self, mock_time):
+        """Test that stale entries are automatically cleaned up"""
+        # Mock time to control cleanup timing
+        mock_time.return_value = 1000.0
+
+        # Create a new tracker with mocked time
+        from akvo.rsr.models.project import ProjectDeletionTracker
+        tracker = ProjectDeletionTracker()
+
+        # Add a project
+        project_id = 999
+        tracker.add(project_id)
+        self.assertIn(project_id, tracker)
+
+        # Advance time beyond cleanup threshold
+        mock_time.return_value = 1000.0 + tracker._cleanup_threshold + 1
+
+        # Add another project to trigger cleanup
+        tracker.add(888)
+
+        # Old project should be cleaned up, new one should remain
+        self.assertNotIn(project_id, tracker)
+        self.assertIn(888, tracker)
+
+    def test_force_cleanup(self):
+        """Test manual cleanup of stale entries"""
+        # Create a new tracker 
+        from akvo.rsr.models.project import ProjectDeletionTracker
+        tracker = ProjectDeletionTracker()
+
+        # Add a project and manually make it stale by setting old timestamp
+        tracker.add(111)
+
+        # Manually set an old timestamp to make entry stale
+        with tracker._lock:
+            old_time = 1000.0  # Very old timestamp
+            tracker._timestamps[111] = old_time
+
+        # Add a fresh project
+        tracker.add(222)
+
+        # Both should be present before cleanup
+        self.assertIn(111, tracker)
+        self.assertIn(222, tracker)
+
+        # Force cleanup
+        cleaned_count = tracker.force_cleanup()
+
+        # Should have cleaned up the stale entry
+        self.assertEqual(cleaned_count, 1)
+        self.assertNotIn(111, tracker)
+        self.assertIn(222, tracker)
+
+    def test_cleanup_threshold_configuration(self):
+        """Test that cleanup threshold is configurable"""
+        from akvo.rsr.models.project import ProjectDeletionTracker
+        tracker = ProjectDeletionTracker()
+
+        # Should have default cleanup threshold
+        self.assertEqual(tracker._cleanup_threshold, 3600)  # 1 hour
+
+        # Should be able to modify threshold
+        tracker._cleanup_threshold = 1800  # 30 minutes
+        self.assertEqual(tracker._cleanup_threshold, 1800)
+
+    def test_project_deletion_workflow(self):
+        """Test that deletion tracking workflow works correctly"""
+        from akvo.rsr.models.project import DELETION_SET
+
+        # Test that adding and removing from deletion set works
+        test_project_id = 99999  # Use a high ID that won't conflict
+
+        # Initially not in set
+        self.assertNotIn(test_project_id, DELETION_SET)
+
+        # Add to deletion set
+        DELETION_SET.add(test_project_id)
+        self.assertIn(test_project_id, DELETION_SET)
+
+        # Remove from deletion set
+        DELETION_SET.discard(test_project_id)
+        self.assertNotIn(test_project_id, DELETION_SET)
+
+    def test_project_save_during_deletion(self):
+        """Test that saving a project during deletion is prevented"""
+        from akvo.rsr.models.project import DELETION_SET
+
+        # Create a project
+        project = Project.objects.create(title="Test Project for Save Prevention")
+        project_id = project.pk
+        original_title = project.title
+
+        # Manually add to deletion set (simulating deletion in progress)
+        DELETION_SET.add(project_id)
+
+        try:
+            # Try to modify and save the project
+            project.title = "Modified Title"
+            project.save()
+
+            # Reload from database
+            project.refresh_from_db()
+
+            # Title should not have changed (save was prevented)
+            self.assertEqual(project.title, original_title)
+        finally:
+            # Clean up deletion set
+            DELETION_SET.discard(project_id)

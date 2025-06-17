@@ -43,7 +43,7 @@ class Command(BaseCommand):
         with DELETION_SET._lock:
             deletion_count = len(DELETION_SET._deletion_set)
             timestamp_count = len(DELETION_SET._timestamps)
-            
+
         self.stdout.write(
             self.style.SUCCESS(
                 f"Deletion tracker stats:\n"
@@ -57,14 +57,14 @@ class Command(BaseCommand):
     def dry_run_cleanup(self):
         """Show what would be cleaned up without actually doing it"""
         import time
-        
+
         with DELETION_SET._lock:
             current_time = time.time()
             stale_ids = [
                 project_id for project_id, timestamp in DELETION_SET._timestamps.items()
                 if current_time - timestamp > DELETION_SET._cleanup_threshold
             ]
-            
+
         if stale_ids:
             self.stdout.write(
                 self.style.WARNING(
@@ -80,7 +80,7 @@ class Command(BaseCommand):
     def cleanup(self):
         """Perform actual cleanup of stale entries"""
         cleaned_count = DELETION_SET.force_cleanup()
-        
+
         if cleaned_count > 0:
             self.stdout.write(
                 self.style.SUCCESS(
