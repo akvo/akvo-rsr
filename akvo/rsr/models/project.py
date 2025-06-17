@@ -6,7 +6,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 import dataclasses
 import logging
-from typing import Dict, Generic, Hashable, Optional, TypeVar
+import threading
+import time
+from typing import Dict, Generic, Hashable, Optional, Set, TypeVar
 import urllib.parse
 
 from django.conf import settings
@@ -65,8 +67,67 @@ DESCRIPTIONS_ORDER = [
 Projects in the process of being deleted
 Some signals attempt to update projects and they shouldn't attempt to do so
  when a project is being deleted
+
+This implementation includes memory leak protection:
+- Automatic cleanup of stale entries via timestamp tracking
+- Thread-safe operations using threading.Lock
+- Periodic cleanup to prevent unbounded growth
 """
-DELETION_SET = set()
+
+class ProjectDeletionTracker:
+    """Thread-safe tracker for projects being deleted with automatic cleanup"""
+    
+    def __init__(self):
+        self._deletion_set: Set[int] = set()
+        self._timestamps: Dict[int, float] = {}
+        self._lock = threading.Lock()
+        self._cleanup_threshold = 3600  # 1 hour timeout for stale entries
+        self._last_cleanup = time.time()
+        
+    def add(self, project_id: int) -> None:
+        """Add project to deletion tracking"""
+        with self._lock:
+            self._deletion_set.add(project_id)
+            self._timestamps[project_id] = time.time()
+            self._maybe_cleanup()
+    
+    def discard(self, project_id: int) -> None:
+        """Remove project from deletion tracking"""
+        with self._lock:
+            self._deletion_set.discard(project_id)
+            self._timestamps.pop(project_id, None)
+    
+    def __contains__(self, project_id: int) -> bool:
+        """Check if project is being deleted"""
+        with self._lock:
+            return project_id in self._deletion_set
+    
+    def _maybe_cleanup(self) -> None:
+        """Periodic cleanup of stale entries (called while holding lock)"""
+        current_time = time.time()
+        if current_time - self._last_cleanup > self._cleanup_threshold / 4:  # Cleanup every 15 minutes
+            self._cleanup_stale_entries(current_time)
+            self._last_cleanup = current_time
+    
+    def _cleanup_stale_entries(self, current_time: float) -> None:
+        """Remove entries older than cleanup_threshold (called while holding lock)"""
+        stale_ids = [
+            project_id for project_id, timestamp in self._timestamps.items()
+            if current_time - timestamp > self._cleanup_threshold
+        ]
+        for project_id in stale_ids:
+            self._deletion_set.discard(project_id)
+            self._timestamps.pop(project_id, None)
+    
+    def force_cleanup(self) -> int:
+        """Force cleanup of all stale entries, returns count of cleaned entries"""
+        with self._lock:
+            current_time = time.time()
+            initial_count = len(self._deletion_set)
+            self._cleanup_stale_entries(current_time)
+            return initial_count - len(self._deletion_set)
+
+DELETION_SET = ProjectDeletionTracker()
 
 
 def get_default_descriptions_order():
