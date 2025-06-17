@@ -498,7 +498,7 @@ class ProjectDeletionTrackerTestCase(TestCase):
 
     def test_force_cleanup(self):
         """Test manual cleanup of stale entries"""
-        # Create a new tracker 
+        # Create a new tracker
         from akvo.rsr.models.project import ProjectDeletionTracker
         tracker = ProjectDeletionTracker()
 

@@ -119,10 +119,10 @@ class CleanupDeletionTrackerCommandTestCase(TestCase):
         # Test that the command can be imported without errors
         from akvo.rsr.management.commands.cleanup_deletion_tracker import Command
         command = Command()
-        
+
         # Verify the help text is set
         self.assertIn('Cleanup stale entries', command.help)
-        
+
         # Test that parser can be created without errors
         parser = command.create_parser('manage.py', 'cleanup_deletion_tracker')
         self.assertIsNotNone(parser)
