@@ -1,9 +1,8 @@
 from datetime import date
 from unittest.mock import patch, Mock
 from akvo.utils import maybe_decimal
-from akvo.rsr.models import IndicatorPeriod
 from akvo.rsr.usecases.period_update_aggregation import (
-    aggregate, _aggregate_period_value, DEFAULT_MAX_AGGREGATION_DEPTH
+    aggregate, _aggregate_period_value
 )
 from akvo.rsr.tests.base import BaseTestCase
 from akvo.rsr.tests.utils import ProjectFixtureBuilder
@@ -113,7 +112,7 @@ class PeriodUpdateAggregationTestCase(BaseTestCase):
         """Test that the new iterative aggregation works correctly"""
         l2_1_period = self.l2_1_contributor.periods.get(period_start=self.PERIOD_START)
         l2_2_period = self.l2_2_contributor.periods.get(period_start=self.PERIOD_START)
-        
+
         # Test that aggregation works with the new iterative approach
         aggregate(l2_1_period)
         aggregate(l2_2_period)
@@ -121,7 +120,7 @@ class PeriodUpdateAggregationTestCase(BaseTestCase):
         # Verify all levels are aggregated correctly
         l2_1_period.refresh_from_db()
         self.assertEqual(2, maybe_decimal(l2_1_period.actual_value))
-        
+
         l2_2_period.refresh_from_db()
         self.assertEqual(3, maybe_decimal(l2_2_period.actual_value))
 
@@ -130,7 +129,7 @@ class PeriodUpdateAggregationTestCase(BaseTestCase):
 
         lead_period = self.lead_project.periods.get(period_start=self.PERIOD_START)
         self.assertEqual(5, maybe_decimal(lead_period.actual_value))
-        
+
         # This test verifies that the new implementation produces the same results
         # as the original recursive implementation, but with memory protection
 
