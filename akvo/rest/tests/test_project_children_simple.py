@@ -260,7 +260,7 @@ class ProjectChildrenIntegrationTestCase(BaseTestCase):
         response = view(request, pk=self.parent_project.id)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
+
         # Should include both child and grandchild due to max_depth=2
         if isinstance(response.data, list):
             # Standard processing
@@ -272,18 +272,18 @@ class ProjectChildrenIntegrationTestCase(BaseTestCase):
     def test_chunked_queryset_functionality(self):
         """Test _chunked_queryset method directly"""
         viewset = ProjectViewSet()
-        
+
         # Create test projects
         projects = []
         for i in range(5):
             project = self.create_project(f'Test Project {i+1}')
             projects.append(project)
-        
+
         queryset = Project.objects.filter(id__in=[p.id for p in projects])
-        
+
         # Test chunking with size 2
         chunks = list(viewset._chunked_queryset(queryset, 2))
-        
+
         # Should have 3 chunks (2+2+1)
         self.assertEqual(len(chunks), 3)
         self.assertEqual(len(chunks[0]), 2)
@@ -293,7 +293,7 @@ class ProjectChildrenIntegrationTestCase(BaseTestCase):
     def test_build_parent_child_mapping_functionality(self):
         """Test _build_parent_child_mapping method"""
         viewset = ProjectViewSet()
-        
+
         # Create children
         children = []
         for i in range(3):
@@ -301,13 +301,13 @@ class ProjectChildrenIntegrationTestCase(BaseTestCase):
             child.set_parent(self.parent_project)
             child.save()
             children.append(child)
-        
+
         # Test the mapping
         descendants = list(Project.objects.filter(id__in=[c.id for c in children]))
         parent_to_children, direct_children = viewset._build_parent_child_mapping(
             descendants, self.parent_project.uuid
         )
-        
+
         # Should create correct mapping
         self.assertIn(self.parent_project.uuid, parent_to_children)
         self.assertEqual(len(parent_to_children[self.parent_project.uuid]), 3)
@@ -322,7 +322,7 @@ class ProjectChildrenIntegrationTestCase(BaseTestCase):
             DEFAULT_MAX_DESCENDANTS_PER_REQUEST,
             DEFAULT_DESCENDANTS_CHUNK_SIZE
         )
-        
+
         # Verify configuration values
         self.assertEqual(MAX_DESCENDANTS_PER_REQUEST, 1000)
         self.assertEqual(DEFAULT_MAX_DESCENDANTS_PER_REQUEST, 1000)
@@ -332,11 +332,11 @@ class ProjectChildrenIntegrationTestCase(BaseTestCase):
     def test_memory_protection_unit_functionality(self):
         """Test individual memory protection functions work correctly"""
         viewset = ProjectViewSet()
-        
+
         # Test empty queryset handling
         empty_chunks = list(viewset._chunked_queryset(Project.objects.none(), 10))
         self.assertEqual(len(empty_chunks), 0)
-        
+
         # Test single item chunking
         single_project = self.create_project('Single Project')
         single_queryset = Project.objects.filter(id=single_project.id)
@@ -346,14 +346,12 @@ class ProjectChildrenIntegrationTestCase(BaseTestCase):
 
     def test_chunked_processing_detection_logic(self):
         """Test the logic that detects when to use chunked processing"""
-        viewset = ProjectViewSet()
-        
         # Test that the detection logic works
         from akvo.rest.views.project import MAX_DESCENDANTS_PER_REQUEST
-        
+
         # Small count should not trigger chunked processing
         self.assertLessEqual(5, MAX_DESCENDANTS_PER_REQUEST)
-        
+
         # Large count should trigger chunked processing
         large_count = MAX_DESCENDANTS_PER_REQUEST + 1
         self.assertGreater(large_count, MAX_DESCENDANTS_PER_REQUEST)
@@ -376,7 +374,7 @@ class ProjectChildrenIntegrationTestCase(BaseTestCase):
         response = view(request, pk=self.parent_project.id)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
+
         # With 4 children and limit of 2, should trigger chunked processing
         if isinstance(response.data, dict):
             # Successfully triggered chunked processing
@@ -408,7 +406,7 @@ class ProjectChildrenIntegrationTestCase(BaseTestCase):
         response = view(request, pk=self.parent_project.id)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
+
         # Should work regardless of whether chunked or standard processing is used
         if isinstance(response.data, list):
             # Standard processing
