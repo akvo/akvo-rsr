@@ -125,12 +125,14 @@ class ProjectViewSet(PublicProjectViewSet):
         project = self.get_object()
 
         # Memory protection: Check if the project hierarchy is too large
+        # Re-read settings to ensure test overrides are respected
+        max_descendants = getattr(settings, 'RSR_MAX_DESCENDANTS_PER_REQUEST', DEFAULT_MAX_DESCENDANTS_PER_REQUEST)
         total_descendants_count = project.descendants(max_depth=2, with_self=False).count()
 
-        if total_descendants_count > MAX_DESCENDANTS_PER_REQUEST:
+        if total_descendants_count > max_descendants:
             logger.warning(
                 f"Project {project.id} has {total_descendants_count} descendants, "
-                f"exceeding limit of {MAX_DESCENDANTS_PER_REQUEST}. Using chunked processing."
+                f"exceeding limit of {max_descendants}. Using chunked processing."
             )
             return self._get_children_chunked(project, request)
 
@@ -160,7 +162,13 @@ class ProjectViewSet(PublicProjectViewSet):
         serializer_context["parent"] = project
 
         serializer = ProjectMetadataSerializer(children, many=True, context=serializer_context)
-        return Response(serializer.data)
+
+        # Add metadata headers for consistency and monitoring
+        response = Response(serializer.data)
+        response['X-Children-Count'] = str(len(children))
+        response['X-Memory-Protection'] = 'standard'
+
+        return response
 
     def _get_children_chunked(self, project, request):
         """Memory-efficient chunked approach for large project hierarchies"""
@@ -175,13 +183,17 @@ class ProjectViewSet(PublicProjectViewSet):
             "projectrole_set",
         ))
 
+        # Re-read settings to ensure test overrides are respected
+        max_descendants = getattr(settings, 'RSR_MAX_DESCENDANTS_PER_REQUEST', DEFAULT_MAX_DESCENDANTS_PER_REQUEST)
+        chunk_size = getattr(settings, 'RSR_DESCENDANTS_CHUNK_SIZE', DEFAULT_DESCENDANTS_CHUNK_SIZE)
+
         serializer_context = self.get_serializer_context()
         parent_to_children: Dict[UUID, List[Project]] = {}
         children: List[Project] = []
         processed_count = 0
 
         # Process descendants in chunks to avoid memory exhaustion
-        for chunk in self._chunked_queryset(queryset, DESCENDANTS_CHUNK_SIZE):
+        for chunk in self._chunked_queryset(queryset, chunk_size):
             chunk_parent_to_children, chunk_children = self._build_parent_child_mapping(
                 chunk, project.uuid
             )
@@ -198,25 +210,27 @@ class ProjectViewSet(PublicProjectViewSet):
                 logger.info(f"Processed {processed_count} descendants for project {project.id}")
 
         # Limit the response size for very large hierarchies
-        if len(children) > MAX_DESCENDANTS_PER_REQUEST:
+        if len(children) > max_descendants:
             logger.warning(
                 f"Truncating children response for project {project.id}: "
-                f"{len(children)} children found, returning first {MAX_DESCENDANTS_PER_REQUEST}"
+                f"{len(children)} children found, returning first {max_descendants}"
             )
-            children = children[:MAX_DESCENDANTS_PER_REQUEST]
+            children = children[:max_descendants]
 
         serializer_context["parents_to_children"] = parent_to_children
         serializer_context["parent"] = project
 
         serializer = ProjectMetadataSerializer(children, many=True, context=serializer_context)
-        return Response({
-            "data": serializer.data,
-            "meta": {
-                "total_processed": processed_count,
-                "children_count": len(children),
-                "truncated": len(children) >= MAX_DESCENDANTS_PER_REQUEST
-            }
-        })
+
+        # Maintain backward compatibility by returning direct array
+        # Add metadata in response headers for monitoring/debugging
+        response = Response(serializer.data)
+        response['X-Total-Processed'] = str(processed_count)
+        response['X-Children-Count'] = str(len(children))
+        response['X-Truncated'] = 'true' if len(children) >= max_descendants else 'false'
+        response['X-Memory-Protection'] = 'chunked'
+
+        return response
 
     def _chunked_queryset(self, queryset, chunk_size: int) -> Iterator[List]:
         """Yield successive chunks from queryset to avoid loading all data into memory"""

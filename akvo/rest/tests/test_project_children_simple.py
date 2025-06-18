@@ -262,12 +262,13 @@ class ProjectChildrenIntegrationTestCase(BaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # Should include both child and grandchild due to max_depth=2
-        if isinstance(response.data, list):
-            # Standard processing
-            self.assertGreaterEqual(len(response.data), 1)  # At least the direct child
-        else:
-            # Chunked processing
-            self.assertGreaterEqual(response.data['meta']['children_count'], 1)
+        # Response should always be an array for backward compatibility
+        self.assertIsInstance(response.data, list)
+        self.assertGreaterEqual(len(response.data), 1)  # At least the direct child
+
+        # Check memory protection headers
+        self.assertIn('X-Memory-Protection', response)
+        self.assertIn('X-Children-Count', response)
 
     def test_chunked_queryset_functionality(self):
         """Test _chunked_queryset method directly"""
@@ -376,18 +377,15 @@ class ProjectChildrenIntegrationTestCase(BaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # With 4 children and limit of 2, should trigger chunked processing
-        if isinstance(response.data, dict):
-            # Successfully triggered chunked processing
-            self.assertIn('data', response.data)
-            self.assertIn('meta', response.data)
-            meta = response.data['meta']
-            self.assertEqual(meta['total_processed'], 4)
-            self.assertEqual(meta['children_count'], 2)  # Limited by MAX_DESCENDANTS_PER_REQUEST
-            self.assertTrue(meta['truncated'])
-        else:
-            # If it didn't trigger chunked processing, it should still work
-            self.assertIsInstance(response.data, list)
-            self.assertEqual(len(response.data), 4)
+        # Response should always be an array for backward compatibility
+        self.assertIsInstance(response.data, list)
+        self.assertEqual(len(response.data), 2)  # Limited by MAX_DESCENDANTS_PER_REQUEST
+
+        # Check chunked processing headers
+        self.assertEqual(response['X-Memory-Protection'], 'chunked')
+        self.assertEqual(response['X-Total-Processed'], '4')
+        self.assertEqual(response['X-Children-Count'], '2')
+        self.assertEqual(response['X-Truncated'], 'true')
 
     def test_chunked_processing_with_real_project_hierarchy(self):
         """Test chunked processing works with a real project hierarchy"""
@@ -408,11 +406,10 @@ class ProjectChildrenIntegrationTestCase(BaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # Should work regardless of whether chunked or standard processing is used
-        if isinstance(response.data, list):
-            # Standard processing
-            self.assertGreaterEqual(len(response.data), 1)
-        else:
-            # Chunked processing
-            self.assertIn('data', response.data)
-            self.assertIn('meta', response.data)
-            self.assertGreaterEqual(len(response.data['data']), 1)
+        # Response should always be an array for backward compatibility
+        self.assertIsInstance(response.data, list)
+        self.assertGreaterEqual(len(response.data), 1)
+
+        # Check memory protection headers
+        self.assertIn('X-Memory-Protection', response)
+        self.assertIn('X-Children-Count', response)
