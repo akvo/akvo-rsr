@@ -29,6 +29,7 @@ from django.utils.translation import gettext_lazy as _
 from django.db.models import Q
 from django.db.models import JSONField
 from django.utils.functional import cached_property
+from akvo.rsr.cache_management import ttl_cached_property
 from django.utils import timezone
 from pytz import InvalidTimeError
 
@@ -649,7 +650,7 @@ class Project(TimestampsMixin, AkvoTreeModel):
     def get_absolute_url(self):
         return reverse('project-main', kwargs={'project_id': self.pk})
 
-    @cached_property
+    @ttl_cached_property(ttl=3600, max_size=500)
     def cacheable_url(self):
         # Language names are 2 chars long
         return self.get_absolute_url()[3:]
@@ -665,7 +666,7 @@ class Project(TimestampsMixin, AkvoTreeModel):
         act_id = urllib.parse.quote(self.iati_activity_id, safe='')
         return f"https://d-portal.org/ctrack.html?reporting_ref={org_id}#view=act&aid={act_id}"
 
-    @cached_property
+    @ttl_cached_property(ttl=1800, max_size=200)
     def is_unep_project(self):
         return 'UNEP Marine Litter Stocktake' in self.keyword_labels()
 
