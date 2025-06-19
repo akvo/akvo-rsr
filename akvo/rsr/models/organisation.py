@@ -11,6 +11,7 @@ from django.db.models import Sum, Q, signals
 from django.dispatch import receiver
 from django.urls import reverse
 from django.utils.functional import cached_property
+from akvo.rsr.cache_management import ttl_cached_property
 from django.utils.translation import gettext_lazy as _
 from django_q.tasks import async_task
 
@@ -200,7 +201,7 @@ class Organisation(TimestampsMixin):
     def get_absolute_url(self):
         return reverse('organisation-main', kwargs={'organisation_id': self.pk})
 
-    @cached_property
+    @ttl_cached_property(ttl=3600, max_size=100)
     def cacheable_url(self):
         return self.get_absolute_url()
 
