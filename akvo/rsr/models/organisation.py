@@ -7,31 +7,28 @@
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import Sum, Q, signals
+from django.db.models import Q, Sum, signals
 from django.dispatch import receiver
 from django.urls import reverse
-from django.utils.functional import cached_property
-from akvo.rsr.cache_management import ttl_cached_property
 from django.utils.translation import gettext_lazy as _
 from django_q.tasks import async_task
-
 from sorl.thumbnail.fields import ImageField
-from akvo.password_policy.models import PolicyConfig
 
-from akvo.utils import codelist_choices, codelist_name, rsr_image_path
-from akvo.rsr.usecases.toggle_org_enforce_2fa import toggle_enfore_2fa
-
-from ..mixins import TimestampsMixin
-from ..fields import ValidXMLCharField, ValidXMLTextField
-from akvo.codelists.store.default_codelists import CURRENCY, ORGANISATION_TYPE
 from akvo.codelists.models import Currency
+from akvo.codelists.store.default_codelists import CURRENCY, ORGANISATION_TYPE
+from akvo.password_policy.models import PolicyConfig
+from akvo.rsr.cache_management import ttl_cached_property
+from akvo.rsr.usecases.toggle_org_enforce_2fa import toggle_enfore_2fa
+from akvo.utils import codelist_choices, codelist_name, rsr_image_path
 
+from ..fields import ValidXMLCharField, ValidXMLTextField
+from ..mixins import TimestampsMixin
 from .country import Country
 from .model_querysets.organisation import OrgManager
 from .partner_site import PartnerSite
 from .partnership import Partnership
-from .publishing_status import PublishingStatus
 from .project_update import ProjectUpdate
+from .publishing_status import PublishingStatus
 
 ORG_TYPE_NGO = 'N'
 ORG_TYPE_GOV = 'G'

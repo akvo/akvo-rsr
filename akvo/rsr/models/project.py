@@ -8,55 +8,52 @@ import dataclasses
 import logging
 import threading
 import time
-from typing import Dict, Generic, Hashable, Optional, Set, TypeVar
 import urllib.parse
+from typing import Dict, Generic, Hashable, Optional, Set, TypeVar
 
+from django.apps import apps
 from django.conf import settings
-from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
+from django.contrib.admin.models import ADDITION, CHANGE, LogEntry
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
-from django.core.exceptions import ValidationError, ObjectDoesNotExist, MultipleObjectsReturned
+from django.core.exceptions import (MultipleObjectsReturned,
+                                    ObjectDoesNotExist, ValidationError)
 from django.core.mail import send_mail
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.apps import apps
-from django.db.models import Sum
-from django.db.models.signals import post_save, post_delete
+from django.db.models import JSONField, Q, Sum
+from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
-from django.db.models import Q
-from django.db.models import JSONField
-from django.utils.functional import cached_property
-from akvo.rsr.cache_management import ttl_cached_property
-from django.utils import timezone
 from pytz import InvalidTimeError
-
 from sorl.thumbnail.fields import ImageField
 
-from akvo.codelists.models import (AidType, ActivityScope, ActivityStatus, CollaborationType,
-                                   FinanceType, FlowType, TiedStatus)
+from akvo.codelists.models import (ActivityScope, ActivityStatus, AidType,
+                                   CollaborationType, FinanceType, FlowType,
+                                   TiedStatus)
 from akvo.codelists.store.default_codelists import (
-    AID_TYPE_VOCABULARY, ACTIVITY_SCOPE, ACTIVITY_STATUS, COLLABORATION_TYPE, CURRENCY,
-    FINANCE_TYPE, FLOW_TYPE, TIED_STATUS, BUDGET_IDENTIFIER_VOCABULARY
-)
-from akvo.utils import (
-    codelist_choices, codelist_value, codelist_name, get_thumbnail, rsr_image_path,
-    rsr_show_keywords, single_period_dates, ensure_decimal
-)
-from .related_project import ParentChangeDisallowed
-from .tree.model import AkvoTreeModel
+    ACTIVITY_SCOPE, ACTIVITY_STATUS, AID_TYPE_VOCABULARY,
+    BUDGET_IDENTIFIER_VOCABULARY, COLLABORATION_TYPE, CURRENCY, FINANCE_TYPE,
+    FLOW_TYPE, TIED_STATUS)
+from akvo.rsr.cache_management import ttl_cached_property
+from akvo.utils import (codelist_choices, codelist_name, codelist_value,
+                        ensure_decimal, get_thumbnail, rsr_image_path,
+                        rsr_show_keywords, single_period_dates)
 
-from ..fields import ProjectLimitedTextField, ValidXMLCharField, ValidXMLTextField
+from ..fields import (ProjectLimitedTextField, ValidXMLCharField,
+                      ValidXMLTextField)
 from ..mixins import TimestampsMixin
-
+from .budget_item import BudgetItem
 from .model_querysets.project import ProjectQuerySet
 from .partnership import Partnership
-from .project_update import ProjectUpdate
 from .project_editor_validation import ProjectEditorValidationSet
+from .project_update import ProjectUpdate
 from .publishing_status import PublishingStatus
-from .budget_item import BudgetItem
+from .related_project import ParentChangeDisallowed
+from .tree.model import AkvoTreeModel
 
 logger = logging.getLogger(__name__)
 
