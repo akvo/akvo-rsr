@@ -6,54 +6,54 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 import dataclasses
 import logging
-from typing import Dict, Generic, Hashable, Optional, TypeVar
+import threading
+import time
 import urllib.parse
+from typing import Dict, Generic, Hashable, Optional, Set, TypeVar
 
+from django.apps import apps
 from django.conf import settings
-from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
+from django.contrib.admin.models import ADDITION, CHANGE, LogEntry
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
-from django.core.exceptions import ValidationError, ObjectDoesNotExist, MultipleObjectsReturned
+from django.core.exceptions import (MultipleObjectsReturned,
+                                    ObjectDoesNotExist, ValidationError)
 from django.core.mail import send_mail
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.apps import apps
-from django.db.models import Sum
-from django.db.models.signals import post_save, post_delete
+from django.db.models import JSONField, Q, Sum
+from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
-from django.db.models import Q
-from django.db.models import JSONField
-from django.utils.functional import cached_property
-from django.utils import timezone
 from pytz import InvalidTimeError
-
 from sorl.thumbnail.fields import ImageField
 
-from akvo.codelists.models import (AidType, ActivityScope, ActivityStatus, CollaborationType,
-                                   FinanceType, FlowType, TiedStatus)
+from akvo.codelists.models import (ActivityScope, ActivityStatus, AidType,
+                                   CollaborationType, FinanceType, FlowType,
+                                   TiedStatus)
 from akvo.codelists.store.default_codelists import (
-    AID_TYPE_VOCABULARY, ACTIVITY_SCOPE, ACTIVITY_STATUS, COLLABORATION_TYPE, CURRENCY,
-    FINANCE_TYPE, FLOW_TYPE, TIED_STATUS, BUDGET_IDENTIFIER_VOCABULARY
-)
-from akvo.utils import (
-    codelist_choices, codelist_value, codelist_name, get_thumbnail, rsr_image_path,
-    rsr_show_keywords, single_period_dates, ensure_decimal
-)
-from .related_project import ParentChangeDisallowed
-from .tree.model import AkvoTreeModel
+    ACTIVITY_SCOPE, ACTIVITY_STATUS, AID_TYPE_VOCABULARY,
+    BUDGET_IDENTIFIER_VOCABULARY, COLLABORATION_TYPE, CURRENCY, FINANCE_TYPE,
+    FLOW_TYPE, TIED_STATUS)
+from akvo.rsr.cache_management import ttl_cached_property
+from akvo.utils import (codelist_choices, codelist_name, codelist_value,
+                        ensure_decimal, get_thumbnail, rsr_image_path,
+                        rsr_show_keywords, single_period_dates)
 
-from ..fields import ProjectLimitedTextField, ValidXMLCharField, ValidXMLTextField
+from ..fields import (ProjectLimitedTextField, ValidXMLCharField,
+                      ValidXMLTextField)
 from ..mixins import TimestampsMixin
-
+from .budget_item import BudgetItem
 from .model_querysets.project import ProjectQuerySet
 from .partnership import Partnership
-from .project_update import ProjectUpdate
 from .project_editor_validation import ProjectEditorValidationSet
+from .project_update import ProjectUpdate
 from .publishing_status import PublishingStatus
-from .budget_item import BudgetItem
+from .related_project import ParentChangeDisallowed
+from .tree.model import AkvoTreeModel
 
 logger = logging.getLogger(__name__)
 
@@ -65,8 +65,69 @@ DESCRIPTIONS_ORDER = [
 Projects in the process of being deleted
 Some signals attempt to update projects and they shouldn't attempt to do so
  when a project is being deleted
+
+This implementation includes memory leak protection:
+- Automatic cleanup of stale entries via timestamp tracking
+- Thread-safe operations using threading.Lock
+- Periodic cleanup to prevent unbounded growth
 """
-DELETION_SET = set()
+
+
+class ProjectDeletionTracker:
+    """Thread-safe tracker for projects being deleted with automatic cleanup"""
+
+    def __init__(self):
+        self._deletion_set: Set[int] = set()
+        self._timestamps: Dict[int, float] = {}
+        self._lock = threading.Lock()
+        self._cleanup_threshold = 3600  # 1 hour timeout for stale entries
+        self._last_cleanup = time.time()
+
+    def add(self, project_id: int) -> None:
+        """Add project to deletion tracking"""
+        with self._lock:
+            self._deletion_set.add(project_id)
+            self._timestamps[project_id] = time.time()
+            self._maybe_cleanup()
+
+    def discard(self, project_id: int) -> None:
+        """Remove project from deletion tracking"""
+        with self._lock:
+            self._deletion_set.discard(project_id)
+            self._timestamps.pop(project_id, None)
+
+    def __contains__(self, project_id: int) -> bool:
+        """Check if project is being deleted"""
+        with self._lock:
+            return project_id in self._deletion_set
+
+    def _maybe_cleanup(self) -> None:
+        """Periodic cleanup of stale entries (called while holding lock)"""
+        current_time = time.time()
+        if current_time - self._last_cleanup > self._cleanup_threshold / 4:  # Cleanup every 15 minutes
+            self._cleanup_stale_entries(current_time)
+            self._last_cleanup = current_time
+
+    def _cleanup_stale_entries(self, current_time: float) -> None:
+        """Remove entries older than cleanup_threshold (called while holding lock)"""
+        stale_ids = [
+            project_id for project_id, timestamp in self._timestamps.items()
+            if current_time - timestamp > self._cleanup_threshold
+        ]
+        for project_id in stale_ids:
+            self._deletion_set.discard(project_id)
+            self._timestamps.pop(project_id, None)
+
+    def force_cleanup(self) -> int:
+        """Force cleanup of all stale entries, returns count of cleaned entries"""
+        with self._lock:
+            current_time = time.time()
+            initial_count = len(self._deletion_set)
+            self._cleanup_stale_entries(current_time)
+            return initial_count - len(self._deletion_set)
+
+
+DELETION_SET = ProjectDeletionTracker()
 
 
 def get_default_descriptions_order():
@@ -586,7 +647,7 @@ class Project(TimestampsMixin, AkvoTreeModel):
     def get_absolute_url(self):
         return reverse('project-main', kwargs={'project_id': self.pk})
 
-    @cached_property
+    @ttl_cached_property(ttl=3600, max_size=500)
     def cacheable_url(self):
         # Language names are 2 chars long
         return self.get_absolute_url()[3:]
@@ -602,7 +663,7 @@ class Project(TimestampsMixin, AkvoTreeModel):
         act_id = urllib.parse.quote(self.iati_activity_id, safe='')
         return f"https://d-portal.org/ctrack.html?reporting_ref={org_id}#view=act&aid={act_id}"
 
-    @cached_property
+    @ttl_cached_property(ttl=1800, max_size=200)
     def is_unep_project(self):
         return 'UNEP Marine Litter Stocktake' in self.keyword_labels()
 
