@@ -216,6 +216,16 @@ class TestObject:
 class CacheDecoratorsTest(TestCase):
     """Test cache decorators"""
 
+    def setUp(self):
+        """Clear all caches before each test"""
+        from akvo.rsr.cache_management import cache_manager
+        cache_manager.clear_all()
+
+    def tearDown(self):
+        """Clear all caches after each test"""
+        from akvo.rsr.cache_management import cache_manager
+        cache_manager.clear_all()
+
     def test_ttl_cached_property(self):
         """Test TTL cached property decorator"""
         obj = TestObject()
