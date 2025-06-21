@@ -17,6 +17,8 @@ Using [Markedly Structured Text][MyST] we can use [Markdown with ReST directives
 Table of Contents
 =================
 
+## Core Documentation
+
 ```{toctree}
 :maxdepth: 2
 
@@ -25,6 +27,20 @@ references.md
 dev.md
 deploying.md
 ```
+
+## Quick Links
+
+### 🛡️ Memory Protection & Performance
+Comprehensive memory protection mechanisms for production stability:
+- **[Memory Protection Overview](components/memory/index.md)** - Quick start and configuration
+- **[Implementation Guide](components/memory/implementation.md)** - Technical details of memory protection systems
+- **[API Reference](components/memory/api.md)** - Complete API documentation
+- **[Testing Guide](components/memory/testing.md)** - Memory-aware testing patterns
+
+### 🏗️ Core Components
+- **[Results Framework](components/results_framework/index.md)** - Project results and indicators
+- **[Projects](components/projects.md)** - Project management and hierarchies
+- **[Reports](components/reports/index.md)** - Reporting system
 
 Indices and tables
 ==================

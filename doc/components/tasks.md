@@ -6,7 +6,7 @@ For that, we need a django-q "cluster".
 Right now we use one node.
 These are the related files
 
-| File                                                 | Purpose                     | Environment | 
+| File                                                 | Purpose                     | Environment |
 |------------------------------------------------------|-----------------------------|-------------|
 | [start-django.sh][start-test]                        | Starts RSR in the container | Local       |
 | [start-django.sh][start-prod]                        | Starts RSR in the container | Prod / Test |
@@ -16,7 +16,7 @@ These are the related files
 | [`worker.sh`][worker probe]                          | Health probe                | All         |
 
 
-## Starting up 
+## Starting up
 
 The worker container is started with the same script as the web container.
 The only difference is the `IS_WORKER` env variable.
@@ -54,6 +54,6 @@ In principle all it does is check if the heartbeat key exists in the cache to ex
 [dc-override]: https://github.com/akvo/akvo-rsr/blob/master/docker-compose.override.yml
 [django-q]: https://django-q.readthedocs.io/en/latest/
 [django-q cluster]: https://django-q.readthedocs.io/en/latest/cluster.html
-[start-test]: https://github.com/akvo/akvo-rsr/blob/66eaa83ccd769a576c5d167547ae21fe8f85a006/scripts/docker/dev/start-django.sh#L31 
-[start-prod]: https://github.com/akvo/akvo-rsr/blob/66eaa83ccd769a576c5d167547ae21fe8f85a006/scripts/docker/prod/start-django.sh#L42 
+[start-test]: https://github.com/akvo/akvo-rsr/blob/66eaa83ccd769a576c5d167547ae21fe8f85a006/scripts/docker/dev/start-django.sh#L31
+[start-prod]: https://github.com/akvo/akvo-rsr/blob/66eaa83ccd769a576c5d167547ae21fe8f85a006/scripts/docker/prod/start-django.sh#L42
 [worker probe]: https://github.com/akvo/akvo-rsr/blob/master/scripts/probes/worker.sh
