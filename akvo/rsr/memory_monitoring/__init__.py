@@ -16,10 +16,17 @@ while providing comprehensive insights into memory usage patterns.
 from .prometheus_metrics import (
     RSRMemoryMetrics,
     register_rsr_metrics,
+    get_rsr_metrics,
 )
 
 from .middleware import (
     RSRMemoryMonitoringMiddleware,
+)
+
+from .leak_detection import (
+    RSRLeakDetector,
+    get_leak_detector,
+    check_for_memory_leaks,
 )
 
 __version__ = '1.0.0'
@@ -30,5 +37,9 @@ default_app_config = 'akvo.rsr.memory_monitoring.apps.MemoryMonitoringConfig'
 __all__ = [
     'RSRMemoryMetrics',
     'register_rsr_metrics',
+    'get_rsr_metrics',
     'RSRMemoryMonitoringMiddleware',
+    'RSRLeakDetector',
+    'get_leak_detector',
+    'check_for_memory_leaks',
 ]

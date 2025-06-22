@@ -17,6 +17,7 @@ from django.http import HttpRequest, HttpResponse
 from django.utils.deprecation import MiddlewareMixin
 
 from .prometheus_metrics import get_rsr_metrics, update_all_metrics
+from .leak_detection import get_leak_detector
 
 logger = logging.getLogger(__name__)
 
@@ -72,10 +73,25 @@ class RSRMemoryMonitoringMiddleware(MiddlewareMixin):
                 ),
             }
 
-            # Periodically update all metrics
+            # Periodically update all metrics and check for leaks
             current_time = time.time()
             if current_time - self._last_metrics_update > self.metrics_update_interval:
                 update_all_metrics()
+
+                # Run leak detection check
+                try:
+                    leak_detector = get_leak_detector()
+                    leak_results = leak_detector.check_for_leaks()
+
+                    # Log any detected leaks
+                    if leak_results.get('leak_indicators'):
+                        logger.warning(f"Memory leak detection found {len(leak_results['leak_indicators'])} indicators")
+                        for indicator in leak_results['leak_indicators']:
+                            logger.warning(f"Leak indicator: {indicator['description']}")
+
+                except Exception as e:
+                    logger.warning(f"Error during leak detection: {e}")
+
                 self._last_metrics_update = current_time
 
         except Exception as e:
