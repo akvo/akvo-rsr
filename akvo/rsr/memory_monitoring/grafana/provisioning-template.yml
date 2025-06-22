@@ -1,0 +1,145 @@
+# Grafana Dashboard Provisioning Configuration for RSR Memory Monitoring
+# Place this file in grafana/provisioning/dashboards/ directory
+
+apiVersion: 1
+
+providers:
+  - name: 'RSR Memory Monitoring'
+    orgId: 1
+    folder: 'RSR Monitoring'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 10
+    allowUiUpdates: true
+    options:
+      path: /etc/grafana/provisioning/dashboards/rsr-memory
+
+---
+
+# Grafana Datasource Provisioning Configuration
+# Place this in grafana/provisioning/datasources/ directory
+
+apiVersion: 1
+
+datasources:
+  - name: Prometheus RSR
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+    editable: true
+    jsonData:
+      httpMethod: POST
+      queryTimeout: 60s
+      timeInterval: 30s
+      manageAlerts: true
+      alertmanagerUid: alertmanager-rsr
+
+---
+
+# Grafana Alert Notification Provisioning Configuration  
+# Place this in grafana/provisioning/notifiers/ directory
+
+apiVersion: 1
+
+notifiers:
+  - name: rsr-memory-slack
+    type: slack
+    uid: rsr-memory-slack
+    org_id: 1
+    is_default: false
+    send_reminder: true
+    disable_resolve_message: false
+    frequency: "1h"
+    settings:
+      url: ${SLACK_WEBHOOK_URL}
+      title: "RSR Memory Alert"
+      text: |
+        {{ range .Alerts }}
+        **{{ .Annotations.summary }}**
+        {{ .Annotations.description }}
+        Instance: {{ .Labels.instance }}
+        Severity: {{ .Labels.severity }}
+        {{ if .Annotations.runbook_url }}
+        [Runbook]({{ .Annotations.runbook_url }})
+        {{ end }}
+        {{ end }}
+      channel: "#rsr-alerts"
+      username: "RSR Memory Monitor"
+      iconEmoji: ":warning:"
+
+  - name: rsr-memory-email
+    type: email
+    uid: rsr-memory-email
+    org_id: 1
+    is_default: false
+    send_reminder: true
+    disable_resolve_message: false
+    frequency: "1h"
+    settings:
+      addresses: ${ALERT_EMAIL_ADDRESSES}
+      subject: "RSR Memory Alert: {{ .GroupLabels.alertname }}"
+      body: |
+        RSR Memory Monitoring Alert
+        
+        {{ range .Alerts }}
+        Alert: {{ .Annotations.summary }}
+        Description: {{ .Annotations.description }}
+        Instance: {{ .Labels.instance }}
+        Severity: {{ .Labels.severity }}
+        Component: {{ .Labels.component }}
+        Started: {{ .StartsAt }}
+        {{ if .Annotations.runbook_url }}
+        Runbook: {{ .Annotations.runbook_url }}
+        {{ end }}
+        
+        {{ end }}
+        
+        Dashboard: ${GRAFANA_URL}/d/rsr-memory-monitoring
+        
+        --
+        RSR Memory Monitoring System
+
+  - name: rsr-memory-webhook
+    type: webhook  
+    uid: rsr-memory-webhook
+    org_id: 1
+    is_default: false
+    send_reminder: false
+    disable_resolve_message: false
+    frequency: "1h"
+    settings:
+      url: ${WEBHOOK_URL}
+      httpMethod: POST
+      maxAlerts: 10
+      title: "RSR Memory Alert"
+      message: |
+        {{ range .Alerts }}
+        {{ .Annotations.summary }}: {{ .Annotations.description }}
+        {{ end }}
+
+---
+
+# Environment Variables Template
+# Create a .env file with these variables
+
+# Slack Integration
+SLACK_WEBHOOK_URL=https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK
+
+# Email Configuration  
+ALERT_EMAIL_ADDRESSES=ops-team@akvo.org,monitoring@akvo.org
+
+# Webhook Integration
+WEBHOOK_URL=https://your-webhook-endpoint.com/rsr-alerts
+
+# PagerDuty Integration
+PAGERDUTY_INTEGRATION_KEY=your-pagerduty-integration-key
+
+# Grafana Configuration
+GRAFANA_URL=https://grafana.your-domain.com
+
+# SMTP Configuration (for email alerts)
+SMTP_HOST=smtp.your-domain.com
+SMTP_PORT=587
+SMTP_USER=alerts@your-domain.com
+SMTP_PASSWORD=your-smtp-password
