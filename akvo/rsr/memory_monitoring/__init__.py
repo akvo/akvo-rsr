@@ -29,6 +29,13 @@ from .leak_detection import (
     check_for_memory_leaks,
 )
 
+from .profiling import (
+    RSRMemoryProfiler,
+    get_memory_profiler,
+    profile_operation,
+    profile_request_if_enabled,
+)
+
 __version__ = '1.0.0'
 __author__ = 'Akvo RSR Team'
 
@@ -42,4 +49,8 @@ __all__ = [
     'RSRLeakDetector',
     'get_leak_detector',
     'check_for_memory_leaks',
+    'RSRMemoryProfiler',
+    'get_memory_profiler',
+    'profile_operation',
+    'profile_request_if_enabled',
 ]
