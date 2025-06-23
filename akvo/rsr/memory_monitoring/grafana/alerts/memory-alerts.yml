@@ -1,0 +1,158 @@
+groups:
+  - name: rsr_memory_monitoring
+    interval: 30s
+    rules:
+      # Critical Memory Usage Alert
+      - alert: RSRHighMemoryUsage
+        expr: rsr_memory_usage_bytes / 1024 / 1024 > 500
+        for: 2m
+        labels:
+          severity: critical
+          component: memory
+          service: rsr
+        annotations:
+          summary: "RSR High Memory Usage Detected"
+          description: "RSR instance {{ $labels.instance }} is using {{ $value }}MB of memory, which exceeds the 500MB threshold."
+          runbook_url: "https://docs.rsr.akvo.org/troubleshooting/memory-issues"
+
+      # Memory Growth Rate Alert
+      - alert: RSRMemoryGrowthRate
+        expr: rate(rsr_memory_usage_bytes[10m]) * 600 / 1024 / 1024 > 50
+        for: 5m
+        labels:
+          severity: warning
+          component: memory
+          service: rsr
+        annotations:
+          summary: "RSR High Memory Growth Rate"
+          description: "RSR instance {{ $labels.instance }} memory is growing at {{ $value }}MB per 10 minutes."
+          runbook_url: "https://docs.rsr.akvo.org/troubleshooting/memory-growth"
+
+      # Memory Leak Detection Alert
+      - alert: RSRMemoryLeakDetected
+        expr: increase(rsr_memory_leaks_detected_total[5m]) > 0
+        for: 0s
+        labels:
+          severity: warning
+          component: memory
+          service: rsr
+          object_type: "{{ $labels.object_type }}"
+          leak_severity: "{{ $labels.severity }}"
+        annotations:
+          summary: "RSR Memory Leak Detected"
+          description: "Memory leak detected in {{ $labels.object_type }} with severity {{ $labels.severity }} on instance {{ $labels.instance }}."
+          runbook_url: "https://docs.rsr.akvo.org/troubleshooting/memory-leaks"
+
+      # Critical Memory Leak Alert
+      - alert: RSRCriticalMemoryLeak
+        expr: increase(rsr_memory_leaks_detected_total{severity="high"}[5m]) > 0
+        for: 0s
+        labels:
+          severity: critical
+          component: memory
+          service: rsr
+        annotations:
+          summary: "RSR Critical Memory Leak Detected"
+          description: "Critical memory leak detected in {{ $labels.object_type }} on instance {{ $labels.instance }}. Immediate attention required."
+          runbook_url: "https://docs.rsr.akvo.org/troubleshooting/critical-memory-leaks"
+
+      # Memory Monitor Down Alert
+      - alert: RSRMemoryMonitorDown
+        expr: up{job="rsr-memory-monitoring"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          component: monitoring
+          service: rsr
+        annotations:
+          summary: "RSR Memory Monitoring Down"
+          description: "RSR memory monitoring is down on instance {{ $labels.instance }}. Memory leak detection is not functioning."
+          runbook_url: "https://docs.rsr.akvo.org/troubleshooting/monitoring-down"
+
+      # Cache Hit Rate Alert
+      - alert: RSRLowCacheHitRate
+        expr: rate(rsr_cache_hits_total[5m]) / (rate(rsr_cache_hits_total[5m]) + rate(rsr_cache_misses_total[5m])) * 100 < 70
+        for: 10m
+        labels:
+          severity: warning
+          component: cache
+          service: rsr
+        annotations:
+          summary: "RSR Low Cache Hit Rate"
+          description: "RSR cache hit rate on instance {{ $labels.instance }} is {{ $value }}%, below 70% threshold."
+          runbook_url: "https://docs.rsr.akvo.org/troubleshooting/cache-performance"
+
+      # Model Instance Growth Alert
+      - alert: RSRModelInstanceGrowth
+        expr: rate(rsr_model_instance_count[10m]) * 600 > 100
+        for: 5m
+        labels:
+          severity: warning
+          component: database
+          service: rsr
+          model: "{{ $labels.model_name }}"
+        annotations:
+          summary: "RSR High Model Instance Growth"
+          description: "{{ $labels.model_name }} instances are growing at {{ $value }} per 10 minutes on instance {{ $labels.instance }}."
+          runbook_url: "https://docs.rsr.akvo.org/troubleshooting/model-growth"
+
+      # Deletion Tracker Size Alert
+      - alert: RSRDeletionTrackerOverload
+        expr: rsr_deletion_tracker_size > 10000
+        for: 5m
+        labels:
+          severity: warning
+          component: memory
+          service: rsr
+        annotations:
+          summary: "RSR Deletion Tracker Overloaded"
+          description: "Deletion tracker on instance {{ $labels.instance }} has {{ $value }} entries, indicating potential cleanup issues."
+          runbook_url: "https://docs.rsr.akvo.org/troubleshooting/deletion-tracker"
+
+      # Request Memory Usage Alert
+      - alert: RSRHighRequestMemoryUsage
+        expr: histogram_quantile(0.95, rate(rsr_request_memory_usage_bucket[5m])) > 50
+        for: 5m
+        labels:
+          severity: warning
+          component: requests
+          service: rsr
+        annotations:
+          summary: "RSR High Request Memory Usage"
+          description: "95th percentile request memory usage on instance {{ $labels.instance }} is {{ $value }}MB."
+          runbook_url: "https://docs.rsr.akvo.org/troubleshooting/request-memory"
+
+      # Memory Prediction Alert
+      - alert: RSRMemoryGrowthPrediction
+        expr: predict_linear(rsr_memory_usage_bytes[30m], 3600) / 1024 / 1024 > 1000
+        for: 10m
+        labels:
+          severity: warning
+          component: memory
+          service: rsr
+        annotations:
+          summary: "RSR Memory Growth Prediction Alert"
+          description: "Based on current trends, RSR instance {{ $labels.instance }} is predicted to use {{ $value }}MB in 1 hour."
+          runbook_url: "https://docs.rsr.akvo.org/troubleshooting/memory-prediction"
+
+  - name: rsr_memory_aggregation
+    interval: 1m
+    rules:
+      # Recording rules for better performance and aggregation
+      - record: rsr:memory_usage_mb
+        expr: rsr_memory_usage_bytes / 1024 / 1024
+
+      - record: rsr:memory_growth_rate_mb_per_minute
+        expr: rate(rsr_memory_usage_bytes[5m]) * 60 / 1024 / 1024
+
+      - record: rsr:cache_hit_rate_percentage
+        expr: rate(rsr_cache_hits_total[5m]) / (rate(rsr_cache_hits_total[5m]) + rate(rsr_cache_misses_total[5m])) * 100
+
+      - record: rsr:total_leaks_detected_24h
+        expr: increase(rsr_memory_leaks_detected_total[24h])
+
+      - record: rsr:critical_leaks_detected_24h
+        expr: increase(rsr_memory_leaks_detected_total{severity="high"}[24h])
+
+      - record: rsr:model_instance_growth_rate
+        expr: rate(rsr_model_instance_count[10m]) * 600
