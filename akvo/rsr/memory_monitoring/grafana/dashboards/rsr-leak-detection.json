@@ -1,0 +1,275 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "RSR Memory Leak Detection",
+    "tags": ["rsr", "memory", "leaks", "detection"],
+    "style": "dark",
+    "timezone": "browser",
+    "refresh": "1m",
+    "time": {
+      "from": "now-6h",
+      "to": "now"
+    },
+    "templating": {
+      "list": [
+        {
+          "name": "instance",
+          "type": "query",
+          "datasource": "Prometheus",
+          "query": "label_values(rsr_memory_leaks_detected_total, instance)",
+          "refresh": 1,
+          "includeAll": true,
+          "allValue": ".*"
+        },
+        {
+          "name": "severity",
+          "type": "query",
+          "datasource": "Prometheus", 
+          "query": "label_values(rsr_memory_leaks_detected_total, severity)",
+          "refresh": 1,
+          "includeAll": true,
+          "allValue": ".*"
+        }
+      ]
+    },
+    "panels": [
+      {
+        "id": 1,
+        "title": "Memory Leak Summary",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "sum(increase(rsr_memory_leaks_detected_total{instance=~\"$instance\", severity=~\"$severity\"}[24h]))",
+            "legendFormat": "Total Leaks (24h)"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": 0},
+                {"color": "yellow", "value": 5},
+                {"color": "red", "value": 20}
+              ]
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 6, "x": 0, "y": 0}
+      },
+      {
+        "id": 2,
+        "title": "Critical Leaks",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "sum(increase(rsr_memory_leaks_detected_total{instance=~\"$instance\", severity=\"high\"}[24h]))",
+            "legendFormat": "Critical Leaks (24h)"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": 0},
+                {"color": "yellow", "value": 1},
+                {"color": "red", "value": 3}
+              ]
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 6, "x": 6, "y": 0}
+      },
+      {
+        "id": 3,
+        "title": "Current Memory Growth",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "rate(rsr_memory_usage_bytes{instance=~\"$instance\"}[10m]) * 600 / 1024 / 1024",
+            "legendFormat": "Growth Rate (MB/10min)"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "MB",
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": 20},
+                {"color": "red", "value": 50}
+              ]
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 6, "x": 12, "y": 0}
+      },
+      {
+        "id": 4,
+        "title": "Leak Detection Status",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "up{job=\"rsr-memory-monitoring\", instance=~\"$instance\"}",
+            "legendFormat": "Monitoring Active"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "bool",
+            "thresholds": {
+              "steps": [
+                {"color": "red", "value": 0},
+                {"color": "green", "value": 1}
+              ]
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 6, "x": 18, "y": 0}
+      },
+      {
+        "id": 5,
+        "title": "Memory Leak Events by Type",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "increase(rsr_memory_leaks_detected_total{instance=~\"$instance\", severity=~\"$severity\"}[5m])",
+            "legendFormat": "{{object_type}} ({{severity}})"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Leak Events",
+            "min": 0
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8}
+      },
+      {
+        "id": 6,
+        "title": "Memory Growth Trend",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rsr_memory_usage_bytes{instance=~\"$instance\"} / 1024 / 1024",
+            "legendFormat": "Current Memory (MB)"
+          },
+          {
+            "expr": "predict_linear(rsr_memory_usage_bytes{instance=~\"$instance\"}[30m], 3600) / 1024 / 1024",
+            "legendFormat": "Predicted Memory (1h)"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Memory (MB)",
+            "min": 0
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8}
+      },
+      {
+        "id": 7,
+        "title": "Django Model Instance Growth",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(rsr_model_instance_count{instance=~\"$instance\"}[5m]) * 300",
+            "legendFormat": "{{model_name}} growth/5min"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Instance Growth",
+            "min": 0
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 16}
+      },
+      {
+        "id": 8,
+        "title": "Object Type Growth Analysis",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rsr_object_growth_rate{instance=~\"$instance\"}",
+            "legendFormat": "{{object_type}}"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Objects Count",
+            "min": 0
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 16}
+      },
+      {
+        "id": 9,
+        "title": "Leak Detection Timeline",
+        "type": "table",
+        "targets": [
+          {
+            "expr": "rsr_memory_leaks_detected_total{instance=~\"$instance\", severity=~\"$severity\"}",
+            "legendFormat": "",
+            "instant": true,
+            "format": "table"
+          }
+        ],
+        "transformations": [
+          {
+            "id": "organize",
+            "options": {
+              "excludeByName": {
+                "__name__": true,
+                "job": true
+              },
+              "renameByName": {
+                "instance": "Instance",
+                "object_type": "Object Type",
+                "severity": "Severity",
+                "Value": "Total Detections"
+              }
+            }
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 24}
+      },
+      {
+        "id": 10,
+        "title": "Memory Threshold Violations",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rsr_memory_usage_bytes{instance=~\"$instance\"} > 100*1024*1024",
+            "legendFormat": "Above 100MB Threshold"
+          },
+          {
+            "expr": "rsr_memory_usage_bytes{instance=~\"$instance\"} > 500*1024*1024", 
+            "legendFormat": "Above 500MB Threshold"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Threshold Violations",
+            "min": 0,
+            "max": 1
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 24}
+      }
+    ],
+    "annotations": {
+      "list": [
+        {
+          "name": "Memory Leaks Detected",
+          "datasource": "Prometheus",
+          "expr": "increase(rsr_memory_leaks_detected_total{instance=~\"$instance\"}[1m]) > 0",
+          "iconColor": "red",
+          "textFormat": "Leak detected: {{object_type}} ({{severity}})"
+        }
+      ]
+    }
+  },
+  "overwrite": true
+}

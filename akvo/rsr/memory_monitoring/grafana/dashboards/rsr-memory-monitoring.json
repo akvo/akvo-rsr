@@ -1,0 +1,320 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "RSR Memory Monitoring",
+    "tags": ["rsr", "memory", "monitoring", "django"],
+    "style": "dark",
+    "timezone": "browser",
+    "refresh": "30s",
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "timepicker": {
+      "refresh_intervals": ["5s", "10s", "30s", "1m", "5m", "15m", "30m", "1h", "2h", "1d"]
+    },
+    "templating": {
+      "list": [
+        {
+          "name": "instance",
+          "type": "query",
+          "datasource": "Prometheus",
+          "query": "label_values(up, instance)",
+          "refresh": 1,
+          "includeAll": true,
+          "allValue": ".*"
+        },
+        {
+          "name": "job",
+          "type": "query", 
+          "datasource": "Prometheus",
+          "query": "label_values(up, job)",
+          "refresh": 1,
+          "includeAll": true,
+          "allValue": ".*"
+        }
+      ]
+    },
+    "panels": [
+      {
+        "id": 1,
+        "title": "Memory Usage Overview",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "rsr_memory_usage_bytes{instance=~\"$instance\", job=~\"$job\"} / 1024 / 1024",
+            "legendFormat": "Memory Usage (MB)"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "MB",
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": 100},
+                {"color": "red", "value": 500}
+              ]
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 6, "x": 0, "y": 0}
+      },
+      {
+        "id": 2,
+        "title": "Memory Growth Rate",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "rate(rsr_memory_usage_bytes{instance=~\"$instance\", job=~\"$job\"}[5m]) * 300 / 1024 / 1024",
+            "legendFormat": "Growth Rate (MB/5min)"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "MB",
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": 10},
+                {"color": "red", "value": 50}
+              ]
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 6, "x": 6, "y": 0}
+      },
+      {
+        "id": 3,
+        "title": "Memory Leak Indicators",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "increase(rsr_memory_leaks_detected_total{instance=~\"$instance\", job=~\"$job\"}[1h])",
+            "legendFormat": "Leaks Detected (1h)"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": 0},
+                {"color": "yellow", "value": 1},
+                {"color": "red", "value": 5}
+              ]
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 6, "x": 12, "y": 0}
+      },
+      {
+        "id": 4,
+        "title": "Cache Hit Rate",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "rate(rsr_cache_hits_total{instance=~\"$instance\", job=~\"$job\"}[5m]) / (rate(rsr_cache_hits_total{instance=~\"$instance\", job=~\"$job\"}[5m]) + rate(rsr_cache_misses_total{instance=~\"$instance\", job=~\"$job\"}[5m])) * 100",
+            "legendFormat": "Hit Rate %"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "thresholds": {
+              "steps": [
+                {"color": "red", "value": null},
+                {"color": "yellow", "value": 70},
+                {"color": "green", "value": 85}
+              ]
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 6, "x": 18, "y": 0}
+      },
+      {
+        "id": 5,
+        "title": "Memory Usage Timeline",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rsr_memory_usage_bytes{instance=~\"$instance\", job=~\"$job\"} / 1024 / 1024",
+            "legendFormat": "RSS Memory (MB) - {{instance}}"
+          },
+          {
+            "expr": "rsr_memory_peak_usage_bytes{instance=~\"$instance\", job=~\"$job\"} / 1024 / 1024",
+            "legendFormat": "Peak Memory (MB) - {{instance}}"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Memory (MB)",
+            "min": 0
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8}
+      },
+      {
+        "id": 6,
+        "title": "Request Memory Distribution",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.50, rate(rsr_request_memory_usage_bucket{instance=~\"$instance\", job=~\"$job\"}[5m]))",
+            "legendFormat": "50th percentile"
+          },
+          {
+            "expr": "histogram_quantile(0.95, rate(rsr_request_memory_usage_bucket{instance=~\"$instance\", job=~\"$job\"}[5m]))",
+            "legendFormat": "95th percentile"
+          },
+          {
+            "expr": "histogram_quantile(0.99, rate(rsr_request_memory_usage_bucket{instance=~\"$instance\", job=~\"$job\"}[5m]))",
+            "legendFormat": "99th percentile"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Memory (MB)",
+            "min": 0
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8}
+      },
+      {
+        "id": 7,
+        "title": "Django Model Instance Counts",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rsr_model_instance_count{instance=~\"$instance\", job=~\"$job\"}",
+            "legendFormat": "{{model_name}} instances"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Instance Count",
+            "min": 0
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 16}
+      },
+      {
+        "id": 8,
+        "title": "Object Growth Rates",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rsr_object_growth_rate{instance=~\"$instance\", job=~\"$job\"}",
+            "legendFormat": "{{object_type}} growth"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Objects",
+            "min": 0
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 16}
+      },
+      {
+        "id": 9,
+        "title": "Cache Operations",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(rsr_cache_hits_total{instance=~\"$instance\", job=~\"$job\"}[5m])",
+            "legendFormat": "Cache Hits/sec"
+          },
+          {
+            "expr": "rate(rsr_cache_misses_total{instance=~\"$instance\", job=~\"$job\"}[5m])",
+            "legendFormat": "Cache Misses/sec"
+          },
+          {
+            "expr": "rate(rsr_cache_operations_total{instance=~\"$instance\", job=~\"$job\"}[5m])",
+            "legendFormat": "Total Operations/sec"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Operations/sec",
+            "min": 0
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 24}
+      },
+      {
+        "id": 10,
+        "title": "Memory Leak Detection Events",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "increase(rsr_memory_leaks_detected_total{instance=~\"$instance\", job=~\"$job\"}[5m])",
+            "legendFormat": "{{object_type}} - {{severity}}"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Leak Events",
+            "min": 0
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 24}
+      },
+      {
+        "id": 11,
+        "title": "Deletion Tracker Operations",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rsr_deletion_tracker_size{instance=~\"$instance\", job=~\"$job\"}",
+            "legendFormat": "Tracked Deletions"
+          },
+          {
+            "expr": "rate(rsr_deletion_tracker_operations_total{instance=~\"$instance\", job=~\"$job\"}[5m])",
+            "legendFormat": "Operations/sec"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Count",
+            "min": 0
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 32}
+      },
+      {
+        "id": 12,
+        "title": "Project Hierarchy Metrics",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rsr_project_hierarchy_depth{instance=~\"$instance\", job=~\"$job\"}",
+            "legendFormat": "Max Hierarchy Depth"
+          },
+          {
+            "expr": "rsr_project_descendants_processed{instance=~\"$instance\", job=~\"$job\"}",
+            "legendFormat": "Descendants Processed"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Count",
+            "min": 0
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 32}
+      }
+    ],
+    "annotations": {
+      "list": [
+        {
+          "name": "Memory Leak Alerts",
+          "datasource": "Prometheus",
+          "expr": "ALERTS{alertname=~\".*MemoryLeak.*\", instance=~\"$instance\"}",
+          "iconColor": "red"
+        }
+      ]
+    }
+  },
+  "overwrite": true
+}
