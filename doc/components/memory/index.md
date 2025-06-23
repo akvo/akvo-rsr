@@ -16,8 +16,8 @@ RSR now includes a production-ready hybrid memory monitoring system that combine
 ```{toctree}
 :maxdepth: 2
 
+MEMORY_MONITORING.md
 implementation.md
-hybrid-monitoring.md
 api.md
 testing.md
 usage.md
@@ -27,8 +27,8 @@ usage.md
 
 | Document | Purpose | Audience |
 |----------|---------|----------|
+| **[Memory Monitoring Guide](MEMORY_MONITORING.md)** | **COMPLETE**: Comprehensive hybrid memory monitoring system documentation | Production Engineers, DevOps |
 | **[Implementation Guide](implementation.md)** | Original memory protection mechanisms (TTL cache, deletion tracker, etc.) | Developers, System Architects |
-| **[Hybrid Monitoring](hybrid-monitoring.md)** | **NEW**: Complete hybrid memory monitoring system documentation | DevOps, Production Engineers |
 | **[API Reference](api.md)** | Complete API documentation for all classes and methods | Developers, Contributors |
 | **[Testing Guide](testing.md)** | Memory-aware testing patterns and utilities | QA Engineers, Developers |
 | **[Usage Patterns](usage.md)** | Advanced usage patterns and production considerations | DevOps, Production Engineers |
@@ -65,9 +65,9 @@ curl http://localhost:8000/metrics/
 ```
 
 **🎯 Quick Links**:
-- [Complete Hybrid Monitoring Setup](hybrid-monitoring.md#quick-setup)
-- [Grafana Dashboard Installation](hybrid-monitoring.md#grafana-dashboards)
-- [Production Deployment Guide](hybrid-monitoring.md#production-deployment)
+- [Complete Hybrid Monitoring Setup](MEMORY_MONITORING.md#quick-start)
+- [Grafana Dashboard Installation](MEMORY_MONITORING.md#grafana-dashboards)
+- [Production Deployment Guide](MEMORY_MONITORING.md#production-deployment)
 
 ### Classic Memory Protection Settings
 
