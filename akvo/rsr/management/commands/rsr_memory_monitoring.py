@@ -6,8 +6,6 @@ including leak detection, profiling, metrics collection, and system health check
 """
 
 import json
-import os
-import sys
 from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
 
@@ -29,7 +27,7 @@ class Command(BaseCommand):
             'action',
             choices=[
                 'check-leaks',
-                'memory-summary', 
+                'memory-summary',
                 'start-profiling',
                 'stop-profiling',
                 'cleanup-profiles',
@@ -39,7 +37,7 @@ class Command(BaseCommand):
             ],
             help='Action to perform'
         )
-        
+
         # Arguments for profiling
         parser.add_argument(
             '--duration',
@@ -52,7 +50,7 @@ class Command(BaseCommand):
             type=str,
             help='Profile ID for stopping background profiling'
         )
-        
+
         # Output formatting
         parser.add_argument(
             '--format',
@@ -107,30 +105,30 @@ class Command(BaseCommand):
         """Run memory leak detection."""
         if verbose:
             self.stdout.write("Running memory leak detection...")
-        
+
         if not getattr(settings, 'RSR_LEAK_DETECTION_ENABLED', True):
             return {'error': 'Memory leak detection is disabled', 'enabled': False}
-        
+
         results = check_for_memory_leaks()
-        
+
         if verbose:
             leak_count = len(results.get('leak_indicators', []))
             self.stdout.write(f"Found {leak_count} potential leak indicators")
-        
+
         return results
 
     def memory_summary(self, verbose):
         """Get current memory summary."""
         if verbose:
             self.stdout.write("Generating memory summary...")
-        
+
         try:
             summary = get_memory_summary()
-            
+
             if verbose:
                 obj_count = summary.get('total_objects', 0)
                 self.stdout.write(f"Total objects tracked: {obj_count}")
-            
+
             return summary
         except Exception as e:
             return {'error': f"Failed to get memory summary: {str(e)}"}
@@ -139,13 +137,13 @@ class Command(BaseCommand):
         """Start background memory profiling."""
         if verbose:
             self.stdout.write(f"Starting background profiling for {duration} minutes...")
-        
+
         if not getattr(settings, 'RSR_PROFILING_ENABLED', False):
             return {'error': 'Memory profiling is disabled', 'enabled': False}
-        
+
         try:
             profile_id = start_automated_profiling(duration_minutes=duration)
-            
+
             if profile_id:
                 if verbose:
                     self.stdout.write(f"Started profiling with ID: {profile_id}")
@@ -170,13 +168,13 @@ class Command(BaseCommand):
                 'active_profilers': active,
                 'message': 'Specify --profile-id to stop a profiler'
             }
-        
+
         if verbose:
             self.stdout.write(f"Stopping profiling: {profile_id}")
-        
+
         try:
             profile_path = stop_automated_profiling(profile_id)
-            
+
             if profile_path:
                 if verbose:
                     self.stdout.write(f"Profiling stopped. Profile saved to: {profile_path}")
@@ -195,13 +193,13 @@ class Command(BaseCommand):
         """Clean up old profile files."""
         if verbose:
             self.stdout.write("Cleaning up old profile files...")
-        
+
         try:
             cleaned_count = cleanup_old_profiles()
-            
+
             if verbose:
                 self.stdout.write(f"Cleaned up {cleaned_count} old profile files")
-            
+
             return {
                 'success': True,
                 'cleaned_count': cleaned_count,
@@ -214,13 +212,13 @@ class Command(BaseCommand):
         """Update all memory monitoring metrics."""
         if verbose:
             self.stdout.write("Updating all memory monitoring metrics...")
-        
+
         try:
             update_all_metrics()
-            
+
             if verbose:
                 self.stdout.write("All metrics updated successfully")
-            
+
             return {
                 'success': True,
                 'message': 'All memory monitoring metrics updated'
@@ -232,7 +230,7 @@ class Command(BaseCommand):
         """Perform health check of memory monitoring system."""
         if verbose:
             self.stdout.write("Performing memory monitoring health check...")
-        
+
         health = {
             'memory_monitoring_enabled': getattr(settings, 'RSR_MEMORY_MONITORING_ENABLED', False),
             'leak_detection_enabled': getattr(settings, 'RSR_LEAK_DETECTION_ENABLED', False),
@@ -240,14 +238,14 @@ class Command(BaseCommand):
             'prometheus_enabled': getattr(settings, 'RSR_PROMETHEUS_METRICS_ENABLED', False),
             'components': {}
         }
-        
+
         # Test metrics system
         try:
-            metrics = get_rsr_metrics()
+            get_rsr_metrics()
             health['components']['prometheus_metrics'] = 'ok'
         except Exception as e:
             health['components']['prometheus_metrics'] = f'error: {str(e)}'
-        
+
         # Test leak detection
         if health['leak_detection_enabled']:
             try:
@@ -259,7 +257,7 @@ class Command(BaseCommand):
                 health['components']['leak_detection'] = f'error: {str(e)}'
         else:
             health['components']['leak_detection'] = 'disabled'
-        
+
         # Test profiling
         if health['profiling_enabled']:
             try:
@@ -271,22 +269,22 @@ class Command(BaseCommand):
                 health['components']['profiling'] = f'error: {str(e)}'
         else:
             health['components']['profiling'] = 'disabled'
-        
+
         # Overall health status
         errors = [v for v in health['components'].values() if v.startswith('error:')]
         health['overall_status'] = 'healthy' if not errors else 'degraded'
-        
+
         if verbose:
             status = health['overall_status']
             self.stdout.write(f"Health check complete. Status: {status}")
-        
+
         return health
 
     def status(self, verbose):
         """Get current status of memory monitoring system."""
         if verbose:
             self.stdout.write("Getting memory monitoring system status...")
-        
+
         status = {
             'configuration': {
                 'memory_monitoring': getattr(settings, 'RSR_MEMORY_MONITORING_ENABLED', False),
@@ -306,7 +304,7 @@ class Command(BaseCommand):
                 'model_growth': getattr(settings, 'RSR_LEAK_MODEL_GROWTH_THRESHOLD', 1.0),
             }
         }
-        
+
         # Add runtime information
         try:
             profiler = get_memory_profiler()
@@ -317,7 +315,7 @@ class Command(BaseCommand):
             }
         except Exception:
             status['runtime'] = {'active_profilers': 0, 'profiler_details': []}
-        
+
         return status
 
     def output_text_result(self, result, action):
@@ -325,12 +323,12 @@ class Command(BaseCommand):
         if isinstance(result, dict) and 'error' in result:
             self.stderr.write(self.style.ERROR(f"Error: {result['error']}"))
             return
-        
+
         if action == 'check-leaks':
             if result.get('skipped'):
                 self.stdout.write(f"Leak check skipped: {result.get('reason', 'unknown')}")
                 return
-            
+
             leak_indicators = result.get('leak_indicators', [])
             if leak_indicators:
                 self.stdout.write(self.style.WARNING(f"Found {len(leak_indicators)} leak indicators:"))
@@ -340,28 +338,28 @@ class Command(BaseCommand):
                     self.stdout.write(f"  [{severity.upper()}] {desc}")
             else:
                 self.stdout.write(self.style.SUCCESS("No memory leaks detected"))
-            
+
             recommendations = result.get('recommendations', [])
             if recommendations:
                 self.stdout.write("\nRecommendations:")
                 for rec in recommendations:
                     self.stdout.write(f"  • {rec}")
-        
+
         elif action == 'memory-summary':
             total_objects = result.get('total_objects', 0)
             self.stdout.write(f"Total tracked objects: {total_objects:,}")
-            
+
             if 'summary' in result:
                 self.stdout.write("\nMemory summary:")
                 self.stdout.write(result['summary'])
-        
+
         elif action == 'health-check':
             overall = result.get('overall_status', 'unknown')
             if overall == 'healthy':
                 self.stdout.write(self.style.SUCCESS(f"System status: {overall}"))
             else:
                 self.stdout.write(self.style.WARNING(f"System status: {overall}"))
-            
+
             components = result.get('components', {})
             self.stdout.write("\nComponent status:")
             for component, status in components.items():
@@ -371,18 +369,18 @@ class Command(BaseCommand):
                     self.stdout.write(f"  {component}: {status}")
                 else:
                     self.stdout.write(f"  {component}: {self.style.ERROR(status)}")
-        
+
         elif action == 'status':
             config = result.get('configuration', {})
             self.stdout.write("Configuration:")
             for key, value in config.items():
                 status = self.style.SUCCESS('enabled') if value else 'disabled'
                 self.stdout.write(f"  {key}: {status}")
-            
+
             runtime = result.get('runtime', {})
             active_count = runtime.get('active_profilers', 0)
             self.stdout.write(f"\nActive profilers: {active_count}")
-        
+
         else:
             # Default output for other actions
             if isinstance(result, dict):

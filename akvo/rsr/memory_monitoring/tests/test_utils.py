@@ -5,42 +5,42 @@ Provides common fixtures, mocks, and utilities for testing memory monitoring com
 """
 
 import gc
+import tempfile
 import threading
 import time
 from contextlib import contextmanager
-from unittest.mock import Mock, patch, MagicMock
 from pathlib import Path
-import tempfile
+from unittest.mock import Mock, patch
 
-from django.test import TestCase, override_settings
 from django.core.cache import cache
+from django.test import TestCase, override_settings
 
 
 class MemoryMonitoringTestCase(TestCase):
     """Base test case for memory monitoring tests with common utilities."""
-    
+
     def setUp(self):
         """Set up test fixtures."""
         super().setUp()
         # Clear cache before each test
         cache.clear()
-        
+
         # Force garbage collection for consistent memory state
         gc.collect()
-        
+
         # Store initial object count for memory leak detection tests
         self.initial_object_count = len(gc.get_objects())
-        
+
     def tearDown(self):
         """Clean up after tests."""
         # Clear cache after each test
         cache.clear()
-        
+
         # Force garbage collection
         gc.collect()
-        
+
         super().tearDown()
-    
+
     def create_memory_leak_scenario(self, count=100):
         """Create a controlled memory leak scenario for testing."""
         leaked_objects = []
@@ -50,31 +50,31 @@ class MemoryMonitoringTestCase(TestCase):
             obj['refs'].append(obj)  # Create circular reference
             leaked_objects.append(obj)
         return leaked_objects
-    
+
     def get_object_count_change(self):
         """Get the change in object count since test setup."""
         gc.collect()
         current_count = len(gc.get_objects())
         return current_count - self.initial_object_count
-    
+
     @contextmanager
     def temporary_directory(self):
         """Context manager for temporary directory creation."""
         with tempfile.TemporaryDirectory() as temp_dir:
             yield Path(temp_dir)
-    
+
     def mock_memory_info(self, rss_mb=100, vms_mb=200):
         """Create a mock memory info object."""
         mock_info = Mock()
         mock_info.rss = rss_mb * 1024 * 1024
         mock_info.vms = vms_mb * 1024 * 1024
         return mock_info
-    
+
     def mock_process(self, memory_info=None):
         """Create a mock process object."""
         if memory_info is None:
             memory_info = self.mock_memory_info()
-        
+
         mock_process = Mock()
         mock_process.memory_info.return_value = memory_info
         return mock_process
@@ -82,7 +82,7 @@ class MemoryMonitoringTestCase(TestCase):
 
 class MockPrometheusMetrics:
     """Mock Prometheus metrics for testing."""
-    
+
     def __init__(self):
         self.memory_usage = Mock()
         self.memory_peak_usage = Mock()
@@ -97,41 +97,41 @@ class MockPrometheusMetrics:
         self.deletion_tracker_operations = Mock()
         self.project_hierarchy_depth = Mock()
         self.project_descendants_processed = Mock()
-        
+
         # Mock labels method for all metrics
         for attr_name in dir(self):
             attr = getattr(self, attr_name)
             if hasattr(attr, 'labels'):
                 attr.labels.return_value = attr
-    
+
     @property
     def record_memory_usage(self):
         """Mock memory usage recording."""
         if not hasattr(self, '_record_memory_usage_mock'):
             self._record_memory_usage_mock = Mock()
         return self._record_memory_usage_mock
-    
+
     @property
     def record_request_memory(self):
         """Mock request memory recording."""
         if not hasattr(self, '_record_request_memory_mock'):
             self._record_request_memory_mock = Mock()
         return self._record_request_memory_mock
-    
+
     @property
     def record_cache_operation(self):
         """Mock cache operation recording."""
         if not hasattr(self, '_record_cache_operation_mock'):
             self._record_cache_operation_mock = Mock()
         return self._record_cache_operation_mock
-    
+
     @property
     def record_memory_leak(self):
         """Mock memory leak recording."""
         if not hasattr(self, '_record_memory_leak_mock'):
             self._record_memory_leak_mock = Mock()
         return self._record_memory_leak_mock
-    
+
     # Make these proper Mock objects instead of methods
     @property
     def update_cache_metrics(self):
@@ -139,7 +139,7 @@ class MockPrometheusMetrics:
         if not hasattr(self, '_update_cache_metrics_mock'):
             self._update_cache_metrics_mock = Mock()
         return self._update_cache_metrics_mock
-    
+
     @property
     def update_deletion_tracker_metrics(self):
         """Mock deletion tracker metrics update."""
@@ -181,17 +181,17 @@ def with_memory_monitoring_settings(cls):
 
 class MockMemrayProfiler:
     """Mock memray profiler for testing."""
-    
+
     def __init__(self, file_name, native_traces=False, follow_fork=True):
         self.file_name = file_name
         self.native_traces = native_traces
         self.follow_fork = follow_fork
         self.active = False
-    
+
     def __enter__(self):
         self.active = True
         return self
-    
+
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.active = False
         # Create a mock profile file
@@ -213,41 +213,41 @@ def mock_memray_tracker():
 
 class ThreadSafeTestCase(TestCase):
     """Test case for thread-safe testing."""
-    
+
     def setUp(self):
         super().setUp()
         self.threads = []
         self.thread_results = {}
         self.thread_errors = {}
-    
+
     def tearDown(self):
         # Wait for all threads to complete
         for thread in self.threads:
             thread.join(timeout=5)
         super().tearDown()
-    
+
     def run_in_thread(self, target, name=None, *args, **kwargs):
         """Run a function in a separate thread and collect results."""
         if name is None:
             name = f"thread_{len(self.threads)}"
-        
+
         def wrapper():
             try:
                 result = target(*args, **kwargs)
                 self.thread_results[name] = result
             except Exception as e:
                 self.thread_errors[name] = e
-        
+
         thread = threading.Thread(target=wrapper, name=name)
         self.threads.append(thread)
         thread.start()
         return thread
-    
+
     def wait_for_threads(self, timeout=5):
         """Wait for all threads to complete."""
         for thread in self.threads:
             thread.join(timeout=timeout)
-        
+
         # Check for thread errors
         if self.thread_errors:
             error_msgs = [f"{name}: {error}" for name, error in self.thread_errors.items()]
@@ -256,14 +256,14 @@ class ThreadSafeTestCase(TestCase):
 
 def create_test_models(count=10):
     """Create test model instances for testing."""
-    from akvo.rsr.models import Project, Organisation
-    
+    from akvo.rsr.models import Organisation, Project
+
     # Create test organization
     org = Organisation.objects.create(
         name="Test Organization",
         long_name="Test Organization for Memory Testing"
     )
-    
+
     projects = []
     for i in range(count):
         project = Project.objects.create(
@@ -271,7 +271,7 @@ def create_test_models(count=10):
             subtitle=f"Test project for memory monitoring {i}",
         )
         projects.append(project)
-    
+
     return org, projects
 
 
@@ -294,7 +294,7 @@ def patch_memory_usage(rss_mb=100, vms_mb=200):
     mock_info = Mock()
     mock_info.rss = rss_mb * 1024 * 1024
     mock_info.vms = vms_mb * 1024 * 1024
-    
+
     with patch('psutil.Process') as mock_process_class:
         mock_process = Mock()
         mock_process.memory_info.return_value = mock_info
