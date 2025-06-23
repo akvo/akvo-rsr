@@ -1,6 +1,15 @@
 # Memory Protection & Performance
 
-Akvo RSR includes comprehensive memory protection mechanisms and monitoring capabilities to prevent memory exhaustion and ensure stable operation in production environments with large datasets and complex project hierarchies.
+Akvo RSR includes comprehensive memory protection mechanisms and a hybrid monitoring system to prevent memory exhaustion, detect memory leaks, and ensure stable operation in production environments with large datasets and complex project hierarchies.
+
+## 🔥 NEW: Hybrid Memory Monitoring System
+
+RSR now includes a production-ready hybrid memory monitoring system that combines:
+- **Prometheus metrics** for real-time monitoring and alerting
+- **Pympler-based leak detection** for automatic memory leak identification
+- **Memray profiling** for deep memory analysis during debugging
+- **Grafana dashboards** for visualization and historical analysis
+- **Comprehensive test suite** ensuring reliability
 
 ## 📚 Documentation Structure
 
@@ -8,6 +17,7 @@ Akvo RSR includes comprehensive memory protection mechanisms and monitoring capa
 :maxdepth: 2
 
 implementation.md
+hybrid-monitoring.md
 api.md
 testing.md
 usage.md
@@ -17,14 +27,49 @@ usage.md
 
 | Document | Purpose | Audience |
 |----------|---------|----------|
-| **[Implementation Guide](implementation.md)** | Detailed technical documentation of all memory protection mechanisms | Developers, System Architects |
+| **[Implementation Guide](implementation.md)** | Original memory protection mechanisms (TTL cache, deletion tracker, etc.) | Developers, System Architects |
+| **[Hybrid Monitoring](hybrid-monitoring.md)** | **NEW**: Complete hybrid memory monitoring system documentation | DevOps, Production Engineers |
 | **[API Reference](api.md)** | Complete API documentation for all classes and methods | Developers, Contributors |
 | **[Testing Guide](testing.md)** | Memory-aware testing patterns and utilities | QA Engineers, Developers |
 | **[Usage Patterns](usage.md)** | Advanced usage patterns and production considerations | DevOps, Production Engineers |
 
 ## Quick Start
 
-### Key Configuration Settings
+### 🚀 Hybrid Memory Monitoring (NEW)
+
+For production environments, enable the hybrid monitoring system:
+
+```bash
+# Enable memory monitoring with Prometheus metrics
+RSR_MEMORY_MONITORING_ENABLED=true
+RSR_PROMETHEUS_METRICS_ENABLED=true
+
+# Enable leak detection (recommended for production)
+RSR_LEAK_DETECTION_ENABLED=true
+RSR_LEAK_GROWTH_THRESHOLD=0.2  # 20% growth triggers alert
+
+# Disable profiling in production (enable only for debugging)
+RSR_PROFILING_ENABLED=false
+```
+
+**Management Commands**:
+```bash
+# Check for memory leaks
+python manage.py rsr_memory_monitoring check-leaks
+
+# Get system health status
+python manage.py rsr_memory_monitoring health-check
+
+# View Prometheus metrics
+curl http://localhost:8000/metrics/
+```
+
+**🎯 Quick Links**:
+- [Complete Hybrid Monitoring Setup](hybrid-monitoring.md#quick-setup)
+- [Grafana Dashboard Installation](hybrid-monitoring.md#grafana-dashboards)
+- [Production Deployment Guide](hybrid-monitoring.md#production-deployment)
+
+### Classic Memory Protection Settings
 
 ```python
 # Cache Management
