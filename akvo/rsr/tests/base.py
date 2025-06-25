@@ -10,7 +10,7 @@ from django.conf import settings
 from django.contrib.auth import user_login_failed
 from django.contrib.auth.models import Group
 from django.http import HttpRequest
-from django.test import TestCase, Client
+from django.test import TestCase, Client, override_settings
 from django.utils.timezone import is_naive, make_aware
 
 from akvo.rsr.models import (
@@ -20,6 +20,15 @@ from akvo.rsr.models import (
 from akvo.utils import check_auth_groups
 
 
+@override_settings(
+    # Disable memory monitoring during tests to prevent memory leaks
+    RSR_MEMORY_MONITORING_ENABLED=False,
+    RSR_LEAK_DETECTION_ENABLED=False,
+    RSR_CACHE_METRICS_ENABLED=False,
+    RSR_PROFILING_ENABLED=False,
+    RSR_PROMETHEUS_METRICS_ENABLED=False,
+    RSR_MEMORY_DETAILED_TRACKING=False,
+)
 class BaseTestCase(TestCase):
     """Testing that permissions work correctly."""
 
@@ -65,6 +74,10 @@ class BaseTestCase(TestCase):
         except (ImportError, AttributeError):
             # Handle case where cache manager isn't available or doesn't have clear_all
             pass
+
+        # Force garbage collection to prevent memory accumulation
+        import gc
+        gc.collect()
 
     @classmethod
     def handle_user_login_failed(cls, signal, sender: str, credentials: dict, request: HttpRequest):

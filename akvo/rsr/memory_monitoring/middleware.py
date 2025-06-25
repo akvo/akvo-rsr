@@ -37,10 +37,9 @@ class RSRMemoryMonitoringMiddleware(MiddlewareMixin):
 
     def __init__(self, get_response=None):
         super().__init__(get_response)
-        self.enabled = getattr(settings, "RSR_MEMORY_MONITORING_ENABLED", True)
-        self.detailed_tracking = getattr(
-            settings, "RSR_MEMORY_DETAILED_TRACKING", False
-        )
+        # Initialize attributes for test compatibility
+        self.enabled = self._is_monitoring_enabled()
+        self.detailed_tracking = self._get_detailed_tracking()
         self.header_prefix = getattr(
             settings, "RSR_MEMORY_HEADER_PREFIX", "X-RSR-Memory"
         )
@@ -51,25 +50,36 @@ class RSRMemoryMonitoringMiddleware(MiddlewareMixin):
         self._process = psutil.Process(os.getpid())
         self._last_metrics_update = 0
 
+        # Only log if monitoring is enabled at startup
         if self.enabled:
             logger.info("RSR memory monitoring middleware enabled")
+
+    def _is_monitoring_enabled(self) -> bool:
+        """Check if memory monitoring is enabled via Django settings."""
+        return getattr(settings, "RSR_MEMORY_MONITORING_ENABLED", True)
+
+    def _get_detailed_tracking(self) -> bool:
+        """Get detailed tracking setting dynamically"""
+        return getattr(settings, "RSR_MEMORY_DETAILED_TRACKING", False)
 
     def process_request(self, request: HttpRequest) -> Optional[HttpResponse]:
         """
         Process incoming request - capture initial memory state.
         """
-        if not self.enabled:
+        # Use dynamic check for runtime, but tests can override via enabled attribute
+        if not getattr(self, 'enabled', True) or not self._is_monitoring_enabled():
             return None
 
         try:
             # Record initial memory state
             memory_info = self._process.memory_info()
+            detailed_tracking = self._get_detailed_tracking()
             request._rsr_memory_start = {
                 "timestamp": time.time(),
                 "rss_mb": memory_info.rss / 1024 / 1024,
                 "vms_mb": memory_info.vms / 1024 / 1024,
                 "objects_before": (
-                    len(gc.get_objects()) if self.detailed_tracking else 0
+                    len(gc.get_objects()) if detailed_tracking else 0
                 ),
             }
 
@@ -105,19 +115,22 @@ class RSRMemoryMonitoringMiddleware(MiddlewareMixin):
         """
         Process response - calculate memory usage and update metrics.
         """
-        if not self.enabled or not hasattr(request, "_rsr_memory_start"):
+        # Use dynamic check for runtime, but tests can override via enabled attribute
+        if (not getattr(self, 'enabled', True) or not self._is_monitoring_enabled()
+                or not hasattr(request, "_rsr_memory_start")):
             return response
 
         try:
             # Calculate memory usage for this request
             memory_start = request._rsr_memory_start
             memory_info = self._process.memory_info()
+            detailed_tracking = self._get_detailed_tracking()
 
             memory_end = {
                 "timestamp": time.time(),
                 "rss_mb": memory_info.rss / 1024 / 1024,
                 "vms_mb": memory_info.vms / 1024 / 1024,
-                "objects_after": len(gc.get_objects()) if self.detailed_tracking else 0,
+                "objects_after": len(gc.get_objects()) if detailed_tracking else 0,
             }
 
             # Calculate deltas
@@ -145,7 +158,7 @@ class RSRMemoryMonitoringMiddleware(MiddlewareMixin):
                     "peak_memory_mb": peak_memory,
                     "objects_created": (
                         (memory_end["objects_after"] - memory_start["objects_before"])
-                        if self.detailed_tracking
+                        if detailed_tracking
                         else None
                     ),
                 },
@@ -180,7 +193,7 @@ class RSRMemoryMonitoringMiddleware(MiddlewareMixin):
             )
 
             # Detailed headers if enabled
-            if self.detailed_tracking:
+            if self._get_detailed_tracking():
                 response[f"{self.header_prefix}-VMS-Delta-MB"] = (
                     f"{memory_data['memory_delta_vms_mb']:.2f}"
                 )
@@ -254,15 +267,21 @@ class RSRCacheMetricsMiddleware(MiddlewareMixin):
 
     def __init__(self, get_response=None):
         super().__init__(get_response)
-        self.enabled = getattr(settings, "RSR_CACHE_METRICS_ENABLED", True)
+        # Initialize attributes for test compatibility
+        self.enabled = self._is_cache_metrics_enabled()
         self.update_frequency = getattr(
             settings, "RSR_CACHE_METRICS_FREQUENCY", 60
         )  # 1 minute
         self._last_update = 0
 
+    def _is_cache_metrics_enabled(self) -> bool:
+        """Check if cache metrics are enabled via Django settings."""
+        return getattr(settings, "RSR_CACHE_METRICS_ENABLED", True)
+
     def process_request(self, request: HttpRequest) -> Optional[HttpResponse]:
         """Update cache metrics periodically"""
-        if not self.enabled:
+        # Use dynamic check for runtime, but tests can override via enabled attribute
+        if not getattr(self, 'enabled', True) or not self._is_cache_metrics_enabled():
             return None
 
         try:

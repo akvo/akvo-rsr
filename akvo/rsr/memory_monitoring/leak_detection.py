@@ -10,10 +10,10 @@ import gc
 import logging
 import time
 from collections import defaultdict, deque
-from typing import Dict, Any
+from typing import Any, Dict
 
 from django.conf import settings
-from pympler import tracker, muppy, summary
+from pympler import muppy, summary, tracker
 from pympler.classtracker import ClassTracker
 
 from .prometheus_metrics import get_rsr_metrics
@@ -30,36 +30,50 @@ class RSRLeakDetector:
     """
 
     def __init__(self):
-        self.enabled = getattr(settings, 'RSR_LEAK_DETECTION_ENABLED', True)
+        # Initialize immediately - settings checks are dynamic
+        self._initialize_components()
+
+    def _is_enabled(self) -> bool:
+        """Check if leak detection is enabled via Django settings."""
+        return getattr(settings, 'RSR_LEAK_DETECTION_ENABLED', True)
+
+    def _initialize_components(self):
+        """Initialize leak detection components."""
+        # Always initialize basic attributes for test compatibility
+        self.enabled = self._is_enabled()
         self.check_interval = getattr(settings, 'RSR_LEAK_CHECK_INTERVAL', 300)  # 5 minutes
         self.growth_threshold = getattr(settings, 'RSR_LEAK_GROWTH_THRESHOLD', 1.5)  # 50% growth
         self.memory_threshold_mb = getattr(settings, 'RSR_LEAK_MEMORY_THRESHOLD_MB', 100.0)
 
-        # Initialize tracking components
-        self.tracker = tracker.SummaryTracker()
-        self.class_tracker = ClassTracker()
-
-        # Track RSR-specific model classes
-        self._setup_model_tracking()
-
-        # Historical data for trend analysis
+        # Always initialize data structures for test compatibility
         self.memory_history = deque(maxlen=50)  # Keep last 50 measurements
         self.model_count_history = defaultdict(lambda: deque(maxlen=20))
-
-        # Last check timestamp
         self._last_check = 0
 
         if self.enabled:
+            # Initialize tracking components only if enabled
+            self.tracker = tracker.SummaryTracker()
+            self.class_tracker = ClassTracker()
+
+            # Track RSR-specific model classes
+            self._setup_model_tracking()
+
             logger.info("RSR leak detector initialized with pympler tracking")
+        else:
+            # Initialize minimal tracking components for tests
+            self.tracker = None
+            self.class_tracker = ClassTracker()  # Still create for tests
+            logger.info("RSR leak detector disabled via settings")
+
+        self._initialized = True
 
     def _setup_model_tracking(self):
         """Set up tracking for critical RSR model classes."""
         try:
             # Import RSR models for tracking
-            from akvo.rsr.models import (
-                Project, Organisation, Result, Indicator,
-                IndicatorPeriod, IndicatorPeriodData, User
-            )
+            from akvo.rsr.models import (Indicator, IndicatorPeriod,
+                                         IndicatorPeriodData, Organisation,
+                                         Project, Result, User)
 
             # Track critical RSR models that tend to accumulate
             critical_models = [
@@ -81,8 +95,10 @@ class RSRLeakDetector:
         Returns:
             dict: Detection results with leak indicators and recommendations
         """
+        # Components already initialized in __init__
+
         if not self.enabled:
-            return {'enabled': False}
+            return {'enabled': False, 'reason': 'disabled_via_settings'}
 
         current_time = time.time()
         if current_time - self._last_check < self.check_interval:
@@ -120,8 +136,9 @@ class RSRLeakDetector:
     def _analyze_memory_growth(self) -> Dict[str, Any]:
         """Analyze overall memory growth patterns."""
         try:
-            import psutil
             import os
+
+            import psutil
 
             process = psutil.Process(os.getpid())
             memory_info = process.memory_info()
@@ -170,13 +187,18 @@ class RSRLeakDetector:
             all_objects = gc.get_objects()
             for obj in all_objects:
                 try:
+                    # Skip problematic object types that cause ASN.1 errors
+                    obj_type = type(obj).__name__
+                    if any(skip_type in obj_type.lower() for skip_type in ['asn1', 'schema', 'certificate', 'cryptography']):
+                        continue
+
                     if (hasattr(obj, '_meta')
                             and hasattr(obj._meta, 'app_label')
                             and hasattr(obj._meta, 'model_name')):
                         if obj._meta.app_label == 'rsr':
                             model_name = obj._meta.model_name
                             model_counts[model_name] = model_counts.get(model_name, 0) + 1
-                except (AttributeError, TypeError):
+                except (AttributeError, TypeError, ValueError):
                     # Skip objects that don't have proper Django model metadata
                     continue
 
@@ -223,13 +245,29 @@ class RSRLeakDetector:
         try:
             # Get summary of all objects
             all_objects = muppy.get_objects()
-            object_summary = summary.summarize(all_objects)
+
+            # Filter out problematic objects that cause ASN.1 schema errors
+            filtered_objects = []
+            for obj in all_objects:
+                try:
+                    # Skip objects that cause ASN.1 schema errors
+                    obj_type = type(obj).__name__
+                    if any(skip_type in obj_type.lower() for skip_type in ['asn1', 'schema', 'certificate', 'cryptography']):
+                        continue
+                    # Test if object can be safely analyzed
+                    str(type(obj))  # This will fail for problematic objects
+                    filtered_objects.append(obj)
+                except (AttributeError, TypeError, ValueError):
+                    # Skip objects that can't be safely analyzed
+                    continue
+
+            object_summary = summary.summarize(filtered_objects)
 
             # Focus on largest object types
             top_objects = object_summary[:10]  # Top 10 object types
 
             analysis = {
-                'total_objects': len(all_objects),
+                'total_objects': len(filtered_objects),
                 'top_object_types': []
             }
 
@@ -341,6 +379,11 @@ class RSRLeakDetector:
 
     def get_memory_summary(self) -> Dict[str, Any]:
         """Get current memory usage summary for debugging."""
+        # Components already initialized in __init__
+
+        if not self.enabled:
+            return {'enabled': False, 'reason': 'disabled_via_settings'}
+
         try:
             all_objects = muppy.get_objects()
             object_summary = summary.summarize(all_objects)
@@ -358,11 +401,16 @@ class RSRLeakDetector:
     def reset_tracking(self):
         """Reset all tracking data (useful for testing)."""
         try:
-            self.memory_history.clear()
-            self.model_count_history.clear()
-            self.class_tracker.clear()
-            self._last_check = 0
-            logger.info("RSR leak detector tracking data reset")
+            # Components already initialized in __init__
+
+            if self.enabled and hasattr(self, 'memory_history'):
+                self.memory_history.clear()
+                self.model_count_history.clear()
+                self.class_tracker.clear()
+                self._last_check = 0
+                logger.info("RSR leak detector tracking data reset")
+            else:
+                logger.info("RSR leak detector reset skipped (disabled via settings)")
 
         except Exception as e:
             logger.warning(f"Error resetting leak detector: {e}")
@@ -370,6 +418,10 @@ class RSRLeakDetector:
     def _format_tracker_stats(self) -> Dict[str, Any]:
         """Format class tracker stats for serialization."""
         try:
+            # Check if class tracker is available (only when enabled)
+            if not hasattr(self, 'class_tracker') or not self.enabled:
+                return {'message': 'tracking_disabled'}
+
             formatted_stats = {}
             for tracked_class, stats in self.class_tracker.stats.items():
                 class_name = getattr(tracked_class, '__name__', str(tracked_class))
