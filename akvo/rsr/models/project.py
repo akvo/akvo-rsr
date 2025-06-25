@@ -126,6 +126,14 @@ class ProjectDeletionTracker:
             self._cleanup_stale_entries(current_time)
             return initial_count - len(self._deletion_set)
 
+    def clear_all(self) -> int:
+        """Clear all entries from tracker (for testing), returns count of cleared entries"""
+        with self._lock:
+            count = len(self._deletion_set)
+            self._deletion_set.clear()
+            self._timestamps.clear()
+            return count
+
 
 DELETION_SET = ProjectDeletionTracker()
 

@@ -37,6 +37,35 @@ class BaseTestCase(TestCase):
         check_auth_groups(settings.REQUIRED_AUTH_GROUPS)
         self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
 
+        # Clear application state to ensure test isolation
+        self._clear_application_state()
+
+    def tearDown(self):
+        # Clean up application state after each test
+        self._clear_application_state()
+
+    def _clear_application_state(self):
+        """Clear application-level state that can persist between tests"""
+        # Clear cache state
+        from django.core.cache import cache
+        cache.clear()
+
+        # Clear deletion tracker
+        try:
+            from akvo.rsr.models.project import DELETION_SET
+            DELETION_SET.clear_all()
+        except ImportError:
+            # Handle case where deletion tracker isn't available
+            pass
+
+        # Clear any TTL cache state
+        try:
+            from akvo.rsr.cache_management import cache_manager
+            cache_manager.clear_all()
+        except (ImportError, AttributeError):
+            # Handle case where cache manager isn't available or doesn't have clear_all
+            pass
+
     @classmethod
     def handle_user_login_failed(cls, signal, sender: str, credentials: dict, request: HttpRequest):
         logging.warning("Couldn't login user from %s, with %s. Existing users: %s",

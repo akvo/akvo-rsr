@@ -117,6 +117,7 @@ class CommandTest(BaseCommandTestCase[Command]):
 class MigrateSiblingsTest(BaseTestCase):
 
     def setUp(self):
+        super().setUp()
         self.migrator = Migrator(stdout, stderr, apply=True)
 
     def create_siblings(self, sibling_count) -> List[Project]:

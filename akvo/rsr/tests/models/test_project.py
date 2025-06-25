@@ -21,6 +21,7 @@ class ProjectModelTestCase(BaseTestCase):
     """Tests for the project model"""
 
     def setUp(self):
+        super().setUp()
         self.project = Project.objects.create(title="Test Project")
         self.organisation = Organisation.objects.create(
             name="Organisation for labels",
@@ -194,6 +195,7 @@ class ProjectDeleteTestCase(BaseTestCase):
     """
 
     def setUp(self):
+        super().setUp()
         self.project = Project.objects.create(title="Test Project")
 
     def _test_project_delete(self):
@@ -237,6 +239,7 @@ class EUTFHierarchyTest(BaseTestCase):
 class UsesSingleIndicatorPeriodTest(BaseTestCase):
 
     def setUp(self):
+        super().setUp()
         self.project = Project.objects.create(title="Test project")
 
     def test_no_indicators(self):
@@ -255,6 +258,7 @@ class UsesSingleIndicatorPeriodTest(BaseTestCase):
 class UsesSingleIndicatorPeriodWithParentTest(UsesSingleIndicatorPeriodTest):
 
     def setUp(self):
+        super().setUp()
         self.program = Project.objects.create(title="Test program")
         self.project = Project.objects.create(title="Test project")
         self.project.set_parent(self.program).save()

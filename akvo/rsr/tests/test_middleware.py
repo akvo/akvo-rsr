@@ -10,7 +10,8 @@ from django.conf import settings
 from django.core.exceptions import DisallowedHost
 from django.test import Client, TestCase
 from django.test.client import RequestFactory
-from akvo.rsr.middleware import _is_rsr_host, _is_naked_app_host, _partner_site
+
+from akvo.rsr.middleware import _is_naked_app_host, _is_rsr_host, _partner_site
 from akvo.rsr.models import PartnerSite
 
 STOCK_RSR_NETLOC = "http://{}".format(settings.RSR_DOMAIN)
@@ -18,7 +19,6 @@ AKVOAPP_NETLOC = "http://{}".format(settings.AKVOAPP_DOMAIN)
 
 
 class ValidStockRSRTestCase(TestCase):
-
     """Testing request to stock RSR.
 
     valid hosts :
@@ -30,9 +30,9 @@ class ValidStockRSRTestCase(TestCase):
     def setUp(self):
         """Setup."""
         self.factory = RequestFactory()
-        self.req_RSR_DOMAIN = self.factory.get('/', {}, HTTP_HOST=settings.RSR_DOMAIN)
-        self.req_127 = self.factory.get('/', {}, HTTP_HOST='127.0.0.1')
-        self.req_localhost = self.factory.get('/', {}, HTTP_HOST='localhost')
+        self.req_RSR_DOMAIN = self.factory.get("/", {}, HTTP_HOST=settings.RSR_DOMAIN)
+        self.req_127 = self.factory.get("/", {}, HTTP_HOST="127.0.0.1")
+        self.req_localhost = self.factory.get("/", {}, HTTP_HOST="localhost")
 
     def test_is_rsr_host(self):
         """Test request to normal RSR host."""
@@ -42,46 +42,43 @@ class ValidStockRSRTestCase(TestCase):
 
 
 class HealthCheckTestCase(TestCase):
-
-    """Testing Health Check. """
+    """Testing Health Check."""
 
     def test_health_check(self):
         self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
-        resp = self.c.get('/healthz')
+        resp = self.c.get("/healthz")
         self.assertEqual(resp.status_code, 200)
 
 
 class HostHeaderTestCase(TestCase):
-
     """Testing boot traffic."""
 
     def test_underscore_host(self):
         """When host is '_'."""
-        self.c = Client(HTTP_HOST='_')
-        resp = self.c.get('/')
+        self.c = Client(HTTP_HOST="_")
+        resp = self.c.get("/")
         self.assertEqual(resp.status_code, 302)
 
     def test_empy_host(self):
         """When host is ''."""
-        self.c = Client(HTTP_HOST='')
-        resp = self.c.get('/')
+        self.c = Client(HTTP_HOST="")
+        resp = self.c.get("/")
         self.assertEqual(resp.status_code, 302)
 
     def test_oddchar_host(self):
         """When host is ''."""
-        self.c = Client(HTTP_HOST='$')
-        resp = self.c.get('/')
+        self.c = Client(HTTP_HOST="$")
+        resp = self.c.get("/")
         self.assertEqual(resp.status_code, 302)
 
     def test_wildcard_host(self):
         """When host is ''*.live.akvo-ops.org"""
-        self.c = Client(HTTP_HOST='*.live.akvo-ops.org')
-        resp = self.c.get('/')
+        self.c = Client(HTTP_HOST="*.live.akvo-ops.org")
+        resp = self.c.get("/")
         self.assertEqual(resp.status_code, 302)
 
 
 class InValidStockRSRTestCase(TestCase):
-
     """Testing request to stock RSR.
 
     invalid hosts :
@@ -92,10 +89,14 @@ class InValidStockRSRTestCase(TestCase):
     def setUp(self):
         """Setup."""
         self.factory = RequestFactory()
-        self.req_not_found_host = self.factory.get('/', {}, HTTP_HOST='not-found.akvo.org')
-        self.req_not_found_host2 = self.factory.get('/', {}, HTTP_HOST='not-found.test.akvo.org')
-        self.req_invalid_host = self.factory.get('/', {}, HTTP_HOST='invalid_host')
-        self.req_empty_host = self.factory.get('/', {}, HTTP_HOST='')
+        self.req_not_found_host = self.factory.get(
+            "/", {}, HTTP_HOST="not-found.akvo.org"
+        )
+        self.req_not_found_host2 = self.factory.get(
+            "/", {}, HTTP_HOST="not-found.test.akvo.org"
+        )
+        self.req_invalid_host = self.factory.get("/", {}, HTTP_HOST="invalid_host")
+        self.req_empty_host = self.factory.get("/", {}, HTTP_HOST="")
 
     def test_is_rsr_host(self):
         """Test request to normal RSR host."""
@@ -108,7 +109,6 @@ class InValidStockRSRTestCase(TestCase):
 
 
 class NakedAKVOAPP_DOMAINTestCase(TestCase):
-
     """Testing request to naked AKVOAPP_DOMAIN."""
 
     def test_is_rsr_host(self):
@@ -126,13 +126,16 @@ class NakedAKVOAPP_DOMAINTestCase(TestCase):
         redirects to /projets there is another 302 in the target status code.
         """
         c = Client(HTTP_HOST=settings.AKVOAPP_DOMAIN)
-        resp_naked = c.get('/', follow=False)
-        self.assertRedirects(response=resp_naked, expected_url=STOCK_RSR_NETLOC,
-                             status_code=302, target_status_code=302)
+        resp_naked = c.get("/", follow=False)
+        self.assertRedirects(
+            response=resp_naked,
+            expected_url=STOCK_RSR_NETLOC,
+            status_code=302,
+            target_status_code=302,
+        )
 
 
 class InvalidAkvoPageTestCase(TestCase):
-
     """Testing request to stock RSR.
 
     invalid hosts :
@@ -151,6 +154,10 @@ class InvalidAkvoPageTestCase(TestCase):
 
     def test_invalid_partner_site(self):
         """."""
-        invalid_resp = self.c.get('/')
-        self.assertRedirects(response=invalid_resp, expected_url=STOCK_RSR_NETLOC,
-                             status_code=302, target_status_code=302)
+        invalid_resp = self.c.get("/")
+        self.assertRedirects(
+            response=invalid_resp,
+            expected_url=STOCK_RSR_NETLOC,
+            status_code=302,
+            target_status_code=302,
+        )
