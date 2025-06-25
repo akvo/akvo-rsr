@@ -20,6 +20,7 @@ class PermissionsTestCase(BaseTestCase):
     """Testing that permissions work correctly."""
 
     def setUp(self):
+        super().setUp()
         check_auth_groups(settings.REQUIRED_AUTH_GROUPS)
         # Create organisations
         self.orgs = [
