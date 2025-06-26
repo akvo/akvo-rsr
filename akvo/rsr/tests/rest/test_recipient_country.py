@@ -12,15 +12,18 @@ import json
 from akvo.codelists.store.default_codelists import COUNTRY
 from akvo.codelists.models import Country, Version
 from akvo.rsr.models import Project, RecipientCountry
+from akvo.rsr.tests.base import MemoryMonitoringTestMixin, memory_monitoring_test_settings
 
 from django.conf import settings
 from django.test import TestCase, Client
 
 
-class RecipientCountryTestCase(TestCase):
+@memory_monitoring_test_settings
+class RecipientCountryTestCase(MemoryMonitoringTestMixin, TestCase):
     """Tests the recipient country REST endpoints."""
 
     def setUp(self):
+        super().setUp()
         self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
         version, _ = Version.objects.get_or_create(code=settings.IATI_VERSION, url='http://iati.org')
         for code, name in COUNTRY[1:]:

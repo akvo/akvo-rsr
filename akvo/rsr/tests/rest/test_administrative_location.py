@@ -12,6 +12,7 @@ from akvo.rsr.models import (
     AdministrativeLocation, Employment, Organisation, Partnership, Project,
     ProjectLocation, User
 )
+from akvo.rsr.tests.base import MemoryMonitoringTestMixin, memory_monitoring_test_settings
 from akvo.utils import check_auth_groups
 
 from django.conf import settings
@@ -19,11 +20,13 @@ from django.contrib.auth.models import Group
 from django.test import TestCase, Client
 
 
-class AdministrativeLocationTestCase(TestCase):
+@memory_monitoring_test_settings
+class AdministrativeLocationTestCase(MemoryMonitoringTestMixin, TestCase):
     """Tests the administrative location REST endpoints."""
 
     def setUp(self):
         """Setup the database as required."""
+        super().setUp()
 
         # Create user auth groups
         check_auth_groups(settings.REQUIRED_AUTH_GROUPS)

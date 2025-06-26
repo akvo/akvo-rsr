@@ -10,7 +10,7 @@ from django.conf import settings
 from django.contrib.auth import user_login_failed
 from django.contrib.auth.models import Group
 from django.http import HttpRequest
-from django.test import TestCase, Client
+from django.test import TestCase, Client, override_settings
 from django.utils.timezone import is_naive, make_aware
 
 from akvo.rsr.models import (
@@ -20,7 +20,72 @@ from akvo.rsr.models import (
 from akvo.utils import check_auth_groups
 
 
-class BaseTestCase(TestCase):
+class MemoryMonitoringTestMixin:
+    """
+    Mixin to disable memory monitoring and clear application state for test isolation.
+
+    This mixin ensures that memory monitoring middleware doesn't interfere with tests
+    and that application-level state is properly cleared between test runs to prevent
+    memory leaks and test contamination.
+
+    Usage:
+        class MyTestCase(MemoryMonitoringTestMixin, TestCase):
+            def setUp(self):
+                super().setUp()
+                # your test setup code
+    """
+
+    def setUp(self):
+        super().setUp()
+        # Clear application state to ensure test isolation
+        self._clear_application_state()
+
+    def tearDown(self):
+        super().tearDown()
+        # Clean up application state after each test
+        self._clear_application_state()
+
+    def _clear_application_state(self):
+        """Clear application-level state that can persist between tests"""
+        # Clear cache state
+        from django.core.cache import cache
+        cache.clear()
+
+        # Clear deletion tracker
+        try:
+            from akvo.rsr.models.project import DELETION_SET
+            DELETION_SET.clear_all()
+        except ImportError:
+            # Handle case where deletion tracker isn't available
+            pass
+
+        # Clear any TTL cache state
+        try:
+            from akvo.rsr.cache_management import cache_manager
+            cache_manager.clear_all()
+        except (ImportError, AttributeError):
+            # Handle case where cache manager isn't available or doesn't have clear_all
+            pass
+
+        # Force garbage collection to prevent memory accumulation
+        import gc
+        gc.collect()
+
+
+# Decorator to disable memory monitoring for test classes
+memory_monitoring_test_settings = override_settings(
+    # Disable memory monitoring during tests to prevent memory leaks
+    RSR_MEMORY_MONITORING_ENABLED=False,
+    RSR_LEAK_DETECTION_ENABLED=False,
+    RSR_CACHE_METRICS_ENABLED=False,
+    RSR_PROFILING_ENABLED=False,
+    RSR_PROMETHEUS_METRICS_ENABLED=False,
+    RSR_MEMORY_DETAILED_TRACKING=False,
+)
+
+
+@memory_monitoring_test_settings
+class BaseTestCase(MemoryMonitoringTestMixin, TestCase):
     """Testing that permissions work correctly."""
 
     @classmethod
@@ -34,6 +99,7 @@ class BaseTestCase(TestCase):
         user_login_failed.disconnect(cls.handle_user_login_failed)
 
     def setUp(self):
+        super().setUp()  # This calls the mixin's setUp method
         check_auth_groups(settings.REQUIRED_AUTH_GROUPS)
         self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
 

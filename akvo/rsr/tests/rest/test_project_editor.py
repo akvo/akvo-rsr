@@ -27,7 +27,7 @@ from akvo.rsr.models import (
     RelatedProject, IndicatorPeriod, OrganisationLocation,
     IatiActivityValidationJob
 )
-from akvo.rsr.tests.base import BaseTestCase
+from akvo.rsr.tests.base import BaseTestCase, MemoryMonitoringTestMixin, memory_monitoring_test_settings
 from akvo.rsr.tests.utils import ProjectFixtureBuilder
 from akvo.rsr.usecases import iati_validation
 from akvo.utils import check_auth_groups
@@ -276,7 +276,8 @@ class BaseReorderTestCase(object):
         raise NotImplementedError
 
 
-class ProjectEditorReorderResultsTestCase(BaseReorderTestCase, TestCase):
+@memory_monitoring_test_settings
+class ProjectEditorReorderResultsTestCase(BaseReorderTestCase, MemoryMonitoringTestMixin, TestCase):
     """Tests the reordering of results in the project editor."""
 
     item_type = 'result'
@@ -289,7 +290,8 @@ class ProjectEditorReorderResultsTestCase(BaseReorderTestCase, TestCase):
         return Result.objects.filter(project__id=self.project.id).order_by('id')
 
 
-class ProjectEditorReorderIndicatorsTestCase(BaseReorderTestCase, TestCase):
+@memory_monitoring_test_settings
+class ProjectEditorReorderIndicatorsTestCase(BaseReorderTestCase, MemoryMonitoringTestMixin, TestCase):
     """Tests the reordering of indicators in the project editor."""
 
     item_type = 'indicator'
@@ -444,10 +446,12 @@ class ProjectEditorReorderImportedResultsFrameworkTestCase(BaseTestCase):
         self.assertEqual(contrib.indicators.get(title='Indicator #2').order, 0)
 
 
-class DefaultPeriodsTestCase(TestCase):
+@memory_monitoring_test_settings
+class DefaultPeriodsTestCase(MemoryMonitoringTestMixin, TestCase):
     """Test the adding and removal of default periods."""
 
     def setUp(self):
+        super().setUp()
         self.user, self.username, self.password = create_user()
 
         self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)

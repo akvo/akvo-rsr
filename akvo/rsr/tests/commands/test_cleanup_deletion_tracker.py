@@ -16,8 +16,12 @@ class CleanupDeletionTrackerCommandTestCase(TestCase):
     """Tests for the cleanup_deletion_tracker management command"""
 
     def setUp(self):
-        # Ensure deletion tracker is clean before each test
-        DELETION_SET.force_cleanup()
+        # Ensure deletion tracker is completely clean before each test
+        DELETION_SET.clear_all()
+
+    def tearDown(self):
+        # Clean up after each test
+        DELETION_SET.clear_all()
 
     def test_stats_command(self):
         """Test the --stats option shows current tracker statistics"""

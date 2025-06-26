@@ -1,0 +1,122 @@
+{
+  "notificationChannels": [
+    {
+      "name": "rsr-memory-slack",
+      "type": "slack",
+      "settings": {
+        "url": "${SLACK_WEBHOOK_URL}",
+        "title": "RSR Memory Alert",
+        "text": "{{ range .Alerts }}{{ .Annotations.summary }}\n{{ .Annotations.description }}{{ end }}",
+        "channel": "#rsr-alerts",
+        "username": "RSR Memory Monitor",
+        "iconEmoji": ":warning:",
+        "color": "{{ if eq .Status \"firing\" }}danger{{ else }}good{{ end }}"
+      },
+      "tags": ["memory", "rsr", "critical"]
+    },
+    {
+      "name": "rsr-memory-email",
+      "type": "email",
+      "settings": {
+        "addresses": "${ALERT_EMAIL_ADDRESSES}",
+        "subject": "RSR Memory Alert: {{ .GroupLabels.alertname }}",
+        "body": "{{ range .Alerts }}\nAlert: {{ .Annotations.summary }}\nDescription: {{ .Annotations.description }}\nInstance: {{ .Labels.instance }}\nSeverity: {{ .Labels.severity }}\nTime: {{ .StartsAt }}\n{{ if .Annotations.runbook_url }}Runbook: {{ .Annotations.runbook_url }}{{ end }}\n\n{{ end }}"
+      },
+      "tags": ["memory", "rsr", "email"]
+    },
+    {
+      "name": "rsr-memory-webhook",
+      "type": "webhook",
+      "settings": {
+        "url": "${WEBHOOK_URL}",
+        "httpMethod": "POST",
+        "maxAlerts": 10,
+        "title": "RSR Memory Alert",
+        "message": "{{ range .Alerts }}{{ .Annotations.summary }}{{ end }}"
+      },
+      "tags": ["memory", "rsr", "webhook"]
+    },
+    {
+      "name": "rsr-memory-pagerduty",
+      "type": "pagerduty",
+      "settings": {
+        "integrationKey": "${PAGERDUTY_INTEGRATION_KEY}",
+        "severity": "{{ .GroupLabels.severity }}",
+        "customDetails": {
+          "instance": "{{ .GroupLabels.instance }}",
+          "component": "{{ .GroupLabels.component }}",
+          "service": "{{ .GroupLabels.service }}"
+        }
+      },
+      "tags": ["memory", "rsr", "pagerduty", "critical"]
+    }
+  ],
+  "contactPoints": [
+    {
+      "name": "rsr-memory-contacts",
+      "receivers": [
+        {
+          "uid": "rsr-memory-slack",
+          "type": "slack"
+        },
+        {
+          "uid": "rsr-memory-email", 
+          "type": "email"
+        }
+      ]
+    },
+    {
+      "name": "rsr-critical-contacts",
+      "receivers": [
+        {
+          "uid": "rsr-memory-slack",
+          "type": "slack"
+        },
+        {
+          "uid": "rsr-memory-email",
+          "type": "email"
+        },
+        {
+          "uid": "rsr-memory-pagerduty",
+          "type": "pagerduty"
+        }
+      ]
+    }
+  ],
+  "policies": [
+    {
+      "receiver": "rsr-memory-contacts",
+      "group_by": ["alertname", "instance"],
+      "group_wait": "10s",
+      "group_interval": "5m",
+      "repeat_interval": "1h",
+      "matchers": [
+        {
+          "name": "service",
+          "value": "rsr"
+        },
+        {
+          "name": "severity",
+          "value": "warning"
+        }
+      ]
+    },
+    {
+      "receiver": "rsr-critical-contacts",
+      "group_by": ["alertname", "instance"],
+      "group_wait": "5s",
+      "group_interval": "2m", 
+      "repeat_interval": "30m",
+      "matchers": [
+        {
+          "name": "service",
+          "value": "rsr"
+        },
+        {
+          "name": "severity",
+          "value": "critical"
+        }
+      ]
+    }
+  ]
+}

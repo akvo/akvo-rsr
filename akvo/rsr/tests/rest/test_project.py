@@ -27,7 +27,7 @@ from akvo.rsr.models import (
 from akvo.rsr.usecases.add_project_to_program import add_new_project_to_program
 from akvo.rsr.tests.utils import ProjectFixtureBuilder
 from akvo.utils import check_auth_groups
-from akvo.rsr.tests.base import BaseTestCase
+from akvo.rsr.tests.base import BaseTestCase, MemoryMonitoringTestMixin, memory_monitoring_test_settings
 
 
 class RestProjectTestCase(BaseTestCase):
@@ -213,10 +213,12 @@ class RestProjectTestCase(BaseTestCase):
         self.assertEqual(content['count'], 3)
 
 
-class ProjectPostTestCase(TestCase):
+@memory_monitoring_test_settings
+class ProjectPostTestCase(MemoryMonitoringTestMixin, TestCase):
     """Test the creation of projects."""
 
     def setUp(self):
+        super().setUp()
         # Create necessary groups
         check_auth_groups(settings.REQUIRED_AUTH_GROUPS)
         # Create a validation set

@@ -132,3 +132,8 @@ django-dbml==0.6.0
 
 # maintenace mode
 django-maintenance-mode
+
+# Memory monitoring
+django-prometheus
+pympler
+memray  # Deep memory profiling (optional, enable when needed)

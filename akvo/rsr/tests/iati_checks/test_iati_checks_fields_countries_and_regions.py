@@ -19,6 +19,7 @@ TRANSACTION_TYPE_INCOMING_FUNDS = "1"
 class IatiCheckFieldsTransactionRecipientsTestCase(BaseTestCase):
 
     def setUp(self):
+        super().setUp()
         self.project = self.create_project("Test project")
         Transaction.objects.create(
             project=self.project,
