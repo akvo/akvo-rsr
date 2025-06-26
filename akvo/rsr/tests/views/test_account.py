@@ -18,13 +18,15 @@ from django.test import TestCase, Client
 from akvo.rsr.forms import PASSWORD_MINIMUM_LENGTH
 from akvo.rsr.models import Employment, Organisation, Partnership, Project, User
 from akvo.utils import check_auth_groups
-from akvo.rsr.tests.base import BaseTestCase
+from akvo.rsr.tests.base import BaseTestCase, MemoryMonitoringTestMixin, memory_monitoring_test_settings
 
 
-class AccountTestCase(TestCase):
+@memory_monitoring_test_settings
+class AccountTestCase(MemoryMonitoringTestMixin, TestCase):
     """Test account views."""
 
     def setUp(self):
+        super().setUp()
         check_auth_groups(settings.REQUIRED_AUTH_GROUPS)
         self.admin_group = Group.objects.get(name='Admins')
         self.user_group = Group.objects.get(name='Users')
@@ -140,10 +142,12 @@ class AccountTestCase(TestCase):
         return user
 
 
-class AccountRegistrationTestCase(TestCase):
+@memory_monitoring_test_settings
+class AccountRegistrationTestCase(MemoryMonitoringTestMixin, TestCase):
     """Test account views."""
 
     def setUp(self):
+        super().setUp()
         self.username = 'user@example.com'
         self.password = 'passwdpasswdA1$'
         self.title = 'Admiral'

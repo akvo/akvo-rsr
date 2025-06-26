@@ -20,36 +20,28 @@ from akvo.rsr.models import (
 from akvo.utils import check_auth_groups
 
 
-@override_settings(
-    # Disable memory monitoring during tests to prevent memory leaks
-    RSR_MEMORY_MONITORING_ENABLED=False,
-    RSR_LEAK_DETECTION_ENABLED=False,
-    RSR_CACHE_METRICS_ENABLED=False,
-    RSR_PROFILING_ENABLED=False,
-    RSR_PROMETHEUS_METRICS_ENABLED=False,
-    RSR_MEMORY_DETAILED_TRACKING=False,
-)
-class BaseTestCase(TestCase):
-    """Testing that permissions work correctly."""
+class MemoryMonitoringTestMixin:
+    """
+    Mixin to disable memory monitoring and clear application state for test isolation.
 
-    @classmethod
-    def setUpClass(cls):
-        super(TestCase, cls).setUpClass()
-        user_login_failed.connect(cls.handle_user_login_failed)
+    This mixin ensures that memory monitoring middleware doesn't interfere with tests
+    and that application-level state is properly cleared between test runs to prevent
+    memory leaks and test contamination.
 
-    @classmethod
-    def tearDownClass(cls):
-        super(TestCase, cls).tearDownClass()
-        user_login_failed.disconnect(cls.handle_user_login_failed)
+    Usage:
+        class MyTestCase(MemoryMonitoringTestMixin, TestCase):
+            def setUp(self):
+                super().setUp()
+                # your test setup code
+    """
 
     def setUp(self):
-        check_auth_groups(settings.REQUIRED_AUTH_GROUPS)
-        self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
-
+        super().setUp()
         # Clear application state to ensure test isolation
         self._clear_application_state()
 
     def tearDown(self):
+        super().tearDown()
         # Clean up application state after each test
         self._clear_application_state()
 
@@ -78,6 +70,38 @@ class BaseTestCase(TestCase):
         # Force garbage collection to prevent memory accumulation
         import gc
         gc.collect()
+
+
+# Decorator to disable memory monitoring for test classes
+memory_monitoring_test_settings = override_settings(
+    # Disable memory monitoring during tests to prevent memory leaks
+    RSR_MEMORY_MONITORING_ENABLED=False,
+    RSR_LEAK_DETECTION_ENABLED=False,
+    RSR_CACHE_METRICS_ENABLED=False,
+    RSR_PROFILING_ENABLED=False,
+    RSR_PROMETHEUS_METRICS_ENABLED=False,
+    RSR_MEMORY_DETAILED_TRACKING=False,
+)
+
+
+@memory_monitoring_test_settings
+class BaseTestCase(MemoryMonitoringTestMixin, TestCase):
+    """Testing that permissions work correctly."""
+
+    @classmethod
+    def setUpClass(cls):
+        super(TestCase, cls).setUpClass()
+        user_login_failed.connect(cls.handle_user_login_failed)
+
+    @classmethod
+    def tearDownClass(cls):
+        super(TestCase, cls).tearDownClass()
+        user_login_failed.disconnect(cls.handle_user_login_failed)
+
+    def setUp(self):
+        super().setUp()  # This calls the mixin's setUp method
+        check_auth_groups(settings.REQUIRED_AUTH_GROUPS)
+        self.c = Client(HTTP_HOST=settings.RSR_DOMAIN)
 
     @classmethod
     def handle_user_login_failed(cls, signal, sender: str, credentials: dict, request: HttpRequest):
