@@ -15,7 +15,7 @@ The progress of the job can be tracked, there's an automatic retry mechanism, an
 Jobs are part of the [Task Management](#task-management).
 :::
 
-The main model is 
+The main model is
 [`akvo.rsr.models.aggregation_job.IndicatorPeriodAggregationJob`][IndicatorPeriodAggregationJob]
 and the execution can be found in
 [`akvo-rsr.doc.akvo.rsr.usecases.jobs.aggregation`](#akvo-rsr.doc.akvo.rsr.usecases.jobs.aggregation).
@@ -59,7 +59,7 @@ def aggregate_period(period):
         total = sum(child_values)
         period.actual_value = total
         period.save()
-        
+
     if has_parent(period):
         aggregate_period(period.parent_period)
 ```
@@ -75,7 +75,7 @@ It is a monolithic, multi-step operation wrapped in a database transaction
 #### Handling failures
 
 Should a job fail for whatever reason, the number of failures is updated and the job is marked as failed.
-A check is then done to make sure the 
+A check is then done to make sure the
  [`akvo/rsr/usecases/jobs/aggregation.MAX_ATTEMPTS`][MAX_ATTEMPTS] has been reached.
 Should that be the case, the job is marked as "maxxed" and an email is sent to subscribers.
 

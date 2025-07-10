@@ -51,7 +51,7 @@ One doesn't have to sum up all the previous periods to get it.
  - "Since 2011, we have subsidized 500k farmers"
  - "To date, we have subsidized 500k farmers"
 
-For the effects of cumulative reporting on [Aggregation](aggregation.md), 
+For the effects of cumulative reporting on [Aggregation](aggregation.md),
  see the dedicated page on [Cumulative reporting](cumulative_reporting.md)
 
 ### Qualitative

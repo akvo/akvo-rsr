@@ -5,6 +5,7 @@ from typing import List, TYPE_CHECKING
 
 from django.db.models import QuerySet
 from django.db.transaction import atomic
+from django.utils import timezone
 
 from akvo.rsr.usecases.django_q.decorators import unique_task
 from akvo.utils import rsr_send_mail_to_users
@@ -54,10 +55,9 @@ def schedule_aggregation_jobs(period: IndicatorPeriod) -> List[IndicatorPeriodAg
 
     affected_periods = _get_affected_periods(period)
     existing_jobs = get_scheduled_jobs().filter(period__in=affected_periods)
-    existing_job_periods = []
-    for job in existing_jobs:
-        job.save()
-        existing_job_periods.append(job.period)
+    # Use bulk_update to avoid N+1 queries while still updating timestamps
+    existing_jobs.update(updated_at=timezone.now())
+    existing_job_periods = [job.period for job in existing_jobs]
 
     candidate_periods = [p for p in affected_periods if p not in existing_job_periods]
     new_jobs = [_create_aggregation_job(p) for p in candidate_periods]

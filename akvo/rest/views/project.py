@@ -6,8 +6,9 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 """
 
 from datetime import timedelta
-from typing import Dict, List
+from typing import Dict, List, Iterator
 from uuid import UUID
+import logging
 
 from django.conf import settings
 from django.db.models import Count, Q
@@ -45,6 +46,23 @@ from akvo.rsr.views.my_rsr import user_viewable_projects
 from akvo.utils import codelist_choices, get_thumbnail, single_period_dates
 from ..viewsets import PublicProjectViewSet
 
+logger = logging.getLogger(__name__)
+
+# Memory protection configuration for project descendants
+DEFAULT_MAX_DESCENDANTS_PER_REQUEST = 1000
+MAX_DESCENDANTS_PER_REQUEST = getattr(
+    settings,
+    'RSR_MAX_DESCENDANTS_PER_REQUEST',
+    DEFAULT_MAX_DESCENDANTS_PER_REQUEST
+)
+
+DEFAULT_DESCENDANTS_CHUNK_SIZE = 500
+DESCENDANTS_CHUNK_SIZE = getattr(
+    settings,
+    'RSR_DESCENDANTS_CHUNK_SIZE',
+    DEFAULT_DESCENDANTS_CHUNK_SIZE
+)
+
 
 class ProjectViewSet(PublicProjectViewSet):
 
@@ -75,7 +93,7 @@ class ProjectViewSet(PublicProjectViewSet):
                 partnerships__iati_organisation_role=101,
                 partnerships__organisation__pk=reporting_org
             ).distinct()
-        return super(ProjectViewSet, self).filter_queryset(queryset)
+        return super().filter_queryset(queryset)
 
     @action(methods=("GET", "POST"), detail=True)
     def external_project(self, request, **kwargs):
@@ -106,6 +124,23 @@ class ProjectViewSet(PublicProjectViewSet):
     def children(self, request, **kwargs):
         project = self.get_object()
 
+        # Memory protection: Check if the project hierarchy is too large
+        # Re-read settings to ensure test overrides are respected
+        max_descendants = getattr(settings, 'RSR_MAX_DESCENDANTS_PER_REQUEST', DEFAULT_MAX_DESCENDANTS_PER_REQUEST)
+        total_descendants_count = project.descendants(max_depth=2, with_self=False).count()
+
+        if total_descendants_count > max_descendants:
+            logger.warning(
+                f"Project {project.id} has {total_descendants_count} descendants, "
+                f"exceeding limit of {max_descendants}. Using chunked processing."
+            )
+            return self._get_children_chunked(project, request)
+
+        # For smaller hierarchies, use the original optimized approach
+        return self._get_children_standard(project, request)
+
+    def _get_children_standard(self, project, request):
+        """Standard approach for smaller project hierarchies"""
         queryset = self._filter_queryset(project.descendants(max_depth=2, with_self=False).select_related(
             "primary_organisation",
             "projecthierarchy",
@@ -116,15 +151,102 @@ class ProjectViewSet(PublicProjectViewSet):
             "sectors",
             "projectrole_set",
         ))
+
         descendants = list(queryset)
         serializer_context = self.get_serializer_context()
 
-        # Optimization to count the children
-        # Collect the children of each project in a list
-        # The alternative is a subquery, but that's extra slow due to lacking psql indices
-        parent_to_children: Dict[UUID, List[Project]] = dict()
+        # Build parent-to-children mapping for optimization
+        parent_to_children, children = self._build_parent_child_mapping(descendants, project.uuid)
+
+        serializer_context["parents_to_children"] = parent_to_children
+        serializer_context["parent"] = project
+
+        serializer = ProjectMetadataSerializer(children, many=True, context=serializer_context)
+
+        # Add metadata headers for consistency and monitoring
+        response = Response(serializer.data)
+        response['X-Children-Count'] = str(len(children))
+        response['X-Memory-Protection'] = 'standard'
+
+        return response
+
+    def _get_children_chunked(self, project, request):
+        """Memory-efficient chunked approach for large project hierarchies"""
+        queryset = self._filter_queryset(project.descendants(max_depth=2, with_self=False).select_related(
+            "primary_organisation",
+            "projecthierarchy",
+            "publishingstatus",
+        ).prefetch_related(
+            "locations__country",
+            "recipient_countries",
+            "sectors",
+            "projectrole_set",
+        ))
+
+        # Re-read settings to ensure test overrides are respected
+        max_descendants = getattr(settings, 'RSR_MAX_DESCENDANTS_PER_REQUEST', DEFAULT_MAX_DESCENDANTS_PER_REQUEST)
+        chunk_size = getattr(settings, 'RSR_DESCENDANTS_CHUNK_SIZE', DEFAULT_DESCENDANTS_CHUNK_SIZE)
+
+        serializer_context = self.get_serializer_context()
+        parent_to_children: Dict[UUID, List[Project]] = {}
         children: List[Project] = []
-        parent_uuid = project.uuid
+        processed_count = 0
+
+        # Process descendants in chunks to avoid memory exhaustion
+        for chunk in self._chunked_queryset(queryset, chunk_size):
+            chunk_parent_to_children, chunk_children = self._build_parent_child_mapping(
+                chunk, project.uuid
+            )
+
+            # Merge chunk results
+            for parent_uuid, child_list in chunk_parent_to_children.items():
+                parent_to_children.setdefault(parent_uuid, []).extend(child_list)
+
+            children.extend(chunk_children)
+            processed_count += len(chunk)
+
+            # Log progress for large hierarchies
+            if processed_count % 1000 == 0:
+                logger.info(f"Processed {processed_count} descendants for project {project.id}")
+
+        # Limit the response size for very large hierarchies
+        if len(children) > max_descendants:
+            logger.warning(
+                f"Truncating children response for project {project.id}: "
+                f"{len(children)} children found, returning first {max_descendants}"
+            )
+            children = children[:max_descendants]
+
+        serializer_context["parents_to_children"] = parent_to_children
+        serializer_context["parent"] = project
+
+        serializer = ProjectMetadataSerializer(children, many=True, context=serializer_context)
+
+        # Maintain backward compatibility by returning direct array
+        # Add metadata in response headers for monitoring/debugging
+        response = Response(serializer.data)
+        response['X-Total-Processed'] = str(processed_count)
+        response['X-Children-Count'] = str(len(children))
+        response['X-Truncated'] = 'true' if len(children) >= max_descendants else 'false'
+        response['X-Memory-Protection'] = 'chunked'
+
+        return response
+
+    def _chunked_queryset(self, queryset, chunk_size: int) -> Iterator[List]:
+        """Yield successive chunks from queryset to avoid loading all data into memory"""
+        offset = 0
+        while True:
+            chunk = list(queryset[offset:offset + chunk_size])
+            if not chunk:
+                break
+            yield chunk
+            offset += chunk_size
+
+    def _build_parent_child_mapping(self, descendants: List, parent_uuid: UUID) -> tuple:
+        """Build parent-to-children mapping from a list of descendants"""
+        parent_to_children: Dict[UUID, List[Project]] = {}
+        children: List[Project] = []
+
         for descendant in descendants:
             if not (curr_parent_uuid := descendant.get_parent_uuid()):
                 continue
@@ -133,13 +255,7 @@ class ProjectViewSet(PublicProjectViewSet):
             if curr_parent_uuid == parent_uuid:
                 children.append(descendant)
 
-        serializer_context["parents_to_children"] = parent_to_children
-
-        # optimization for ProjectMetadataSerializer.get_parent
-        serializer_context["parent"] = project
-
-        serializer = ProjectMetadataSerializer(children, many=True, context=serializer_context)
-        return Response(serializer.data)
+        return parent_to_children, children
 
     @action(
         methods=("DELETE",),
@@ -224,7 +340,7 @@ class ProjectIatiExportViewSet(PublicProjectViewSet):
                 partnerships__iati_organisation_role=101,
                 partnerships__organisation__pk=reporting_org
             ).distinct()
-        return super(ProjectIatiExportViewSet, self).filter_queryset(queryset)
+        return super().filter_queryset(queryset)
 
 
 class ProjectExtraViewSet(ProjectViewSet):
