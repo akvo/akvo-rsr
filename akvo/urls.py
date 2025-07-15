@@ -9,6 +9,7 @@ from .rsr.feeds import ProjectUpdates, OrganisationUpdates, AllProjectUpdates
 from .utils import check_auth_groups
 from .rsr.views import widgets as widget_views
 
+import os
 from django.conf import settings
 from django.urls import include, path, re_path
 from django.contrib import admin
@@ -303,6 +304,12 @@ urlpatterns += [
     ),
     path("maintenance", views.maintenance, name="maintenance")
 ]
+
+# Django-prometheus metrics endpoint (conditional)
+if 'ENABLE_PROMETHEUS_METRICS' in os.environ or 'ENABLE_STATS' in os.environ:
+    urlpatterns += [
+        path("", include("django_prometheus.urls")),
+    ]
 
 handler500 = "akvo.rsr.views.error.server_error"
 
