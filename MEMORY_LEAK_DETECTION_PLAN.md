@@ -94,9 +94,9 @@ This plan implements a multi-phase approach to detect memory leaks in the Akvo R
    ```
 
 2. **Container-Specific Memory Monitoring**
-   - **Backend Container**: Request-level memory tracking
-   - **Reports Container**: Report generation memory monitoring  
-   - **Worker Container**: Background job memory leak detection
+   - **Backend Container**: ✅ Request-level memory tracking via middleware
+   - **Reports Container**: ✅ Report generation memory monitoring via middleware
+   - **Worker Container**: ❌ Middleware limitation - requires Django-Q hooks or periodic sampling
 
 3. **Custom Memory Metrics**
    ```python
@@ -114,10 +114,58 @@ This plan implements a multi-phase approach to detect memory leaks in the Akvo R
    - Automated leak pattern detection
 
 #### Deliverables
-- [ ] Memory leak detection middleware implemented
-- [ ] Container-specific memory monitoring active
-- [ ] Custom memory metrics exported
-- [ ] Memory snapshot system operational
+- [x] Memory leak detection middleware implemented
+- [x] HTTP container memory monitoring active (backend, reports)
+- [x] Custom memory metrics exported
+- [x] Memory snapshot system operational
+- [ ] Worker container monitoring implementation (requires separate approach)
+
+### Phase 2.5: Worker Container Memory Monitoring (Optional - 2-3 hours)
+
+#### Objectives
+- Implement proper memory monitoring for background job processing
+- Address middleware limitation for non-HTTP processes
+- Provide comprehensive worker container memory leak detection
+
+#### Tasks
+1. **Django-Q Integration Approach**
+   ```python
+   # Custom Django-Q task wrapper for memory monitoring
+   class MemoryMonitoredTask:
+       - Pre/post task execution memory measurement
+       - Task-specific memory usage tracking
+       - Integration with existing Prometheus metrics
+   ```
+
+2. **Periodic Worker Memory Sampling**
+   ```python
+   # Background thread monitoring
+   class WorkerMemoryMonitor:
+       - 30-second interval memory sampling
+       - Container-level memory usage tracking
+       - Non-intrusive background monitoring
+   ```
+
+3. **Management Command Wrapper**
+   ```python
+   # Memory-aware base command class
+   class MemoryMonitoredCommand(BaseCommand):
+       - Wrap existing management commands
+       - Track memory usage for batch operations
+       - Export metrics via file or HTTP endpoint
+   ```
+
+#### Deliverables
+- [ ] Django-Q task memory monitoring implemented
+- [ ] Periodic worker memory sampling active
+- [ ] Management command memory tracking
+- [ ] Worker container metrics exported to Prometheus
+
+#### Alternative: Container-Level Monitoring
+If application-level monitoring proves complex, use container metrics:
+- Prometheus `container_memory_usage_bytes` already available
+- Focus on HTTP containers for detailed application metrics
+- Use container metrics for worker memory trend analysis
 
 ### Phase 3: Enhanced Grafana Dashboard Integration (2-3 hours)
 
@@ -213,65 +261,84 @@ PROMETHEUS_EXPORT_MIGRATIONS = False
 #### Memory Leak Detection Middleware
 ```python
 # akvo/rsr/middleware/memory_profiling.py
-import tracemalloc
-import psutil
-import gc
-from django_prometheus.conf import NAMESPACE
+import tracemalloc, psutil, gc, os
+from django.conf import settings
 from prometheus_client import Gauge, Counter, Histogram
 
 class MemoryLeakDetectionMiddleware:
+    """Modern Django middleware using callable pattern for memory leak detection."""
+    
+    # Class-level metrics to avoid duplicate registration during testing
+    _metrics_initialized = False
+    _memory_usage_gauge = None
+    _memory_growth_counter = None
+    _object_count_gauge = None
+    _gc_collections_counter = None
+    _memory_allocation_histogram = None
+
     def __init__(self, get_response):
         self.get_response = get_response
-        self.process = psutil.Process()
+        self.enabled = getattr(settings, 'ENABLE_MEMORY_PROFILING', True)
         
-        # Custom metrics
-        self.memory_usage_gauge = Gauge(
-            'django_memory_usage_bytes',
-            'Current memory usage',
-            ['container', 'view_name'],
-            namespace=NAMESPACE
-        )
-        
-        self.memory_growth_counter = Counter(
-            'django_memory_growth_events',
-            'Memory growth events',
-            ['container', 'threshold'],
-            namespace=NAMESPACE
-        )
-        
-        # Initialize tracemalloc
-        if not tracemalloc.is_tracing():
-            tracemalloc.start()
+        if self.enabled:
+            self.process = psutil.Process()
+            self.container_name = os.environ.get('CONTAINER_NAME', 'unknown')
+            self.sample_rate = getattr(settings, 'MEMORY_PROFILING_SAMPLE_RATE', 1.0)
+            self._init_metrics()
+            
+            if not tracemalloc.is_tracing():
+                tracemalloc.start()
     
     def __call__(self, request):
-        # Pre-request memory snapshot
+        if not self.enabled:
+            return self.get_response(request)
+            
+        # Sample requests based on configured rate
+        import random
+        if random.random() > self.sample_rate:
+            return self.get_response(request)
+            
+        # Pre-request memory measurement + tracemalloc snapshot
         gc.collect()
-        mem_before = self.process.memory_info().rss
+        memory_before = self.process.memory_info().rss
+        tracemalloc_before = tracemalloc.take_snapshot() if tracemalloc.is_tracing() else None
         
-        # Execute request
+        # Process request
         response = self.get_response(request)
         
-        # Post-request memory analysis
-        mem_after = self.process.memory_info().rss
-        memory_diff = mem_after - mem_before
+        # Post-request analysis
+        memory_after = self.process.memory_info().rss
+        memory_diff = memory_after - memory_before
+        view_name = self._get_view_name(request)
         
-        # Update metrics
-        container_name = os.environ.get('CONTAINER_NAME', 'unknown')
-        view_name = getattr(request, 'resolver_match', {}).get('view_name', 'unknown')
+        # Update all metrics
+        self._update_memory_metrics(memory_after, memory_diff, view_name)
+        self._check_memory_growth(memory_diff)
+        self._update_object_counts()
+        self._update_gc_metrics()
         
-        self.memory_usage_gauge.labels(
-            container=container_name,
-            view_name=view_name
-        ).set(mem_after)
-        
-        # Detect memory growth
-        if memory_diff > 10 * 1024 * 1024:  # 10MB threshold
-            self.memory_growth_counter.labels(
-                container=container_name,
-                threshold='10mb'
-            ).inc()
-        
+        if tracemalloc_before:
+            self._analyze_tracemalloc(tracemalloc_before, view_name)
+            
         return response
+    
+    @classmethod
+    def _init_metrics(cls):
+        """Initialize comprehensive Prometheus metrics (class-level to avoid duplicates)."""
+        if cls._metrics_initialized:
+            return
+            
+        cls._memory_usage_gauge = Gauge('memory_usage_bytes', 'Current memory usage', 
+                                       ['container', 'view_name'], namespace='django')
+        cls._memory_growth_counter = Counter('memory_growth_events_total', 'Memory growth events', 
+                                           ['container', 'threshold'], namespace='django')
+        cls._object_count_gauge = Gauge('python_objects_total', 'Python objects in memory', 
+                                       ['container', 'object_type'], namespace='django')
+        cls._gc_collections_counter = Counter('gc_collections_total', 'GC collection runs', 
+                                             ['container', 'generation'], namespace='django')
+        cls._memory_allocation_histogram = Histogram('allocation_bytes', 'Memory allocation distribution', 
+                                                    ['container', 'view_name'], namespace='django')
+        cls._metrics_initialized = True
 ```
 
 ### Kubernetes Configuration Updates
@@ -365,9 +432,10 @@ metadata:
 - [x] Existing monitoring unchanged
 
 ### Phase 2 Success Metrics
-- [ ] Memory leak detection middleware operational
-- [ ] Custom memory metrics exported to Prometheus
-- [ ] Container-specific monitoring active
+- [x] Memory leak detection middleware operational
+- [x] Custom memory metrics exported to Prometheus
+- [x] HTTP container monitoring active (backend, reports)
+- [ ] Worker container monitoring active (architectural limitation identified)
 
 ### Phase 3 Success Metrics
 - [ ] Enhanced Grafana dashboard functional
@@ -418,6 +486,40 @@ metadata:
 
 ---
 
-**Status**: ✅ Phase 1 Complete - Beginning Phase 2  
+**Status**: ✅ Phase 1 & Phase 2 Complete - Ready for Phase 3  
 **Last Updated**: 2025-07-15  
-**Next Review**: Upon Phase 2 completion
+**Next Review**: Upon Phase 3 completion
+
+## Phase 2 Implementation Summary
+
+### Completed Features
+- **Modern Django Middleware**: Implemented using callable pattern for better performance
+- **HTTP Container Monitoring**: Backend and reports containers fully monitored
+- **Comprehensive Metrics**: 5 different metric types covering memory usage, growth, objects, GC, and allocations
+- **Configurable Sampling**: Reduces overhead with `MEMORY_PROFILING_SAMPLE_RATE`
+- **Tracemalloc Integration**: Detailed memory allocation tracking for leak pattern detection
+- **Error Resilience**: Middleware continues operating even if metrics collection fails
+- **Testing Compatibility**: Class-level metrics prevent duplicate registration during testing
+- **Middleware Package Structure**: Organized middleware into proper Python package with backward compatibility
+
+### Architectural Limitation Identified
+- **Worker Container**: Django middleware only runs during HTTP request/response cycles
+- **Background Jobs**: Django-Q tasks, management commands, and other non-HTTP processes don't trigger middleware
+- **Solution Required**: Separate monitoring approach needed for worker container (Django-Q hooks, periodic sampling, or management command wrappers)
+
+### Key Metrics Implemented
+1. `django_memory_usage_bytes`: Real-time memory usage per container/view
+2. `django_memory_growth_events_total`: Counts when memory growth exceeds thresholds
+3. `django_python_objects_total`: Tracks Python object counts by type
+4. `django_gc_collections_total`: Garbage collection statistics
+5. `django_memory_allocation_bytes`: Memory allocation size distribution
+
+### Current Monitoring Coverage
+- ✅ **Backend Container** (rsr-backend): Full HTTP request monitoring
+- ✅ **Reports Container** (rsr-reports): Full HTTP request monitoring
+- ❌ **Worker Container** (rsr-worker): No monitoring (requires Phase 2.5 implementation)
+
+### Recommended Next Steps
+1. **Phase 3**: Proceed with Grafana dashboard for existing HTTP container metrics
+2. **Phase 2.5** (Optional): Implement worker container monitoring using Django-Q hooks
+3. **Phase 4**: Production deployment with current HTTP monitoring capabilities
