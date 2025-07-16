@@ -186,6 +186,12 @@ spec:
         - &enable-prometheus-metrics
           name: ENABLE_PROMETHEUS_METRICS
           value: "true"
+        - &enable-memory-profiling
+          name: ENABLE_MEMORY_PROFILING
+          value: "true"
+        - &memory-profiling-sample-rate
+          name: MEMORY_PROFILING_SAMPLE_RATE
+          value: "1.0"
       - <<: *backend
         name: rsr-reports
         ports:
@@ -214,6 +220,8 @@ spec:
         - <<: *django-secret-key
         - <<: *enable-stats
         - <<: *enable-prometheus-metrics
+        - <<: *enable-memory-profiling
+        - <<: *memory-profiling-sample-rate
       - <<: *backend
         name: worker
         readinessProbe:
