@@ -15,7 +15,10 @@ This guide provides step-by-step instructions for deploying the memory leak dete
 
 ### 1. Application Components
 - **Django Middleware**: Memory leak detection middleware in HTTP containers (backend, reports)
+  - Backend container: `http://localhost:8000/metrics`
+  - Reports container: `http://localhost:9000/metrics`
 - **Worker Memory Monitoring**: Extended Django-Q probe system with memory metrics for worker container
+  - Worker container: `http://localhost:8080/metrics`
 - **Prometheus Metrics**: Custom memory metrics exported via `/metrics` endpoint from all containers
 - **Environment Variables**: Configuration for memory profiling behavior
 
@@ -100,15 +103,20 @@ This guide provides step-by-step instructions for deploying the memory leak dete
    # Check backend metrics endpoint accessibility
    kubectl exec -it <pod-name> -c rsr-backend -- curl localhost:8000/metrics | grep django_memory
    
+   # Check reports metrics endpoint accessibility
+   kubectl exec -it <pod-name> -c rsr-reports -- curl localhost:9000/metrics | grep django_memory
+   
    # Check worker metrics endpoint accessibility  
    kubectl exec -it <pod-name> -c worker -- curl localhost:8080/metrics | grep django_memory
    
    # Verify environment variables (all containers)
    kubectl exec -it <pod-name> -c rsr-backend -- printenv | grep MEMORY
+   kubectl exec -it <pod-name> -c rsr-reports -- printenv | grep MEMORY
    kubectl exec -it <pod-name> -c worker -- printenv | grep MEMORY
    
-   # Check Django middleware configuration
+   # Check Django middleware configuration (HTTP containers)
    kubectl exec -it <pod-name> -c rsr-backend -- python manage.py shell -c "from django.conf import settings; print([m for m in settings.MIDDLEWARE if 'memory' in m.lower()])"
+   kubectl exec -it <pod-name> -c rsr-reports -- python manage.py shell -c "from django.conf import settings; print([m for m in settings.MIDDLEWARE if 'memory' in m.lower()])"
    
    # Check worker memory monitor initialization
    kubectl exec -it <pod-name> -c worker -- python manage.py shell -c "from akvo.rsr.monitoring.worker_memory import WorkerMemoryMonitor; print('Worker monitoring:', WorkerMemoryMonitor().enabled)"
@@ -226,6 +234,10 @@ kubectl logs -l app=rsr -c rsr-backend --tail=100
 # Check backend metrics endpoint
 kubectl port-forward svc/rsr 8000:8000 &
 curl localhost:8000/metrics | grep django_memory
+
+# Check reports metrics endpoint
+kubectl port-forward svc/rsr 9000:9000 &
+curl localhost:9000/metrics | grep django_memory
 
 # Check worker metrics endpoint
 kubectl port-forward svc/rsr-worker-metrics 8080:8080 &
