@@ -7,6 +7,7 @@
 
 """
 Provides a localhost HTTP server to query the local status of the django-q cluster
+and export memory metrics for Prometheus monitoring.
 """
 import logging
 import signal
@@ -18,6 +19,9 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 from django_q.models import Success
 from django_q.status import Stat
+
+# Import worker memory monitoring
+from akvo.rsr.monitoring.worker_memory import WorkerMemoryMonitor
 
 logger = logging.getLogger(__name__)
 
@@ -42,12 +46,46 @@ class Command(BaseCommand):
 class DjangoQRequestHandler(BaseHTTPRequestHandler):
     """
     A handler to be used with HTTPServer to get the status of the local django-q cluster
+    and provide memory metrics for Prometheus monitoring.
     """
+
+    def __init__(self, *args, **kwargs):
+        """Initialize handler with memory monitor."""
+        self.memory_monitor = WorkerMemoryMonitor(container_name='rsr-worker')
+        super().__init__(*args, **kwargs)
 
     def do_GET(self):
         """
-        Handle GET requests to return response with the status code indicating django-q cluster is still running
+        Handle GET requests for health checks and metrics endpoints.
+
+        Routes:
+        - /metrics: Prometheus memory metrics
+        - / (default): Health check
         """
+        if self.path == '/metrics':
+            self.handle_metrics_request()
+        else:
+            self.handle_health_check()
+
+    def handle_metrics_request(self):
+        """Handle requests to /metrics endpoint for Prometheus monitoring."""
+        try:
+            # Generate Prometheus metrics
+            metrics_data = self.memory_monitor.export_prometheus_metrics()
+            content_type = self.memory_monitor.get_metrics_content_type()
+
+            # Send response
+            self.send_response(200)
+            self.send_header('Content-Type', content_type)
+            self.send_header('Content-Length', str(len(metrics_data)))
+            self.end_headers()
+            self.wfile.write(metrics_data.encode('utf-8'))
+        except Exception as e:
+            logger.error(f"Error generating metrics: {e}")
+            self.send_error(500, f"Internal server error: {e}")
+
+    def handle_health_check(self):
+        """Handle health check requests (existing functionality)."""
         if self.is_worker_running():
             self.send_response(200)
         else:
