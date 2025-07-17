@@ -180,6 +180,18 @@ spec:
         - &enable-stats
           name: ENABLE_STATS
           value: "yes please"
+        - &container-name-backend
+          name: CONTAINER_NAME
+          value: "rsr-backend"
+        - &enable-prometheus-metrics
+          name: ENABLE_PROMETHEUS_METRICS
+          value: "true"
+        - &enable-memory-profiling
+          name: ENABLE_MEMORY_PROFILING
+          value: "true"
+        - &memory-profiling-sample-rate
+          name: MEMORY_PROFILING_SAMPLE_RATE
+          value: "1.0"
       - <<: *backend
         name: rsr-reports
         ports:
@@ -200,11 +212,16 @@ spec:
           value: "yes"
         - name: DJANGO_PORT
           value: "9000"
+        - name: CONTAINER_NAME
+          value: "rsr-reports"
         - <<: *sentry-dsn
         - <<: *mapbox-key
         - <<: *gunicorn-debug-args
         - <<: *django-secret-key
         - <<: *enable-stats
+        - <<: *enable-prometheus-metrics
+        - <<: *enable-memory-profiling
+        - <<: *memory-profiling-sample-rate
       - <<: *backend
         name: worker
         readinessProbe:
@@ -227,10 +244,13 @@ spec:
         env:
         - name: IS_WORKER
           value: "yes"
+        - name: CONTAINER_NAME
+          value: "rsr-worker"
         - <<: *django-secret-key
         - <<: *google-application-credentials
         - <<: *default-file-storage
         - <<: *google-storage-bucket
+        - <<: *enable-prometheus-metrics
       - name: rsr-statsd-to-prometheus
         image: eu.gcr.io/akvo-lumen/rsr-statsd-to-prometheus:${TRAVIS_COMMIT}
         ports:
