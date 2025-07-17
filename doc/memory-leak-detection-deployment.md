@@ -14,13 +14,14 @@ This guide provides step-by-step instructions for deploying the memory leak dete
 ## Deployment Components
 
 ### 1. Application Components
-- **Django Middleware**: Memory leak detection middleware in all HTTP containers
-- **Prometheus Metrics**: Custom memory metrics exported via `/metrics` endpoint
+- **Django Middleware**: Memory leak detection middleware in HTTP containers (backend, reports)
+- **Worker Memory Monitoring**: Extended Django-Q probe system with memory metrics for worker container
+- **Prometheus Metrics**: Custom memory metrics exported via `/metrics` endpoint from all containers
 - **Environment Variables**: Configuration for memory profiling behavior
 
 ### 2. Monitoring Components
-- **Grafana Dashboard**: Enhanced with 5 new memory leak detection panels
-- **Alert Rules**: 10 comprehensive alert rules for memory leak detection
+- **Grafana Dashboard**: Enhanced with 8 memory leak detection panels (5 general + 3 worker-specific)
+- **Alert Rules**: 15 comprehensive alert rules for memory leak detection (including worker-specific alerts)
 - **Runbook**: Operational procedures for incident response
 
 ### 3. Validation Components
@@ -37,9 +38,11 @@ This guide provides step-by-step instructions for deploying the memory leak dete
 
 ### Code Verification
 - [ ] Middleware implemented in `akvo/rsr/middleware/memory_profiling.py`
+- [ ] Worker monitoring implemented in `akvo/rsr/monitoring/worker_memory.py`
+- [ ] Django-Q probe system extended in `akvo/rsr/management/commands/django_q_probettp.py`
 - [ ] Django settings include memory profiling middleware
 - [ ] Requirements include `django-prometheus` dependency
-- [ ] All tests pass with new middleware
+- [ ] All tests pass with new middleware and worker monitoring
 
 ### Configuration Review
 - [ ] Deployment YAML includes memory profiling environment variables
@@ -61,6 +64,9 @@ This guide provides step-by-step instructions for deploying the memory leak dete
    
    # Update service configuration
    kubectl apply -f ci/k8s/service.yml
+   
+   # Deploy worker metrics service
+   kubectl apply -f ci/k8s/worker-metrics-service.yml
    
    # Deploy application with memory monitoring
    kubectl apply -f ci/k8s/deployment.yml
@@ -91,39 +97,57 @@ This guide provides step-by-step instructions for deploying the memory leak dete
 
 2. **Manual Validation Steps**
    ```bash
-   # Check metrics endpoint accessibility
+   # Check backend metrics endpoint accessibility
    kubectl exec -it <pod-name> -c rsr-backend -- curl localhost:8000/metrics | grep django_memory
    
-   # Verify environment variables
+   # Check worker metrics endpoint accessibility  
+   kubectl exec -it <pod-name> -c worker -- curl localhost:8080/metrics | grep django_memory
+   
+   # Verify environment variables (all containers)
    kubectl exec -it <pod-name> -c rsr-backend -- printenv | grep MEMORY
+   kubectl exec -it <pod-name> -c worker -- printenv | grep MEMORY
    
    # Check Django middleware configuration
    kubectl exec -it <pod-name> -c rsr-backend -- python manage.py shell -c "from django.conf import settings; print([m for m in settings.MIDDLEWARE if 'memory' in m.lower()])"
+   
+   # Check worker memory monitor initialization
+   kubectl exec -it <pod-name> -c worker -- python manage.py shell -c "from akvo.rsr.monitoring.worker_memory import WorkerMemoryMonitor; print('Worker monitoring:', WorkerMemoryMonitor().enabled)"
    ```
 
 ### Step 3: Verify Monitoring Integration
 
 1. **Prometheus Metrics Collection**
    ```bash
-   # Check if Prometheus is scraping metrics
-   # Access Prometheus UI and search for: django_memory_usage_bytes
+   # Check if Prometheus is scraping metrics from HTTP containers
+   # Access Prometheus UI and search for: django_memory_usage_bytes{container!="rsr-worker"}
    
-   # Verify custom metrics are being collected
-   # Search for: django_memory_growth_events_total
+   # Check if Prometheus is scraping metrics from worker container
+   # Search for: django_memory_usage_bytes{container="rsr-worker"}
+   
+   # Verify worker-specific metrics are being collected
+   # Search for: django_worker_task_memory_bytes
+   # Search for: django_worker_tasks_total
    ```
 
 2. **Grafana Dashboard Verification**
    ```bash
    # Access Grafana dashboard
    # Navigate to RSR dashboard
-   # Verify new memory leak detection panels are showing data
+   # Verify HTTP container memory leak detection panels are showing data
+   # Verify worker container memory monitoring panels are showing data:
+   #   - Worker Container Memory Usage (MB)
+   #   - Worker Task Execution Rate (tasks/hour)  
+   #   - Worker Task Memory Usage by Task (MB)
    ```
 
 3. **Alert System Testing**
    ```bash
    # Check alert rules are loaded
    # Access Prometheus alerts page
-   # Verify memory leak detection alerts are configured
+   # Verify memory leak detection alerts are configured:
+   #   - General memory alerts (HighMemoryGrowthRate, CriticalMemoryUsage, etc.)
+   #   - Worker-specific alerts (WorkerTaskHighMemoryUsage, WorkerMemoryGrowthRate, etc.)
+   #   - Container-level alerts (ContainerMemoryGrowthRate, ContainerHighMemoryUsage)
    ```
 
 ## Post-Deployment Monitoring
@@ -154,7 +178,7 @@ This guide provides step-by-step instructions for deploying the memory leak dete
 |----------|---------|-------------|
 | `ENABLE_MEMORY_PROFILING` | `true` | Enable/disable memory profiling |
 | `MEMORY_PROFILING_SAMPLE_RATE` | `1.0` | Sample rate (0.0-1.0) for memory profiling |
-| `CONTAINER_NAME` | `rsr-backend` | Container identifier for metrics |
+| `CONTAINER_NAME` | `rsr-backend`/`rsr-worker` | Container identifier for metrics |
 | `ENABLE_PROMETHEUS_METRICS` | `true` | Enable Django Prometheus metrics |
 
 ### Memory Profiling Settings
@@ -199,9 +223,13 @@ kubectl get deployment rsr -o wide
 # View pod logs
 kubectl logs -l app=rsr -c rsr-backend --tail=100
 
-# Check metrics endpoint
+# Check backend metrics endpoint
 kubectl port-forward svc/rsr 8000:8000 &
 curl localhost:8000/metrics | grep django_memory
+
+# Check worker metrics endpoint
+kubectl port-forward svc/rsr-worker-metrics 8080:8080 &
+curl localhost:8080/metrics | grep django_memory
 
 # Test alert rules
 kubectl exec -it <prometheus-pod> -- promtool query instant 'django_memory_usage_bytes'
@@ -241,8 +269,8 @@ kubectl exec -it <prometheus-pod> -- promtool query instant 'django_memory_usage
 ## Performance Considerations
 
 ### Expected Performance Impact
-- **Memory Overhead**: ~1-2MB per container
-- **CPU Overhead**: <0.5% under normal load
+- **Memory Overhead**: ~1-2MB per HTTP container, ~1MB per worker container
+- **CPU Overhead**: <0.5% under normal load (HTTP containers), <0.1% (worker container)
 - **Network Overhead**: Minimal (metrics collection only)
 
 ### Optimization Recommendations
@@ -290,9 +318,10 @@ kubectl exec -it <prometheus-pod> -- promtool query instant 'django_memory_usage
 
 ### Deployment Success
 - [ ] All pods restart successfully
-- [ ] Memory metrics are being collected
-- [ ] Grafana dashboard shows memory data
-- [ ] Alert rules are loaded and functional
+- [ ] Memory metrics are being collected from all containers (backend, reports, worker)
+- [ ] Grafana dashboard shows memory data for all containers
+- [ ] Alert rules are loaded and functional (including worker-specific alerts)
+- [ ] Worker metrics endpoint responding on port 8080
 - [ ] No performance degradation observed
 
 ### Operational Success
