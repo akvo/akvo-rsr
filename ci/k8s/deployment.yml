@@ -185,13 +185,34 @@ spec:
           value: "rsr-backend"
         - &enable-prometheus-metrics
           name: ENABLE_PROMETHEUS_METRICS
-          value: "true"
+          valueFrom:
+            secretKeyRef:
+              name: "rsr-secret"
+              key: enable-prometheus-metrics
         - &enable-memory-profiling
           name: ENABLE_MEMORY_PROFILING
-          value: "true"
+          valueFrom:
+            secretKeyRef:
+              name: "rsr-secret"
+              key: enable-memory-profiling
         - &memory-profiling-sample-rate
           name: MEMORY_PROFILING_SAMPLE_RATE
-          value: "1.0"
+          valueFrom:
+            secretKeyRef:
+              name: "rsr-secret"
+              key: memory-profiling-sample-rate
+        - &metrics-auth-username
+          name: METRICS_AUTH_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: "rsr-secret"
+              key: metrics-auth-username
+        - &metrics-auth-password
+          name: METRICS_AUTH_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: "rsr-secret"
+              key: metrics-auth-password
       - <<: *backend
         name: rsr-reports
         ports:
@@ -222,6 +243,8 @@ spec:
         - <<: *enable-prometheus-metrics
         - <<: *enable-memory-profiling
         - <<: *memory-profiling-sample-rate
+        - <<: *metrics-auth-username
+        - <<: *metrics-auth-password
       - <<: *backend
         name: worker
         readinessProbe:

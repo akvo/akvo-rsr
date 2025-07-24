@@ -6,12 +6,15 @@ This middleware integrates with django-prometheus to provide comprehensive
 memory leak detection capabilities in production environments.
 """
 
+import base64
 import gc
 import os
-import psutil
 import tracemalloc
+
+import psutil
 from django.conf import settings
-from prometheus_client import Gauge, Counter, Histogram
+from django.http import HttpResponse
+from prometheus_client import Counter, Gauge, Histogram
 
 
 class MemoryLeakDetectionMiddleware:
@@ -48,6 +51,10 @@ class MemoryLeakDetectionMiddleware:
         self.sample_rate = getattr(settings, 'MEMORY_PROFILING_SAMPLE_RATE', 1.0)
         self.growth_threshold_mb = getattr(settings, 'MEMORY_GROWTH_THRESHOLD_MB', 10)
 
+        # Metrics authentication settings
+        self.metrics_auth_username = getattr(settings, 'METRICS_AUTH_USERNAME', None)
+        self.metrics_auth_password = getattr(settings, 'METRICS_AUTH_PASSWORD', None)
+
         # Initialize memory metrics (only once across all instances)
         self._init_metrics()
 
@@ -59,6 +66,12 @@ class MemoryLeakDetectionMiddleware:
         """Process the request and response."""
         if not self.enabled:
             return self.get_response(request)
+
+        # Check for metrics endpoint authentication
+        if request.path == '/metrics':
+            auth_response = self._check_metrics_auth(request)
+            if auth_response:
+                return auth_response
 
         # Sample requests based on configured rate
         import random
@@ -97,6 +110,46 @@ class MemoryLeakDetectionMiddleware:
             self._analyze_tracemalloc(tracemalloc_before, view_name)
 
         return response
+
+    def _check_metrics_auth(self, request):
+        """
+        Check basic authentication for /metrics endpoint.
+        Returns HttpResponse if authentication fails, None if successful.
+        Authentication is always required for /metrics endpoint.
+        """
+        # Return 500 error if credentials are not configured
+        if not self.metrics_auth_username or not self.metrics_auth_password:
+            return self._auth_misconfigured_response()
+
+        # Get authorization header
+        auth_header = request.META.get('HTTP_AUTHORIZATION', '')
+
+        if not auth_header.startswith('Basic '):
+            return self._auth_required_response()
+
+        # Decode credentials
+        try:
+            encoded_credentials = auth_header[6:]  # Remove 'Basic ' prefix
+            decoded_credentials = base64.b64decode(encoded_credentials).decode('utf-8')
+            username, password = decoded_credentials.split(':', 1)
+        except (ValueError, UnicodeDecodeError):
+            return self._auth_required_response()
+
+        # Validate credentials
+        if username == self.metrics_auth_username and password == self.metrics_auth_password:
+            return None  # Authentication successful
+
+        return self._auth_required_response()
+
+    def _auth_required_response(self):
+        """Return 401 Unauthorized response with WWW-Authenticate header."""
+        response = HttpResponse('Unauthorized', status=401)
+        response['WWW-Authenticate'] = 'Basic realm="Metrics"'
+        return response
+
+    def _auth_misconfigured_response(self):
+        """Return 500 Internal Server Error when metrics auth is not configured."""
+        return HttpResponse('Metrics authentication not configured', status=500)
 
     @classmethod
     def _init_metrics(cls):
