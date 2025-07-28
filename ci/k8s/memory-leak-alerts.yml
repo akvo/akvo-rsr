@@ -142,3 +142,59 @@ data:
           summary: "High container memory usage in {{ $labels.pod }}/{{ $labels.container }}"
           description: "Container {{ $labels.container }} in pod {{ $labels.pod }} is using {{ $value }}MB of memory."
           runbook_url: "https://github.com/akvo/akvo-rsr/blob/master/runbooks/memory-leak-detection.md"
+
+    # Worker-specific alerts for task monitoring
+    - name: rsr-worker-task-alerts
+      rules:
+      # Worker task memory usage during execution
+      - alert: WorkerTaskHighMemoryUsage
+        expr: django_worker_task_memory_bytes{container="rsr-worker"} / 1024 / 1024 > 300
+        for: 5m
+        labels:
+          severity: warning
+          component: worker-task-monitoring
+          container: "{{ $labels.container }}"
+          task: "{{ $labels.task_name }}"
+        annotations:
+          summary: "High memory usage during task execution in {{ $labels.container }}"
+          description: "Task {{ $labels.task_name }} in container {{ $labels.container }} is using {{ $value }}MB during {{ $labels.phase }} phase."
+          runbook_url: "https://github.com/akvo/akvo-rsr/blob/master/runbooks/memory-leak-detection.md"
+
+      # Worker task failure rate
+      - alert: WorkerTaskFailureRate
+        expr: rate(django_worker_tasks_total{container="rsr-worker",status="failure"}[1h]) > 0.1
+        for: 15m
+        labels:
+          severity: warning
+          component: worker-task-monitoring
+          container: "{{ $labels.container }}"
+          task: "{{ $labels.task_name }}"
+        annotations:
+          summary: "High task failure rate in {{ $labels.container }}"
+          description: "Task {{ $labels.task_name }} in container {{ $labels.container }} has a failure rate of {{ $value }} failures/hour."
+          runbook_url: "https://github.com/akvo/akvo-rsr/blob/master/runbooks/memory-leak-detection.md"
+
+      # Worker container memory growth specific alert
+      - alert: WorkerMemoryGrowthRate
+        expr: rate(django_memory_usage_bytes{container="rsr-worker",component="worker"}[1h]) / 1024 / 1024 > 15
+        for: 20m
+        labels:
+          severity: warning
+          component: worker-memory-monitoring
+          container: "{{ $labels.container }}"
+        annotations:
+          summary: "Worker container memory growth detected"
+          description: "Worker container {{ $labels.container }} memory is growing at {{ $value }}MB/hour. This may indicate memory leaks in background tasks."
+          runbook_url: "https://github.com/akvo/akvo-rsr/blob/master/runbooks/memory-leak-detection.md"
+
+      # Worker probe endpoint availability
+      - alert: WorkerProbeMetricsDown
+        expr: up{job="rsr-worker-metrics"} == 0
+        for: 5m
+        labels:
+          severity: critical
+          component: worker-monitoring
+        annotations:
+          summary: "Worker metrics endpoint is down"
+          description: "The worker container metrics endpoint is not responding. Memory monitoring for background tasks is disabled."
+          runbook_url: "https://github.com/akvo/akvo-rsr/blob/master/runbooks/memory-leak-detection.md"

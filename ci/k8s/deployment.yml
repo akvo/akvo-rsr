@@ -247,6 +247,9 @@ spec:
         - <<: *metrics-auth-password
       - <<: *backend
         name: worker
+        ports:
+        - containerPort: 8080
+          protocol: TCP
         readinessProbe:
           exec:
             command: ["/var/akvo/rsr/code/scripts/probes/worker.sh"]
@@ -274,6 +277,8 @@ spec:
         - <<: *default-file-storage
         - <<: *google-storage-bucket
         - <<: *enable-prometheus-metrics
+        - <<: *enable-memory-profiling
+        - <<: *memory-profiling-sample-rate
       - name: rsr-statsd-to-prometheus
         image: eu.gcr.io/akvo-lumen/rsr-statsd-to-prometheus:${TRAVIS_COMMIT}
         ports:
