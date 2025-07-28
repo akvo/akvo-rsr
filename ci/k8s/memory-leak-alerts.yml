@@ -1,0 +1,144 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rsr-memory-leak-alerts
+  labels:
+    prometheus_rules: "1"
+data:
+  memory-leak-detection.yml: |-
+    groups:
+    - name: rsr-memory-leak-detection
+      rules:
+      # Memory growth rate alert - triggers when memory grows >10MB/hour
+      - alert: HighMemoryGrowthRate
+        expr: rate(django_memory_usage_bytes{container!="unknown"}[1h]) / 1024 / 1024 > 10
+        for: 30m
+        labels:
+          severity: warning
+          component: memory-leak-detection
+          container: "{{ $labels.container }}"
+        annotations:
+          summary: "High memory growth rate detected in {{ $labels.container }}"
+          description: "Container {{ $labels.container }} view {{ $labels.view_name }} is growing at {{ $value }}MB/hour for the last 30 minutes. This may indicate a memory leak."
+          runbook_url: "https://github.com/akvo/akvo-rsr/blob/master/runbooks/memory-leak-detection.md"
+
+      # Critical memory growth rate - triggers when memory grows >50MB/hour
+      - alert: CriticalMemoryGrowthRate
+        expr: rate(django_memory_usage_bytes{container!="unknown"}[1h]) / 1024 / 1024 > 50
+        for: 15m
+        labels:
+          severity: critical
+          component: memory-leak-detection
+          container: "{{ $labels.container }}"
+        annotations:
+          summary: "CRITICAL: Very high memory growth rate in {{ $labels.container }}"
+          description: "Container {{ $labels.container }} view {{ $labels.view_name }} is growing at {{ $value }}MB/hour for the last 15 minutes. Immediate attention required."
+          runbook_url: "https://github.com/akvo/akvo-rsr/blob/master/runbooks/memory-leak-detection.md"
+
+      # Memory leak events alert - triggers when growth events increase
+      - alert: MemoryLeakEventsDetected
+        expr: increase(django_memory_growth_events_total{container!="unknown"}[1h]) > 5
+        for: 0m
+        labels:
+          severity: warning
+          component: memory-leak-detection
+          container: "{{ $labels.container }}"
+        annotations:
+          summary: "Memory leak events detected in {{ $labels.container }}"
+          description: "{{ $value }} memory growth events ({{ $labels.threshold }}) detected in container {{ $labels.container }} in the last hour."
+          runbook_url: "https://github.com/akvo/akvo-rsr/blob/master/runbooks/memory-leak-detection.md"
+
+      # High object count growth - triggers when Python objects grow significantly
+      - alert: HighPythonObjectGrowth
+        expr: rate(django_python_objects_total{container!="unknown",object_type=~"dict|list"}[1h]) > 1000
+        for: 30m
+        labels:
+          severity: warning
+          component: memory-leak-detection
+          container: "{{ $labels.container }}"
+        annotations:
+          summary: "High Python object growth in {{ $labels.container }}"
+          description: "{{ $labels.object_type }} objects in container {{ $labels.container }} are growing at {{ $value }} objects/hour. This may indicate a memory leak."
+          runbook_url: "https://github.com/akvo/akvo-rsr/blob/master/runbooks/memory-leak-detection.md"
+
+      # Memory usage above threshold - triggers when memory exceeds 500MB
+      - alert: HighMemoryUsage
+        expr: django_memory_usage_bytes{container!="unknown"} / 1024 / 1024 > 500
+        for: 10m
+        labels:
+          severity: warning
+          component: memory-leak-detection
+          container: "{{ $labels.container }}"
+        annotations:
+          summary: "High memory usage in {{ $labels.container }}"
+          description: "Container {{ $labels.container }} view {{ $labels.view_name }} is using {{ $value }}MB of memory. Current usage exceeds 500MB threshold."
+          runbook_url: "https://github.com/akvo/akvo-rsr/blob/master/runbooks/memory-leak-detection.md"
+
+      # Critical memory usage - triggers when memory exceeds 1GB
+      - alert: CriticalMemoryUsage
+        expr: django_memory_usage_bytes{container!="unknown"} / 1024 / 1024 > 1000
+        for: 5m
+        labels:
+          severity: critical
+          component: memory-leak-detection
+          container: "{{ $labels.container }}"
+        annotations:
+          summary: "CRITICAL: Very high memory usage in {{ $labels.container }}"
+          description: "Container {{ $labels.container }} view {{ $labels.view_name }} is using {{ $value }}MB of memory. Immediate attention required to prevent OOM."
+          runbook_url: "https://github.com/akvo/akvo-rsr/blob/master/runbooks/memory-leak-detection.md"
+
+      # Excessive garbage collection - triggers when GC runs too frequently
+      - alert: ExcessiveGarbageCollection
+        expr: rate(django_gc_collections_total{container!="unknown"}[5m]) > 10
+        for: 15m
+        labels:
+          severity: warning
+          component: memory-leak-detection
+          container: "{{ $labels.container }}"
+        annotations:
+          summary: "Excessive garbage collection in {{ $labels.container }}"
+          description: "Container {{ $labels.container }} generation {{ $labels.generation }} GC is running at {{ $value }} collections/sec. This may indicate memory pressure."
+          runbook_url: "https://github.com/akvo/akvo-rsr/blob/master/runbooks/memory-leak-detection.md"
+
+      # Memory metrics missing - triggers when no metrics received
+      - alert: MemoryMetricsMissing
+        expr: absent(django_memory_usage_bytes{container!="unknown"})
+        for: 10m
+        labels:
+          severity: warning
+          component: memory-leak-detection
+        annotations:
+          summary: "Memory leak detection metrics missing"
+          description: "No memory leak detection metrics received for 10 minutes. Check middleware configuration and metric collection."
+          runbook_url: "https://github.com/akvo/akvo-rsr/blob/master/runbooks/memory-leak-detection.md"
+
+    # Container-level memory alerts using existing Kubernetes metrics
+    - name: rsr-container-memory-alerts
+      rules:
+      # Container memory growth rate using Kubernetes metrics
+      - alert: ContainerMemoryGrowthRate
+        expr: rate(container_memory_usage_bytes{pod=~"rsr.*",container!="POD",container=~".+"}[1h]) / 1024 / 1024 > 20
+        for: 30m
+        labels:
+          severity: warning
+          component: container-monitoring
+          pod: "{{ $labels.pod }}"
+          container: "{{ $labels.container }}"
+        annotations:
+          summary: "Container memory growth detected in {{ $labels.pod }}/{{ $labels.container }}"
+          description: "Container {{ $labels.container }} in pod {{ $labels.pod }} memory is growing at {{ $value }}MB/hour."
+          runbook_url: "https://github.com/akvo/akvo-rsr/blob/master/runbooks/memory-leak-detection.md"
+
+      # Container memory usage threshold
+      - alert: ContainerHighMemoryUsage
+        expr: container_memory_usage_bytes{pod=~"rsr.*",container!="POD",container=~".+"} / 1024 / 1024 > 800
+        for: 10m
+        labels:
+          severity: warning
+          component: container-monitoring
+          pod: "{{ $labels.pod }}"
+          container: "{{ $labels.container }}"
+        annotations:
+          summary: "High container memory usage in {{ $labels.pod }}/{{ $labels.container }}"
+          description: "Container {{ $labels.container }} in pod {{ $labels.pod }} is using {{ $value }}MB of memory."
+          runbook_url: "https://github.com/akvo/akvo-rsr/blob/master/runbooks/memory-leak-detection.md"

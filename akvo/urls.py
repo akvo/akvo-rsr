@@ -5,30 +5,34 @@ See more details in the license.txt file located at the root folder of the Akvo 
 For additional details on the GNU license please see < http://www.gnu.org/licenses/agpl.html >.
 """
 
-from .rsr.feeds import ProjectUpdates, OrganisationUpdates, AllProjectUpdates
-from .utils import check_auth_groups
-from .rsr.views import widgets as widget_views
+import os
 
 from django.conf import settings
-from django.urls import include, path, re_path
+from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-from django.conf.urls.i18n import i18n_patterns
-from django.views.static import serve
+from django.urls import include, path, re_path
 from django.views.generic import RedirectView
+from django.views.static import serve
 from rest_framework_swagger.views import get_swagger_view
 from two_factor.urls import urlpatterns as two_factor_urls
 
-from akvo.rsr.decorators import two_factor_required
 from akvo.rsr import views
-from akvo.rsr.views import account
-from akvo.rsr.views import my_rsr
-from akvo.rsr.views import organisation
-from akvo.rsr.views import project
-from akvo.rsr.views import project_update
-from akvo.rsr.views import translations
-from akvo.rsr.views import py_reports
+from akvo.rsr.decorators import two_factor_required
+from akvo.rsr.views import (
+    account,
+    my_rsr,
+    organisation,
+    project,
+    project_update,
+    py_reports,
+    translations,
+)
+
+from .rsr.feeds import AllProjectUpdates, OrganisationUpdates, ProjectUpdates
+from .rsr.views import widgets as widget_views
+from .utils import check_auth_groups
 
 admin.autodiscover()
 
@@ -301,8 +305,14 @@ urlpatterns += [
         widget_views.RandomProjectSmallView.as_view(),
         name="widget_random_project_small",
     ),
-    path("maintenance", views.maintenance, name="maintenance")
+    path("maintenance", views.maintenance, name="maintenance"),
 ]
+
+# Django-prometheus metrics endpoint (conditional)
+if os.environ.get("ENABLE_PROMETHEUS_METRICS", "").lower() == "true":
+    urlpatterns += [
+        path("", include("django_prometheus.urls")),
+    ]
 
 handler500 = "akvo.rsr.views.error.server_error"
 

@@ -64,6 +64,9 @@ tablib
 # statsd and graphite integration
 django-statsd-mozilla
 
+# Prometheus integration for memory leak detection
+django-prometheus
+
 # Sentry integration
 sentry-sdk==1.31.0
 
