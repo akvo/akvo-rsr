@@ -1,8 +1,8 @@
 # Memory Leak Detection Implementation Plan
 
-**Project**: Akvo RSR Memory Leak Detection  
-**Branch**: `feature/memory-leak-detection`  
-**Created**: 2025-07-15  
+**Project**: Akvo RSR Memory Leak Detection
+**Branch**: `feature/memory-leak-detection`
+**Created**: 2025-07-15
 **Goal**: Implement comprehensive memory leak detection for production Django application in Kubernetes environment
 
 ## Executive Summary
@@ -267,7 +267,7 @@ from prometheus_client import Gauge, Counter, Histogram
 
 class MemoryLeakDetectionMiddleware:
     """Modern Django middleware using callable pattern for memory leak detection."""
-    
+
     # Class-level metrics to avoid duplicate registration during testing
     _metrics_initialized = False
     _memory_usage_gauge = None
@@ -279,64 +279,64 @@ class MemoryLeakDetectionMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
         self.enabled = getattr(settings, 'ENABLE_MEMORY_PROFILING', True)
-        
+
         if self.enabled:
             self.process = psutil.Process()
             self.container_name = os.environ.get('CONTAINER_NAME', 'unknown')
             self.sample_rate = getattr(settings, 'MEMORY_PROFILING_SAMPLE_RATE', 1.0)
             self._init_metrics()
-            
+
             if not tracemalloc.is_tracing():
                 tracemalloc.start()
-    
+
     def __call__(self, request):
         if not self.enabled:
             return self.get_response(request)
-            
+
         # Sample requests based on configured rate
         import random
         if random.random() > self.sample_rate:
             return self.get_response(request)
-            
+
         # Pre-request memory measurement + tracemalloc snapshot
         gc.collect()
         memory_before = self.process.memory_info().rss
         tracemalloc_before = tracemalloc.take_snapshot() if tracemalloc.is_tracing() else None
-        
+
         # Process request
         response = self.get_response(request)
-        
+
         # Post-request analysis
         memory_after = self.process.memory_info().rss
         memory_diff = memory_after - memory_before
         view_name = self._get_view_name(request)
-        
+
         # Update all metrics
         self._update_memory_metrics(memory_after, memory_diff, view_name)
         self._check_memory_growth(memory_diff)
         self._update_object_counts()
         self._update_gc_metrics()
-        
+
         if tracemalloc_before:
             self._analyze_tracemalloc(tracemalloc_before, view_name)
-            
+
         return response
-    
+
     @classmethod
     def _init_metrics(cls):
         """Initialize comprehensive Prometheus metrics (class-level to avoid duplicates)."""
         if cls._metrics_initialized:
             return
-            
-        cls._memory_usage_gauge = Gauge('memory_usage_bytes', 'Current memory usage', 
+
+        cls._memory_usage_gauge = Gauge('memory_usage_bytes', 'Current memory usage',
                                        ['container', 'view_name'], namespace='django')
-        cls._memory_growth_counter = Counter('memory_growth_events_total', 'Memory growth events', 
+        cls._memory_growth_counter = Counter('memory_growth_events_total', 'Memory growth events',
                                            ['container', 'threshold'], namespace='django')
-        cls._object_count_gauge = Gauge('python_objects_total', 'Python objects in memory', 
+        cls._object_count_gauge = Gauge('python_objects_total', 'Python objects in memory',
                                        ['container', 'object_type'], namespace='django')
-        cls._gc_collections_counter = Counter('gc_collections_total', 'GC collection runs', 
+        cls._gc_collections_counter = Counter('gc_collections_total', 'GC collection runs',
                                              ['container', 'generation'], namespace='django')
-        cls._memory_allocation_histogram = Histogram('allocation_bytes', 'Memory allocation distribution', 
+        cls._memory_allocation_histogram = Histogram('allocation_bytes', 'Memory allocation distribution',
                                                     ['container', 'view_name'], namespace='django')
         cls._metrics_initialized = True
 ```
@@ -358,11 +358,9 @@ env:
 #### Service Annotations
 ```yaml
 # ci/k8s/service.yml
+# Note: Prometheus annotations removed - using dedicated rsr-metrics job instead
 metadata:
-  annotations:
-    prometheus.io/scrape: "true"
-    prometheus.io/port: "8000"
-    prometheus.io/path: "/metrics"
+  name: rsr
 ```
 
 ### Grafana Dashboard Enhancements
@@ -384,7 +382,7 @@ metadata:
     },
     {
       "title": "Memory Leak Events",
-      "type": "graph", 
+      "type": "graph",
       "targets": [
         {
           "expr": "increase(django_memory_growth_events[1h])",
@@ -411,17 +409,17 @@ metadata:
 ## Risk Assessment & Mitigation
 
 ### Technical Risks
-1. **Performance Impact**: 
+1. **Performance Impact**:
    - Mitigation: Comprehensive testing, gradual rollout
-2. **Memory Overhead**: 
+2. **Memory Overhead**:
    - Mitigation: Efficient implementation, monitoring of monitoring
-3. **Alert Fatigue**: 
+3. **Alert Fatigue**:
    - Mitigation: Proper threshold tuning, correlation analysis
 
 ### Operational Risks
-1. **Deployment Complexity**: 
+1. **Deployment Complexity**:
    - Mitigation: Thorough testing, rollback procedures
-2. **Maintenance Burden**: 
+2. **Maintenance Burden**:
    - Mitigation: Good documentation, team training
 
 ## Success Criteria
@@ -434,8 +432,8 @@ metadata:
 ### Phase 2 Success Metrics
 - [x] Memory leak detection middleware operational
 - [x] Custom memory metrics exported to Prometheus
-- [x] HTTP container monitoring active (backend, reports)
-- [ ] Worker container monitoring active (architectural limitation identified)
+- [x] HTTP container monitoring active (backend and reports containers)
+- [ ] Worker container monitoring active (deferred to separate branch)
 
 ### Phase 3 Success Metrics
 - [x] Enhanced Grafana dashboard functional
@@ -451,7 +449,7 @@ metadata:
 
 ### Total Estimated Time: 10-15 hours
 - **Phase 1**: 2-3 hours
-- **Phase 2**: 4-6 hours  
+- **Phase 2**: 4-6 hours
 - **Phase 3**: 2-3 hours
 - **Phase 4**: 2-3 hours
 
@@ -486,15 +484,15 @@ metadata:
 
 ---
 
-**Status**: ✅ All Phases Complete - Memory Leak Detection System Deployed  
-**Last Updated**: 2025-07-16  
+**Status**: ✅ All Phases Complete - Memory Leak Detection System Deployed
+**Last Updated**: 2025-07-16
 **Next Review**: 30 days post-deployment for optimization
 
 ## Phase 2 Implementation Summary
 
 ### Completed Features
 - **Modern Django Middleware**: Implemented using callable pattern for better performance
-- **HTTP Container Monitoring**: Backend and reports containers fully monitored
+- **HTTP Container Monitoring**: Backend and reports containers fully monitored with separate Prometheus scrape jobs
 - **Comprehensive Metrics**: 5 different metric types covering memory usage, growth, objects, GC, and allocations
 - **Configurable Sampling**: Reduces overhead with `MEMORY_PROFILING_SAMPLE_RATE`
 - **Tracemalloc Integration**: Detailed memory allocation tracking for leak pattern detection
