@@ -19,7 +19,7 @@ This guide provides step-by-step instructions for deploying the memory leak dete
 - **Environment Variables**: Configuration for memory profiling behavior and metrics authentication
 
 ### 2. Monitoring Components
-- **Grafana Dashboard**: Enhanced with 5 new memory leak detection panels
+- **Grafana Dashboard**: RSR dashboard ConfigMap with 12 panels including 5 memory leak detection panels (auto-discovered by existing Grafana service)
 - **Alert Rules**: 10 comprehensive alert rules for memory leak detection
 - **Runbook**: Operational procedures for incident response
 
@@ -58,7 +58,7 @@ This guide provides step-by-step instructions for deploying the memory leak dete
    # Apply memory leak detection alert rules
    kubectl apply -f ci/k8s/memory-leak-alerts.yml
 
-   # Update Grafana dashboard
+   # Apply RSR dashboard ConfigMap (automatically discovered by existing Grafana service)
    kubectl apply -f ci/k8s/grafana/main.yml
 
    # Update service configuration
@@ -89,8 +89,8 @@ This guide provides step-by-step instructions for deploying the memory leak dete
    # Monitor logs for any startup issues
    kubectl logs -f deployment/rsr -c rsr-backend
 
-   # Verify Prometheus is picking up the new target
-   # Check Prometheus UI -> Status -> Targets -> look for 'rsr-metrics' job
+   # Verify Prometheus is picking up the new targets
+   # Check Prometheus UI -> Status -> Targets -> look for 'rsr-backend-metrics' and 'rsr-reports-metrics' jobs
    ```
 
 ### Step 2: Validate Deployment
@@ -121,21 +121,22 @@ This guide provides step-by-step instructions for deploying the memory leak dete
 1. **Prometheus Metrics Collection**
    ```bash
    # Check if Prometheus is scraping metrics with authentication
-   # Access Prometheus UI -> Status -> Targets -> verify 'rsr-metrics' job is UP
+   # Access Prometheus UI -> Status -> Targets -> verify 'rsr-backend-metrics' and 'rsr-reports-metrics' jobs are UP
 
    # Search for memory metrics in Prometheus UI
    # Query: django_memory_usage_bytes
    # Query: django_memory_growth_events_total
 
-   # Verify the 'rsr-metrics' job is successfully authenticating
-   # Should see "Last Scrape" time updating every 15 seconds
+   # Verify both scrape jobs are successfully authenticating
+   # Should see "Last Scrape" time updating every 15 seconds for both jobs
    ```
 
 2. **Grafana Dashboard Verification**
    ```bash
-   # Access Grafana dashboard
-   # Navigate to RSR dashboard
-   # Verify new memory leak detection panels are showing data
+   # Access existing Grafana service (configured in ../akvo-config/k8s/monitoring/grafana-test.yml)
+   # The RSR dashboard ConfigMap is automatically discovered via the 'grafana_dashboard: "1"' label
+   # Navigate to Dashboards -> Look for "RSR" dashboard
+   # Verify new memory leak detection panels are showing data from both containers
    ```
 
 3. **Alert System Testing**
