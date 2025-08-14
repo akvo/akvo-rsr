@@ -19,8 +19,6 @@ spec:
         run: rsr
         rsr-version: ${TRAVIS_COMMIT}
         app: rsr
-      annotations:
-        prometheus.io/scrape: 'true'
     spec:
       tolerations:
         - key: "akvo-app"
