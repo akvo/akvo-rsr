@@ -15,11 +15,11 @@ This guide provides step-by-step instructions for deploying the memory leak dete
 
 ### 1. Application Components
 - **Django Middleware**: Memory leak detection middleware in all HTTP containers
-- **Prometheus Metrics**: Custom memory metrics exported via `/metrics` endpoint
-- **Environment Variables**: Configuration for memory profiling behavior
+- **Prometheus Metrics**: Custom memory metrics exported via `/metrics` endpoint (protected with HTTP Basic Authentication)
+- **Environment Variables**: Configuration for memory profiling behavior and metrics authentication
 
 ### 2. Monitoring Components
-- **Grafana Dashboard**: Enhanced with 5 new memory leak detection panels
+- **Grafana Dashboard**: RSR dashboard ConfigMap with 12 panels including 5 memory leak detection panels (auto-discovered by existing Grafana service)
 - **Alert Rules**: 10 comprehensive alert rules for memory leak detection
 - **Runbook**: Operational procedures for incident response
 
@@ -43,7 +43,9 @@ This guide provides step-by-step instructions for deploying the memory leak dete
 
 ### Configuration Review
 - [ ] Deployment YAML includes memory profiling environment variables
-- [ ] Service annotations configured for Prometheus scraping
+- [ ] Metrics authentication credentials configured in secrets
+- [ ] Prometheus static target configuration for authenticated scraping
+- [ ] Prometheus configuration includes RSR metrics scrape job with authentication
 - [ ] Alert rules properly configured
 - [ ] Grafana dashboard panels configured
 
@@ -55,27 +57,40 @@ This guide provides step-by-step instructions for deploying the memory leak dete
    ```bash
    # Apply memory leak detection alert rules
    kubectl apply -f ci/k8s/memory-leak-alerts.yml
-   
-   # Update Grafana dashboard
+
+   # Apply RSR dashboard ConfigMap (automatically discovered by existing Grafana service)
    kubectl apply -f ci/k8s/grafana/main.yml
-   
+
    # Update service configuration
    kubectl apply -f ci/k8s/service.yml
-   
+
    # Deploy application with memory monitoring
    kubectl apply -f ci/k8s/deployment.yml
    ```
 
-2. **Monitor Deployment**
+2. **Update Prometheus Configuration**
+   ```bash
+   # Update Prometheus configuration to include RSR metrics scraping with authentication
+   # This should be done by the infrastructure team using the updated prometheus.yaml
+   # The configuration includes a new 'rsr-metrics' job with basic authentication
+
+   # Restart Prometheus to pick up new configuration
+   helm upgrade prometheus prometheus-community/prometheus --namespace monitoring --values prometheus.yaml
+   ```
+
+3. **Monitor Deployment**
    ```bash
    # Watch deployment progress
    kubectl rollout status deployment/rsr --timeout=600s
-   
+
    # Check pod status
    kubectl get pods -l app=rsr
-   
+
    # Monitor logs for any startup issues
    kubectl logs -f deployment/rsr -c rsr-backend
+
+   # Verify Prometheus is picking up the new targets
+   # Check Prometheus UI -> Status -> Targets -> look for 'rsr-backend-metrics' and 'rsr-reports-metrics' jobs
    ```
 
 ### Step 2: Validate Deployment
@@ -84,19 +99,19 @@ This guide provides step-by-step instructions for deploying the memory leak dete
    ```bash
    # Run the validation script
    ./scripts/deployment/validate-memory-monitoring.sh
-   
+
    # Or with custom parameters
    NAMESPACE=default APP_LABEL=app=rsr ./scripts/deployment/validate-memory-monitoring.sh
    ```
 
 2. **Manual Validation Steps**
    ```bash
-   # Check metrics endpoint accessibility
-   kubectl exec -it <pod-name> -c rsr-backend -- curl localhost:8000/metrics | grep django_memory
-   
+   # Check metrics endpoint accessibility (requires authentication)
+   kubectl exec -it <pod-name> -c rsr-backend -- curl -u $METRICS_AUTH_USERNAME:$METRICS_AUTH_PASSWORD localhost:8000/metrics | grep django_memory
+
    # Verify environment variables
-   kubectl exec -it <pod-name> -c rsr-backend -- printenv | grep MEMORY
-   
+   kubectl exec -it <pod-name> -c rsr-backend -- printenv | grep -E "(MEMORY|METRICS_AUTH)"
+
    # Check Django middleware configuration
    kubectl exec -it <pod-name> -c rsr-backend -- python manage.py shell -c "from django.conf import settings; print([m for m in settings.MIDDLEWARE if 'memory' in m.lower()])"
    ```
@@ -105,18 +120,23 @@ This guide provides step-by-step instructions for deploying the memory leak dete
 
 1. **Prometheus Metrics Collection**
    ```bash
-   # Check if Prometheus is scraping metrics
-   # Access Prometheus UI and search for: django_memory_usage_bytes
-   
-   # Verify custom metrics are being collected
-   # Search for: django_memory_growth_events_total
+   # Check if Prometheus is scraping metrics with authentication
+   # Access Prometheus UI -> Status -> Targets -> verify 'rsr-backend-metrics' and 'rsr-reports-metrics' jobs are UP
+
+   # Search for memory metrics in Prometheus UI
+   # Query: django_memory_usage_bytes
+   # Query: django_memory_growth_events_total
+
+   # Verify both scrape jobs are successfully authenticating
+   # Should see "Last Scrape" time updating every 15 seconds for both jobs
    ```
 
 2. **Grafana Dashboard Verification**
    ```bash
-   # Access Grafana dashboard
-   # Navigate to RSR dashboard
-   # Verify new memory leak detection panels are showing data
+   # Access existing Grafana service (configured in ../akvo-config/k8s/monitoring/grafana-test.yml)
+   # The RSR dashboard ConfigMap is automatically discovered via the 'grafana_dashboard: "1"' label
+   # Navigate to Dashboards -> Look for "RSR" dashboard
+   # Verify new memory leak detection panels are showing data from both containers
    ```
 
 3. **Alert System Testing**
@@ -156,6 +176,8 @@ This guide provides step-by-step instructions for deploying the memory leak dete
 | `MEMORY_PROFILING_SAMPLE_RATE` | `1.0` | Sample rate (0.0-1.0) for memory profiling |
 | `CONTAINER_NAME` | `rsr-backend` | Container identifier for metrics |
 | `ENABLE_PROMETHEUS_METRICS` | `true` | Enable Django Prometheus metrics |
+| `METRICS_AUTH_USERNAME` | *required* | Username for /metrics endpoint authentication |
+| `METRICS_AUTH_PASSWORD` | *required* | Password for /metrics endpoint authentication |
 
 ### Memory Profiling Settings
 
@@ -164,6 +186,10 @@ This guide provides step-by-step instructions for deploying the memory leak dete
 ENABLE_MEMORY_PROFILING = os.environ.get('ENABLE_MEMORY_PROFILING', 'true').lower() == 'true'
 MEMORY_PROFILING_SAMPLE_RATE = float(os.environ.get('MEMORY_PROFILING_SAMPLE_RATE', '1.0'))
 MEMORY_GROWTH_THRESHOLD_MB = int(os.environ.get('MEMORY_GROWTH_THRESHOLD_MB', '10'))
+
+# Metrics endpoint authentication (required)
+METRICS_AUTH_USERNAME = os.environ.get('METRICS_AUTH_USERNAME')
+METRICS_AUTH_PASSWORD = os.environ.get('METRICS_AUTH_PASSWORD')
 ```
 
 ## Troubleshooting
@@ -174,6 +200,8 @@ MEMORY_GROWTH_THRESHOLD_MB = int(os.environ.get('MEMORY_GROWTH_THRESHOLD_MB', '1
    - Check pod health status
    - Verify service configuration
    - Confirm middleware is properly loaded
+   - Ensure authentication credentials are provided
+   - Test endpoint with: `curl -u username:password localhost:8000/metrics`
 
 2. **Memory Metrics Not Appearing**
    - Verify environment variables are set
@@ -190,6 +218,13 @@ MEMORY_GROWTH_THRESHOLD_MB = int(os.environ.get('MEMORY_GROWTH_THRESHOLD_MB', '1
    - Check metric collection is working
    - Review alert threshold configuration
 
+5. **Metrics Authentication Issues**
+   - Verify `METRICS_AUTH_USERNAME` and `METRICS_AUTH_PASSWORD` are set
+   - Check credentials are correctly configured in Kubernetes secrets
+   - Ensure Prometheus scraping configuration includes authentication
+   - Test authentication: returns 401 without credentials, 200 with correct credentials
+   - Returns 500 if credentials not configured (indicates misconfiguration)
+
 ### Diagnostic Commands
 
 ```bash
@@ -199,9 +234,9 @@ kubectl get deployment rsr -o wide
 # View pod logs
 kubectl logs -l app=rsr -c rsr-backend --tail=100
 
-# Check metrics endpoint
+# Check metrics endpoint (requires authentication)
 kubectl port-forward svc/rsr 8000:8000 &
-curl localhost:8000/metrics | grep django_memory
+curl -u $METRICS_AUTH_USERNAME:$METRICS_AUTH_PASSWORD localhost:8000/metrics | grep django_memory
 
 # Test alert rules
 kubectl exec -it <prometheus-pod> -- promtool query instant 'django_memory_usage_bytes'
@@ -215,7 +250,7 @@ kubectl exec -it <prometheus-pod> -- promtool query instant 'django_memory_usage
    ```bash
    # Set environment variable to disable profiling
    kubectl set env deployment/rsr ENABLE_MEMORY_PROFILING=false
-   
+
    # Wait for rollout to complete
    kubectl rollout status deployment/rsr
    ```
@@ -224,7 +259,7 @@ kubectl exec -it <prometheus-pod> -- promtool query instant 'django_memory_usage
    ```bash
    # Rollback to previous deployment
    kubectl rollout undo deployment/rsr
-   
+
    # Verify rollback
    kubectl rollout status deployment/rsr
    ```
@@ -233,7 +268,7 @@ kubectl exec -it <prometheus-pod> -- promtool query instant 'django_memory_usage
    ```bash
    # Remove alert rules
    kubectl delete -f ci/k8s/memory-leak-alerts.yml
-   
+
    # Restore previous Grafana dashboard
    # (Restore from backup if available)
    ```
@@ -253,10 +288,74 @@ kubectl exec -it <prometheus-pod> -- promtool query instant 'django_memory_usage
 
 ## Security Considerations
 
+### Metrics Endpoint Security
+- **HTTP Basic Authentication**: `/metrics` endpoint requires authentication with username/password
+- **Mandatory Credentials**: Authentication cannot be disabled - returns 500 error if credentials not configured
+- **Environment Variables**: Credentials stored as Kubernetes secrets (`METRICS_AUTH_USERNAME`, `METRICS_AUTH_PASSWORD`)
+- **Prometheus Configuration**: Dedicated `rsr-metrics` scrape job with static target and basic authentication
+- **Static Target**: Uses `rsr.default.svc.cluster.local:8000` for direct service access
+- **Credentials**: Hardcoded in Prometheus configuration (private repository)
+
+### General Security
 - Memory metrics contain no sensitive application data
 - Runbook contains operational procedures, not secrets
 - Alert rules use standard Prometheus security model
 - All monitoring components run within existing security boundaries
+
+## Configuration Files
+
+### Application Configuration
+- **Memory leak middleware**: `akvo/rsr/middleware/memory_profiling.py`
+- **Django settings**: `akvo/settings/46-prometheus.conf`
+- **Kubernetes deployment**: `ci/k8s/deployment.yml` (includes metrics auth environment variables)
+- **Kubernetes service**: `ci/k8s/service.yml` (core service configuration)
+
+### Monitoring Configuration
+- **Kubernetes alerts**: `ci/k8s/memory-leak-alerts.yml`
+- **Grafana dashboard**: `ci/k8s/grafana/main.yml`
+- **Prometheus configuration**: `../akvo-config/k8s/monitoring/prometheus.yaml` (includes `rsr-metrics` job)
+- **Validation script**: `scripts/deployment/validate-memory-monitoring.sh`
+
+### Secrets Configuration
+- **Test environment**: `../akvo-config/k8s-secrets/test/rsr-secret/metrics-auth-*`
+- **Production environment**: `../akvo-config/k8s-secrets/production/rsr-secret/metrics-auth-*`
+
+### Prometheus Scrape Job Configuration
+
+The Prometheus configuration includes dedicated scrape jobs for RSR metrics:
+
+```yaml
+# Backend container metrics (Django application on port 8000)
+- job_name: 'rsr-backend-metrics'
+  static_configs:
+    - targets: ['rsr.default.svc.cluster.local:8000']
+  metrics_path: '/metrics'
+  basic_auth:
+    username: '***redacted***'
+    password: '***redacted***'
+  scrape_interval: 15s
+
+# Reports container metrics (Django reports service on port 9000)
+- job_name: 'rsr-reports-metrics'
+  static_configs:
+    - targets: ['rsr.default.svc.cluster.local:9000']
+  metrics_path: '/metrics'
+  basic_auth:
+    username: '***redacted***'
+    password: '***redacted***'
+  scrape_interval: 15s
+```
+
+**Container Coverage:**
+- **Backend container** (`rsr-backend`): Port 8000 - HTTP Django metrics with authentication
+- **Reports container** (`rsr-reports`): Port 9000 - HTTP Django metrics with authentication
+
+**Key Features:**
+- **Multiple targets**: Separate jobs for backend and reports containers
+- **Authentication**: Both HTTP endpoints require basic authentication
+- **Service exposure**: Kubernetes service exposes both ports 8000 and 9000
+- **Stable access**: Uses service DNS names for reliable connectivity
+- **Load balancing**: Service provides load balancing if multiple replicas exist
 
 ## Maintenance
 
@@ -290,9 +389,12 @@ kubectl exec -it <prometheus-pod> -- promtool query instant 'django_memory_usage
 
 ### Deployment Success
 - [ ] All pods restart successfully
-- [ ] Memory metrics are being collected
-- [ ] Grafana dashboard shows memory data
+- [ ] Memory metrics are being collected from both containers
+- [ ] Prometheus `rsr-backend-metrics` job is successfully scraping with authentication
+- [ ] Prometheus `rsr-reports-metrics` job is successfully scraping with authentication
+- [ ] Grafana dashboard shows memory data from both backend and reports containers
 - [ ] Alert rules are loaded and functional
+- [ ] Both metrics endpoints return 401 without credentials, 200 with correct credentials
 - [ ] No performance degradation observed
 
 ### Operational Success
