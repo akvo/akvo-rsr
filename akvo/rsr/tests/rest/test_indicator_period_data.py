@@ -1621,8 +1621,12 @@ class IndicatorPeriodDataCollaborateDraftTestCase(BaseTestCase):
         org = self.create_organisation('Acme')
         user1, user2 = self.create_users(['user1', 'user2'], org)
         project, period = self.make_project_with_one_period(org)
-        update1 = period.add_update(user2, value=1, status=IndicatorPeriodData.STATUS_APPROVED_CODE)
-        update2 = period.add_update(user2, value=2, status=IndicatorPeriodData.STATUS_DRAFT_CODE)
+
+        # Create updates in atomic block to ensure both are fully committed before proceeding
+        from django.db import transaction
+        with transaction.atomic():
+            update1 = period.add_update(user2, value=1, status=IndicatorPeriodData.STATUS_APPROVED_CODE)
+            update2 = period.add_update(user2, value=2, status=IndicatorPeriodData.STATUS_DRAFT_CODE)
 
         self.c.login(username=user1.email, password='password')
         with self.enable_collab_feature_for(project):
