@@ -32,10 +32,18 @@ def unique_task(task_name: str) -> Callable[[Callable], Callable]:
             if cached_time_utc:
                 key_timeout = settings.UNIQUE_TASK_KEY_TIMEOUT
                 # Key timed out?
-                if cached_time_utc < (datetime.datetime.utcnow() - timedelta(seconds=key_timeout)).timestamp():
+                if (
+                    cached_time_utc
+                    < (
+                        datetime.datetime.utcnow() - timedelta(seconds=key_timeout)
+                    ).timestamp()
+                ):
                     cache.delete(cache_key)
                 else:
-                    logger.info("%s has a valid unique task heartbeat. Skipping run...", task_name)
+                    logger.info(
+                        "%s has a valid unique task heartbeat. Skipping run...",
+                        task_name,
+                    )
                     return
 
             heartbeat_thread = get_unique_cache_heartbeat(cache_key)
@@ -47,11 +55,17 @@ def unique_task(task_name: str) -> Callable[[Callable], Callable]:
                 logger.info("Signaling '%s' heartbeat thread should end", task_name)
                 heartbeat_thread.event_end.set()
 
+                # Wait for the heartbeat thread to fully terminate before cleaning up cache
+                # This prevents race condition where heartbeat might restore cache after deletion
+                heartbeat_thread.join()
+
                 # Clean up the cache
                 try:
                     cache.delete(cache_key)
                 except:  # noqa: E722
-                    logger.warning("Couldn't delete cache key %s", cache_key, exc_info=True)
+                    logger.warning(
+                        "Couldn't delete cache key %s", cache_key, exc_info=True
+                    )
 
         return wrapper
 
