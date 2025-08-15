@@ -27,25 +27,47 @@ check_metrics_endpoint() {
     local pod_name=$1
     local container_name=$2
     local port=$3
-    
+
     echo "🔍 Checking metrics endpoint for $container_name in pod $pod_name..."
-    
-    # Check if metrics endpoint is accessible
+
+    # Get authentication credentials
+    local auth_username
+    local auth_password
+    auth_username=$(kubectl exec -n "$NAMESPACE" "$pod_name" -c "$container_name" -- printenv "METRICS_AUTH_USERNAME" 2>/dev/null || echo "")
+    auth_password=$(kubectl exec -n "$NAMESPACE" "$pod_name" -c "$container_name" -- printenv "METRICS_AUTH_PASSWORD" 2>/dev/null || echo "")
+
+    if [[ -z "$auth_username" || -z "$auth_password" ]]; then
+        echo "❌ Metrics authentication credentials not configured"
+        return 1
+    fi
+
+    # Check if metrics endpoint is accessible with authentication
     local metrics_output
-    metrics_output=$(kubectl exec -n "$NAMESPACE" "$pod_name" -c "$container_name" -- curl -s "localhost:$port/metrics" || echo "FAILED")
-    
+    metrics_output=$(kubectl exec -n "$NAMESPACE" "$pod_name" -c "$container_name" -- curl -s -u "$auth_username:$auth_password" "localhost:$port/metrics" || echo "FAILED")
+
     if [[ "$metrics_output" == "FAILED" ]]; then
         echo "❌ Failed to access metrics endpoint for $container_name"
         return 1
     fi
-    
+
+    # Test authentication behavior
+    echo "🔐 Testing metrics endpoint authentication..."
+    local auth_test
+    auth_test=$(kubectl exec -n "$NAMESPACE" "$pod_name" -c "$container_name" -- curl -s -o /dev/null -w "%{http_code}" "localhost:$port/metrics" || echo "000")
+
+    if [[ "$auth_test" == "401" ]]; then
+        echo "✅ Authentication is properly enforced (returns 401 without credentials)"
+    else
+        echo "⚠️  Expected 401 without credentials, got HTTP $auth_test"
+    fi
+
     # Check for Django Prometheus metrics
     if echo "$metrics_output" | grep -q "django_"; then
         echo "✅ Django Prometheus metrics found for $container_name"
     else
         echo "⚠️  Django Prometheus metrics not found for $container_name"
     fi
-    
+
     # Check for memory leak detection metrics
     local memory_metrics=(
         "django_memory_usage_bytes"
@@ -54,7 +76,7 @@ check_metrics_endpoint() {
         "django_gc_collections_total"
         "django_memory_allocation_bytes"
     )
-    
+
     local found_metrics=0
     for metric in "${memory_metrics[@]}"; do
         if echo "$metrics_output" | grep -q "$metric"; then
@@ -64,7 +86,7 @@ check_metrics_endpoint() {
             echo "⚠️  Missing memory metric: $metric"
         fi
     done
-    
+
     if [[ $found_metrics -ge 3 ]]; then
         echo "✅ Memory leak detection metrics are active for $container_name ($found_metrics/5 metrics found)"
         return 0
@@ -78,21 +100,28 @@ check_metrics_endpoint() {
 check_environment_variables() {
     local pod_name=$1
     local container_name=$2
-    
+
     echo "🔍 Checking environment variables for $container_name in pod $pod_name..."
-    
+
     local required_vars=(
         "ENABLE_MEMORY_PROFILING"
         "MEMORY_PROFILING_SAMPLE_RATE"
         "CONTAINER_NAME"
         "ENABLE_PROMETHEUS_METRICS"
+        "METRICS_AUTH_USERNAME"
+        "METRICS_AUTH_PASSWORD"
     )
-    
+
     for var in "${required_vars[@]}"; do
         local value
         value=$(kubectl exec -n "$NAMESPACE" "$pod_name" -c "$container_name" -- printenv "$var" 2>/dev/null || echo "NOT_SET")
         if [[ "$value" != "NOT_SET" ]]; then
-            echo "✅ $var=$value"
+            # Hide sensitive values for security
+            if [[ "$var" == *"PASSWORD"* ]]; then
+                echo "✅ $var=***hidden***"
+            else
+                echo "✅ $var=$value"
+            fi
         else
             echo "❌ Missing environment variable: $var"
         fi
@@ -103,9 +132,9 @@ check_environment_variables() {
 check_middleware_configuration() {
     local pod_name=$1
     local container_name=$2
-    
+
     echo "🔍 Checking Django middleware configuration for $container_name..."
-    
+
     local middleware_check
     middleware_check=$(kubectl exec -n "$NAMESPACE" "$pod_name" -c "$container_name" -- python manage.py shell -c "
 from django.conf import settings
@@ -118,14 +147,14 @@ print(f'MemoryLeakDetectionMiddleware: {memory_profiling}')
 print(f'PrometheusAfterMiddleware: {prometheus_after}')
 print(f'All required middleware: {prometheus_before and memory_profiling and prometheus_after}')
 " 2>/dev/null || echo "FAILED")
-    
+
     if [[ "$middleware_check" == "FAILED" ]]; then
         echo "❌ Failed to check middleware configuration"
         return 1
     fi
-    
+
     echo "$middleware_check"
-    
+
     if echo "$middleware_check" | grep -q "All required middleware: True"; then
         echo "✅ All required middleware is configured"
         return 0
@@ -140,12 +169,12 @@ check_health_endpoints() {
     local pod_name=$1
     local container_name=$2
     local port=$3
-    
+
     echo "🔍 Checking health endpoint for $container_name..."
-    
+
     local health_status
     health_status=$(kubectl exec -n "$NAMESPACE" "$pod_name" -c "$container_name" -- curl -s -o /dev/null -w "%{http_code}" "localhost:$port/healthz" || echo "000")
-    
+
     if [[ "$health_status" == "200" ]]; then
         echo "✅ Health endpoint is responding (HTTP $health_status)"
         return 0
@@ -158,26 +187,26 @@ check_health_endpoints() {
 # Main validation function
 main() {
     echo "Starting validation..."
-    
+
     # Wait for pods to be ready
     wait_for_pods
-    
+
     # Get pod information
     local pods
     pods=$(kubectl get pods -n "$NAMESPACE" -l "$APP_LABEL" -o jsonpath='{.items[*].metadata.name}')
-    
+
     if [[ -z "$pods" ]]; then
         echo "❌ No pods found with label $APP_LABEL"
         exit 1
     fi
-    
+
     local validation_errors=0
-    
+
     for pod_name in $pods; do
         echo
         echo "🔍 Validating pod: $pod_name"
         echo "================================"
-        
+
         # Check backend container
         echo
         echo "Backend Container (rsr-backend):"
@@ -185,7 +214,7 @@ main() {
         check_middleware_configuration "$pod_name" "rsr-backend" || ((validation_errors++))
         check_health_endpoints "$pod_name" "rsr-backend" "8000" || ((validation_errors++))
         check_metrics_endpoint "$pod_name" "rsr-backend" "8000" || ((validation_errors++))
-        
+
         # Check reports container
         echo
         echo "Reports Container (rsr-reports):"
@@ -193,14 +222,14 @@ main() {
         check_middleware_configuration "$pod_name" "rsr-reports" || ((validation_errors++))
         check_health_endpoints "$pod_name" "rsr-reports" "9000" || ((validation_errors++))
         check_metrics_endpoint "$pod_name" "rsr-reports" "9000" || ((validation_errors++))
-        
+
         # Check worker container (basic checks only, no HTTP endpoints)
         echo
         echo "Worker Container (rsr-worker):"
         check_environment_variables "$pod_name" "rsr-worker" || ((validation_errors++))
         echo "ℹ️  Worker container monitoring relies on container-level metrics (middleware not applicable)"
     done
-    
+
     echo
     echo "================================"
     if [[ $validation_errors -eq 0 ]]; then

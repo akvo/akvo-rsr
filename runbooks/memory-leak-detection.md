@@ -78,19 +78,53 @@ kubectl delete pod <pod-name>
 
 **Actions**:
 1. Check middleware configuration
-2. Verify Prometheus scraping
+2. Verify Prometheus scraping with authentication
 3. Check application health
 4. Review Django settings
+5. Verify metrics authentication credentials
 
 ```bash
-# Check if metrics endpoint is accessible
-kubectl exec -it <pod-name> -c rsr-backend -- curl localhost:8000/metrics
+# Check if metrics endpoint is accessible (requires authentication)
+kubectl exec -it <pod-name> -c rsr-backend -- curl -u $METRICS_AUTH_USERNAME:$METRICS_AUTH_PASSWORD localhost:8000/metrics
+
+# Test authentication behavior (should return 401)
+kubectl exec -it <pod-name> -c rsr-backend -- curl -o /dev/null -s -w "%{http_code}" localhost:8000/metrics
 
 # Verify middleware is loaded
 kubectl exec -it <pod-name> -c rsr-backend -- python manage.py shell -c "
 from django.conf import settings
 print([m for m in settings.MIDDLEWARE if 'memory' in m.lower()])
 "
+
+# Check authentication credentials are configured
+kubectl exec -it <pod-name> -c rsr-backend -- printenv | grep METRICS_AUTH
+```
+
+### 7. MetricsAuthenticationFailure
+**Trigger**: Prometheus can't scrape metrics due to authentication failure
+
+**Actions**:
+1. Verify metrics authentication credentials are configured
+2. Check Prometheus scraping configuration includes authentication
+3. Test endpoint authentication manually
+4. Review secret configuration in Kubernetes
+
+```bash
+# Test authentication directly
+kubectl exec -it <pod-name> -c rsr-backend -- curl -u $METRICS_AUTH_USERNAME:$METRICS_AUTH_PASSWORD localhost:8000/metrics
+
+# Should return 401 without authentication
+kubectl exec -it <pod-name> -c rsr-backend -- curl -o /dev/null -s -w "%{http_code}" localhost:8000/metrics
+
+# Should return 500 if credentials not configured
+kubectl exec -it <pod-name> -c rsr-backend -- bash -c 'unset METRICS_AUTH_USERNAME METRICS_AUTH_PASSWORD; curl -o /dev/null -s -w "%{http_code}" localhost:8000/metrics'
+
+# Check secret configuration
+kubectl get secret rsr-secret -o yaml | grep -E "(metrics-auth|prometheus)"
+
+# Check Prometheus target status (if you have access to Prometheus UI)
+# Navigate to Prometheus UI -> Status -> Targets -> look for 'rsr-backend-metrics' and 'rsr-reports-metrics' jobs
+# Both should show status UP with "Last Scrape" updating every 15 seconds
 ```
 
 ## Troubleshooting Steps
@@ -111,6 +145,12 @@ kubectl describe pod <pod-name>
 
 # Check recent events
 kubectl get events --sort-by=.metadata.creationTimestamp
+
+# Verify metrics authentication configuration
+kubectl exec -it <pod-name> -c rsr-backend -- printenv | grep -E "(METRICS_AUTH|PROMETHEUS)"
+
+# Test metrics endpoint accessibility
+kubectl exec -it <pod-name> -c rsr-backend -- curl -o /dev/null -s -w "%{http_code}" -u $METRICS_AUTH_USERNAME:$METRICS_AUTH_PASSWORD localhost:8000/metrics
 ```
 
 ### Step 3: Application-Level Investigation
@@ -175,8 +215,12 @@ kubectl logs <pod-name> -c rsr-backend --since=1h | grep "view_name"
 ## Configuration Files
 - Memory leak middleware: `akvo/rsr/middleware/memory_profiling.py`
 - Django settings: `akvo/settings/46-prometheus.conf`
+- Kubernetes deployment: `ci/k8s/deployment.yml` (includes metrics auth environment variables)
+- Kubernetes service: `ci/k8s/service.yml` (core service configuration)
 - Kubernetes alerts: `ci/k8s/memory-leak-alerts.yml`
 - Grafana dashboard: `ci/k8s/grafana/main.yml`
+- Prometheus configuration: `../akvo-config/k8s/monitoring/prometheus.yaml` (includes `rsr-backend-metrics` and `rsr-reports-metrics` scrape jobs)
+- Metrics authentication secrets: `../akvo-config/k8s-secrets/{test|production}/rsr-secret/metrics-auth-*`
 
 ## Common Causes
 1. **Unclosed database connections**
@@ -211,6 +255,6 @@ python manage.py shell -c "from django.conf import settings; print(settings.MIDD
 # Monitor real-time memory usage
 kubectl exec -it <pod-name> -c rsr-backend -- watch -n 1 'cat /proc/meminfo | head -5'
 
-# Get memory metrics directly
-kubectl exec -it <pod-name> -c rsr-backend -- curl -s localhost:8000/metrics | grep django_memory
+# Get memory metrics directly (requires authentication)
+kubectl exec -it <pod-name> -c rsr-backend -- curl -s -u $METRICS_AUTH_USERNAME:$METRICS_AUTH_PASSWORD localhost:8000/metrics | grep django_memory
 ```
