@@ -1,0 +1,25 @@
+Time,rsr-backend - administrativelocation-list,rsr-backend - budgetitem-list,rsr-backend - country-list,rsr-backend - countrybudgetitem-list,rsr-backend - current_user,rsr-backend - disaggregation-list,rsr-backend - disaggregationtarget-list,rsr-backend - employment-list,rsr-backend - humanitarianscope-list,rsr-backend - iatiexport-list,rsr-backend - indicator_period_data_framework-detail,rsr-backend - indicator_period_data_framework-list,rsr-backend - indicator_previous_cumulative_update,rsr-backend - indicatordimensionname-list,rsr-backend - indicatordimensionvalue-list,rsr-backend - indicatordisaggregationtarget-list,rsr-backend - indicatorperiod-list,rsr-backend - indicatorperioddata-list,rsr-backend - indicatorperioddatacomment-list,rsr-backend - link-list,rsr-backend - my_projects-list,rsr-backend - org-iati,rsr-backend - organisation-directory,rsr-backend - organisation-list,rsr-backend - organisation-main,rsr-backend - organisation_typeahead,rsr-backend - partnership-list,rsr-backend - partnership_more_link-list,rsr-backend - policymarker-list,rsr-backend - project-detail,rsr-backend - project-dir-translations,rsr-backend - project-directory,rsr-backend - project-iati,rsr-backend - project-list,rsr-backend - project-main,rsr-backend - project_by_uuid-list,rsr-backend - project_directory,rsr-backend - project_extra-list,rsr-backend - project_location_geojson,rsr-backend - project_up-list,rsr-backend - project_update-list,rsr-backend - projectcontact-list,rsr-backend - projectcustomfield-list,rsr-backend - projectdocument-list,rsr-backend - projectlocation-list,rsr-backend - projects-iati,rsr-backend - projects_by_id,rsr-backend - prometheus-django-metrics,rsr-backend - publishingstatus-list,rsr-backend - recipientcountry-list,rsr-backend - recipientregion-list,rsr-backend - result-list,rsr-backend - results_framework-list,rsr-backend - rss_project_updates,rsr-backend - sector-list,rsr-backend - sector_code_list,rsr-backend - transaction-list,rsr-backend - unknown,rsr-backend - update-directory,rsr-backend - update-main,rsr-backend - widget_cobranded_banner,rsr-backend - widget_project_narrow,rsr-backend - widget_project_small,rsr-reports - prometheus-django-metrics
+2025-08-27 08:30:00,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+2025-08-27 08:45:00,,508.61328125,,,,,,,,,,,,,504.765625,,,,,,,,,493.24609375,349.43359375,,,,,,,,,492.4296875,,,,,,,,,,,491.43359375,,,,,,,,492.9453125,,,,,492.4296875,,,,,,303.98046875
+2025-08-27 09:00:00,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+2025-08-27 09:15:00,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+2025-08-27 09:30:00,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+2025-08-27 09:45:00,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+2025-08-27 10:00:00,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+2025-08-27 10:15:00,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+2025-08-27 10:30:00,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+2025-08-27 10:45:00,,,,,,,,,,,,,,,274.4921875,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,331.77734375
+2025-08-27 11:00:00,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,332.09765625
+2025-08-27 11:15:00,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+2025-08-27 11:30:00,,,,,,,,,,,,,,,323.86328125,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,275.58203125,,,,,,,,,,,,291.6796875,,,,,,343.9375
+2025-08-27 11:45:00,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,369.5625
+2025-08-27 12:00:00,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+2025-08-27 12:15:00,,,,,,,,,,,,,,,313.41015625,,,,,,,,,315.2109375,,,,,,,,,,,,,,,,,,,,,,315.1015625,,280.4375,,,,,,,,,,,,,,,,363.17578125
+2025-08-27 12:30:00,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+2025-08-27 12:45:00,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+2025-08-27 13:00:00,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,352.75
+2025-08-27 13:15:00,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,319.87890625
+2025-08-27 13:30:00,,,,,,,,,,,,,,,375.34375,328.75390625,,639.421875,,,,,,,,,,,,,,,,,,,,,,,,,,,,318.578125,,,,,,,,,,280.1015625,,,,,,,,329.6875
+2025-08-27 13:45:00,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,320.26953125
+2025-08-27 14:00:00,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+2025-08-27 14:15:00,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
