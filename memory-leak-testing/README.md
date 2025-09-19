@@ -201,7 +201,6 @@ All test results are saved in `memory_test_results/` (created automatically):
 
 ### Logs
 - `memory_test.log` - Test execution logs
-- `memory_profiling.log` - Memory profiling middleware logs
 
 ## 🔧 Configuration
 
@@ -218,10 +217,9 @@ environment:
 ```
 
 ### Django Settings
-Logging configuration is in `akvo/settings/90-finish.conf`:
-- Memory profiling formatter
-- Dedicated memory profiling log handler
-- Specific loggers for memory middleware
+Memory profiling is integrated via Django middleware that exports metrics to Prometheus endpoints:
+- `/metrics` - Web container memory metrics
+- `/report-metrics` - Reports container memory metrics
 
 ## 🐛 Troubleshooting
 

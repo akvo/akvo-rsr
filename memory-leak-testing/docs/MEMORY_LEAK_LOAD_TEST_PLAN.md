@@ -71,36 +71,14 @@ docker compose exec web python manage.py migrate
 docker compose exec web python manage.py collectstatic --noinput
 ```
 
-#### 3. Logging Configuration
+#### 3. Verify Memory Monitoring
 ```bash
-# Enhanced logging for memory analysis
-cat > logging_config.py << EOF
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'detailed': {
-            'format': '{asctime} {name} {levelname} {message}',
-            'style': '{',
-        },
-    },
-    'handlers': {
-        'memory_file': {
-            'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'filename': 'memory_test_logs.log',
-            'formatter': 'detailed',
-        },
-    },
-    'loggers': {
-        'akvo.rsr.middleware.memory_profiling': {
-            'handlers': ['memory_file'],
-            'level': 'INFO',
-            'propagate': False,
-        },
-    },
-}
-EOF
+# Verify memory profiling endpoints are active
+curl -u devuser:devpass http://localhost/metrics | grep memory
+curl -u devuser:devpass http://localhost/report-metrics | grep memory
+
+# Check environment variables
+docker compose config | grep MEMORY
 ```
 
 ---
