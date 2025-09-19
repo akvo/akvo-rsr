@@ -21,6 +21,9 @@ dev = [
 requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools.packages]
+find = {exclude = ["analysis*", "reports*", "docs*"]}
+
 [tool.uv]
 dev-dependencies = [
     "pytest>=7.0.0",
