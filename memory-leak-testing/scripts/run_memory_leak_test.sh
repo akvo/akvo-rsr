@@ -68,9 +68,11 @@ check_prerequisites() {
         exit 1
     fi
     
-    # Check if Python dependencies are available
-    if ! python3 -c "import aiohttp, psutil" &> /dev/null; then
-        print_warning "Python dependencies may be missing. Install with: pip3 install aiohttp psutil pandas matplotlib seaborn"
+    # Check if UV is available and dependencies are installed
+    if ! command -v uv &> /dev/null; then
+        print_warning "UV not found. Install with: pip3 install uv"
+    elif ! uv run --project memory-leak-testing python -c "import aiohttp, psutil" &> /dev/null; then
+        print_warning "Python dependencies may be missing. Install with: cd memory-leak-testing && uv sync"
     fi
     
     print_success "Prerequisites check completed"
@@ -138,7 +140,7 @@ run_pre_fix_test() {
     print_status "Starting pre-fix memory leak test (Duration: ${DEFAULT_DURATION} minutes)"
     print_status "This will establish baseline memory leak patterns..."
     
-    if python3 "$(dirname "$0")/memory_leak_tester.py" \
+    if uv run --project memory-leak-testing python "$(dirname "$0")/memory_leak_tester.py" \
         --test-type=pre-fix \
         --scenario=${TEST_SCENARIO} \
         --duration=${DEFAULT_DURATION} \
@@ -165,7 +167,7 @@ run_post_fix_test() {
     print_status "Starting post-fix memory leak test (Duration: ${DEFAULT_DURATION} minutes)"
     print_status "This will validate memory leak fixes..."
     
-    if python3 "$(dirname "$0")/memory_leak_tester.py" \
+    if uv run --project memory-leak-testing python "$(dirname "$0")/memory_leak_tester.py" \
         --test-type=post-fix \
         --scenario=${TEST_SCENARIO} \
         --duration=${DEFAULT_DURATION} \
@@ -183,7 +185,7 @@ generate_report() {
     
     print_status "Comparing test results and generating validation report..."
     
-    if python3 "$(dirname "$0")/compare_test_results.py"; then
+    if uv run --project memory-leak-testing python "$(dirname "$0")/compare_test_results.py"; then
         print_success "Validation report generated successfully"
         
         # Show report location

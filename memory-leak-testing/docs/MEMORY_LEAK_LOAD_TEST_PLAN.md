@@ -574,8 +574,11 @@ Follow the manual workflow below if you prefer to run each step individually.
 
 #### Step 1: Environment Validation
 ```bash
+# Install dependencies first
+cd memory-leak-testing && uv sync && cd ..
+
 # Check if everything is ready for testing
-python3 memory-leak-testing/scripts/check_environment.py
+uv run --project memory-leak-testing python memory-leak-testing/scripts/check_environment.py
 ```
 
 **What this checks:**
@@ -600,7 +603,7 @@ cd ../../
 #### Step 3: Verify Test Data
 ```bash
 # Verify database has the right data for testing
-python3 memory-leak-testing/scripts/verify_test_data.py
+uv run --project memory-leak-testing python memory-leak-testing/scripts/verify_test_data.py
 ```
 
 **What this checks:**
@@ -611,7 +614,7 @@ python3 memory-leak-testing/scripts/verify_test_data.py
 #### Step 4: Quick Verification Test
 ```bash
 # 5-minute test to verify setup
-python3 memory-leak-testing/scripts/memory_leak_tester.py --test-type=verification --duration=5 --scenario=iati
+uv run --project memory-leak-testing python memory-leak-testing/scripts/memory_leak_tester.py --test-type=verification --duration=5 --scenario=iati
 ```
 
 ---
@@ -621,10 +624,10 @@ python3 memory-leak-testing/scripts/memory_leak_tester.py --test-type=verificati
 #### Scenario 1: IATI Bulk Processing (Production Pattern)
 ```bash
 # Short test (10 minutes)
-python3 memory-leak-testing/scripts/memory_leak_tester.py --scenario=iati --duration=10
+uv run --project memory-leak-testing python memory-leak-testing/scripts/memory_leak_tester.py --scenario=iati --duration=10
 
 # Full test (60 minutes)
-python3 memory-leak-testing/scripts/memory_leak_tester.py --scenario=iati --duration=60
+uv run --project memory-leak-testing python memory-leak-testing/scripts/memory_leak_tester.py --scenario=iati --duration=60
 ```
 
 **Configuration:**
@@ -635,7 +638,7 @@ python3 memory-leak-testing/scripts/memory_leak_tester.py --scenario=iati --dura
 #### Scenario 2: Mixed API Load
 ```bash
 # Mixed load test
-python3 memory-leak-testing/scripts/memory_leak_tester.py --scenario=mixed --duration=30
+uv run --project memory-leak-testing python memory-leak-testing/scripts/memory_leak_tester.py --scenario=mixed --duration=30
 ```
 
 **Configuration:**
@@ -646,7 +649,7 @@ python3 memory-leak-testing/scripts/memory_leak_tester.py --scenario=mixed --dur
 #### Scenario 3: Database Connection Stress
 ```bash
 # Connection stress test
-python3 memory-leak-testing/scripts/memory_leak_tester.py --scenario=stress --duration=20
+uv run --project memory-leak-testing python memory-leak-testing/scripts/memory_leak_tester.py --scenario=stress --duration=20
 ```
 
 **Configuration:**
@@ -685,7 +688,7 @@ git commit -m "Fix memory leaks in IATI processing"
 **Manual Pre-Fix Test:**
 ```bash
 # Document current memory leak behavior
-python3 memory-leak-testing/scripts/memory_leak_tester.py --test-type=pre-fix --scenario=iati --duration=45
+uv run --project memory-leak-testing python memory-leak-testing/scripts/memory_leak_tester.py --test-type=pre-fix --scenario=iati --duration=45
 ```
 
 **Manual Post-Fix Test:**
@@ -695,10 +698,10 @@ docker compose build web
 docker compose up -d
 
 # Test with fixes
-python3 memory-leak-testing/scripts/memory_leak_tester.py --test-type=post-fix --scenario=iati --duration=45
+uv run --project memory-leak-testing python memory-leak-testing/scripts/memory_leak_tester.py --test-type=post-fix --scenario=iati --duration=45
 
 # Compare results
-python3 memory-leak-testing/scripts/compare_test_results.py
+uv run --project memory-leak-testing python memory-leak-testing/scripts/compare_test_results.py
 ```
 
 ---
@@ -745,10 +748,10 @@ All results are saved in `memory_test_results/`:
 #### Custom Test Parameters
 ```bash
 # Custom duration and concurrency
-python3 memory-leak-testing/scripts/memory_leak_tester.py --duration=90 --concurrent=10 --scenario=mixed
+uv run --project memory-leak-testing python memory-leak-testing/scripts/memory_leak_tester.py --duration=90 --concurrent=10 --scenario=mixed
 
 # Test specific endpoints
-python3 memory-leak-testing/scripts/memory_leak_tester.py --base-url=http://localhost:8080
+uv run --project memory-leak-testing python memory-leak-testing/scripts/memory_leak_tester.py --base-url=http://localhost
 ```
 
 #### Using the Full Test Runner
@@ -778,10 +781,10 @@ python3 memory-leak-testing/scripts/memory_leak_tester.py --base-url=http://loca
 **"Environment validation failed"**
 ```bash
 # Check what's missing
-python3 memory-leak-testing/scripts/check_environment.py
+uv run --project memory-leak-testing python memory-leak-testing/scripts/check_environment.py
 
 # Common fixes:
-pip3 install aiohttp psutil pandas matplotlib seaborn
+cd memory-leak-testing && uv sync
 docker compose up -d
 ```
 
@@ -817,13 +820,14 @@ cd scripts/data
 cd ../../
 
 # Verify again
-python3 memory-leak-testing/scripts/verify_test_data.py
+uv run --project memory-leak-testing python memory-leak-testing/scripts/verify_test_data.py
 ```
 
 **"Memory profiling not working"**
 ```bash
-# Check metrics endpoint (use credentials from docker-compose.override.yaml)
-curl -u devuser:devpass http://localhost:8000/metrics | grep memory
+# Check metrics endpoints (use credentials from docker-compose.override.yaml)
+curl -u devuser:devpass http://localhost/metrics | grep memory
+curl -u devuser:devpass http://localhost/report-metrics | grep memory
 
 # Check environment variables
 docker compose config | grep MEMORY
@@ -849,13 +853,13 @@ docker compose config | grep MEMORY
 ./quick_setup.sh
 
 # Environment check
-python3 memory-leak-testing/scripts/check_environment.py
+uv run --project memory-leak-testing python memory-leak-testing/scripts/check_environment.py
 
 # Database verification
-python3 memory-leak-testing/scripts/verify_test_data.py
+uv run --project memory-leak-testing python memory-leak-testing/scripts/verify_test_data.py
 
 # Quick test
-python3 memory-leak-testing/scripts/memory_leak_tester.py --duration=5
+uv run --project memory-leak-testing python memory-leak-testing/scripts/memory_leak_tester.py --duration=5
 
 # Pre-fix baseline
 ./memory-leak-testing/scripts/pre_fix_test.sh
@@ -864,7 +868,7 @@ python3 memory-leak-testing/scripts/memory_leak_tester.py --duration=5
 ./memory-leak-testing/scripts/post_fix_test.sh
 
 # Manual comparison
-python3 memory-leak-testing/scripts/compare_test_results.py
+uv run --project memory-leak-testing python memory-leak-testing/scripts/compare_test_results.py
 ```
 
 ---

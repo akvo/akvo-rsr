@@ -35,17 +35,20 @@ memory-leak-testing/
 
 ### Option 2: Manual Setup
 ```bash
-# 1. Validate environment
-python3 memory-leak-testing/scripts/check_environment.py
+# 1. Install dependencies with uv (from memory-leak-testing directory)
+cd memory-leak-testing && uv sync && cd ..
 
-# 2. Load production data
+# 2. Validate environment
+uv run --project memory-leak-testing python memory-leak-testing/scripts/check_environment.py
+
+# 3. Load production data
 cd scripts/data && ./make-and-restore-production-dump.sh && cd ../../
 
-# 3. Verify test data
-python3 memory-leak-testing/scripts/verify_test_data.py
+# 4. Verify test data
+uv run --project memory-leak-testing python memory-leak-testing/scripts/verify_test_data.py
 
-# 4. Run quick test
-python3 memory-leak-testing/scripts/memory_leak_tester.py --duration 5
+# 5. Run quick test
+uv run --project memory-leak-testing python memory-leak-testing/scripts/memory_leak_tester.py --duration 5
 ```
 
 ## 🧪 Available Scripts
@@ -58,16 +61,16 @@ The main testing framework that simulates production load patterns and measures 
 **Usage:**
 ```bash
 # Basic test
-python3 memory-leak-testing/scripts/memory_leak_tester.py --duration 30
+uv run --project memory-leak-testing python memory-leak-testing/scripts/memory_leak_tester.py --duration 30
 
 # IATI scenario (production pattern)
-python3 memory-leak-testing/scripts/memory_leak_tester.py --scenario iati --duration 60
+uv run --project memory-leak-testing python memory-leak-testing/scripts/memory_leak_tester.py --scenario iati --duration 60
 
 # Mixed load scenario
-python3 memory-leak-testing/scripts/memory_leak_tester.py --scenario mixed --duration 30
+uv run --project memory-leak-testing python memory-leak-testing/scripts/memory_leak_tester.py --scenario mixed --duration 30
 
 # Database stress scenario
-python3 memory-leak-testing/scripts/memory_leak_tester.py --scenario stress --duration 20
+uv run --project memory-leak-testing python memory-leak-testing/scripts/memory_leak_tester.py --scenario stress --duration 20
 ```
 
 **Parameters:**
@@ -75,7 +78,7 @@ python3 memory-leak-testing/scripts/memory_leak_tester.py --scenario stress --du
 - `--scenario`: Test scenario (iati, mixed, stress)
 - `--duration`: Test duration in minutes
 - `--concurrent`: Number of concurrent requests
-- `--base-url`: Base URL for testing (default: http://localhost:8000)
+- `--base-url`: Base URL for testing (default: http://localhost)
 
 #### `compare_test_results.py`
 Compares pre-fix and post-fix test results to validate memory leak fixes.
@@ -83,10 +86,10 @@ Compares pre-fix and post-fix test results to validate memory leak fixes.
 **Usage:**
 ```bash
 # Auto-compare latest results
-python3 memory-leak-testing/scripts/compare_test_results.py
+uv run --project memory-leak-testing python memory-leak-testing/scripts/compare_test_results.py
 
 # Compare specific files
-python3 memory-leak-testing/scripts/compare_test_results.py --pre-fix-file results1.json --post-fix-file results2.json
+uv run --project memory-leak-testing python memory-leak-testing/scripts/compare_test_results.py --pre-fix-file results1.json --post-fix-file results2.json
 ```
 
 ### Helper Scripts
@@ -206,6 +209,9 @@ All test results are saved in `memory_test_results/` (created automatically):
 Memory profiling is configured in `docker-compose.override.yaml`:
 ```yaml
 environment:
+  - ENABLE_PROMETHEUS_METRICS=true
+  - METRICS_AUTH_USERNAME=devuser
+  - METRICS_AUTH_PASSWORD=devpass
   - ENABLE_MEMORY_PROFILING=true
   - MEMORY_PROFILING_SAMPLE_RATE=1.0
   - MEMORY_GROWTH_THRESHOLD_MB=5
@@ -223,8 +229,8 @@ Logging configuration is in `akvo/settings/90-finish.conf`:
 
 **Environment validation fails:**
 ```bash
-# Install missing Python packages
-pip3 install aiohttp psutil pandas matplotlib seaborn
+# Install missing Python packages with uv
+cd memory-leak-testing && uv sync
 
 # Start Docker services
 docker compose up -d
@@ -256,8 +262,9 @@ cd ../../
 
 **Memory profiling not working:**
 ```bash
-# Check metrics endpoint (credentials from docker-compose.override.yaml)
-curl -u devuser:devpass http://localhost:8000/metrics | grep memory
+# Check metrics endpoints (credentials from docker-compose.override.yaml)
+curl -u devuser:devpass http://localhost/metrics | grep memory
+curl -u devuser:devpass http://localhost/report-metrics | grep memory
 ```
 
 ## 📚 Documentation

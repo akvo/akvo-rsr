@@ -28,7 +28,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 class MemoryLeakTester:
-    def __init__(self, base_url="http://localhost:8000"):
+    def __init__(self, base_url="http://localhost"):
         self.base_url = base_url
         self.memory_data = []
         self.request_data = []
@@ -320,7 +320,7 @@ def main():
     parser.add_argument('--scenario', default='iati', choices=['iati', 'mixed', 'stress'], help='Test scenario')
     parser.add_argument('--duration', type=int, default=30, help='Test duration in minutes')
     parser.add_argument('--concurrent', type=int, default=5, help='Concurrent requests')
-    parser.add_argument('--base-url', default='http://localhost:8000', help='Base URL for testing')
+    parser.add_argument('--base-url', default='http://localhost', help='Base URL for testing')
     
     args = parser.parse_args()
     

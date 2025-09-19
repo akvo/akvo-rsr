@@ -46,7 +46,7 @@ echo ""
 
 # Step 1: Environment validation
 print_step "Step 1: Validating environment"
-if python3 "$(dirname "$0")/check_environment.py"; then
+if uv run --project memory-leak-testing python "$(dirname "$0")/check_environment.py"; then
     print_success "Environment validation passed"
 else
     print_error "Environment validation failed"
@@ -77,7 +77,7 @@ fi
 
 # Step 3: Verify test data is loaded correctly
 print_step "Step 3: Verifying test data"
-if python3 "$(dirname "$0")/verify_test_data.py"; then
+if uv run --project memory-leak-testing python "$(dirname "$0")/verify_test_data.py"; then
     print_success "Test data verification passed"
 else
     print_warning "Test data verification had issues"
@@ -88,7 +88,7 @@ fi
 print_step "Step 4: Running quick verification test"
 echo "Running a 5-minute test to verify the setup..."
 
-if python3 "$(dirname "$0")/memory_leak_tester.py" --test-type=quick-setup --duration=5 --scenario=iati; then
+if uv run --project memory-leak-testing python "$(dirname "$0")/memory_leak_tester.py" --test-type=quick-setup --duration=5 --scenario=iati; then
     print_success "Quick test completed successfully"
 else
     print_warning "Quick test had issues, but setup is likely still functional"
@@ -101,12 +101,12 @@ echo ""
 echo -e "${GREEN}Available commands:${NC}"
 echo ""
 echo -e "${BLUE}Environment checks:${NC}"
-echo "  python3 memory-leak-testing/scripts/check_environment.py       # Validate environment"
-echo "  python3 memory-leak-testing/scripts/verify_test_data.py        # Check database"
+echo "  uv run --project memory-leak-testing python memory-leak-testing/scripts/check_environment.py       # Validate environment"
+echo "  uv run --project memory-leak-testing python memory-leak-testing/scripts/verify_test_data.py        # Check database"
 echo ""
 echo -e "${BLUE}Quick testing:${NC}"
-echo "  python3 memory-leak-testing/scripts/memory_leak_tester.py --duration 5   # 5-minute test"
-echo "  python3 memory-leak-testing/scripts/memory_leak_tester.py --scenario mixed --duration 10   # Mixed load test"
+echo "  uv run --project memory-leak-testing python memory-leak-testing/scripts/memory_leak_tester.py --duration 5   # 5-minute test"
+echo "  uv run --project memory-leak-testing python memory-leak-testing/scripts/memory_leak_tester.py --scenario mixed --duration 10   # Mixed load test"
 echo ""
 echo -e "${BLUE}Full testing workflow:${NC}"
 echo "  ./memory-leak-testing/scripts/pre_fix_test.sh                  # Establish baseline"
@@ -123,7 +123,7 @@ echo "  --scenario mixed   # Mixed API load testing"
 echo "  --scenario stress  # Database connection stress testing"
 echo ""
 echo -e "${YELLOW}Next steps:${NC}"
-echo "1. Run a quick test: python3 memory-leak-testing/scripts/memory_leak_tester.py --duration 5"
+echo "1. Run a quick test: uv run --project memory-leak-testing python memory-leak-testing/scripts/memory_leak_tester.py --duration 5"
 echo "2. Review test results in memory_test_results/"
 echo "3. When ready for full testing, run: ./memory-leak-testing/scripts/pre_fix_test.sh"
 echo ""

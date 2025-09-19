@@ -26,7 +26,7 @@ sleep 30
 
 # Run memory leak test with default parameters
 echo -e "${BLUE}Running baseline memory leak test...${NC}"
-python3 "$(dirname "$0")/memory_leak_tester.py" \
+uv run --project memory-leak-testing python "$(dirname "$0")/memory_leak_tester.py" \
     --test-type=pre-fix \
     --scenario=iati \
     --duration=60
@@ -52,4 +52,4 @@ echo ""
 echo "Next steps:"
 echo "1. Apply your memory leak fixes to the codebase"
 echo "2. Run: ./memory-leak-testing/scripts/post_fix_test.sh"
-echo "3. Compare results with: python3 memory-leak-testing/scripts/compare_test_results.py"
+echo "3. Compare results with: uv run --project memory-leak-testing python memory-leak-testing/scripts/compare_test_results.py"

@@ -28,7 +28,7 @@ sleep 30
 
 # Run same test scenarios as pre-fix
 echo -e "${BLUE}Running post-fix validation test...${NC}"
-python3 "$(dirname "$0")/memory_leak_tester.py" \
+uv run --project memory-leak-testing python "$(dirname "$0")/memory_leak_tester.py" \
     --test-type=post-fix \
     --scenario=iati \
     --duration=60
@@ -37,7 +37,7 @@ echo ""
 echo -e "${BLUE}=== Comparison Analysis ===${NC}"
 
 # Generate comparison report
-if python3 "$(dirname "$0")/compare_test_results.py"; then
+if uv run --project memory-leak-testing python "$(dirname "$0")/compare_test_results.py"; then
     echo -e "${GREEN}✅ Validation completed successfully${NC}"
 else
     echo -e "${YELLOW}⚠️  Validation completed with warnings${NC}"
