@@ -308,7 +308,7 @@ echo "Waiting for services..."
 sleep 30
 
 # Run memory leak test
-python3 memory_leak_tester.py --test-type=pre-fix --duration=60
+python3 memory-leak-testing/scripts/memory_leak_tester.py --test-type=pre-fix --duration=60
 
 # Collect additional metrics
 echo "=== System Metrics ==="
@@ -339,10 +339,10 @@ docker compose up -d
 sleep 30
 
 # Run same test scenarios
-python3 memory_leak_tester.py --test-type=post-fix --duration=60
+python3 memory-leak-testing/scripts/memory_leak_tester.py --test-type=post-fix --duration=60
 
 echo "=== Comparison Analysis ==="
-python3 compare_test_results.py pre-fix post-fix
+python3 memory-leak-testing/scripts/compare_test_results.py pre-fix post-fix
 
 echo "Post-fix test completed."
 ```
@@ -532,7 +532,7 @@ print(f'Test orgs available: {available}/{len(target_orgs)}')
 "
 
 # 3. Run pre-fix baseline test (establishes the problem)
-python3 memory_leak_tester.py --test-type=pre-fix --duration=45
+python3 memory-leak-testing/scripts/memory_leak_tester.py --test-type=pre-fix --duration=45
 
 # 4. Apply your memory leak fixes to the codebase
 # (Edit IATI endpoints, database connections, etc.)
@@ -540,10 +540,333 @@ git checkout memory-leak-fixes
 docker compose build web
 
 # 5. Run post-fix validation test (proves the fix works)  
-python3 memory_leak_tester.py --test-type=post-fix --duration=45
+python3 memory-leak-testing/scripts/memory_leak_tester.py --test-type=post-fix --duration=45
 
 # 6. Generate validation report and charts (pass/fail decision)
-python3 compare_test_results.py
+python3 memory-leak-testing/scripts/compare_test_results.py
 ```
+
+---
+
+## 📋 Step-by-Step Testing Workflow
+
+### 🚀 Quick Start (Recommended)
+
+#### Option 1: Complete Automated Setup
+```bash
+# Run the complete setup script (handles everything)
+./memory-leak-testing/scripts/quick_setup.sh
+```
+
+This single command will:
+- ✅ Validate your environment
+- ✅ Load production data
+- ✅ Verify test data
+- ✅ Run a quick verification test
+- ✅ Show you next steps
+
+#### Option 2: Manual Step-by-Step
+Follow the manual workflow below if you prefer to run each step individually.
+
+---
+
+### 📋 Manual Testing Workflow
+
+#### Step 1: Environment Validation
+```bash
+# Check if everything is ready for testing
+python3 memory-leak-testing/scripts/check_environment.py
+```
+
+**What this checks:**
+- Python packages (aiohttp, psutil, pandas, matplotlib, seaborn)
+- Docker services (web, rsrdbhost, rsr-memcached)
+- Test files exist
+- Web service is responding
+- Memory profiling middleware is active
+
+#### Step 2: Load Production Data
+```bash
+# Go to the data scripts directory
+cd scripts/data
+
+# Run the production dump script (takes 5-15 minutes)
+./make-and-restore-production-dump.sh
+
+# Return to project root
+cd ../../
+```
+
+#### Step 3: Verify Test Data
+```bash
+# Verify database has the right data for testing
+python3 memory-leak-testing/scripts/verify_test_data.py
+```
+
+**What this checks:**
+- Database connectivity
+- Target organizations from memory leak analysis exist
+- Sufficient data for meaningful testing
+
+#### Step 4: Quick Verification Test
+```bash
+# 5-minute test to verify setup
+python3 memory-leak-testing/scripts/memory_leak_tester.py --test-type=verification --duration=5 --scenario=iati
+```
+
+---
+
+### 🧪 Testing Scenarios
+
+#### Scenario 1: IATI Bulk Processing (Production Pattern)
+```bash
+# Short test (10 minutes)
+python3 memory-leak-testing/scripts/memory_leak_tester.py --scenario=iati --duration=10
+
+# Full test (60 minutes)
+python3 memory-leak-testing/scripts/memory_leak_tester.py --scenario=iati --duration=60
+```
+
+**Configuration:**
+- 3 concurrent requests (matches production)
+- 5-second intervals between batches
+- Targets IATI organization export endpoints
+
+#### Scenario 2: Mixed API Load
+```bash
+# Mixed load test
+python3 memory-leak-testing/scripts/memory_leak_tester.py --scenario=mixed --duration=30
+```
+
+**Configuration:**
+- 8 concurrent requests
+- 2-second intervals
+- IATI + API endpoints combined
+
+#### Scenario 3: Database Connection Stress
+```bash
+# Connection stress test
+python3 memory-leak-testing/scripts/memory_leak_tester.py --scenario=stress --duration=20
+```
+
+**Configuration:**
+- 15 concurrent requests
+- 1-second intervals
+- Tests many different organization IDs
+
+---
+
+### 🔬 Pre-Fix vs Post-Fix Testing
+
+#### Complete Pre/Post-Fix Workflow
+
+**Step 1: Establish Baseline (Pre-Fix)**
+```bash
+# Run baseline test to document the memory leak
+./memory-leak-testing/scripts/pre_fix_test.sh
+```
+
+**Step 2: Apply Your Memory Leak Fixes**
+```bash
+# Make your code changes here
+# Edit IATI endpoints, database connections, etc.
+git add .
+git commit -m "Fix memory leaks in IATI processing"
+```
+
+**Step 3: Validate Fixes (Post-Fix)**
+```bash
+# Test with fixes applied
+./memory-leak-testing/scripts/post_fix_test.sh
+```
+
+#### Manual Pre/Post-Fix Testing
+
+**Manual Pre-Fix Test:**
+```bash
+# Document current memory leak behavior
+python3 memory-leak-testing/scripts/memory_leak_tester.py --test-type=pre-fix --scenario=iati --duration=45
+```
+
+**Manual Post-Fix Test:**
+```bash
+# Rebuild with fixes
+docker compose build web
+docker compose up -d
+
+# Test with fixes
+python3 memory-leak-testing/scripts/memory_leak_tester.py --test-type=post-fix --scenario=iati --duration=45
+
+# Compare results
+python3 memory-leak-testing/scripts/compare_test_results.py
+```
+
+---
+
+### 📊 Understanding Test Results
+
+#### Key Success Metrics
+Your fix is successful if it meets **at least 4 of 5 criteria**:
+
+1. ✅ Memory growth rate <50 MB/hour
+2. ✅ Average response time <10 seconds
+3. ✅ Success rate >95%
+4. ✅ Zero timeout requests
+5. ✅ Memory stable (peak <150% of start)
+
+#### Expected Results Comparison
+
+**Pre-Fix (Problematic):**
+- Memory Growth Rate: 200-1,300 MB/hour
+- IATI Request Duration: 30-50 seconds average
+- Success Rate: 60-80% (due to timeouts)
+- Memory Pattern: Continuous growth with no cleanup
+
+**Post-Fix (Fixed):**
+- Memory Growth Rate: <50 MB/hour sustained
+- IATI Request Duration: <10 seconds average
+- Success Rate: >95%
+- Memory Pattern: Stable or periodic cleanup visible
+
+#### Output Files
+All results are saved in `memory_test_results/`:
+- `{test-type}_results_{timestamp}.json` - Analysis summary
+- `{test-type}_memory_{timestamp}.csv` - Raw memory data
+- `{test-type}_requests_{timestamp}.csv` - Request performance data
+
+#### Reports Generated
+- `memory_leak_fix_validation_report.md` - Detailed analysis and recommendations
+- `memory_test_charts/memory_leak_fix_comparison.png` - Visual comparison charts
+
+---
+
+### 🔧 Advanced Testing Options
+
+#### Custom Test Parameters
+```bash
+# Custom duration and concurrency
+python3 memory-leak-testing/scripts/memory_leak_tester.py --duration=90 --concurrent=10 --scenario=mixed
+
+# Test specific endpoints
+python3 memory-leak-testing/scripts/memory_leak_tester.py --base-url=http://localhost:8080
+```
+
+#### Using the Full Test Runner
+```bash
+# Complete test cycle with manual fix step
+./memory-leak-testing/scripts/run_memory_leak_test.sh full
+
+# Just setup database
+./memory-leak-testing/scripts/run_memory_leak_test.sh setup
+
+# Only run pre-fix test
+./memory-leak-testing/scripts/run_memory_leak_test.sh pre-fix
+
+# Only run post-fix test
+./memory-leak-testing/scripts/run_memory_leak_test.sh post-fix
+
+# Only generate comparison report
+./memory-leak-testing/scripts/run_memory_leak_test.sh compare
+```
+
+---
+
+### 🐛 Troubleshooting
+
+#### Common Issues and Solutions
+
+**"Environment validation failed"**
+```bash
+# Check what's missing
+python3 memory-leak-testing/scripts/check_environment.py
+
+# Common fixes:
+pip3 install aiohttp psutil pandas matplotlib seaborn
+docker compose up -d
+```
+
+**"Web service not responding"**
+```bash
+# Check service status
+docker compose ps
+
+# Check logs
+docker compose logs web
+
+# Restart if needed
+docker compose restart web
+```
+
+**"Database connection failed"**
+```bash
+# Check database status
+docker compose ps rsrdbhost
+
+# Restart database
+docker compose restart rsrdbhost
+
+# Wait for startup
+sleep 30
+```
+
+**"Target organizations not found"**
+```bash
+# Reload production data
+cd scripts/data
+./make-and-restore-production-dump.sh
+cd ../../
+
+# Verify again
+python3 memory-leak-testing/scripts/verify_test_data.py
+```
+
+**"Memory profiling not working"**
+```bash
+# Check metrics endpoint (use credentials from docker-compose.override.yaml)
+curl -u devuser:devpass http://localhost:8000/metrics | grep memory
+
+# Check environment variables
+docker compose config | grep MEMORY
+```
+
+---
+
+### 📚 Available Scripts Reference
+
+#### Main Testing Scripts
+- `check_environment.py` - Environment validation
+- `verify_test_data.py` - Database verification
+- `memory_leak_tester.py` - Core testing framework
+- `compare_test_results.py` - Results comparison
+- `run_memory_leak_test.sh` - Advanced test runner
+- `pre_fix_test.sh` - Pre-fix testing
+- `post_fix_test.sh` - Post-fix testing
+- `quick_setup.sh` - Complete automated setup
+
+#### Quick Reference Commands
+```bash
+# Complete setup
+./quick_setup.sh
+
+# Environment check
+python3 memory-leak-testing/scripts/check_environment.py
+
+# Database verification
+python3 memory-leak-testing/scripts/verify_test_data.py
+
+# Quick test
+python3 memory-leak-testing/scripts/memory_leak_tester.py --duration=5
+
+# Pre-fix baseline
+./memory-leak-testing/scripts/pre_fix_test.sh
+
+# Post-fix validation
+./memory-leak-testing/scripts/post_fix_test.sh
+
+# Manual comparison
+python3 memory-leak-testing/scripts/compare_test_results.py
+```
+
+---
 
 This test plan provides a comprehensive framework to validate memory leak fixes with quantifiable metrics that directly correspond to the production issue analysis.

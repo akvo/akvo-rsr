@@ -51,8 +51,8 @@ check_prerequisites() {
     fi
     
     # Check if memory test script exists
-    if [[ ! -f "memory_leak_tester.py" ]]; then
-        print_error "memory_leak_tester.py not found. Please ensure test scripts are in the root directory."
+    if [[ ! -f "$(dirname "$0")/memory_leak_tester.py" ]]; then
+        print_error "memory_leak_tester.py not found in memory-leak-testing/scripts/."
         exit 1
     fi
     
@@ -138,7 +138,7 @@ run_pre_fix_test() {
     print_status "Starting pre-fix memory leak test (Duration: ${DEFAULT_DURATION} minutes)"
     print_status "This will establish baseline memory leak patterns..."
     
-    if python3 memory_leak_tester.py \
+    if python3 "$(dirname "$0")/memory_leak_tester.py" \
         --test-type=pre-fix \
         --scenario=${TEST_SCENARIO} \
         --duration=${DEFAULT_DURATION} \
@@ -165,7 +165,7 @@ run_post_fix_test() {
     print_status "Starting post-fix memory leak test (Duration: ${DEFAULT_DURATION} minutes)"
     print_status "This will validate memory leak fixes..."
     
-    if python3 memory_leak_tester.py \
+    if python3 "$(dirname "$0")/memory_leak_tester.py" \
         --test-type=post-fix \
         --scenario=${TEST_SCENARIO} \
         --duration=${DEFAULT_DURATION} \
@@ -183,7 +183,7 @@ generate_report() {
     
     print_status "Comparing test results and generating validation report..."
     
-    if python3 compare_test_results.py; then
+    if python3 "$(dirname "$0")/compare_test_results.py"; then
         print_success "Validation report generated successfully"
         
         # Show report location

@@ -347,16 +347,47 @@ def main():
         "/metrics"
     ]
     
-    # Select endpoints based on scenario
-    if args.scenario == 'iati':
-        endpoints = IATI_ENDPOINTS
-        scenario_name = f"IATI_Bulk_Processing_{args.test_type}"
-    elif args.scenario == 'mixed':
-        endpoints = IATI_ENDPOINTS + API_ENDPOINTS
-        scenario_name = f"Mixed_API_Load_{args.test_type}"
-    else:  # stress
-        endpoints = IATI_ENDPOINTS * 3  # Triple the endpoint list
-        scenario_name = f"Stress_Test_{args.test_type}"
+    # Test scenario configurations matching the test plan
+    SCENARIO_CONFIGS = {
+        'iati': {
+            'name': 'IATI_BULK_SIMULATION',
+            'endpoints': IATI_ENDPOINTS,
+            'concurrent_requests': 3,  # Match production concurrent IATI requests
+            'request_interval': 5,
+            'description': 'Replicate the IATI Bulk Data Service load pattern'
+        },
+        'mixed': {
+            'name': 'MIXED_API_LOAD',
+            'endpoints': IATI_ENDPOINTS + API_ENDPOINTS,
+            'concurrent_requests': 8,
+            'request_interval': 2,
+            'description': 'Test secondary endpoints during IATI processing'
+        },
+        'stress': {
+            'name': 'DB_CONNECTION_STRESS',
+            'endpoints': [f'/organisation/{i}/iati/' for i in range(1, 100)],
+            'concurrent_requests': 15,
+            'request_interval': 1,
+            'description': 'Test database connection pool behavior'
+        }
+    }
+
+    # Get scenario configuration
+    scenario_config = SCENARIO_CONFIGS[args.scenario]
+    endpoints = scenario_config['endpoints']
+    scenario_name = f"{scenario_config['name']}_{args.test_type}"
+
+    # Override concurrent requests and interval if not specified by user
+    if args.concurrent == 5:  # Default value, use scenario default
+        concurrent_requests = scenario_config['concurrent_requests']
+    else:
+        concurrent_requests = args.concurrent
+
+    request_interval = scenario_config['request_interval']
+
+    logger.info(f"Scenario: {scenario_config['description']}")
+    logger.info(f"Concurrent requests: {concurrent_requests} (scenario optimized)")
+    logger.info(f"Request interval: {request_interval}s (scenario optimized)")
     
     # Run the test
     tester = MemoryLeakTester(args.base_url)
@@ -364,9 +395,9 @@ def main():
     try:
         results = asyncio.run(tester.run_load_test(
             endpoints=endpoints,
-            concurrent_requests=args.concurrent,
+            concurrent_requests=concurrent_requests,
             duration_minutes=args.duration,
-            request_interval=2,
+            request_interval=request_interval,
             scenario_name=scenario_name
         ))
         

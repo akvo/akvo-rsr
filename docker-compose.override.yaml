@@ -18,9 +18,12 @@ services:
     volumes:
       - rsr-mediaroot:/var/akvo/rsr/mediaroot
     environment:
-      - ENABLE_PROMETHEUS_METRICS=false
+      - ENABLE_PROMETHEUS_METRICS=true
       - METRICS_AUTH_USERNAME=devuser
       - METRICS_AUTH_PASSWORD=devpass
+      - ENABLE_MEMORY_PROFILING=true
+      - MEMORY_PROFILING_SAMPLE_RATE=1.0
+      - MEMORY_GROWTH_THRESHOLD_MB=5
   worker:
     <<: *web-common
     environment:
@@ -80,7 +83,7 @@ services:
       - DJANGO_SECRET_KEY=secretkey
       - IS_REPORTS_CONTAINER=yes
       - DJANGO_PORT=9000
-      - ENABLE_PROMETHEUS_METRICS=false
+      - ENABLE_PROMETHEUS_METRICS=true
       - METRICS_AUTH_USERNAME=devuser
       - METRICS_AUTH_PASSWORD=devpass
   nginx:
