@@ -161,3 +161,89 @@ class IatiXML(object):
             if iati_activity_export:
                 iati_activity_export.status = IatiExport.STATUS_IN_PROGRESS
                 iati_activity_export.save(update_fields=['status'])
+
+    def stream_xml(self):
+        """
+        Stream XML generation with memory monitoring and cleanup.
+
+        This method yields XML content in chunks to prevent memory accumulation
+        during large IATI project exports.
+
+        :return: Generator yielding XML content chunks as strings
+        """
+        # Stream header
+        yield from self._stream_activities_header()
+
+        # Stream each project with memory cleanup
+        for project in self.projects:
+            yield from self._stream_project(project)
+
+        # Stream footer
+        yield from self._stream_activities_footer()
+
+    def _stream_activities_header(self):
+        """
+        Stream XML header and opening iati-activities tag.
+
+        :return: Generator yielding header XML chunks
+        """
+        yield '<?xml version="1.0" encoding="UTF-8"?>\n'
+
+        # Get datetime for generated-datetime attribute
+        utc_now = datetime.utcnow()
+        generated_datetime = utc_now.isoformat("T", "seconds")
+
+        # Include namespace mapping for akvo namespace
+        yield f'<iati-activities version="{self.version}" generated-datetime="{generated_datetime}" xmlns:akvo="http://akvo.org/iati-activities">'
+
+    def _stream_project(self, project):
+        """
+        Stream individual project XML with explicit memory cleanup.
+
+        This method processes a single project, converts it to XML,
+        and immediately cleans up the element tree to prevent memory accumulation.
+
+        :param project: Project object to process
+        :return: Generator yielding project XML chunk
+        """
+        # Create project element (without adding to parent tree)
+        project_element = etree.Element("iati-activity")
+
+        # Add attributes
+        if last_modified_at := project.last_modified_at:
+            last_modified_dt = make_datetime_aware(last_modified_at)
+            project_element.attrib['last-updated-datetime'] = last_modified_dt.isoformat("T", "seconds")
+
+        if project.language:
+            project_element.attrib['{http://www.w3.org/XML/1998/namespace}lang'] = project.language
+
+        if project.currency:
+            project_element.attrib['default-currency'] = project.currency
+
+        if project.hierarchy:
+            project_element.attrib['hierarchy'] = str(project.hierarchy)
+
+        if project.humanitarian is not None:
+            project_element.attrib['humanitarian'] = '1' if project.humanitarian else '0'
+
+        # Add child elements
+        for element in ELEMENTS:
+            tree_elements = getattr(elements, element)(project)
+            for tree_element in tree_elements:
+                project_element.append(tree_element)
+
+        # Convert to string and clean up immediately
+        xml_chunk = etree.tostring(project_element, encoding='unicode', pretty_print=False)
+
+        # Explicit memory cleanup
+        project_element.clear()
+
+        yield xml_chunk
+
+    def _stream_activities_footer(self):
+        """
+        Stream closing iati-activities tag.
+
+        :return: Generator yielding footer XML chunk
+        """
+        yield '</iati-activities>'

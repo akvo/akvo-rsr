@@ -10,7 +10,7 @@ see < http://www.gnu.org/licenses/agpl.html >.
 from akvo.iati.exports.iati_org_export import IatiOrgXML
 from akvo.rsr.models import Organisation
 
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, StreamingHttpResponse
 from django.shortcuts import get_object_or_404, render
 
 from lxml import etree
@@ -50,9 +50,17 @@ def iati(request, organisation_id):
 
 
 def iati_org(request, organisation_id):
-    """Generate the IATI Organisation file on-the-fly and return the XML."""
+    """Generate IATI Organisation file with streaming response and memory optimization."""
     organisation = get_object_or_404(Organisation, pk=organisation_id)
     context = {'base_url': f'{request.scheme}://{request.get_host()}'}
-    xml_data = etree.tostring(etree.ElementTree(
-        IatiOrgXML([organisation], context=context).iati_organisations))
-    return HttpResponse(xml_data, content_type="text/xml")
+
+    def generate_xml():
+        """Generator function for streaming XML content."""
+        xml_generator = IatiOrgXML([organisation], context=context)
+        for chunk in xml_generator.stream_xml():
+            yield chunk.encode('utf-8')
+
+    return StreamingHttpResponse(
+        generate_xml(),
+        content_type="text/xml; charset=utf-8"
+    )
