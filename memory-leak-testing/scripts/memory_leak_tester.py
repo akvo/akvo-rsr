@@ -324,19 +324,19 @@ def main():
     
     args = parser.parse_args()
     
-    # Test endpoint configurations based on production analysis
+    # Test endpoint configurations - Updated to use streaming IATI endpoints
     IATI_ENDPOINTS = [
-        "/organisation/6195/iati/",
-        "/organisation/3257/iati/", 
-        "/organisation/4144/iati/",
-        "/organisation/13/iati/",
-        "/organisation/4645/iati/",
-        "/organisation/5844/iati/",
-        "/organisation/6313/iati/",
+        "/organisation/6195/iati-org/.xml",
+        "/organisation/3257/iati-org/.xml",
+        "/organisation/4144/iati-org/.xml",
+        "/organisation/13/iati-org/.xml",
+        "/organisation/4645/iati-org/.xml",
+        "/organisation/5844/iati-org/.xml",
+        "/organisation/6313/iati-org/.xml",
         "/organisation/6375/iati-org/.xml",
-        "/organisation/4651/iati/",
-        "/organisation/4143/iati/",
-        "/organisation/2562/iati/"
+        "/organisation/4651/iati-org/.xml",
+        "/organisation/4143/iati-org/.xml",
+        "/organisation/2562/iati-org/.xml"
     ]
     
     API_ENDPOINTS = [
