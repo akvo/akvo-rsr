@@ -140,3 +140,8 @@ scripts/data/dumps/
 public/
 doc/modules/
 rsr.dbml
+
+
+*.egg-info
+memory_test.log
+memory_test_results
