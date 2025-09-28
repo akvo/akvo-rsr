@@ -145,3 +145,6 @@ rsr.dbml
 *.egg-info
 memory_test.log
 memory_test_results
+memory-leak-testing/baselines
+memory_leak_fix_validation_report.md
+memory_test_charts
