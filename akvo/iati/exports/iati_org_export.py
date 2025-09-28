@@ -81,7 +81,27 @@ class IatiOrgXML(object):
         :param utc_now: The current time in UTC. Useful to override in tests for a stable time
         """
         self.context = context or {}
-        self.organisations = organisations
+
+        # Optimize QuerySet with proper prefetching to prevent N+1 queries
+        if hasattr(organisations, 'select_related'):
+            # Only optimize if we have a QuerySet, not a list
+            self.organisations = organisations.select_related(
+                'primary_location',
+                'country',
+            ).prefetch_related(
+                'locations',
+                'organisationdocument_set',
+                'budgetitems__country',
+                'budgetitems__region',
+                'expenditures',
+                'partnerships__project',
+                'partnerships__project__results',
+                'partnerships__project__indicators',
+            )
+        else:
+            # If it's already a list (e.g., from a previous query), use as-is
+            self.organisations = organisations
+
         self.version = version
         self.excluded_elements = excluded_elements
         # TODO: Add Akvo namespace and RSR specific fields
@@ -133,14 +153,15 @@ class IatiOrgXML(object):
 
         This method processes a single organisation, converts it to XML,
         and immediately cleans up the element tree to prevent memory accumulation.
+        Uses optimized database queries to prevent N+1 query problems.
 
-        :param organisation: Organisation object to process
+        :param organisation: Organisation object to process (with prefetched relations)
         :return: Generator yielding organisation XML chunk
         """
         # Create organization element (without adding to parent tree)
         organisation_element = etree.Element("iati-organisation")
 
-        # Add attributes
+        # Add attributes using prefetched data
         if last_modified_at := organisation.last_modified_at:
             last_modified_dt = make_datetime_aware(last_modified_at)
             organisation_element.attrib['last-updated-datetime'] = last_modified_dt.isoformat("T", "seconds")
@@ -152,7 +173,8 @@ class IatiOrgXML(object):
         if organisation.currency:
             organisation_element.attrib['default-currency'] = organisation.currency
 
-        # Add child elements
+        # Add child elements using prefetched relationships
+        # This prevents N+1 queries since relations are already loaded
         for element in ORG_ELEMENTS:
             tree_elements = getattr(org_elements, element)(organisation, self.context)
             for tree_element in tree_elements:

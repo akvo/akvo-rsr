@@ -133,7 +133,38 @@ class IatiXML(object):
         """
         from akvo.rsr.models import IatiExport
 
-        self.projects = projects
+        # Optimize QuerySet with proper prefetching to prevent N+1 queries
+        if hasattr(projects, 'select_related'):
+            # Only optimize if we have a QuerySet, not a list
+            self.projects = projects.select_related(
+                'primary_location',
+                'primary_organisation',
+                'primary_organisation__country',
+                'currency',
+                'language',
+            ).prefetch_related(
+                'locations',
+                'locations__country',
+                'partnerships__organisation',
+                'partnerships__organisation__country',
+                'results__indicators__periods',
+                'results__indicators__dimension_names',
+                'budgetitems__country',
+                'budgetitems__region',
+                'sectors',
+                'policy_markers',
+                'documents__categories',
+                'transactions',
+                'planned_disbursements',
+                'related_projects',
+                'project_comments',
+                'recipient_countries',
+                'recipient_regions',
+            )
+        else:
+            # If it's already a list, use as-is
+            self.projects = projects
+
         self.version = version
         self.iati_export = iati_export
         self.excluded_elements = excluded_elements
@@ -202,8 +233,9 @@ class IatiXML(object):
 
         This method processes a single project, converts it to XML,
         and immediately cleans up the element tree to prevent memory accumulation.
+        Uses optimized database queries to prevent N+1 query problems.
 
-        :param project: Project object to process
+        :param project: Project object to process (with prefetched relations)
         :return: Generator yielding project XML chunk
         """
         # Create project element (without adding to parent tree)
@@ -226,7 +258,8 @@ class IatiXML(object):
         if project.humanitarian is not None:
             project_element.attrib['humanitarian'] = '1' if project.humanitarian else '0'
 
-        # Add child elements
+        # Add child elements using prefetched relationships
+        # This prevents N+1 queries since relations are already loaded
         for element in ELEMENTS:
             tree_elements = getattr(elements, element)(project)
             for tree_element in tree_elements:
