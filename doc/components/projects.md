@@ -7,7 +7,7 @@ They often collect results for a short period of time and are then archived.
 
 Projects can also be part of a group of projects that all contribute to a larger goal and track the same
  results and indicators over the same periods.
-When that happens, they are put into a [Program](#programs-and-project-hierarchy) 
+When that happens, they are put into a [Program](#programs-and-project-hierarchy)
 
 ## Project
 
@@ -19,7 +19,7 @@ A project in RSR is composed of data from multiple sections:
  - [Result Framework]
  - TODO ...
 
-We use the [Project] class for this. 
+We use the [Project] class for this.
 
 ### Publishing
 
@@ -29,7 +29,7 @@ This has an effect on [Report generation] (making it possible) and also putting 
 
 The [Project] class inherits from the [AkvoTreeModel] that allows storing projects in a tree structure in the DB.
 It takes advantage of Postgres' [`ltree`][ltree] extension, which stores the path to a node in the tree.
-The path is dot-separated e.g `root.child.grandchild`.  
+The path is dot-separated e.g `root.child.grandchild`.
 Our path is a dot-separated UUID list.
 
 ```{note}
@@ -40,7 +40,7 @@ The DB then creates the ID itself.
 Programs are created by using the unfortunate class name [ProjectHierarchy] and a "root" project.
 A root project is thus a project with a path containing no dots.
 
-The presence of a [ProjectHierarchy] allows the frontend to query the backend for the models 
+The presence of a [ProjectHierarchy] allows the frontend to query the backend for the models
  and retrieve a list of "Programs".
 
 ### Result Framework within a hierarchy
