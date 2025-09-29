@@ -1,0 +1,33 @@
+[project]
+name = "akvo-rsr-memory-leak-testing"
+version = "1.0.0"
+description = "Memory leak testing framework for Akvo RSR"
+requires-python = ">=3.8"
+dependencies = [
+    "aiohttp>=3.8.0",
+    "psutil>=5.9.0",
+    "pandas>=1.3.0",
+    "matplotlib>=3.5.0",
+    "seaborn>=0.11.0",
+    "requests>=2.28.0",
+    "lxml>=4.6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+]
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages]
+find = {exclude = ["analysis*", "reports*", "docs*"]}
+
+[tool.uv]
+dev-dependencies = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+]

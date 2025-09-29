@@ -8,10 +8,9 @@ Akvo RSR module. For additional details on the GNU license please see
 """
 
 from django.core.exceptions import PermissionDenied
-from django.http import Http404, HttpResponse, HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect, StreamingHttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
-from lxml import etree
 
 from .utils import check_project_viewing_permissions, get_hierarchy_grid
 from ..models import Project
@@ -110,12 +109,21 @@ def finance(request, project_id):
 
 
 def iati(request, project_id):
-    """Generate the IATI file on-the-fly and return the XML."""
+    """Generate IATI file with streaming response and memory optimization."""
     project = get_object_or_404(Project, pk=project_id)
     if not project.is_public:
         raise PermissionDenied
-    xml_data = etree.tostring(etree.ElementTree(IatiXML([project]).iati_activities))
-    return HttpResponse(xml_data, content_type="text/xml")
+
+    def generate_xml():
+        """Generator function for streaming XML content."""
+        xml_generator = IatiXML([project])
+        for chunk in xml_generator.stream_xml():
+            yield chunk.encode('utf-8')
+
+    return StreamingHttpResponse(
+        generate_xml(),
+        content_type="text/xml; charset=utf-8"
+    )
 
 
 ###############################################################################
