@@ -85,6 +85,90 @@ class IatiXML(object):
         dir_path = f"db/org/{org_id}/iati/"
         return save_iati_xml(dir_path, filename, self.iati_activities)
 
+    def save_file_streaming(self, org_id, filename):
+        """
+        Export using streaming generation to minimize memory usage.
+
+        This method generates XML content in chunks and writes directly to file,
+        preventing memory accumulation during large IATI project exports.
+        Also creates necessary IatiActivityExport records for project tracking.
+
+        :param org_id: String of Organisation id
+        :param filename: String of the file name
+        :return: File path
+        """
+        from django.core.files.storage import default_storage, FileSystemStorage
+        from akvo.rsr.models.iati_activity_export import IatiActivityExport
+        from akvo.rsr.models import IatiExport
+        import os
+
+        # Ensure directory exists for FileSystemStorage
+        dir_path = f"db/org/{org_id}/iati/"
+        if isinstance(default_storage, FileSystemStorage):
+            os.makedirs(default_storage.path(dir_path), exist_ok=True)
+
+        file_path = os.path.join(dir_path, filename)
+
+        # Create IatiActivityExport records for each project (maintains compatibility with get_iati_profile_url)
+        if self.iati_export:
+            for project in self.projects:
+                IatiActivityExport.objects.create(
+                    iati_export=self.iati_export,
+                    project=project,
+                    status=IatiExport.STATUS_IN_PROGRESS  # Status 2 - required for get_iati_profile_url()
+                )
+
+        # Stream XML directly to file
+        with default_storage.open(file_path, "wb") as f:
+            for chunk in self.stream_xml():
+                f.write(chunk.encode('utf-8'))
+
+        return file_path
+
+    @classmethod
+    def create_for_streaming(cls, projects, version='2.03', iati_export=None, excluded_elements=None):
+        """
+        Create an IatiXML instance optimized for streaming without building the full tree in memory.
+
+        This factory method creates an instance with the minimum setup needed for streaming,
+        avoiding the memory-intensive tree construction in __init__.
+
+        :param projects: QuerySet of Projects (will be optimized with prefetch)
+        :param version: String of IATI version
+        :param iati_export: IatiExport Django object
+        :param excluded_elements: List of fieldnames that should be ignored when exporting
+        :return: IatiXML instance ready for streaming
+        """
+        instance = cls.__new__(cls)  # Create instance without calling __init__
+
+        # Set up only the minimal attributes needed for streaming
+        if hasattr(projects, 'select_related'):
+            # Optimize QuerySet with proper prefetching to prevent N+1 queries
+            instance.projects = projects.select_related(
+                'primary_location',
+                'primary_organisation',
+            ).prefetch_related(
+                'locations',
+                'partnerships__organisation',
+                'results__indicators__periods',
+                'sectors',
+                'documents__categories',
+                'transactions',
+                'planned_disbursements',
+                'related_projects',
+            )
+        else:
+            instance.projects = projects
+
+        instance.version = version
+        instance.iati_export = iati_export
+        instance.excluded_elements = excluded_elements
+
+        # NOTE: We do NOT create self.iati_activities tree - that's the memory leak source!
+        # The streaming methods will generate XML without keeping it in memory
+
+        return instance
+
     def add_project(self, project):
         """
         Adds a project to the IATI XML.
@@ -133,7 +217,38 @@ class IatiXML(object):
         """
         from akvo.rsr.models import IatiExport
 
-        self.projects = projects
+        # Optimize QuerySet with proper prefetching to prevent N+1 queries
+        if hasattr(projects, 'select_related'):
+            # Only optimize if we have a QuerySet, not a list
+            self.projects = projects.select_related(
+                'primary_location',
+                'primary_organisation',
+                'primary_organisation__country',
+                'currency',
+                'language',
+            ).prefetch_related(
+                'locations',
+                'locations__country',
+                'partnerships__organisation',
+                'partnerships__organisation__country',
+                'results__indicators__periods',
+                'results__indicators__dimension_names',
+                'budgetitems__country',
+                'budgetitems__region',
+                'sectors',
+                'policy_markers',
+                'documents__categories',
+                'transactions',
+                'planned_disbursements',
+                'related_projects',
+                'project_comments',
+                'recipient_countries',
+                'recipient_regions',
+            )
+        else:
+            # If it's already a list, use as-is
+            self.projects = projects
+
         self.version = version
         self.iati_export = iati_export
         self.excluded_elements = excluded_elements
@@ -161,3 +276,91 @@ class IatiXML(object):
             if iati_activity_export:
                 iati_activity_export.status = IatiExport.STATUS_IN_PROGRESS
                 iati_activity_export.save(update_fields=['status'])
+
+    def stream_xml(self):
+        """
+        Stream XML generation with memory monitoring and cleanup.
+
+        This method yields XML content in chunks to prevent memory accumulation
+        during large IATI project exports.
+
+        :return: Generator yielding XML content chunks as strings
+        """
+        # Stream header
+        yield from self._stream_activities_header()
+
+        # Stream each project with memory cleanup
+        for project in self.projects:
+            yield from self._stream_project(project)
+
+        # Stream footer
+        yield from self._stream_activities_footer()
+
+    def _stream_activities_header(self):
+        """
+        Stream XML header and opening iati-activities tag.
+
+        :return: Generator yielding header XML chunks
+        """
+        yield '<?xml version="1.0" encoding="UTF-8"?>\n'
+
+        # Get datetime for generated-datetime attribute
+        utc_now = datetime.utcnow()
+        generated_datetime = utc_now.isoformat("T", "seconds")
+
+        # Include namespace mapping for akvo namespace
+        yield f'<iati-activities version="{self.version}" generated-datetime="{generated_datetime}" xmlns:akvo="http://akvo.org/iati-activities">'
+
+    def _stream_project(self, project):
+        """
+        Stream individual project XML with explicit memory cleanup.
+
+        This method processes a single project, converts it to XML,
+        and immediately cleans up the element tree to prevent memory accumulation.
+        Uses optimized database queries to prevent N+1 query problems.
+
+        :param project: Project object to process (with prefetched relations)
+        :return: Generator yielding project XML chunk
+        """
+        # Create project element (without adding to parent tree)
+        project_element = etree.Element("iati-activity")
+
+        # Add attributes
+        if last_modified_at := project.last_modified_at:
+            last_modified_dt = make_datetime_aware(last_modified_at)
+            project_element.attrib['last-updated-datetime'] = last_modified_dt.isoformat("T", "seconds")
+
+        if project.language:
+            project_element.attrib['{http://www.w3.org/XML/1998/namespace}lang'] = project.language
+
+        if project.currency:
+            project_element.attrib['default-currency'] = project.currency
+
+        if project.hierarchy:
+            project_element.attrib['hierarchy'] = str(project.hierarchy)
+
+        if project.humanitarian is not None:
+            project_element.attrib['humanitarian'] = '1' if project.humanitarian else '0'
+
+        # Add child elements using prefetched relationships
+        # This prevents N+1 queries since relations are already loaded
+        for element in ELEMENTS:
+            tree_elements = getattr(elements, element)(project)
+            for tree_element in tree_elements:
+                project_element.append(tree_element)
+
+        # Convert to string and clean up immediately
+        xml_chunk = etree.tostring(project_element, encoding='unicode', pretty_print=False)
+
+        # Explicit memory cleanup
+        project_element.clear()
+
+        yield xml_chunk
+
+    def _stream_activities_footer(self):
+        """
+        Stream closing iati-activities tag.
+
+        :return: Generator yielding footer XML chunk
+        """
+        yield '</iati-activities>'
