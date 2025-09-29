@@ -322,8 +322,11 @@ class IatiXML(object):
         :param project: Project object to process (with prefetched relations)
         :return: Generator yielding project XML chunk
         """
-        # Create project element (without adding to parent tree)
-        project_element = etree.Element("iati-activity")
+        # Create a temporary root with proper namespace map to ensure consistent prefixes
+        temp_root = etree.Element("temp", nsmap={'akvo': 'http://akvo.org/iati-activities'})
+
+        # Create project element as child of temp root to inherit namespace map
+        project_element = etree.SubElement(temp_root, "iati-activity")
 
         # Add attributes
         if last_modified_at := project.last_modified_at:
@@ -349,13 +352,45 @@ class IatiXML(object):
             for tree_element in tree_elements:
                 project_element.append(tree_element)
 
-        # Convert to string and clean up immediately
+        # Convert only the project element to string with proper namespace prefixes
         xml_chunk = etree.tostring(project_element, encoding='unicode', pretty_print=False)
 
+        # Fix namespace prefixes to match traditional implementation
+        xml_chunk = self._fix_namespace_prefixes(xml_chunk)
+
         # Explicit memory cleanup
+        temp_root.clear()
         project_element.clear()
 
         yield xml_chunk
+
+    def _fix_namespace_prefixes(self, xml_string):
+        """
+        Fix namespace prefixes to ensure akvo namespace uses 'akvo:' instead of auto-generated prefixes.
+
+        This method replaces auto-generated namespace prefixes (ns0, ns1, etc.) with the correct 'akvo' prefix
+        and removes redundant namespace declarations.
+        """
+        import re
+
+        # Replace auto-generated namespace declarations with akvo prefix
+        xml_string = re.sub(
+            r'xmlns:ns\d+="http://akvo\.org/iati-activities"',
+            '',
+            xml_string
+        )
+
+        # Replace auto-generated namespace prefixes with akvo prefix
+        xml_string = re.sub(
+            r'ns\d+:(type|label)',
+            r'akvo:\1',
+            xml_string
+        )
+
+        # Remove any empty xmlns attributes that might be left
+        xml_string = re.sub(r'\s+xmlns:ns\d+=""', '', xml_string)
+
+        return xml_string
 
     def _stream_activities_footer(self):
         """
