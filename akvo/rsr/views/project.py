@@ -8,10 +8,9 @@ Akvo RSR module. For additional details on the GNU license please see
 """
 
 from django.core.exceptions import PermissionDenied
-from django.http import Http404, HttpResponse, HttpResponseRedirect, StreamingHttpResponse
+from django.http import Http404, HttpResponseRedirect, StreamingHttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
-from lxml import etree
 
 from .utils import check_project_viewing_permissions, get_hierarchy_grid
 from ..models import Project

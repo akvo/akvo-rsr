@@ -109,9 +109,9 @@ class IatiExport(TimestampsMixin):
         projects = self.projects.all()
         if projects:
             try:
-                # Generate and save the IATI file
-                iati_xml = IatiXML(projects, self.version, self)
-                self.update_iati_file(iati_xml.save_file(
+                # Generate and save the IATI file using streaming to prevent memory leaks
+                iati_xml = IatiXML.create_for_streaming(projects, self.version, self)
+                self.update_iati_file(iati_xml.save_file_streaming(
                     str(self.reporting_organisation.pk),
                     datetime.utcnow().strftime("%Y%m%d-%H%M%S") + '.xml')
                 )

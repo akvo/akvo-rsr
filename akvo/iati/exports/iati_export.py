@@ -85,6 +85,90 @@ class IatiXML(object):
         dir_path = f"db/org/{org_id}/iati/"
         return save_iati_xml(dir_path, filename, self.iati_activities)
 
+    def save_file_streaming(self, org_id, filename):
+        """
+        Export using streaming generation to minimize memory usage.
+
+        This method generates XML content in chunks and writes directly to file,
+        preventing memory accumulation during large IATI project exports.
+        Also creates necessary IatiActivityExport records for project tracking.
+
+        :param org_id: String of Organisation id
+        :param filename: String of the file name
+        :return: File path
+        """
+        from django.core.files.storage import default_storage, FileSystemStorage
+        from akvo.rsr.models.iati_activity_export import IatiActivityExport
+        from akvo.rsr.models import IatiExport
+        import os
+
+        # Ensure directory exists for FileSystemStorage
+        dir_path = f"db/org/{org_id}/iati/"
+        if isinstance(default_storage, FileSystemStorage):
+            os.makedirs(default_storage.path(dir_path), exist_ok=True)
+
+        file_path = os.path.join(dir_path, filename)
+
+        # Create IatiActivityExport records for each project (maintains compatibility with get_iati_profile_url)
+        if self.iati_export:
+            for project in self.projects:
+                IatiActivityExport.objects.create(
+                    iati_export=self.iati_export,
+                    project=project,
+                    status=IatiExport.STATUS_IN_PROGRESS  # Status 2 - required for get_iati_profile_url()
+                )
+
+        # Stream XML directly to file
+        with default_storage.open(file_path, "wb") as f:
+            for chunk in self.stream_xml():
+                f.write(chunk.encode('utf-8'))
+
+        return file_path
+
+    @classmethod
+    def create_for_streaming(cls, projects, version='2.03', iati_export=None, excluded_elements=None):
+        """
+        Create an IatiXML instance optimized for streaming without building the full tree in memory.
+
+        This factory method creates an instance with the minimum setup needed for streaming,
+        avoiding the memory-intensive tree construction in __init__.
+
+        :param projects: QuerySet of Projects (will be optimized with prefetch)
+        :param version: String of IATI version
+        :param iati_export: IatiExport Django object
+        :param excluded_elements: List of fieldnames that should be ignored when exporting
+        :return: IatiXML instance ready for streaming
+        """
+        instance = cls.__new__(cls)  # Create instance without calling __init__
+
+        # Set up only the minimal attributes needed for streaming
+        if hasattr(projects, 'select_related'):
+            # Optimize QuerySet with proper prefetching to prevent N+1 queries
+            instance.projects = projects.select_related(
+                'primary_location',
+                'primary_organisation',
+            ).prefetch_related(
+                'locations',
+                'partnerships__organisation',
+                'results__indicators__periods',
+                'sectors',
+                'documents__categories',
+                'transactions',
+                'planned_disbursements',
+                'related_projects',
+            )
+        else:
+            instance.projects = projects
+
+        instance.version = version
+        instance.iati_export = iati_export
+        instance.excluded_elements = excluded_elements
+
+        # NOTE: We do NOT create self.iati_activities tree - that's the memory leak source!
+        # The streaming methods will generate XML without keeping it in memory
+
+        return instance
+
     def add_project(self, project):
         """
         Adds a project to the IATI XML.

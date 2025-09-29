@@ -13,12 +13,11 @@ from akvo.rsr.models import Organisation
 from django.http import Http404, HttpResponse, StreamingHttpResponse
 from django.shortcuts import get_object_or_404, render
 
-from lxml import etree
-
 
 ###############################################################################
 # Organisation directory
 ###############################################################################
+
 
 def directory(request):
     """The Organisation list view."""
