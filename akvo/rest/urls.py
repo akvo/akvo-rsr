@@ -364,6 +364,8 @@ urlpatterns += (
         name="project_published_search",
     ),
     path("v1/demo_request", views.demo_request, name="demo_request"),
+    path("v1/places/search", views.places_search, name="places_search"),
+    path("v1/places/geocode", views.geocode, name="places_geocode"),
 )
 
 # GeoJSON views

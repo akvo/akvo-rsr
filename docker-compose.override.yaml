@@ -21,6 +21,7 @@ services:
       - ENABLE_PROMETHEUS_METRICS=false
       - METRICS_AUTH_USERNAME=devuser
       - METRICS_AUTH_PASSWORD=devpass
+      - GOOGLE_MAPS_API_KEY=${GOOGLE_MAPS_API_KEY}
   worker:
     <<: *web-common
     environment:
