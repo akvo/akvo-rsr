@@ -19,8 +19,6 @@ export const budgetItemTypes = [
   {value: 42, label: 'Water resource management'}
 ]
 
-export const googleApiKey = 'AIzaSyARjGtFp0IV0wANJOjMpQ8jumgbquLR0h8'
-
 export const resultTypes = [
   { label: 'output', value: '1' },
   { label: 'outcome', value: '2' },

@@ -81,6 +81,7 @@ from .project_overview import project_results, project_result_overview, project_
 from .program_results_geo import get_program_results_geo
 from .project_enumerators import assignment_send, project_enumerators
 from .demo_request import demo_request
+from .google_maps_proxy import places_search, geocode
 
 __all__ = [
     'assignment_send',
@@ -188,4 +189,6 @@ __all__ = [
     'managed_employments',
     'demo_request',
     'recalculate_project_aggregation',
+    'places_search',
+    'geocode',
 ]
