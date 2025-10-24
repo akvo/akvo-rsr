@@ -148,6 +148,11 @@ spec:
               configMapKeyRef:
                 name: akvo-rsr
                 key: google-storege-bucket-name
+        - name: GOOGLE_MAPS_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: "rsr-secret"
+              key: google_maps_api_key
         - name: CLOUD_PROFILER_ENABLE
           valueFrom:
               configMapKeyRef:
