@@ -1,30 +1,33 @@
 import React from 'react'
 import { Form, Select, Spin } from 'antd'
 import { withTranslation } from 'react-i18next'
-import loadGoogleMapsApi from 'load-google-maps-api'
 
 import InputLabel from '../../../../utils/input-label'
-import { googleApiKey } from '../../../../utils/constants'
+import api from '../../../../utils/api'
 
 const { Item } = Form
 const { Option } = Select
 
 let timeout
 
-function $fetch(input, callback, gservice) {
+function $fetch(input, callback) {
   if (timeout) {
     clearTimeout(timeout)
     timeout = null
   }
 
   function req() {
-    gservice.getPlacePredictions({ input, types: ['(regions)'] }, (results, status) => {
-      if (status !== 'OK') {
-        console.log('error', status) // eslint-disable-line no-console
-        return
-      }
-      callback(results)
-    })
+    api.get('/places/search', { input })
+      .then((response) => {
+        if (response.data.status !== 'OK') {
+          console.log('error', response.data.status) // eslint-disable-line no-console
+          return
+        }
+        callback(response.data.predictions)
+      })
+      .catch((error) => {
+        console.error('Places search failed:', error) // eslint-disable-line no-console
+      })
   }
 
   timeout = setTimeout(req, 300)
@@ -35,34 +38,40 @@ class SearchItem extends React.Component{
     data: [],
     fetching: false
   }
-  componentWillMount(){
-    loadGoogleMapsApi({ libraries: ['places'], key: googleApiKey })
-      .then((googleMaps) => {
-        this.gservice = new googleMaps.places.AutocompleteService()
-        this.geocoder = new googleMaps.Geocoder()
-      }).catch((error) => {
-        console.error(error) // eslint-disable-line no-console
-      })
-  }
   handleSearch = (value) => {
     this.setState({
       fetching: true
     })
-    $fetch(value, data => this.setState({ data, fetching: false }), this.gservice)
+    $fetch(value, data => this.setState({ data, fetching: false }))
   }
   handleChange = (index) => {
     if (this.props.setProcessing) {
       this.props.setProcessing(true)
     }
-    this.geocoder.geocode({ placeId: this.state.data[index].place_id }, (d) => {
-      if(d.length < 1) return
-      const coordinates = {
-        lat: d[0].geometry.location.lat(),
-        lng: d[0].geometry.location.lng()
-      }
-      const countryComp = d[0].address_components.find(comp => comp.types.indexOf('country') !== -1)
-      this.props.onChange({ ...this.state.data[index], coordinates, countryComp })
-    })
+    const placeId = this.state.data[index].placeId
+    api.get('/places/geocode', { place_id: placeId })
+      .then((response) => {
+        if (response.data.results && response.data.results.length > 0) {
+          const result = response.data.results[0]
+          const coordinates = {
+            lat: result.geometry.location.lat,
+            lng: result.geometry.location.lng
+          }
+          const countryComp = result.addressComponents.find(comp =>
+            comp.types.indexOf('country') !== -1
+          )
+          this.props.onChange({ ...this.state.data[index], coordinates, countryComp })
+        }
+        if (this.props.setProcessing) {
+          this.props.setProcessing(false)
+        }
+      })
+      .catch((error) => {
+        console.error('Geocoding failed:', error) // eslint-disable-line no-console
+        if (this.props.setProcessing) {
+          this.props.setProcessing(false)
+        }
+      })
   }
   render(){
     const { t, validateStatus } = this.props
