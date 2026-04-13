@@ -10,6 +10,12 @@ Disallow: /
 User-agent: HaloBot
 Disallow: /
 
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: Sogou
+Disallow: /
+
 User-agent: *
 Crawl-Delay: 30
 Disallow: /rest/v1/indicator_period_data_framework/
