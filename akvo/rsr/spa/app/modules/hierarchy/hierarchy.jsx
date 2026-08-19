@@ -40,7 +40,6 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
       .programs
       .findIndex(it => (it.id === Number(projectId) || it.id === Number(programId)) && it.canCreateProjects) !== -1
   )
-  const isOldVersion = false
   const handleOnChildren = async (_items, callback = undefined) => {
     let values = await Promise.all(_items)
     values = values?.flatMap((v) => v)
@@ -214,8 +213,7 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
             <Card
               {...{
                 countryFilter,
-                filterCountry,
-                isOldVersion
+                filterCountry
               }}
               isProgram
               project={parent}
@@ -283,8 +281,7 @@ const Hierarchy = ({ match: { params }, program, userRdr, asProjectTab }) => {
                       filterCountry,
                       program,
                       countryFilter,
-                      canCreateProjects,
-                      isOldVersion
+                      canCreateProjects
                     }}
                   />
                 )

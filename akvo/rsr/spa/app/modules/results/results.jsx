@@ -1,11 +1,10 @@
 /* eslint-disable no-shadow */
 import React, { useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
-import { Icon, Collapse, Button, Row, Col } from 'antd'
+import { Icon, Collapse, Row, Col } from 'antd'
 import { cloneDeep } from 'lodash'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
-import Portal from '../../utils/portal'
 import './styles.scss'
 import api from '../../utils/api'
 import Period from './period'
@@ -167,15 +166,6 @@ const Results = ({ userRdr, needsReportingTimeoutDays, results, setResults, id, 
       <div className="main-content filterBarVisible" ref={ref => { mainContentRef.current = ref }}>
         <div className="filter-bar">
           <FilterCheckbox {...filterProps} />
-          <Portal>
-            <div className="beta">
-              <div className="label">
-                <Icon type="experiment" />
-                New view (beta)
-              </div>
-              <a href={`/${userRdr.lang}/myrsr/my_project/${id}/`}><Button type="danger">Older version</Button></a>
-            </div>
-          </Portal>
         </div>
         {(statusFilter !== 'need-reporting' && statusFilter !== 'pending') &&
           <Collapse

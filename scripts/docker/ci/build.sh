@@ -21,7 +21,6 @@ log Building node environment
 pushd akvo/rsr/front-end
 npm install
 npm run dev
-npm run test
 popd
 
 pushd akvo/rsr/spa

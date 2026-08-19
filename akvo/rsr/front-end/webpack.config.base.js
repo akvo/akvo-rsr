@@ -11,7 +11,7 @@ const path = require("path");
 // MiniCssExtractPlugin emits an "empty" main.js. Fix by using this hack.
 // See https://github.com/webpack/webpack/issues/7300#issuecomment-413959996
 class MiniCssExtractPluginCleanup {
-    constructor(deleteWhere = /main.js|akvoWordpress.js|noUiSliderCss.js|datePicker.js|admin.js|widget.js/) {
+    constructor(deleteWhere = /main.js|akvoWordpress.js|datePicker.js|admin.js|widget.js/) {
         this.shouldDelete = new RegExp(deleteWhere);
     }
     apply(compiler) {
@@ -36,26 +36,11 @@ class MiniCssExtractPluginCleanup {
 }
 
 const entry = {
-    // "New React"
-    results: "./scripts-src/my-results/app.js",
-    vendors: [
-        // NOTE: babel-polyfill always needs to be loaded before react and redux
-        // https://github.com/facebook/react/issues/8379#issuecomment-316346239
-        "babel-polyfill",
-        "react",
-        "redux",
-        "redux-logger",
-        "redux-thunk",
-        "reselect",
-        "isomorphic-fetch"
-    ],
-
     // Sass
     main: "./styles-src/main.scss",
 
     // Css
     akvoWordpress: "./styles-src/akvo-wordpress.css",
-    noUiSliderCss: "./lib/styles/nouislider-8.0.2.min.css",
     datePicker: "./lib/styles/react-datepicker-0.27.0.css",
     admin: [
         "./styles-src/admin/akvo_admin.css",
@@ -71,24 +56,16 @@ const entry = {
     ],
 
     // "Classic RSR"
-    micromarkdown: "./lib/scripts/micromarkdown-0.3.4.js",
-    noUiSlider: "./lib/scripts/nouislider-8.0.2.min.js",
     onClickOutside: "./lib/scripts/react-onclickoutside.js",
     polyfill: "./scripts-src/classic/js/polyfill.js",
     projectHierarchy: "./scripts-src/classic/js/project-hierarchy.js",
     reactTypeahead: "./lib/scripts/react-typeahead.js",
     rsrUtils: "./scripts-src/classic/js/rsr-utils.js",
-    smoothScroll: "./lib/scripts/smooth-scroll-9.1.4.min.js",
 
     cookie: "./scripts-src/classic/jsx/cookie.jsx",
     directoryUtils: "./scripts-src/classic/jsx/directory-utils.jsx",
-    donatePopup: "./scripts-src/classic/jsx/donate-popup.jsx",
-    morePartners: "./scripts-src/classic/jsx/more-partners.jsx",
     organisationDirectory: "./scripts-src/classic/jsx/organisation-directory.jsx",
     passwordReset: "./scripts-src/classic/jsx/password-reset.jsx",
-    projectMain: "./scripts-src/project-main/project-main.jsx",
-    projectMainPartners: "./scripts-src/project-main/project-main-partners.jsx",
-    projectMainReport: "./scripts-src/project-main/project-main-report.jsx",
     updateDirectory: "./scripts-src/classic/jsx/update-directory.jsx"
 };
 
