@@ -56,16 +56,6 @@ jobs:
       DBDOCS_TOKEN: ${{ secrets.DBDOCS_TOKEN }}
 
     steps:
-      # A stock runner has roughly 14 GB free. This build produces about nine
-      # images, two of them full production images, while holding two compose
-      # stacks up at once. Running out of disk mid-build surfaces as a
-      # confusing test failure rather than as a disk error.
-      - name: Free disk space
-        run: |
-          sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc \
-                      /usr/local/.ghcup /opt/hostedtoolcache/CodeQL
-          df -h /
-
       - uses: actions/checkout@v4
 
       # Replaces Semaphore's `cache restore` prologue and `cache store`
