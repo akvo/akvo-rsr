@@ -1,0 +1,118 @@
+name: Build, test & deploy
+
+# `push` is limited to the refs that deploy. Everything else is built by
+# `pull_request`, which tests the branch merged into its base — so a branch
+# pushed without an open PR gets no build. Open the PR as a draft to get one.
+on:
+  push:
+    branches: [master]
+    tags: ['promote-*']
+  pull_request:
+
+# Superseding an in-flight PR build is desirable. Cancelling an in-flight
+# master build partway through a `kubectl apply` is not.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  build-test-deploy:
+    runs-on: ubuntu-latest
+    # GitHub's default is six hours against Semaphore's one. A hung compose
+    # stack would otherwise hold a runner for most of a day.
+    timeout-minutes: 90
+
+    env:
+      # Inherited from Semaphore's "RSR" secret, set in July 2024: pushes of
+      # the akvo/rsr-backend-* layer-cache images to Docker Hub are disabled.
+      # Turning this back on means re-adding DOCKER_USERNAME and
+      # DOCKER_PASSWORD secrets. Must stay quoted — the scripts compare it
+      # against the string `yes`.
+      SKIP_DOCKER_PUSH: "yes"
+      CLOUDSDK_CORE_DISABLE_PROMPTS: "1"
+
+      # The generic CI_* interface the ci/*.sh scripts consume. coveralls
+      # 3.3.1 falls back to exactly these variables when it does not
+      # recognise the CI system, which is why GITHUB_ACTIONS is deliberately
+      # not forwarded into the web container.
+      CI_NAME: github-actions
+      CI_BRANCH: ${{ github.head_ref || github.ref_name }}
+      # On a pull_request event github.sha is the ephemeral merge commit, so
+      # prefer the PR's head SHA for image tags and deploy metadata.
+      CI_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+      TRAVIS_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+      # Must be empty on every non-tag build: this gates the promote-* path
+      # in both scripts.
+      CI_TAG: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
+      CI_PULL_REQUEST: ${{ github.event_name == 'pull_request' }}
+      CI_BUILD_NUMBER: ${{ github.run_id }}
+      CI_JOB_ID: ${{ github.run_id }}
+      CI_BUILD_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+      COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_AKVO_RSR_TOKEN }}
+      DBDOCS_TOKEN: ${{ secrets.DBDOCS_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Replaces Semaphore's `cache restore` prologue and `cache store`
+      # epilogue. build.sh runs `npm install` unconditionally, so a cache
+      # saved from a failed build self-heals on the next run.
+      - name: Cache front-end node_modules
+        uses: actions/cache@v4
+        with:
+          path: akvo/rsr/front-end/node_modules
+          key: client-fe-npm-deps-${{ hashFiles('akvo/rsr/front-end/package.json') }}
+
+      # Written unconditionally. On pull requests the secret is empty and the
+      # file is empty, which is harmless: deploy-semaphoreci.sh returns at its
+      # first guard long before it reaches gcloud.
+      #
+      # RUNNER_TEMP is deliberately outside the workspace: a secret must never
+      # be written into a directory that is a Docker build context or that
+      # could be archived with the workspace, and RUNNER_TEMP is the
+      # runner-provided location for exactly that. It is used here rather
+      # than a job-level `env` entry because the `runner` context is not
+      # available at job level.
+      - name: Write GCP service account key
+        env:
+          GCP_SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+        run: |
+          printf '%s' "$GCP_SERVICE_ACCOUNT_KEY" > "$RUNNER_TEMP/gcp.json"
+          chmod 600 "$RUNNER_TEMP/gcp.json"
+          echo "GCP_KEY_FILE=$RUNNER_TEMP/gcp.json" >> "$GITHUB_ENV"
+
+      # The runner image ships google-cloud-cli and kubectl but not this
+      # plugin. container/use_client_certificate is set to False in
+      # deploy-semaphoreci.sh, so `gcloud container clusters get-credentials`
+      # writes an exec-based kubeconfig that kubectl needs the plugin to use.
+      #
+      # The apt source has to be re-added: the runner image adds Google's
+      # repository at build time, installs google-cloud-cli from it, then
+      # deletes the source list file, so at runtime apt cannot resolve the
+      # package. `gcloud components install` is not an option either — an
+      # apt-managed gcloud has its component manager disabled.
+      - name: Install gke-gcloud-auth-plugin
+        run: |
+          curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg \
+            | sudo gpg --dearmor --yes -o /usr/share/keyrings/cloud.google.gpg
+          echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" \
+            | sudo tee /etc/apt/sources.list.d/google-cloud-sdk.list
+          sudo apt-get update
+          sudo apt-get install -y google-cloud-cli-gke-gcloud-auth-plugin
+          # Fail here rather than midway through a deploy if the plugin is
+          # still not usable.
+          gke-gcloud-auth-plugin --version
+
+      - name: Build and test
+        run: ./ci/build-semaphoreci.sh
+
+      - name: Deploy
+        run: ./ci/deploy-semaphoreci.sh
+
+      - name: Dump compose logs on failure
+        if: failure()
+        run: ./ci/on-fail-semaphoreci.sh
