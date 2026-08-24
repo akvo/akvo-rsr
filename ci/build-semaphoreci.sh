@@ -73,12 +73,12 @@ fi
 
 docker_build akvo/rsr-backend-dev -t rsr-backend:dev -f Dockerfile-dev .
 
-log Starting docker-compose
-docker-compose -p rsrci -f docker-compose.yaml -f docker-compose.ci.yaml up -d --build
+log Starting Docker Compose
+docker compose -p rsrci -f docker-compose.yaml -f docker-compose.ci.yaml up -d --build
 
 if [[ ! "${SKIP_BACKEND_TESTS:-}" = yes ]]; then
   log Running tests
-  docker-compose \
+  docker compose \
     -p rsrci \
     -f docker-compose.yaml \
     -f docker-compose.ci.yaml \
@@ -92,7 +92,7 @@ if [[ -n "${DBDOCS_TOKEN:-}" ]] && [[ -f rsr.dbml ]]; then
 fi
 
 #log Stopping docker-compose
-#docker-compose -p rsrci -f docker-compose.yaml -f docker-compose.ci.yaml down
+#docker compose -p rsrci -f docker-compose.yaml -f docker-compose.ci.yaml down
 
 log Preparing deploy info file
 echo "DEPLOY_COMMIT_FULL_ID = $(quote "`git rev-parse HEAD`")" > ._66_deploy_info.conf
@@ -115,11 +115,11 @@ docker build --rm=false -t eu.gcr.io/${PROJECT_NAME}/rsr-nginx:${CI_COMMIT} -f D
 log Creating Production Nginx image for maintenance mode
 docker build --rm=false -t eu.gcr.io/${PROJECT_NAME}/rsr-nginx-maintenance:${CI_COMMIT} -f Dockerfile-nginx-maintenance .
 
-log Starting docker-compose for end to end tests
+log Starting Docker Compose for end to end tests
 touch "log_docker_compose_ci_prod"
-docker-compose -p rsrciprod -f docker-compose.yaml -f docker-compose.ci.yaml -f docker-compose.ci.prod.images.yaml up -d --build
+docker compose -p rsrciprod -f docker-compose.yaml -f docker-compose.ci.yaml -f docker-compose.ci.prod.images.yaml up -d --build
 log Running end to end tests
-docker-compose -p rsrciprod -f docker-compose.yaml -f docker-compose.ci.yaml -f docker-compose.ci.prod.images.yaml run --no-deps web scripts/docker/dev/run-as-user.sh scripts/docker/ci/end-to-end.sh
+docker compose -p rsrciprod -f docker-compose.yaml -f docker-compose.ci.yaml -f docker-compose.ci.prod.images.yaml run --no-deps web scripts/docker/dev/run-as-user.sh scripts/docker/ci/end-to-end.sh
 rm "log_docker_compose_ci_prod"
 
 log Done
