@@ -81,9 +81,10 @@ jobs:
       # file is empty, which is harmless: deploy-semaphoreci.sh returns at its
       # first guard long before it reaches gcloud.
       #
-      # RUNNER_TEMP is deliberately outside the workspace: several Dockerfiles
-      # copy the repository root into their build context, and a key written
-      # there would be baked into published images. It is used here rather
+      # RUNNER_TEMP is deliberately outside the workspace: a secret must never
+      # be written into a directory that is a Docker build context or that
+      # could be archived with the workspace, and RUNNER_TEMP is the
+      # runner-provided location for exactly that. It is used here rather
       # than a job-level `env` entry because the `runner` context is not
       # available at job level.
       - name: Write GCP service account key
@@ -93,6 +94,15 @@ jobs:
           printf '%s' "$GCP_SERVICE_ACCOUNT_KEY" > "$RUNNER_TEMP/gcp.json"
           chmod 600 "$RUNNER_TEMP/gcp.json"
           echo "GCP_KEY_FILE=$RUNNER_TEMP/gcp.json" >> "$GITHUB_ENV"
+
+      # The runner image ships google-cloud-cli and kubectl but not this
+      # plugin. container/use_client_certificate is set to False in
+      # deploy-semaphoreci.sh, so `gcloud container clusters get-credentials`
+      # writes an exec-based kubeconfig that kubectl needs the plugin to use.
+      # Google's apt repository is already configured on the runner, since
+      # google-cloud-cli itself was installed from it.
+      - name: Install gke-gcloud-auth-plugin
+        run: sudo apt-get install -y google-cloud-cli-gke-gcloud-auth-plugin
 
       - name: Build and test
         run: ./ci/build-semaphoreci.sh
