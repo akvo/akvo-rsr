@@ -99,10 +99,23 @@ jobs:
       # plugin. container/use_client_certificate is set to False in
       # deploy-semaphoreci.sh, so `gcloud container clusters get-credentials`
       # writes an exec-based kubeconfig that kubectl needs the plugin to use.
-      # Google's apt repository is already configured on the runner, since
-      # google-cloud-cli itself was installed from it.
+      #
+      # The apt source has to be re-added: the runner image adds Google's
+      # repository at build time, installs google-cloud-cli from it, then
+      # deletes the source list file, so at runtime apt cannot resolve the
+      # package. `gcloud components install` is not an option either — an
+      # apt-managed gcloud has its component manager disabled.
       - name: Install gke-gcloud-auth-plugin
-        run: sudo apt-get install -y google-cloud-cli-gke-gcloud-auth-plugin
+        run: |
+          curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg \
+            | sudo gpg --dearmor --yes -o /usr/share/keyrings/cloud.google.gpg
+          echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" \
+            | sudo tee /etc/apt/sources.list.d/google-cloud-sdk.list
+          sudo apt-get update
+          sudo apt-get install -y google-cloud-cli-gke-gcloud-auth-plugin
+          # Fail here rather than midway through a deploy if the plugin is
+          # still not usable.
+          gke-gcloud-auth-plugin --version
 
       - name: Build and test
         run: ./ci/build-semaphoreci.sh
