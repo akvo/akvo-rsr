@@ -68,7 +68,7 @@ jobs:
           key: client-fe-npm-deps-${{ hashFiles('akvo/rsr/front-end/package.json') }}
 
       # Written unconditionally. On pull requests the secret is empty and the
-      # file is empty, which is harmless: deploy-semaphoreci.sh returns at its
+      # file is empty, which is harmless: deploy-ci.sh returns at its
       # first guard long before it reaches gcloud.
       #
       # RUNNER_TEMP is deliberately outside the workspace: a secret must never
@@ -87,7 +87,7 @@ jobs:
 
       # The runner image ships google-cloud-cli and kubectl but not this
       # plugin. container/use_client_certificate is set to False in
-      # deploy-semaphoreci.sh, so `gcloud container clusters get-credentials`
+      # deploy-ci.sh, so `gcloud container clusters get-credentials`
       # writes an exec-based kubeconfig that kubectl needs the plugin to use.
       #
       # The apt source has to be re-added: the runner image adds Google's
@@ -108,11 +108,11 @@ jobs:
           gke-gcloud-auth-plugin --version
 
       - name: Build and test
-        run: ./ci/build-semaphoreci.sh
+        run: ./ci/build-ci.sh
 
       - name: Deploy
-        run: ./ci/deploy-semaphoreci.sh
+        run: ./ci/deploy-ci.sh
 
       - name: Dump compose logs on failure
         if: failure()
-        run: ./ci/on-fail-semaphoreci.sh
+        run: ./ci/on-fail-ci.sh

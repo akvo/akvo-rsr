@@ -2,7 +2,7 @@
     actor dev as developer
     participant local as "local system"
     participant github as Github
-    participant semaphore as semaphoreCI
+    participant gha as "GitHub Actions"
     participant kube as "Google Kubernetes"
     participant zulip
 
@@ -38,19 +38,19 @@
     deactivate local
 
 
-    github ->> semaphore: new tag pushed
-    activate semaphore
-        semaphore -->> github: OK
+    github ->> gha: new tag pushed
+    activate gha
+        gha -->> github: OK
         deactivate github
-        semaphore ->> kube: deploy tagged version
+        gha ->> kube: deploy tagged version
         activate kube
-            kube ->> semaphore: applying new config
+            kube ->> gha: applying new config
         deactivate kube
         loop Until containers are ready
-            semaphore ->> kube: please provide container status
+            gha ->> kube: please provide container status
             activate kube
-                kube -->> semaphore: status
+                kube -->> gha: status
             deactivate kube
         end
-    deactivate semaphore
+    deactivate gha
 @enduml

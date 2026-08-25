@@ -1,6 +1,6 @@
 # Deploying
 
-We use SemaphoreCI to deploy to test and production
+We use GitHub Actions to deploy to test and production
 
 ## Test
 

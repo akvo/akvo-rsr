@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# This is a script to run the semaphore build locally.
-# 
-# Usage:
-#     DOCKER_PASSWORD=value ./ci/local-build-semaphoreci.sh
+# Run the CI build locally, the way GitHub Actions runs it.
 #
-# The DOCKER_PASSWORD can be obtained from the password vault, or by getting a
-# remote debug session of Semaphore CI.
+# Usage:
+#     ./ci/local-build-ci.sh
+#
+# No registry credentials are needed: SKIP_DOCKER_PUSH is forced on below, so
+# nothing is pushed and no login happens. Backend tests are skipped by
+# default; set SKIP_BACKEND_TESTS=no to include them.
 
 export PROJECT_NAME=akvo-lumen
 export CI_BRANCH=$(git branch --show-current)
@@ -17,4 +18,4 @@ export TRAVIS_COMMIT="${CI_COMMIT}"
 export DOCKER_USERNAME=akvodevops
 export SKIP_DOCKER_PUSH=yes
 export SKIP_BACKEND_TESTS="${SKIP_BACKEND_TESTS:-yes}"
-./ci/build-semaphoreci.sh
+./ci/build-ci.sh
