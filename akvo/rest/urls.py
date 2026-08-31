@@ -219,11 +219,6 @@ urlpatterns = (
         name="project_update_remove_photos",
     ),
     path(
-        "v1/indicator_period_data/<int:pk>/upload_file/",
-        views.indicator_upload_file,
-        name="indicator_upload_file",
-    ),
-    path(
         "v1/indicator_period_data/<int:update_pk>/files/",
         views.period_update_files,
         name="period_update_add_files",
@@ -330,11 +325,6 @@ urlpatterns += (
         "v1/project/<int:project_pk>/indicator_custom_fields/",
         views.project_default_periods,
         name="project_indicator_custom_fields",
-    ),
-    path(
-        "v1/project_update/<int:pk>/upload_photo/",
-        views.upload_indicator_update_photo,
-        name="upload_indicator_update_photo",
     ),
     path(
         "v1/project/<int:project_pk>/project-roles/",

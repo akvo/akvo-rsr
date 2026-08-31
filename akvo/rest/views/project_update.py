@@ -10,14 +10,13 @@ from re import match
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication
-from rest_framework.decorators import api_view, permission_classes, authentication_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, authentication_classes
 from rest_framework.response import Response
 from rest_framework.exceptions import ParseError
 
 from akvo.rest.authentication import TastyTokenAuthentication, JWTAuthentication
 from akvo.rest.serializers import (
-    ProjectUpdateSerializer, ProjectUpdateExtraSerializer, ProjectUpdatePhotoSerializer,
+    ProjectUpdateSerializer, ProjectUpdatePhotoSerializer,
 )
 from akvo.rest.viewsets import PublicProjectViewSet
 from akvo.rsr.models import ProjectUpdate, ProjectUpdatePhoto
@@ -86,21 +85,6 @@ def validate_date(date):
             'Invalid date: created_at and last_modified_at dates must be in one of the following '
             'formats: yyyy-mm, yyyy-mm-dd or yyyy-mm-ddThh:mm:ss'
         )
-
-
-@api_view(['POST'])
-@permission_classes((IsAuthenticated, ))
-def upload_indicator_update_photo(request, pk=None):
-    update = ProjectUpdate.objects.get(pk=pk)
-
-    # TODO: permissions
-
-    data = request.data
-    if 'photo' in data:
-        update.photo = data['photo']
-        update.save(update_fields=['photo'])
-
-    return Response(ProjectUpdateExtraSerializer(update).data)
 
 
 @api_view(['POST', 'PATCH', 'DELETE'])

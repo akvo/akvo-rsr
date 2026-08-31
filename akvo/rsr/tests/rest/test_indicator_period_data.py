@@ -322,21 +322,6 @@ class IndicatorPeriodDataTestCase(BaseTestCase):
         self.assertEqual(201, response.status_code)
         self.assertEqual(5.00, response.data['numerator'])
 
-    def test_upload_file(self):
-        update = IndicatorPeriodData.objects.create(value='5', user=self.user, period=self.period)
-        url = '/rest/v1/indicator_period_data/{}/upload_file/?format=json'.format(update.id)
-        image_path = join(dirname(HERE), 'iati_export', 'test_image.jpg')
-        data = {'file': open(image_path, 'r+b'),
-                'type': 'photo'}
-
-        self.c.login(username=self.username, password=self.password)
-        response = self.c.post(url, data)
-
-        self.assertEqual(200, response.status_code)
-        update.refresh_from_db()
-        with open(image_path, 'r+b') as f:
-            self.assertEqual(f.read(), update.photo.read())
-
     def setup_results_framework(self):
         self.result = Result.objects.create(
             title='Result 1',

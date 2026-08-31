@@ -31,20 +31,12 @@ const ResultsTabPane = ({
   t,
   projectId,
   disableResults,
-  labelResultView,
-  isOldVersion
+  labelResultView
 }) => disableResults
     ? <TooltipTab text={labelResultView} />
-    : (
-      <>
-        {isOldVersion
-          ? <a href={`/en/myrsr/my_project/${projectId}/`}>{t(labelResultView)}</a>
-          : <Link to={`/projects/${projectId}/results`}>{t(labelResultView)}</Link>
-        }
-      </>
-    )
+    : <Link to={`/projects/${projectId}/results`}>{t(labelResultView)}</Link>
 
-const _Header = ({ title, project, publishingStatus, hasHierarchy, userRdr, showResultAdmin, jwtView, prevPathName, role, canEditProject, isRestricted, isOldVersion }) => {
+const _Header = ({ title, project, publishingStatus, hasHierarchy, userRdr, showResultAdmin, jwtView, prevPathName, role, canEditProject, isRestricted }) => {
   const { t } = useTranslation()
   const isAllowed = !(['user', 'enumerator'].includes(role))
   const showEnumerators = isAllowed
@@ -69,7 +61,7 @@ const _Header = ({ title, project, publishingStatus, hasHierarchy, userRdr, show
           {!(isRestricted) && (
             <TabPane
               disabled={disableResults}
-              tab={<ResultsTabPane {...{ t, disableResults, labelResultView, projectId, userRdr, isOldVersion }} />}
+              tab={<ResultsTabPane {...{ t, disableResults, labelResultView, projectId, userRdr }} />}
               key="results"
             />
           )}
@@ -141,18 +133,13 @@ const ProjectView = ({ match: { params }, program, jwtView, userRdr, ..._props }
   const showResultAdmin = true
   const resultsProps = { rf, setRF, jwtView, targetsAt, showResultAdmin, role }
   const isRestricted = (role === 'user')
-  const isOldVersion = false
 
   return [
-    !program && <Header key="index-header" {...{ userRdr, showResultAdmin, jwtView, prevPathName, role, project, isRestricted, isOldVersion }} />,
+    !program && <Header key="index-header" {...{ userRdr, showResultAdmin, jwtView, prevPathName, role, project, isRestricted }} />,
     <Switch key="index-switch">
       <Route
         path={`${urlPrefix}/results`}
         render={props => {
-          if (userRdr?.organisations && isOldVersion && !program) {
-            window.location.href = `/en/myrsr/my_project/${params.id}/`
-            return null
-          }
           if (isRestricted) {
             return <Redirect to={`/projects/${params.id}/updates`} />
           }

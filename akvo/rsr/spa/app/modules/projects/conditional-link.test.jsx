@@ -54,19 +54,6 @@ describe('Check all unpublished program or project link is correct', () => {
     expect(testInstance.findByType('a').props.href).toEqual('/dir/project/1/')
   })
 
-  it('unpublished project link with isOldVersion true is correct', () => {
-    const record = { ...init }
-    const testRenderer = TestRenderer.create(
-      <MemoryRouter>
-        <ConditionalLink record={record} isProgram={false} isOldVersion>
-          {record.name}
-        </ConditionalLink>
-      </MemoryRouter>
-    )
-    const testInstance = testRenderer.root
-    expect(testInstance.findByType('a').props.href).toEqual('/projects/1')
-  })
-
   it('unpublished program link is correct', () => {
     const record = { ...init, isProgram: true }
     const testRenderer = TestRenderer.create(
@@ -130,19 +117,6 @@ describe('Check all published program or project link is correct', () => {
     )
     const testInstance = testRenderer.root
     expect(testInstance.findByType('a').props.href).toEqual('/dir/project/1/')
-  })
-
-  it('published project link with isOldVersion true is correct', () => {
-    const record = { ...init }
-    const testRenderer = TestRenderer.create(
-      <MemoryRouter>
-        <ConditionalLink record={record} isProgram={false} isOldVersion>
-          {record.name}
-        </ConditionalLink>
-      </MemoryRouter>
-    )
-    const testInstance = testRenderer.root
-    expect(testInstance.findByType('a').props.href).toEqual('/en/myrsr/my_project/1/')
   })
 
   it('published program link is correct', () => {

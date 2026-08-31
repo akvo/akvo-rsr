@@ -27,7 +27,7 @@ from .indicator_period_aggregation_job import IndicatorPeriodAggregationJobViewS
 from .indicator_period_label import IndicatorPeriodLabelViewSet, project_period_labels
 from .indicator_period import IndicatorPeriodViewSet, set_periods_locked, bulk_add_periods, bulk_remove_periods
 from .indicator_period_data import (IndicatorPeriodDataViewSet, IndicatorPeriodDataFrameworkViewSet,
-                                    IndicatorPeriodDataCommentViewSet, indicator_upload_file,
+                                    IndicatorPeriodDataCommentViewSet,
                                     period_update_files, period_update_photos, set_updates_status,
                                     indicator_previous_cumulative_update)
 from .disaggregation import DisaggregationViewSet
@@ -59,7 +59,6 @@ from .project_location import ProjectLocationViewSet, AdministrativeLocationView
 from .project_hierarchy import RawProjectHierarchyViewSet, program_countries, program_updates
 from .project_role import project_roles, project_invite_user
 from .project_update import (ProjectUpdateViewSet,
-                             upload_indicator_update_photo,
                              project_update_photos)
 from .publishing_status import PublishingStatusViewSet
 from .recipient_country import RecipientCountryViewSet
@@ -116,7 +115,6 @@ __all__ = [
     'IndicatorDisaggregationTargetViewSet',
     'IndicatorPeriodDataCommentViewSet',
     'IndicatorReferenceViewSet',
-    'indicator_upload_file',
     'period_update_files',
     'period_update_photos',
     'set_updates_status',
@@ -174,7 +172,6 @@ __all__ = [
     'typeahead_projectupdate',
     'update_details',
     'project_update_photos',
-    'upload_indicator_update_photo',
     'UserViewSet',
     'project_results',
     'get_program_results_geo',

@@ -109,7 +109,6 @@ urlpatterns = i18n_patterns(
     path("css/", my_rsr.css, name="css"),
     # MyRSR
     path("myrsr/", my_rsr.my_rsr, name="my_rsr"),
-    path("myrsr/my_project/<int:project_id>/", my_rsr.my_project, name="project-edit"),
     path("myrsr/details/", my_rsr.my_details, name="my_details"),
     path(
         "myrsr/projects/",
