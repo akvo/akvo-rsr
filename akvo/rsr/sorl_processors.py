@@ -17,7 +17,9 @@ def scale_and_pad(im, requested_size, opts):
         # smallest enlargement that will make it touch the requested box
         r = min(xr / x, yr / y)
 
-        im = im.resize((int(x * r), int(y * r)), resample=Image.ANTIALIAS)
+        # `Image.ANTIALIAS` was an alias for LANCZOS that Pillow 10 removed outright, so
+        # this path raised AttributeError on every padded thumbnail until now.
+        im = im.resize((int(x * r), int(y * r)), resample=Image.LANCZOS)
 
         # now pad with white where we do not fill requested box
         # may need color value, not name, depending on PIL version

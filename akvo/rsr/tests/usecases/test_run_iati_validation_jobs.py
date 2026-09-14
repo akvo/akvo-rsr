@@ -362,4 +362,4 @@ class RunIatiActivityValidationsTestCase(ValidationRunnerUtcNowMixin, BaseTestCa
         self._test_validations_run(mock_validate, Project.objects.filter(id=self.extra_projects[0].id))
 
         # One extra project should've been checked
-        self.assertEquals(Project.objects.filter(run_iati_checks=False).count(), 2)
+        self.assertEqual(Project.objects.filter(run_iati_checks=False).count(), 2)

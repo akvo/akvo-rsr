@@ -19,7 +19,10 @@ python-dateutil
 requests
 
 # DRF
-djangorestframework
+# django-rest-swagger 2.2.0 (unmaintained since 2019) imports CoreJSONRenderer, which DRF
+# dropped in 3.16 along with the rest of its coreapi support. Held back until the API docs
+# view in akvo/urls.py moves to a maintained generator such as drf-spectacular.
+djangorestframework<3.16
 # XML end-points
 djangorestframework-xml
 # CSV endpoints
@@ -135,3 +138,10 @@ django-dbml==0.6.0
 
 # maintenace mode
 django-maintenance-mode
+
+# django-q 1.3.9, coreapi (pulled in by django-rest-swagger) and sentry-sdk 1.31 all
+# `import pkg_resources`, which ships inside setuptools. The Python 3.12 images no longer
+# install setuptools by default, and setuptools 82 dropped pkg_resources outright, so it
+# has to be requested explicitly and held below that line. Lifting this pin means
+# replacing all three: django-q2, a maintained swagger generator, and sentry-sdk 2.x.
+setuptools<81

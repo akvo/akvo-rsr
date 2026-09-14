@@ -290,7 +290,7 @@ class OrganisationPasswordPolicyTestCase(BaseTestCase):
             json.dumps(data),
             content_type='application/json'
         )
-        self.assertEquals(response.status_code, 400)
+        self.assertEqual(response.status_code, 400)
 
     def test_change_password_valid(self):
         data = {
@@ -303,4 +303,4 @@ class OrganisationPasswordPolicyTestCase(BaseTestCase):
             json.dumps(data),
             content_type='application/json'
         )
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
