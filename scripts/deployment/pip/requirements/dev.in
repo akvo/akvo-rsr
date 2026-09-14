@@ -14,7 +14,12 @@ parameterized
 django-debug-toolbar
 
 # Documentation
-Sphinx
+# Sphinx 9 rewrote autodoc to call repr() on class attributes. The 75 DRF viewsets in
+# akvo/rest/views each hold a `queryset` class attribute, and QuerySet.__repr__ evaluates
+# the query, so generating the docs would run 75 queries against whatever database happens
+# to be configured - and fails outright when that database has no schema, as in the Pages
+# workflow. Held at 8.x until those attributes are hidden from autodoc.
+Sphinx<9
 sphinx_rtd_theme
 sphinxcontrib-plantuml
 # Sphinx markdown support
