@@ -37,6 +37,9 @@ const Map = ({ data, getRef, handleCountryClick, countryFilter, lang }) => {
   const countryFilterRef = useRef()
   const [ranges, setRanges] = useState([])
   useEffect(() => {
+    // See MapView.jsx: an unguarded mapbox-gl constructor blanks the whole page when the
+    // browser has no WebGL context.
+    if (!mapboxgl.supported()) return
     mapRef.current = new mapboxgl.Map({
       container: 'map-inner',
       // style: 'mapbox://styles/akvo/ckclwj1z712lw1ipfvfuqq12i',
