@@ -74,7 +74,7 @@ class SendReportViaEmailTestCase(BaseTestCase):
         task_args = task_dict.get("args")
         params_arg = next(iter(task_args), {})
         self.assertEqual(self.program.id, params_arg.get("program_id"),
-                          msg="The expected program ID isn't present in the task's first argument")
+                         msg="The expected program ID isn't present in the task's first argument")
 
         # Emulate executing the task without going through django-q
         # There's currently no easy way to do so
@@ -126,7 +126,7 @@ class SendReportViaEmailTestCase(BaseTestCase):
         task_args = task_dict.get("args")
         params_arg = next(iter(task_args), {})
         self.assertEqual(self.org.id, params_arg.get("org_id"),
-                          msg="The expected organisation ID isn't present in the task's first argument")
+                         msg="The expected organisation ID isn't present in the task's first argument")
 
         # Emulate executing the task without going through django-q
         # There's currently no easy way to do so
