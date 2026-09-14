@@ -39,7 +39,7 @@ class ConfigAttributeBuilderTestCase(RuleBuilderTestMixin, TestCase):
         validator = build_validation_rule(config, self.user)
         self.assertEqual(1, len(validator.rules))
         self.assertIsInstance(validator.rules[0], LengthRule)
-        self.assertEquals(1, validator.rules[0].min)
+        self.assertEqual(1, validator.rules[0].min)
 
     def test_character(self):
         config = PolicyConfig.objects.create(

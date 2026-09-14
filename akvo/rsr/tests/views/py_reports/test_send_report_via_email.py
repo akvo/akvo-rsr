@@ -68,13 +68,13 @@ class SendReportViaEmailTestCase(BaseTestCase):
         enqueued_task = OrmQ.objects.first()
         self.assertIsNotNone(enqueued_task)
         task_dict = SignedPackage.loads(enqueued_task.payload)
-        self.assertEquals(task_dict.get("name"), report_name)
+        self.assertEqual(task_dict.get("name"), report_name)
 
         # And with the correct program
         task_args = task_dict.get("args")
         params_arg = next(iter(task_args), {})
-        self.assertEquals(self.program.id, params_arg.get("program_id"),
-                          msg="The expected program ID isn't present in the task's first argument")
+        self.assertEqual(self.program.id, params_arg.get("program_id"),
+                         msg="The expected program ID isn't present in the task's first argument")
 
         # Emulate executing the task without going through django-q
         # There's currently no easy way to do so
@@ -120,13 +120,13 @@ class SendReportViaEmailTestCase(BaseTestCase):
         enqueued_task = OrmQ.objects.first()
         self.assertIsNotNone(enqueued_task)
         task_dict = SignedPackage.loads(enqueued_task.payload)
-        self.assertEquals(task_dict.get("name"), report_name)
+        self.assertEqual(task_dict.get("name"), report_name)
 
         # And with the correct program
         task_args = task_dict.get("args")
         params_arg = next(iter(task_args), {})
-        self.assertEquals(self.org.id, params_arg.get("org_id"),
-                          msg="The expected organisation ID isn't present in the task's first argument")
+        self.assertEqual(self.org.id, params_arg.get("org_id"),
+                         msg="The expected organisation ID isn't present in the task's first argument")
 
         # Emulate executing the task without going through django-q
         # There's currently no easy way to do so

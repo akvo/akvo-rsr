@@ -7,6 +7,7 @@ For additional details on the GNU license please see < http://www.gnu.org/licens
 
 import os
 
+from django.apps import apps
 from django.conf import settings
 from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
@@ -321,14 +322,13 @@ urlpatterns += [
 
 if settings.DEBUG:
     urlpatterns += staticfiles_urlpatterns()
-    try:
-        import debug_toolbar
-    except ImportError:
-        pass
-    else:
+    # The toolbar is opt-in: it stays out of INSTALLED_APPS until a developer uncomments it
+    # in 50-docker-local-dev.conf. Merely importing the package used to be a fair proxy for
+    # that, but django-debug-toolbar 5 added a model to `debug_toolbar.urls`, and importing a
+    # model belonging to an uninstalled app raises. Ask the app registry directly instead.
+    if apps.is_installed("debug_toolbar"):
         urlpatterns = [
-            # For django versions before 2.0:
-            path("__debug__/", include(debug_toolbar.urls)),
+            path("__debug__/", include("debug_toolbar.urls")),
         ] + urlpatterns
 
 if settings.REQUIRED_AUTH_GROUPS:
