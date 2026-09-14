@@ -85,6 +85,9 @@ const Map = ({ data, getRef, handlePan, getCenter, getMarkerBounds, onHoverProje
   const mapRef = useRef(null)
   const mapLoaded = useRef(false)
   useEffect(() => {
+    // See MapView.jsx: an unguarded mapbox-gl constructor blanks the whole page when the
+    // browser has no WebGL context.
+    if (!mapboxgl.supported()) return
     mapRef.current = new mapboxgl.Map({
       container: 'map',
       style: 'mapbox://styles/mapbox/light-v10',

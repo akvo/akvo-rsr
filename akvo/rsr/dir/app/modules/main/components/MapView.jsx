@@ -8,6 +8,12 @@ import { getMultiItems } from '../../../utils/misc'
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiYWt2byIsImEiOiJzUFVwR3pJIn0.8dLa4fHG19fBwwBUJMDOSQ'
 
+// WebGL availability is fixed for the life of the page, so probe it once here rather than
+// on every render. Chromium with hardware acceleration turned off, or with a blocklisted
+// GPU, hands out no WebGL context at all, while Firefox falls back to a software renderer -
+// which is why this only ever bites some browsers.
+const webglSupported = mapboxgl.supported()
+
 export const MapView = ({
   mapRef,
   filter,
@@ -261,6 +267,11 @@ export const MapView = ({
     }
   }
   useEffect(() => {
+    // Without WebGL the mapbox-gl constructor throws, and React treats an uncaught error in
+    // a commit-phase effect as fatal: it unmounts the entire tree. That turned a broken map
+    // into a completely blank directory page. Leave mapRef unset instead, so everything
+    // else on the page still renders.
+    if (!webglSupported) return
     mapRef.current = new mapboxgl.Map({
       container: 'map',
       style: 'mapbox://styles/mapbox/light-v10',
@@ -314,7 +325,7 @@ export const MapView = ({
           const [lat, lang] = df
           return (lat && lang)
         })
-      if (coordinates.length) {
+      if (coordinates.length && mapRef.current) {
         if (coordinates.length === 1) {
           mapRef.current.flyTo({ center: coordinates[0] })
         } else {
@@ -341,5 +352,15 @@ export const MapView = ({
       }
     }
   }, [featureData, search, searchResult, filter, moved, filtered, data, bounds])
+  if (!webglSupported) {
+    return (
+      <div id="map" {...mapProps}>
+        <div style={{ padding: 24, color: '#666', textAlign: 'center' }}>
+          The map needs WebGL, which this browser has disabled. Enable hardware
+          acceleration to see it; the project list is unaffected.
+        </div>
+      </div>
+    )
+  }
   return <div id="map" {...mapProps} />
 }
