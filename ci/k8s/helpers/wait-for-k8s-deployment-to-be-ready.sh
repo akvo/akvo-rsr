@@ -1,24 +1,17 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
-
-starttime=$(date +%s)
-
-while [ $(( $(date +%s) - 300 )) -lt "${starttime}" ]; do
-
-   rsr_status=$(kubectl get pods -l "rsr-version=$TRAVIS_COMMIT,run=rsr" -o jsonpath='{range .items[*].status.containerStatuses[*]}{@.name}{" ready="}{@.ready}{"\n"}{end}')
-   old_rsr_status=$(kubectl get pods -l "rsr-version!=$TRAVIS_COMMIT,run=rsr" -o jsonpath='{range .items[*].status.containerStatuses[*]}{@.name}{" ready="}{@.ready}{"\n"}{end}')
-
-    if [[ ${rsr_status} =~ "ready=true" ]] && ! [[ ${rsr_status} =~ "ready=false" ]] && ! [[ ${old_rsr_status} =~ "ready" ]] ; then
-        echo "all good!"
-        exit 0
-    else
-        echo "Waiting for the containers to be ready"
-        sleep 10
-    fi
-done
-
-echo "Containers not ready after 5 minutes or old containers not stopped"
-
-kubectl get pods -l "run=rsr" -o jsonpath='{range .items[*].status.containerStatuses[*]}{@.name}{" ready="}{@.ready}{"\n"}{end}'
-
-exit 1
+# Wait for the rolling update to finish.
+#
+# `kubectl rollout status` returns only once the new ReplicaSet is fully
+# available and the old one has scaled down — which is exactly the condition
+# the previous hand-rolled poll loop was approximating, one `kubectl get pods`
+# call at a time.
+#
+# That loop gave up after a fixed five minutes and then printed a pod dump. On
+# the first GitHub Actions deploy the dump showed every container ready=true:
+# the rollout had succeeded, but the nodes were cold-pulling an image tag they
+# had never seen, and the loop simply ran out of clock. Ten minutes covers a
+# cold pull. A rollout that genuinely fails still fails here, reported in
+# kubectl's own words instead of as a list of pod names to interpret.
+kubectl rollout status deployment/rsr --timeout=10m

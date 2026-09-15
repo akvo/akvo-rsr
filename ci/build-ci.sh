@@ -16,8 +16,9 @@ function quote() {
     "$GIT_ROOT"/ci/quote.py "$1"
 }
 
-# Create the checksum function if it doesn't exist already
-# Semaphore CI creates this in the cloud, but we need it locally too
+# Create the checksum function if it doesn't exist already.
+# Semaphore supplied `checksum` as a built-in; GitHub Actions does not, so
+# this definition is what actually runs in CI as well as locally.
 if ! type -t checksum &> /dev/null ; then
 
   function checksum() {

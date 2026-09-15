@@ -1,6 +1,6 @@
 # Akvo Really Simple Reporting (Akvo RSR)
 
-[![Build Status](https://akvo.semaphoreci.com/badges/akvo-rsr/branches/master.svg?style=shields)](https://akvo.semaphoreci.com/projects/akvo-rsr)
+[![Build Status](https://github.com/akvo/akvo-rsr/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/akvo/akvo-rsr/actions/workflows/ci.yml)
 [![Coverage Status](https://coveralls.io/repos/github/akvo/akvo-rsr/badge.svg?branch=master)](https://coveralls.io/github/akvo/akvo-rsr?branch=master)
 
 Akvo Foundation is a non-profit foundation that builds open source internet and mobile phone software which is used to make international development cooperation and governance more effective and transparent.
