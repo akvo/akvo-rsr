@@ -9,6 +9,7 @@ memory leak detection capabilities in production environments.
 import base64
 import gc
 import os
+import time
 import tracemalloc
 
 import psutil
@@ -51,6 +52,18 @@ class MemoryLeakDetectionMiddleware:
         self.sample_rate = getattr(settings, 'MEMORY_PROFILING_SAMPLE_RATE', 1.0)
         self.growth_threshold_mb = getattr(settings, 'MEMORY_GROWTH_THRESHOLD_MB', 10)
 
+        # Tracemalloc is the expensive half of this middleware and is only worth paying for
+        # while someone is actively hunting an allocation site, so it is opt-in. Tracing
+        # attaches a traceback to every allocation in the process, and taking two snapshots
+        # per request and diffing them cost around twelve seconds per request on staging.
+        self.deep_profiling = getattr(settings, 'ENABLE_MEMORY_TRACEMALLOC', False)
+
+        # Counting objects means walking every object the interpreter knows about, which is
+        # far too expensive per request. The gauge only needs to move often enough for the
+        # alert rules to see a trend, so it is sampled on an interval instead.
+        self.object_count_interval = getattr(settings, 'MEMORY_OBJECT_COUNT_INTERVAL', 60)
+        self._last_object_count = 0.0
+
         # Metrics authentication settings
         self.metrics_auth_username = getattr(settings, 'METRICS_AUTH_USERNAME', None)
         self.metrics_auth_password = getattr(settings, 'METRICS_AUTH_PASSWORD', None)
@@ -58,8 +71,10 @@ class MemoryLeakDetectionMiddleware:
         # Initialize memory metrics (only once across all instances)
         self._init_metrics()
 
-        # Initialize tracemalloc
-        if not tracemalloc.is_tracing():
+        # Initialize tracemalloc, but only when deep profiling is switched on. Starting it
+        # slows down every allocation in the process for the whole life of the worker,
+        # whether or not a given request is sampled.
+        if self.deep_profiling and not tracemalloc.is_tracing():
             tracemalloc.start()
 
     def __call__(self, request):
@@ -85,7 +100,7 @@ class MemoryLeakDetectionMiddleware:
 
         # Capture tracemalloc snapshot if available
         tracemalloc_before = None
-        if tracemalloc.is_tracing():
+        if self.deep_profiling and tracemalloc.is_tracing():
             tracemalloc_before = tracemalloc.take_snapshot()
 
         # Process the request
@@ -102,11 +117,11 @@ class MemoryLeakDetectionMiddleware:
         # Update metrics
         self._update_memory_metrics(memory_after, memory_diff, view_name)
         self._check_memory_growth(memory_diff)
-        self._update_object_counts()
+        self._update_object_counts_throttled()
         self._update_gc_metrics()
 
         # Analyze tracemalloc data if available
-        if tracemalloc_before and tracemalloc.is_tracing():
+        if self.deep_profiling and tracemalloc_before and tracemalloc.is_tracing():
             self._analyze_tracemalloc(tracemalloc_before, view_name)
 
         return response
@@ -241,6 +256,19 @@ class MemoryLeakDetectionMiddleware:
                     container=self.container_name,
                     threshold=threshold_label
                 ).inc()
+
+    def _update_object_counts_throttled(self):
+        """Refresh the object-count gauges, but no more than once per interval.
+
+        `django_python_objects_total` feeds trend alerts rather than per-request analysis, so
+        refreshing it on a timer keeps the alerts fed while taking the full object walk off
+        the request path.
+        """
+        now = time.monotonic()
+        if now - self._last_object_count < self.object_count_interval:
+            return
+        self._last_object_count = now
+        self._update_object_counts()
 
     def _update_object_counts(self):
         """Update Python object count metrics."""
