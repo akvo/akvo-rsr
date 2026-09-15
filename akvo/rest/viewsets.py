@@ -248,7 +248,10 @@ def make_projects_filter_cache_key(user: User, queryset: QuerySet, project_relat
     """Makes a cache key that can be used for _projects_filter_for_non_privileged_users"""
 
     # we hash it because the queryset.query (sql query) can be quite long
-    args_hash = hashlib.md5(f"{queryset.query if queryset else ''}{project_relation}{action}".encode()).hexdigest()
+    # `if queryset` would call QuerySet.__bool__, which evaluates the whole queryset - every
+    # row instantiated and every prefetch_related run - just to test for emptiness. Compare
+    # against None instead: we only need to know whether a queryset was passed at all.
+    args_hash = hashlib.md5(f"{queryset.query if queryset is not None else ''}{project_relation}{action}".encode()).hexdigest()
     return f"{make_projects_filter_cache_prefix(user)}:{args_hash}"
 
 
