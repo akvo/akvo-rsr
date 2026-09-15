@@ -11,9 +11,32 @@ echo ""
 
 psql_settings=("--username=postgres" "--host=${DB_HOST}" "--dbname=${RSR_DB_NAME}" "--set" "ON_ERROR_STOP=on")
 
+# The August 2025 PostgreSQL security releases (14.19, 15.14, 16.10, 17.6 and later) added
+# the \restrict and \unrestrict meta-commands, and pg_dump now wraps every dump in them so
+# that a dump cannot smuggle psql meta-commands past the restore. A dump taken by one of
+# those newer pg_dumps therefore aborts on its very first line when restored with an older
+# psql:
+#
+#     invalid command \restrict
+#
+# Cloud SQL exports with a current pg_dump, so this bites whenever the local postgres image
+# lags behind production. Ask this psql whether it understands the pair rather than checking
+# version numbers - the release that introduced them differs per major version. Where it
+# does, the commands are left in place and keep doing their job; only an older psql that
+# would choke on them gets them stripped.
+if printf '%s\n' '\restrict rsr_feature_probe' '\unrestrict rsr_feature_probe' \
+     | psql "${psql_settings[@]}" --quiet >/dev/null 2>&1; then
+  restrict_filter=(cat)
+else
+  echo "This psql ($(psql --version | awk '{print $3}')) predates \\restrict; stripping it from the dump."
+  echo "Consider matching the local postgres version to production instead."
+  restrict_filter=(sed -e "/^\\\\restrict /d" -e "/^\\\\unrestrict /d")
+fi
+
 psql "${psql_settings[@]}" --command="DROP SCHEMA public CASCADE"
 psql "${psql_settings[@]}" --command="CREATE SCHEMA public"
 gunzip --stdout "${DUMP_FILE}" \
+  | "${restrict_filter[@]}" \
   | sed -e "/^REVOKE\ /d" \
   | sed -e "/^GRANT\ /d" \
   | sed -e "/ALTER DEFAULT PRIVILEGES FOR ROLE postgres/d" \

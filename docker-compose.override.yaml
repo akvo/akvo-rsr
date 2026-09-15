@@ -97,6 +97,8 @@ services:
   rsrdbhost:
     ports:
       - "5432:5432"
+    volumes:
+      - rsr-dbdata:/var/lib/postgresql/data
 
   mailpit:
     image: axllent/mailpit:v1.7
@@ -105,3 +107,4 @@ services:
 
 volumes:
   rsr-mediaroot: {}
+  rsr-dbdata: {}

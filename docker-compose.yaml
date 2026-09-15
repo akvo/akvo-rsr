@@ -16,7 +16,7 @@ services:
       retries: 3
       start_period: 2m30s
   rsrdbhost:
-    image: postgres:14.11
+    image: postgres:14.22
     environment:
       - POSTGRES_PASSWORD=mysecretpassword
     expose:
