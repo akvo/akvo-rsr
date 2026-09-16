@@ -38,7 +38,11 @@ fi
 
 if [[ -z "${IS_WORKER:-}" ]] ; then
   log Starting gunicorn in background
-  gunicorn akvo.wsgi --max-requests 200 --workers 12 --timeout 300 --bind 0.0.0.0:${DJANGO_PORT:-8000} ${GUNICORN_DEBUG_ARGS:-} &
+  # --max-requests without jitter recycles every worker on its own 200th request, and since
+  # they start together and see roughly even traffic, they reach that point together. The
+  # result is periodic moments with most of the pool restarting at once, requests queueing
+  # behind them, and the readiness probe timing out. Jitter spreads the recycles out.
+  gunicorn akvo.wsgi --max-requests 200 --max-requests-jitter 50 --workers 12 --timeout 300 --bind 0.0.0.0:${DJANGO_PORT:-8000} ${GUNICORN_DEBUG_ARGS:-} &
 else
   log Starting probe server
   ./manage.py django_q_probettp &

@@ -45,6 +45,7 @@ spec:
         resources:
           requests:
             cpu: "50m"
+            memory: "16Mi"
           limits:
             cpu: "1000m"
         env:
@@ -81,8 +82,15 @@ spec:
         resources:
           requests:
             cpu: "1000m"
+            memory: "6Gi"
           limits:
             cpu: "6000m"
+            # A ceiling, not a target. With no limit this container is free to grow until the
+            # node itself runs out and the kubelet evicts the whole pod, which is what
+            # happened at 21.6Gi. A cap turns a node-wide failure into a restart of the
+            # container that caused it. Deliberately set well above the ~11.5Gi seen in
+            # practice, and worth tightening once there is data on steady-state memory.
+            memory: "14Gi"
         ports:
         - containerPort: 8000
           protocol: TCP
@@ -216,6 +224,7 @@ spec:
         resources:
           requests:
             cpu: "100m"
+            memory: "2Gi"
           limits:
             cpu: "1000m"
         env:
@@ -252,6 +261,7 @@ spec:
         resources:
           requests:
             cpu: "100m"
+            memory: "512Mi"
           limits:
             cpu: "1000m"
         env:
