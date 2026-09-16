@@ -50,7 +50,7 @@ def planned_disbursements(project):
             checks.append(('warning', 'provider organisation of planned disbursement (id: %s) '
                            'has no IATI identifier' % str(pd.pk)))
 
-    if project.planned_disbursements.all() and all_checks_passed:
+    if project.planned_disbursements.exists() and all_checks_passed:
         checks.append(('success', 'has valid planned disbursements'))
 
     return all_checks_passed, checks

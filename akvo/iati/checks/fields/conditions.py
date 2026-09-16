@@ -26,7 +26,7 @@ def conditions(project):
             checks.append(('error', 'condition (id: %s) has no description specified' %
                            str(condition.pk)))
 
-    if project.conditions.all() and all_checks_passed:
+    if project.conditions.exists() and all_checks_passed:
         checks.append(('success', 'has valid condition(s)'))
 
     return all_checks_passed, checks

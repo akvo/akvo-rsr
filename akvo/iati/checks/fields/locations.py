@@ -28,7 +28,7 @@ def locations(project):
                 checks.append(('error', 'administrative location (id: %s) code or vocabulary is '
                                'missing' % str(administrative.pk)))
 
-    if project.locations.all() and all_checks_passed:
+    if project.locations.exists() and all_checks_passed:
         checks.append(('success', 'has valid location(s)'))
 
     return all_checks_passed, checks

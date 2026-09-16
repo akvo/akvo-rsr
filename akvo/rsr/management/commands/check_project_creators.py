@@ -24,7 +24,7 @@ class Command(BaseCommand):
                           "(Not including projects with an Akvo organisation as a partner):")
         self.stdout.write("ID, Title, sync_owner ID, sync_owner name")
         for project in Project.objects.all().prefetch_related('partners').select_related('sync_owner)'):
-            if not project.partners.filter(Q(can_create_projects=True) | Q(name__icontains='akvo')):
+            if not project.partners.filter(Q(can_create_projects=True) | Q(name__icontains='akvo')).exists():
                 self.stdout.write('{},"{}",{},"{}"'.format(
                     project.pk,
                     project.title,

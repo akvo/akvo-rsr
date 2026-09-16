@@ -16,7 +16,7 @@ def country_budget_items(project):
     checks = []
     all_checks_passed = True
 
-    if project.country_budget_items.all() and not project.country_budget_vocabulary:
+    if project.country_budget_items.exists() and not project.country_budget_vocabulary:
         all_checks_passed = False
         checks.append(('error', 'vocabulary for country budget items not specified'))
 

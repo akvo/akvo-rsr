@@ -24,7 +24,7 @@ def legacy_data(project):
             all_checks_passed = False
             checks.append(('error', 'legacy data (id: %s) has no value specified' % str(ld.pk)))
 
-    if project.legacy_data.all() and all_checks_passed:
+    if project.legacy_data.exists() and all_checks_passed:
         checks.append(('success', 'has valid legacy data'))
 
     return all_checks_passed, checks

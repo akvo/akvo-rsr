@@ -76,7 +76,7 @@ def transactions(project):
                 'message': f'transaction (id: {transaction.id}) recipient region has vocabulary 99 (reporting organisation), but no vocabulary URI specified'
             })))
 
-    if project.transactions.all() and all_checks_passed:
+    if project.transactions.exists() and all_checks_passed:
         checks.append(('success', 'has valid transaction(s)'))
 
     return all_checks_passed, checks

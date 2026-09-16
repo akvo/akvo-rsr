@@ -1707,7 +1707,7 @@ def default_validation_set(sender, **kwargs):
     created = kwargs['created']
     if created:
         try:
-            if not project.validations.all():
+            if not project.validations.exists():
                 project.validations.add(ProjectEditorValidationSet.objects.get(pk=1))
         except ProjectEditorValidationSet.DoesNotExist:
             # RSR validation set does not exist, should not happen..
