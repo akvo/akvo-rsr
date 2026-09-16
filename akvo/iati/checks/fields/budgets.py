@@ -63,7 +63,7 @@ def budgets(project):
             checks.append(('error', json.dumps({
                 'model': 'budget', 'id': budget.id, 'message': f'budget (id: {budget.id}) has no value date'})))
 
-    if project.budget_items.all() and all_checks_passed:
+    if project.budget_items.exists() and all_checks_passed:
         checks.append(('success', 'has valid budget items'))
 
     return all_checks_passed, checks

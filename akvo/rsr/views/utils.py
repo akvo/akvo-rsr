@@ -17,7 +17,7 @@ def apply_keywords(page, project_qs):
 
     If keywords exist, check if they should be used for filtering or exclusion.
     """
-    if not page.keywords.all():
+    if not page.keywords.exists():
         return project_qs
 
     if page.exclude_keywords:

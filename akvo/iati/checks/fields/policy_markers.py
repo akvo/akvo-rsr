@@ -31,7 +31,7 @@ def policy_markers(project):
                            'organisation), but no vocabulary URI specified' %
                            str(policy_marker.pk)))
 
-    if project.policy_markers.all() and all_checks_passed:
+    if project.policy_markers.exists() and all_checks_passed:
         checks.append(('success', 'has valid policy marker(s)'))
 
     return all_checks_passed, checks

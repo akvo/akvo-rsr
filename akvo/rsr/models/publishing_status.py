@@ -106,7 +106,7 @@ class PublishingStatus(models.Model):
                                     code='goals_overview')
                 )
 
-            if not self.project.locations.all():
+            if not self.project.locations.exists():
                 validation_errors.append(
                     ValidationError(_('Project needs to have at least one location.'),
                                     code='location')
@@ -121,7 +121,7 @@ class PublishingStatus(models.Model):
                         )
                         break
 
-            if not self.project.budget_items.all():
+            if not self.project.budget_items.exists():
                 validation_errors.append(
                     ValidationError(_('Project needs to have at least one budget item.'),
                                     code='budget_item')

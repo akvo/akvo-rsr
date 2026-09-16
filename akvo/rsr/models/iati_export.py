@@ -107,7 +107,7 @@ class IatiExport(TimestampsMixin):
 
         # Retrieve all projects
         projects = self.projects.all()
-        if projects:
+        if projects.exists():
             try:
                 # Generate and save the IATI file using streaming to prevent memory leaks
                 iati_xml = IatiXML.create_for_streaming(projects, self.version, self)

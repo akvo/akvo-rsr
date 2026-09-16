@@ -31,12 +31,12 @@ def document_links(project):
             checks.append(('error', 'document link (id: %s) has no title specified' %
                            str(doc.pk)))
 
-        if not doc.categories.all():
+        if not doc.categories.exists():
             all_checks_passed = False
             checks.append(('error', 'document link (id: %s) needs to have at least one category '
                            'specified' % str(doc.pk)))
 
-    if project.documents.all() and all_checks_passed:
+    if project.documents.exists() and all_checks_passed:
         checks.append(('success', 'has valid document(s)'))
 
     return all_checks_passed, checks

@@ -38,7 +38,7 @@ def document_link(organisation, context=None):
 
     for document in organisation.documents.all():
         if document.url or document.document or document.format or document.title or \
-                document.categories.all() or document.language or document.document_date:
+                document.categories.exists() or document.language or document.document_date:
             document_element = etree.Element("document-link")
 
             if document.url:

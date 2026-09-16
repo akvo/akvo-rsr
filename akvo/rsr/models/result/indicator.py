@@ -108,7 +108,7 @@ class Indicator(models.Model):
     def __str__(self):
         indicator_unicode = self.title if self.title else '%s' % _('No indicator title')
 
-        if self.periods.all():
+        if self.periods.exists():
             indicator_unicode += ' - %s %s' % (str(self.periods.count()),
                                                _('period(s)'))
 

@@ -14,7 +14,7 @@ def description(project):
     """
     if project.subtitle or project.project_plan_summary or project.background or \
             project.project_plan or project.current_status or project.sustainability or \
-            project.goals_overview or project.target_group or project.project_updates.all():
+            project.goals_overview or project.target_group or project.project_updates.exists():
         return True, [('success', 'has description field(s)')]
 
     else:

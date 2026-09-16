@@ -17,10 +17,9 @@ def find_log_entry(obj, action_flag):
     logs = LogEntry.objects.filter(
         content_type=ContentType.objects.get_for_model(obj), object_id=obj.pk, action_flag=action_flag
     ).order_by('-action_time')
-    if logs:
-        return logs[0]
-    else:
-        return False
+    # `if logs` used to pull every matching entry back just to reach the first one; .first()
+    # asks the database for the single row the caller wants.
+    return logs.first() or False
 
 
 def migrate_timestamps(model):

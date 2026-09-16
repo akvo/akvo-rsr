@@ -583,7 +583,7 @@ class UserAdmin(DjangoUserAdmin):
                 employees__is_approved=True,
                 employees__group__in=user_manager_groups
             )
-            if managing_orgs:
+            if managing_orgs.exists():
                 # Return all users of the organisations that the user manages
                 return managing_orgs.users()
             else:

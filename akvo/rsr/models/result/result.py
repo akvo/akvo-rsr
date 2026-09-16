@@ -54,8 +54,9 @@ class Result(models.Model):
         if self.type:
             result_unicode += ' (' + self.iati_type().name + ')'
 
-        if self.indicators.all():
-            result_unicode += _(' - %s indicators') % (str(self.indicators.count()))
+        indicator_count = self.indicators.count()
+        if indicator_count:
+            result_unicode += _(' - %s indicators') % (str(indicator_count))
 
         return result_unicode
 

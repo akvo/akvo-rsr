@@ -37,9 +37,9 @@ def sectors(project):
     checks = []
     all_checks_passed = True
 
-    if project.sectors.all():
+    if project.sectors.exists():
         for transaction in project.transactions.all():
-            if transaction.sectors.all():
+            if transaction.sectors.exists():
                 all_checks_passed = False
                 checks.append(('error', 'sectors present both on project and transaction level'))
 
@@ -100,13 +100,13 @@ def sectors(project):
             checks.append(('error', 'sector "%s" declared only once, the percentage must either be omitted or set to 100'
                            % single_sector_in_vocabulary.iati_vocabulary().name))
 
-    elif not project.transactions.all():
+    elif not project.transactions.exists():
         all_checks_passed = False
         checks.append(('error', 'no sectors present on project or transaction level'))
 
     else:
         for transaction in project.transactions.all():
-            if not transaction.sectors.all():
+            if not transaction.sectors.exists():
                 all_checks_passed = False
                 checks.append(('error', 'no sectors on project level or transaction (id: %s) '
                                'missing sector' % str(transaction.pk)))

@@ -18,7 +18,7 @@ def countries_and_regions(project):
     checks = []
     all_checks_passed = True
 
-    if project.recipient_countries.all() or project.recipient_regions.all():
+    if project.recipient_countries.exists() or project.recipient_regions.exists():
         for transaction in project.transactions.all():
             if transaction.recipient_country or transaction.recipient_region:
                 all_checks_passed = False
