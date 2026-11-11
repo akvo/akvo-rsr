@@ -1,8 +1,4 @@
-import os
 from decimal import Decimal
-
-# Force a headless backend before matplotlib is imported via the report module.
-os.environ.setdefault("MPLBACKEND", "Agg")
 
 from django.test import SimpleTestCase
 
