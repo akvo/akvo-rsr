@@ -56,7 +56,14 @@ def get_funding_partners(project_view):
 
 
 def get_funders_chart(funding_partners):
-    values = [p['amount'] for p in funding_partners]
+    # Cast to float: funder amounts are Decimal (ensure_decimal), and numpy >= 2
+    # refuses np.isfinite() on object/Decimal arrays, which matplotlib's pie()
+    # calls internally -> TypeError and a 500 on the overview report.
+    values = [float(p['amount'] or 0) for p in funding_partners]
+    # No funders, or every amount is zero: matplotlib's pie() raises
+    # "All wedge sizes are zero", so skip the chart instead of 500-ing.
+    if not any(values):
+        return ''
     values.append(sum(values))
     colors = [p['color'] for p in funding_partners]
     colors.append(BACKGROUND_COLOR)

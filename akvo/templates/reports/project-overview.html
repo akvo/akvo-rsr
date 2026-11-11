@@ -90,7 +90,9 @@
           {% endfor %}
         </ul>
         <div class="funders-chart-wrapper">
+        {% if funders_chart %}
         <img class="funders-chart" src="data:image/png;base64,{{ funders_chart|safe }}">
+        {% endif %}
         </div>
       </section>
     </article>
