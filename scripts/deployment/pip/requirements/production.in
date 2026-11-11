@@ -121,8 +121,11 @@ django_request_token
 
 timeout-decorator
 
-# Draw chart, mainly used in reports
-matplotlib
+# Draw chart, mainly used in reports.
+# Cap the major versions: a matplotlib 4 / numpy 3 bump needs code review
+# first (numpy 2 already broke pie() on Decimal inputs - see get_funders_chart).
+matplotlib<4
+numpy<3
 
 # For profiling on Google cloud Platform
 # Don't install this if you aren't on GCP
